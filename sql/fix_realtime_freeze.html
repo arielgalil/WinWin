@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון עדכונים בזמן אמת (גרסה מתוקנת) - מערכת תחרויות</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f0fdf4;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #166534;
+        }
+
+        textarea {
+            width: 100%;
+            height: 350px;
+            font-family: monospace;
+            background: #1e293b;
+            color: #a5f3fc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            direction: ltr;
+            text-align: left;
+        }
+
+        button {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .note {
+            background: #ecfccb;
+            border-right: 4px solid #84cc16;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #365314;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>תיקון הגדרות (גרסה 2 - מתוקנת)</h1>
+        <p>השגיאה שקיבלת נובעת מכך שהפרויקט שלך כבר מוגדר להאזין לכל הטבלאות. הסרתי את הפקודות המיותרות.</p>
+        <p>סקריפט זה מגדיר וודאות שהנתונים המלאים יישלחו (Replication Identity) ומתקן הרשאות (RLS).</p>
+
+        <div class="note">
+            <strong>חשוב:</strong> הרץ את הקוד הזה ב-SQL Editor בלוח הבקרה של Supabase.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+BEGIN;
+
+-- 1. Set REPLICATION IDENTITY to FULL to ensure all columns are sent in realtime updates
+-- This makes sure that updates are received even if they don't change the primary key
+ALTER TABLE app_settings REPLICA IDENTITY FULL;
+ALTER TABLE campaigns REPLICA IDENTITY FULL;
+
+-- 2. (DISABLED) Add tables to publication
+-- Skipping this step because your project is already set to 'FOR ALL TABLES'.
+-- ALTER PUBLICATION supabase_realtime ADD TABLE app_settings;
+-- ALTER PUBLICATION supabase_realtime ADD TABLE campaigns;
+
+-- 3. Fix RLS Policies for App Settings (Allow public read)
+-- Realtime requires SELECT permissions for the anonymous user
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read settings" ON app_settings;
+CREATE POLICY "Public read settings" ON app_settings FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated update settings" ON app_settings;
+CREATE POLICY "Authenticated update settings" ON app_settings FOR UPDATE USING (auth.role() = 'authenticated');
+
+-- 4. Fix RLS Policies for Campaigns (Allow public read)
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read campaigns" ON campaigns;
+CREATE POLICY "Public read campaigns" ON campaigns FOR SELECT USING (true);
+
+-- 5. Refresh Schema Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("הקוד הועתק! לך ל-Supabase SQL Editor והרץ אותו.");
+        }
+    </script>
+</body>
+
+</html>

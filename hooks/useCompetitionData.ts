@@ -25,6 +25,7 @@ export const useCompetitionData = (slugOverride?: string) => {
     },
     enabled: !!slug,
     staleTime: 1000 * 60 * 5,
+    refetchInterval: 5000,
   });
 
   const campaignId = campaign?.id;
@@ -40,6 +41,7 @@ export const useCompetitionData = (slugOverride?: string) => {
       return data as AppSettings;
     },
     enabled: !!campaignId,
+    refetchInterval: 2000,
   });
 
   const { data: classes = [] } = useQuery({

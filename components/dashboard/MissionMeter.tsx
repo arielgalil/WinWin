@@ -28,17 +28,41 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const { t } = useLanguage();
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
     const lastCompletedIndexRef = useRef<number>(-1);
+    const prevScoreRef = useRef(totalScore);
     const pathRef = useRef<SVGPathElement>(null);
     const [pathLength, setPathLength] = useState(0);
-    const [irises, setIrises] = useState<{ cx: number; cy: number; delay: number }[]>([]);
     const isFirstMountRef = useRef(true);
 
+    const [irises, setIrises] = useState<{ cx: number; cy: number; weight: number; delay: number }[]>([]);
+
     useEffect(() => {
-        const newIrises = Array.from({ length: 3 }).map(() => ({
-            cx: Math.random() * 0.8 + 0.1,
-            cy: Math.random() * 0.8 + 0.1,
-            delay: Math.random() * 0.5,
-        }));
+        const newIrises: { cx: number; cy: number; weight: number; delay: number }[] = [];
+        let attempts = 0;
+        while (newIrises.length < 3 && attempts < 50) {
+            const cx = Math.random() * 0.6 + 0.2; // Keep away from extreme edges
+            const cy = Math.random() * 0.6 + 0.2;
+
+            // Check distance from existing irises
+            const isTooClose = newIrises.some(iris => {
+                const dx = iris.cx - cx;
+                const dy = iris.cy - cy;
+                return Math.sqrt(dx * dx + dy * dy) < 0.3; // Min distance 0.3
+            });
+
+            if (!isTooClose) {
+                newIrises.push({
+                    cx,
+                    cy,
+                    weight: 0.8 + Math.random() * 0.4, // Weights 0.8 - 1.2
+                    delay: Math.random() * 0.5
+                });
+            }
+            attempts++;
+        }
+        // Fallback if we couldn't place 3
+        if (newIrises.length < 3) {
+            newIrises.push({ cx: 0.5, cy: 0.5, weight: 1, delay: 0 });
+        }
         setIrises(newIrises);
     }, []);
 
@@ -63,13 +87,22 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
         if (isFirstMountRef.current) {
             lastCompletedIndexRef.current = highestCompletedIndex;
             isFirstMountRef.current = false;
+            // prevScoreRef is already initialized with totalScore, no need to set again
             return;
         }
 
         if (highestCompletedIndex > lastCompletedIndexRef.current) {
-            triggerCelebration(highestCompletedIndex);
+            // Only celebrate if:
+            // 1. We have a history of a non-zero score (prev > 0) - filters initial load 0->X
+            // 2. The score actually increased (curr > prev) - filters goal metadata updates X->X
+            const isRealAchievement = prevScoreRef.current > 0 && totalScore > prevScoreRef.current;
+
+            if (isRealAchievement) {
+                triggerCelebration(highestCompletedIndex);
+            }
         }
         lastCompletedIndexRef.current = highestCompletedIndex;
+        prevScoreRef.current = totalScore; // Update prevScoreRef for the next render
     }, [totalScore, sortedGoals]);
 
     useEffect(() => {
@@ -115,9 +148,16 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const missingPoints = Math.max(0, displayGoal.target_score - totalScore);
     const progressOffset = pathLength > 0 ? pathLength * (1 - progressPct) : 0;
 
-    // Use Math.sqrt(progressPct) to make the revealed Area linear to progress (Area ∝ r²)
-    // Also increase multiplier to ensure full coverage at 100%
-    const irisRadius = isCelebrationMode ? 1.5 : Math.sqrt(progressPct) * 1.5;
+    // Multi-Iris Calibrated Reveal
+    // k = sqrt(Progress / (pi * sum(w^2))) * boost
+    // using heuristic boost 0.8 to map roughly to unit square area
+    const sumWeightsSq = irises.reduce((acc, iris) => acc + iris.weight * iris.weight, 0) || 1;
+    // Strict Area: Area = Progress. k = sqrt(Progress / (pi * sum(w^2)))
+    const baseK = Math.sqrt(progressPct / (Math.PI * sumWeightsSq));
+
+    // If complete, force full reveal
+    const finalK = (isCelebrationMode || progressPct >= 1) ? 2.0 : baseK;
+
     const rtlPathData = "M 140 90 C 130 10, 20 90, 10 10";
 
     const headerText = sortedGoals.length > 0
@@ -196,7 +236,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                                             cy={iris.cy}
                                             fill="white"
                                             initial={{ r: 0 }}
-                                            animate={{ r: irisRadius }}
+                                            animate={{ r: finalK * iris.weight }}
                                             transition={{ duration: 2, ease: 'easeOut', delay: isFirstMountRef.current ? 0 : iris.delay }}
                                         />
                                     ))}
