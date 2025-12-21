@@ -74,7 +74,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                         animate={{ y: 0, opacity: 1, scale: 1 }}
                         exit={{ y: "100%", opacity: 0, scale: 0.95 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-                        className={`${glassCardStyle} rounded-[2.5rem] pointer-events-auto flex flex-col overflow-hidden`}
+                        className={`${glassCardStyle} rounded-[var(--radius-main)] pointer-events-auto flex flex-col overflow-hidden`}
                         dir={dir}
                     >
                         {/* Note Input Overlay */}
@@ -131,7 +131,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                                     key={idx}
                                                     onClick={() => handleActionClick(preset.value)}
                                                     disabled={isProcessing}
-                                                    className={`min-w-[90px] rounded-2xl flex flex-col items-center justify-center border active:scale-95 transition-all shadow-lg backdrop-blur-md ${bgStyle} ${isPos ? 'border-teal-200/40' : 'border-rose-200/40'}`}
+                                                    className={`min-w-[90px] rounded-[var(--radius-main)] flex flex-col items-center justify-center border active:scale-95 transition-all shadow-lg backdrop-blur-md ${bgStyle} ${isPos ? 'border-teal-200/40' : 'border-rose-200/40'}`}
                                                 >
                                                     <span className="text-white/80 text-[10px] font-bold">{preset.label}</span>
                                                     <span className="text-white text-2xl font-black" dir="ltr">
@@ -143,7 +143,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                     </div>
                                     <button
                                         onClick={() => setMode('custom')}
-                                        className="w-[75px] bg-slate-700/90 border-2 border-slate-500/50 rounded-2xl flex flex-col items-center justify-center active:scale-95 transition-all shadow-lg shrink-0 gap-2 backdrop-blur-md hover:bg-slate-600 transition-colors"
+                                        className="w-[75px] bg-slate-700/90 border-2 border-slate-500/50 rounded-[var(--radius-main)] flex flex-col items-center justify-center active:scale-95 transition-all shadow-lg shrink-0 gap-2 backdrop-blur-md hover:bg-slate-600 transition-colors"
                                     >
                                         <PlusIcon className="w-7 h-7 text-white" />
                                         <span className="text-white text-xs font-bold">{t('other')}</span>
@@ -152,9 +152,9 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                             )}
                             {mode === 'custom' && (
                                 <form onSubmit={handleCustomSubmit} className="flex gap-3 h-full absolute inset-0 z-10 items-center px-3 py-3">
-                                    <button type="button" onClick={() => setMode('presets')} className="h-full px-5 rounded-2xl bg-slate-600/80 border-2 border-slate-500/40 transition-colors hover:bg-slate-500 hover:text-white"><ArrowRightIcon className="w-8 h-8 text-white rtl:rotate-0 ltr:rotate-180" /></button>
-                                    <input ref={inputRef} type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} placeholder="0" className="w-32 h-full bg-black/40 text-white text-center text-5xl font-black rounded-2xl outline-none border-2 border-white/20 focus:border-blue-500 shadow-inner backdrop-blur-sm" dir="ltr" inputMode="decimal" />
-                                    <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-black rounded-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 backdrop-blur-md ${isNegative ? 'bg-red-600/90 border-red-200/30' : 'bg-emerald-600/90 border-teal-200/30'}`}>
+                                    <button type="button" onClick={() => setMode('presets')} className="h-full px-5 rounded-[var(--radius-main)] bg-slate-600/80 border-2 border-slate-500/40 transition-colors hover:bg-slate-500 hover:text-white"><ArrowRightIcon className="w-8 h-8 text-white rtl:rotate-0 ltr:rotate-180" /></button>
+                                    <input ref={inputRef} type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} placeholder="0" className="w-32 h-full bg-black/40 text-white text-center text-5xl font-black rounded-[var(--radius-main)] outline-none border-2 border-white/20 focus:border-blue-500 shadow-inner backdrop-blur-sm" dir="ltr" inputMode="decimal" />
+                                    <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-black rounded-[var(--radius-main)] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 backdrop-blur-md ${isNegative ? 'bg-red-600/90 border-red-200/30' : 'bg-emerald-600/90 border-teal-200/30'}`}>
                                         <span className="text-5xl font-black leading-none drop-shadow-md" dir="ltr"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
                                         <div className="rtl:scale-x-1 ltr:scale-x-[-1] opacity-90"><SendIcon className="w-8 h-8 text-white" /></div>
                                     </button>

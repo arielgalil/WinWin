@@ -47,7 +47,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
     <div className="max-w-6xl mx-auto h-full flex flex-col gap-6 px-4">
       <AnimatePresence>
         {toast && (
-          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl shadow-2xl font-black bg-slate-800 border border-white/20 text-white flex items-center gap-3 backdrop-blur-xl">
+          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black bg-slate-800 border border-white/20 text-white flex items-center gap-3 backdrop-blur-xl">
             {toast.type === 'success' ? <CheckIcon className="w-6 h-6 text-green-400" /> : <AlertIcon className="w-6 h-6 text-red-400" />}
             {toast.msg}
           </MotionDiv>
@@ -67,7 +67,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
             <select
               value={selectedClassId || ''}
               onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
-              className="w-full bg-white/5 text-white font-black py-3 px-4 rtl:pr-9 ltr:pl-9 rounded-xl border border-white/10 outline-none focus:border-blue-500/50 shadow-inner appearance-none"
+              className="w-full bg-white/5 text-white font-black py-3 px-4 rtl:pr-9 ltr:pl-9 rounded-[var(--radius-main)] border border-white/10 outline-none focus:border-blue-500/50 shadow-inner appearance-none"
             >
               {!selectedClassId && <option value="">{t('select_group_placeholder')}</option>}
               {teacherClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
@@ -75,13 +75,13 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
             <div className="absolute rtl:left-3 ltr:right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">▼</div>
           </div>
           <div className="relative flex-1 md:w-64">
-            <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-xl py-3 rtl:pr-10 ltr:pl-10 text-white font-bold focus:border-blue-500 outline-none transition-all shadow-inner" />
+            <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-white/5 border border-white/10 rounded-[var(--radius-main)] py-3 rtl:pr-10 ltr:pl-10 text-white font-bold focus:border-blue-500 outline-none transition-all shadow-inner" />
             <SearchIcon className="absolute rtl:right-3 ltr:left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           </div>
         </div>
       </div>
 
-      <div className="bg-white/5 p-6 rounded-[2rem] border border-white/10 shadow-2xl flex-1 min-h-0 overflow-y-auto custom-scrollbar backdrop-blur-md">
+      <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-2xl flex-1 min-h-0 overflow-y-auto custom-scrollbar backdrop-blur-md">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {!searchTerm && currentClass && (
             <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />

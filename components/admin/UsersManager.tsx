@@ -235,11 +235,11 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     {t('team_mgmt_title', { campaign: currentCampaign?.name || '' })}
                 </h2>
 
-                <div className="bg-white/5 p-6 rounded-3xl border border-white/10 shadow-xl">
+                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                         <h3 className="text-xl font-bold text-white">{t('add_staff_member')}</h3>
                         <div className="flex items-center gap-2">
-                            <label className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 text-green-300 px-3 py-1.5 rounded-lg border border-green-500/30 cursor-pointer transition-all">
+                            <label className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 text-green-300 px-3 py-1.5 rounded-[var(--radius-main)] border border-green-500/30 cursor-pointer transition-all">
                                 {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                                 <span className="text-sm font-bold">{t('import_from_excel')}</span>
                                 <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={(e) => {
@@ -260,19 +260,19 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                         <div className="md:col-span-3">
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('full_name_label')}</label>
-                            <input type="text" value={newUserFullName} onChange={e => setNewUserFullName(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
+                            <input type="text" value={newUserFullName} onChange={e => setNewUserFullName(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
                         </div>
                         <div className="md:col-span-3">
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('email_label')}</label>
-                            <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
+                            <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('password_label')}</label>
-                            <input type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required minLength={6} />
+                            <input type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required minLength={6} />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('role_label')}</label>
-                            <select value={newUserRole} onChange={e => setNewUserRole(e.target.value as 'admin' | 'teacher')} className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500">
+                            <select value={newUserRole} onChange={e => setNewUserRole(e.target.value as 'admin' | 'teacher')} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500">
                                 <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
                                 <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
                             </select>
@@ -282,14 +282,14 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             <select
                                 value={newUserClassId}
                                 onChange={e => setNewUserClassId(e.target.value)}
-                                className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500"
+                                className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500"
                             >
                                 <option value="" className="bg-slate-900">{t('no_assignment')}</option>
                                 {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
                             </select>
                         </div>
                         <div className="md:col-span-12 mt-2">
-                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-lg font-bold text-sm transition-colors shadow-lg">
+                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-[var(--radius-main)] font-bold text-sm transition-colors shadow-lg">
                                 {t('add_join_user_button')}
                             </button>
                         </div>
@@ -297,7 +297,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     {userCreationStatus && <div className="mt-2 text-sm font-bold p-2 rounded bg-white/5 text-blue-300 border border-blue-500/20">{userCreationStatus}</div>}
                 </div>
 
-                <div className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden shadow-xl">
+                <div className="bg-white/5 rounded-[var(--radius-main)] border border-white/10 overflow-hidden shadow-xl">
                     <table className="w-full rtl:text-right ltr:text-left">
                         <thead className="bg-white/5 text-slate-400 text-xs font-bold">
                             <tr>

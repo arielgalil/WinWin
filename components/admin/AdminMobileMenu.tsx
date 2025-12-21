@@ -74,7 +74,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-3 bg-white/10 text-white rounded-xl active:scale-95 transition-transform"
+            className="p-3 bg-white/10 text-white rounded-[var(--radius-main)] active:scale-95 transition-transform"
           >
             {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
           </button>
@@ -114,7 +114,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                   <button
                     key={item.id}
                     onClick={() => handleLinkClick(item.id)}
-                    className={`w-full text-right py-4 px-6 rounded-xl flex items-center gap-5 transition-all active:scale-[0.98] border-y-0 border-l-0 border-solid ${activeTab === item.id
+                    className={`w-full text-right py-4 px-6 rounded-[var(--radius-main)] flex items-center gap-5 transition-all active:scale-[0.98] border-y-0 border-l-0 border-solid ${activeTab === item.id
                       ? 'bg-white/10 text-white font-black border-r-[6px] shadow-xl ' + item.color
                       : 'text-slate-400 border-r-[6px] border-transparent bg-white/5'
                       }`}
@@ -129,14 +129,14 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={() => { onViewDashboard(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-6 rounded-3xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 active:bg-yellow-500/20 gap-3 shadow-lg"
+                    className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-main)] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 active:bg-yellow-500/20 gap-3 shadow-lg"
                   >
                     <TrophyIcon className="w-8 h-8" />
                     <span className="text-xs font-black">{t('view_leaderboard')}</span>
                   </button>
                   <button
                     onClick={() => { onManualRefresh(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 active:bg-cyan-500/20 gap-3 shadow-lg"
+                    className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-main)] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 active:bg-cyan-500/20 gap-3 shadow-lg"
                   >
                     <RefreshIcon className={`w-8 h-8 ${isRefreshing ? 'animate-spin' : ''}`} />
                     <span className="text-xs font-black">{t('refresh')}</span>
@@ -145,7 +145,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
 
                 <button
                   onClick={onLogout}
-                  className="w-full mt-8 py-5 rounded-2xl flex items-center justify-center gap-4 text-red-400 bg-red-500/10 border border-red-500/20 active:bg-red-500/20 font-black text-lg shadow-lg"
+                  className="w-full mt-8 py-5 rounded-[var(--radius-main)] flex items-center justify-center gap-4 text-red-400 bg-red-500/10 border border-red-500/20 active:bg-red-500/20 font-black text-lg shadow-lg"
                 >
                   <LogoutIcon className="w-6 h-6" />
                   <span>{t('logout')}</span>

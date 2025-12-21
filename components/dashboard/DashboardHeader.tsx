@@ -90,7 +90,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <div className="flex flex-col lg:flex-row items-stretch gap-2.5 z-10 shrink-0">
 
                 {/* 1. Brand Card (Right) */}
-                <div className="flex items-center justify-center px-5 py-2 rounded-2xl lg:rounded-3xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
+                <div className="flex items-center justify-center px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
                     <div className="flex items-center gap-3 min-w-0 rtl:flex-row ltr:flex-row">
                         <Logo
                             src={settings.logo_url}
@@ -113,7 +113,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </div>
 
                 {/* 2. Ticker Card (Center) */}
-                <div className="flex-1 relative overflow-hidden px-8 py-2 min-h-[40px] lg:min-h-0 flex items-center rounded-2xl lg:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
+                <div className="flex-1 relative overflow-hidden px-8 py-2 min-h-[40px] lg:min-h-0 flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
                     <AnimatePresence mode="wait">
                         <MotionDiv
                             key={`${currentIndex}-${chunkIdx}`}
@@ -147,7 +147,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </div>
 
                 {/* 3. Global Score (Left) */}
-                <div className="flex items-center justify-center gap-4 px-6 py-2 rounded-2xl lg:rounded-3xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
+                <div className="flex items-center justify-center gap-4 px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
                     <div className="flex flex-col items-center lg:items-end justify-center leading-none">
                         <div className="flex items-center gap-2 text-[9px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>
@@ -167,7 +167,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 {settings.background_music_url && (
                     <button
                         onClick={() => setIsMusicPlaying?.(!isMusicPlaying)}
-                        className={`flex items-center justify-center w-[55px] lg:w-[65px] rounded-2xl lg:rounded-3xl border transition-all duration-300 shadow-xl ${isMusicPlaying ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-black/40 border-white/10 text-white/40'}`}
+                        className={`flex items-center justify-center w-[55px] lg:w-[65px] rounded-[var(--radius-container)] border transition-all duration-300 shadow-xl ${isMusicPlaying ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-black/40 border-white/10 text-white/40'}`}
                     >
                         {isMusicPlaying ? <Volume2Icon className="w-6 h-6 animate-pulse" /> : <VolumeXIcon className="w-6 h-6" />}
                     </button>

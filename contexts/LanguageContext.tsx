@@ -6,6 +6,7 @@ export interface LanguageContextType {
     setLanguage: (lang: Language) => void;
     t: (key: TranslationKey, params?: Record<string, any>) => string;
     isRTL: boolean;
+    dir: 'rtl' | 'ltr';
 }
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -34,9 +35,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode, initialLang
     }, [language, isRTL]);
 
     const translate = useCallback((key: TranslationKey, params?: Record<string, any>) => t(key, language, params), [language]);
+    const dir = isRTL ? 'rtl' : 'ltr';
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, t: translate, isRTL }}>
+        <LanguageContext.Provider value={{ language, setLanguage, t: translate, isRTL, dir }}>
             {children}
         </LanguageContext.Provider>
     );

@@ -114,7 +114,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
 
     return (
         <div className={`
-        glass-panel rounded-3xl p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[280px] transition-all duration-700
+        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[280px] transition-all duration-700
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
                 : 'bg-slate-900/40'
@@ -161,10 +161,10 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
 
                 <div className="w-1/2 flex items-center justify-center h-full max-h-full">
                     <div className="h-full aspect-square max-h-[140px] relative">
-                        <div className="absolute inset-0 bg-black/30 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center shadow-inner">
+                        <div className="absolute inset-0 bg-black/30 rounded-[var(--radius-main)] border-2 border-dashed border-white/20 flex items-center justify-center shadow-inner">
                             <span className="text-4xl text-white/10 font-black">?</span>
                         </div>
-                        <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ mask: 'url(#iris-mask)', WebkitMask: 'url(#iris-mask)' }}>
+                        <div className="absolute inset-0 rounded-[var(--radius-main)] overflow-hidden" style={{ mask: 'url(#iris-mask)', WebkitMask: 'url(#iris-mask)' }}>
                             {displayGoal.image_type === 'upload' && displayGoal.image_value ? (
                                 <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover" />
                             ) : (

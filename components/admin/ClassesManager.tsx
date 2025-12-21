@@ -344,12 +344,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 </div>
 
                 <div className="flex gap-3">
-                    <label className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all">
+                    <label className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-[var(--radius-main)] font-bold flex items-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all">
                         {isImporting ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <UploadIcon className="w-5 h-5" />}
                         <span>{isImporting ? t('processing') : t('smart_import')}</span>
                         <input type="file" className="hidden" accept=".xlsx,.xls,.csv" onChange={handleSmartImport} disabled={isImporting} />
                     </label>
-                    <button onClick={() => setIsAddingClass(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+                    <button onClick={() => setIsAddingClass(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-[var(--radius-main)] font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-all">
                         <PlusIcon className="w-5 h-5" />
                         {t('add_group_button')}
                     </button>
@@ -357,7 +357,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
             </div>
 
             {importStatus && (
-                <div className="bg-blue-500/10 border border-blue-500/30 p-4 rounded-2xl flex items-center gap-3 text-blue-300 font-bold animate-pulse">
+                <div className="bg-blue-500/10 border border-blue-500/30 p-4 rounded-[var(--radius-main)] flex items-center gap-3 text-blue-300 font-bold animate-pulse">
                     <RefreshIcon className="w-5 h-5 animate-spin" />
                     {importStatus}
                 </div>
@@ -366,16 +366,16 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
                     {(isAddingClass || editingClass) && (
-                        <MotionDiv initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white/5 border-2 border-indigo-500/30 p-6 rounded-3xl flex flex-col gap-4 shadow-2xl backdrop-blur-md">
+                        <MotionDiv initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-white/5 border-2 border-indigo-500/30 p-6 rounded-[var(--radius-main)] flex flex-col gap-4 shadow-2xl backdrop-blur-md">
                             <h3 className="text-white font-black text-lg">{editingClass ? t('edit_group') : t('add_new_group')}</h3>
-                            <input value={newClassName} onChange={e => setNewClassName(e.target.value)} placeholder={t('group_name_placeholder')} className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-indigo-500" autoFocus />
+                            <input value={newClassName} onChange={e => setNewClassName(e.target.value)} placeholder={t('group_name_placeholder')} className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] p-3 text-white outline-none focus:border-indigo-500" autoFocus />
                             <div className="flex flex-wrap gap-2">
                                 {AVAILABLE_COLORS.map(c => (
                                     <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : 'opacity-50 hover:opacity-100 transition-opacity'}`} />
                                 ))}
                             </div>
                             <div className="flex gap-2 mt-2">
-                                <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-xl transition-all shadow-lg active:scale-95">{t('save')}</button>
+                                <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-[var(--radius-main)] transition-all shadow-lg active:scale-95">{t('save')}</button>
                                 <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-4 py-2.5 text-slate-400 font-bold hover:text-white transition-colors">{t('cancel')}</button>
                             </div>
                         </MotionDiv>
@@ -383,7 +383,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 </AnimatePresence>
 
                 {visibleClasses.map(cls => (
-                    <div key={cls.id} className="bg-white/5 border border-white/10 p-6 rounded-3xl flex flex-col gap-4 group hover:bg-white/10 transition-all shadow-xl">
+                    <div key={cls.id} className="bg-white/5 border border-white/10 p-6 rounded-[var(--radius-main)] flex flex-col gap-4 group hover:bg-white/10 transition-all shadow-xl">
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-3">
                                 <div className={`w-3 h-10 rounded-full ${cls.color}`} />
@@ -393,8 +393,8 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 </div>
                             </div>
                             <div className="flex gap-4 opacity-100 transition-opacity">
-                                <button onClick={() => { setSelectedClassId(cls.id); setView('students'); }} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 rounded-xl text-blue-400 transition-all active:scale-90" title={t('manage_students_tooltip')}><UsersIcon className="w-5 h-5" /></button>
-                                <button onClick={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color); setIsAddingClass(false); }} className="p-2 bg-amber-500/10 hover:bg-amber-500/20 rounded-xl text-amber-400 transition-all active:scale-90" title={t('edit_group_tooltip')}><EditIcon className="w-5 h-5" /></button>
+                                <button onClick={() => { setSelectedClassId(cls.id); setView('students'); }} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 rounded-[var(--radius-main)] text-blue-400 transition-all active:scale-90" title={t('manage_students_tooltip')}><UsersIcon className="w-5 h-5" /></button>
+                                <button onClick={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color); setIsAddingClass(false); }} className="p-2 bg-amber-500/10 hover:bg-amber-500/20 rounded-[var(--radius-main)] text-amber-400 transition-all active:scale-90" title={t('edit_group_tooltip')}><EditIcon className="w-5 h-5" /></button>
                                 <DeleteButton onClick={() => handleDeleteClass(cls.id)} />
                             </div>
                         </div>
@@ -407,10 +407,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 {view === 'students' && selectedClass && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
-                        <MotionDiv initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-slate-900 border border-white/20 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+                        <MotionDiv initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-slate-900 border border-white/20 rounded-[var(--radius-main)] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
                             <div className="p-6 border-b border-white/10 flex justify-between items-center shrink-0">
                                 <div className="flex items-center gap-4">
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${selectedClass.color}`}>
+                                    <div className={`w-12 h-12 rounded-[var(--radius-main)] flex items-center justify-center text-white shadow-lg ${selectedClass.color}`}>
                                         <UsersIcon className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -418,25 +418,25 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         <p className="text-slate-400 text-sm font-bold">{t('manage_students_title')}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setView('list')} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-400 hover:text-white transition-all"><XIcon className="w-6 h-6" /></button>
+                                <button onClick={() => setView('list')} className="p-3 bg-white/5 hover:bg-white/10 rounded-[var(--radius-main)] text-slate-400 hover:text-white transition-all"><XIcon className="w-6 h-6" /></button>
                             </div>
 
                             <div className="p-6 flex flex-col gap-6 overflow-hidden">
                                 <div className="flex flex-col md:flex-row gap-4">
                                     <div className="relative flex-1">
                                         <SearchIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                                        <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 ltr:pl-12 rtl:pr-12 text-white outline-none focus:border-blue-500 shadow-inner" />
+                                        <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-black/40 border border-white/10 rounded-[var(--radius-main)] py-3 ltr:pl-12 rtl:pr-12 text-white outline-none focus:border-blue-500 shadow-inner" />
                                     </div>
                                     <form onSubmit={handleAddStudent} className="flex-1 flex gap-2">
-                                        <input value={newStudentName} onChange={e => setNewStudentName(e.target.value)} placeholder={t('new_student_placeholder')} className="flex-1 bg-black/40 border border-white/10 rounded-2xl px-5 text-white outline-none focus:border-blue-500 shadow-inner" />
-                                        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-6 rounded-2xl font-black shadow-lg">{t('add')}</button>
+                                        <input value={newStudentName} onChange={e => setNewStudentName(e.target.value)} placeholder={t('new_student_placeholder')} className="flex-1 bg-black/40 border border-white/10 rounded-[var(--radius-main)] px-5 text-white outline-none focus:border-blue-500 shadow-inner" />
+                                        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-6 rounded-[var(--radius-main)] font-black shadow-lg">{t('add')}</button>
                                     </form>
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                         {selectedClass.students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase())).map(student => (
-                                            <div key={student.id} className="bg-white/5 border border-white/5 p-4 rounded-2xl flex justify-between items-center group/item hover:bg-white/10 transition-all">
+                                            <div key={student.id} className="bg-white/5 border border-white/5 p-4 rounded-[var(--radius-main)] flex justify-between items-center group/item hover:bg-white/10 transition-all">
                                                 <span className="text-white font-bold">{student.name}</span>
                                                 <button onClick={() => handleDeleteStudent(student.id)} className="opacity-0 group-hover/item:opacity-100 p-2 text-slate-500/20 hover:text-slate-500 transition-all"><TrashIcon className="w-4 h-4" /></button>
                                             </div>
@@ -446,7 +446,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             </div>
 
                             <div className="p-6 bg-black/40 border-t border-white/10 flex justify-center shrink-0">
-                                <button onClick={() => setView('list')} className="px-10 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-white font-black transition-all">{t('close_window')}</button>
+                                <button onClick={() => setView('list')} className="px-10 py-3 bg-white/5 hover:bg-white/10 rounded-[var(--radius-main)] text-white font-black transition-all">{t('close_window')}</button>
                             </div>
                         </MotionDiv>
                     </div>

@@ -14,10 +14,10 @@ interface LiteStudentCardProps {
 }
 
 export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name, score, isSelected, onToggle, isClassEntity = false }) => {
-  
+
   const handleClick = () => {
-      triggerHaptic('selection');
-      onToggle(id);
+    triggerHaptic('selection');
+    onToggle(id);
   };
 
   return (
@@ -25,11 +25,11 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
       onClick={handleClick}
       aria-pressed={isSelected}
       className={`
-        relative w-full h-24 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 touch-manipulation select-none overflow-hidden border backdrop-blur-md shadow-xl
-        ${isSelected 
+        relative w-full h-24 rounded-[var(--radius-main)] flex flex-col items-center justify-center transition-all duration-200 touch-manipulation select-none overflow-hidden border backdrop-blur-md shadow-xl
+        ${isSelected
           ? isClassEntity
             ? 'bg-purple-600 border-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.6)] scale-[0.98] ring-2 ring-purple-300'
-            : 'bg-blue-600 border-blue-200 shadow-[0_0_20px_rgba(59,130,246,0.6)] scale-[0.98] ring-2 ring-blue-300' 
+            : 'bg-blue-600 border-blue-200 shadow-[0_0_20px_rgba(59,130,246,0.6)] scale-[0.98] ring-2 ring-blue-300'
           : isClassEntity
             ? 'bg-purple-950/60 border-purple-500/50 active:scale-95 active:bg-purple-900 hover:border-purple-400'
             : 'bg-black/60 border-white/20 active:scale-95 active:bg-black/80 hover:bg-black/70 hover:border-white/40'
@@ -39,11 +39,11 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
       {/* Background Icon/Glow for Class Entity */}
       {isClassEntity ? (
         <div className="absolute -bottom-3 -left-3 opacity-20 pointer-events-none">
-            <SchoolIcon className="w-14 h-14 text-purple-300 rotate-12" />
+          <SchoolIcon className="w-14 h-14 text-purple-300 rotate-12" />
         </div>
       ) : (
         <div className="absolute -bottom-3 -right-3 opacity-10 pointer-events-none">
-            <UserIcon className="w-14 h-14 text-white -rotate-12" />
+          <UserIcon className="w-14 h-14 text-white -rotate-12" />
         </div>
       )}
 
@@ -54,15 +54,15 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
         `}>
           {name}
         </span>
-        
+
         {/* Score Badge - Centered in the card */}
-        <div className={`font-black px-3 py-1.5 rounded-xl border transition-all duration-300 shadow-inner min-w-[50px]
-            ${isSelected 
-                ? 'bg-white text-blue-900 border-white scale-110' 
-                : isClassEntity 
-                    ? 'bg-purple-500/30 text-purple-100 border-purple-400/30' 
-                    : 'bg-slate-800 text-white border-white/20'
-            }`}>
+        <div className={`font-black px-3 py-1.5 rounded-[var(--radius-main)] border transition-all duration-300 shadow-inner min-w-[50px]
+            ${isSelected
+            ? 'bg-white text-blue-900 border-white scale-110'
+            : isClassEntity
+              ? 'bg-purple-500/30 text-purple-100 border-purple-400/30'
+              : 'bg-slate-800 text-white border-white/20'
+          }`}>
           <FormattedNumber value={score} className="text-base" />
         </div>
       </div>

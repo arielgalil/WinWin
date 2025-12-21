@@ -96,7 +96,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, tot
           marginRight: MARGIN_RIGHT,
           borderColor: isHighlighted ? '#facc15' : undefined
         }}
-        className={`flex-shrink-0 rounded-2xl h-[calc(100%-1.2rem)] my-2 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group
+        className={`flex-shrink-0 rounded-[var(--radius-main)] h-[calc(100%-1.2rem)] my-2 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group
             ${isHighlighted
             ? 'scale-[1.05] bg-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] z-10 border-white/40'
             : `bg-white/5 hover:bg-white/10 border-white/10`
@@ -128,7 +128,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, tot
         <div className="shrink-0 relative">
           {hasTarget && (
             <div className="absolute bottom-1.5 left-1.5 z-20">
-              <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded backdrop-blur-sm border border-white/5 text-outline-sm`}>
+              <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded-[var(--radius-main)] backdrop-blur-sm border border-white/5 text-outline-sm`}>
                 {Math.round(progress)}%
               </span>
             </div>
@@ -149,7 +149,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, tot
 
   return (
     <div
-      className="h-full min-h-[140px] w-full glass-panel rounded-3xl flex flex-col overflow-hidden relative shadow-2xl border-white/10 bg-slate-900/40"
+      className="h-full min-h-[140px] w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/10 bg-slate-900/40"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

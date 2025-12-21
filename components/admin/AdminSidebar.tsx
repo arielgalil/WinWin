@@ -46,7 +46,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   return (
     <div className="hidden md:flex bg-[var(--bg-card)]/40 p-4 w-72 flex-col justify-between border-l border-[var(--border-main)] shrink-0 h-full overflow-y-auto custom-scrollbar">
       <div>
-        <div className="mb-6 p-4 bg-black/5 rounded-2xl border border-[var(--border-main)] shadow-inner">
+        <div className="mb-6 p-4 bg-black/5 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-inner">
           <div className="flex items-center gap-3 mb-3">
             <Logo
               src={settings.logo_url}
@@ -80,7 +80,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               key={item.id}
               onClick={() => onTabChange(item.id)}
               aria-current={activeTab === item.id ? 'page' : undefined}
-              className={`w-full text-right py-3 px-4 rounded-xl flex items-center gap-3 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeTab === item.id
+              className={`w-full text-right py-3 px-4 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 ${activeTab === item.id
                 ? `bg-blue-600 text-white font-black border-r-4 shadow-lg ${item.color}`
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-black/5 border-r-4 border-transparent'
                 }`}
@@ -96,15 +96,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </div>
 
       <div className="space-y-1.5 mt-4 pt-4 border-t border-[var(--border-main)]">
-        <button onClick={onViewDashboard} className="w-full text-right py-2 px-3 rounded-lg flex items-center gap-3 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-yellow-500/50">
+        <button onClick={onViewDashboard} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-yellow-500/50">
           <TrophyIcon className="w-4 h-4 shrink-0" />
           <span>{t('view_leaderboard')}</span>
         </button>
-        <button onClick={onManualRefresh} className="w-full text-right py-2 px-3 rounded-lg flex items-center gap-3 text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-cyan-500/50">
+        <button onClick={onManualRefresh} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-cyan-500/50">
           <RefreshIcon className={`w-4 h-4 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
           <span>{t('refresh')}</span>
         </button>
-        <button onClick={onLogout} className="w-full text-right py-2 px-3 rounded-lg flex items-center gap-3 text-red-500 hover:text-red-600 hover:bg-red-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-red-500/50">
+        <button onClick={onLogout} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-red-500 hover:text-red-600 hover:bg-red-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-red-500/50">
           <LogoutIcon className="w-4 h-4 shrink-0" />
           <span>{t('logout')}</span>
         </button>

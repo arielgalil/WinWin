@@ -45,7 +45,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
         <MotionDiv
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative w-full max-w-lg bg-white/10 backdrop-blur-3xl rounded-[2.5rem] p-5 md:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/20 flex flex-col gap-5 rtl:text-right ltr:text-left"
+          className="relative w-full max-w-lg bg-white/10 backdrop-blur-3xl rounded-[var(--radius-container)] p-5 md:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/20 flex flex-col gap-5 rtl:text-right ltr:text-left"
           style={{
             background: `linear-gradient(135deg, ${primaryColor}22 0%, ${secondaryColor}44 100%)`,
             backdropFilter: 'blur(40px) saturate(150%)'
@@ -87,7 +87,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
                 placeholder="teacher@school.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-5 py-3 text-white text-lg rtl:text-right ltr:text-left focus:border-white/40 focus:bg-black/40 outline-none transition-all placeholder:text-white/20 shadow-inner"
+                className="w-full bg-black/30 border border-white/10 rounded-[var(--radius-main)] px-5 py-3 text-white text-lg rtl:text-right ltr:text-left focus:border-white/40 focus:bg-black/40 outline-none transition-all placeholder:text-white/20 shadow-inner"
                 required
                 dir="ltr"
               />
@@ -99,7 +99,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-5 py-3 text-white text-lg rtl:text-right ltr:text-left focus:border-white/40 focus:bg-black/40 outline-none transition-all placeholder:text-white/20 shadow-inner"
+                className="w-full bg-black/30 border border-white/10 rounded-[var(--radius-main)] px-5 py-3 text-white text-lg rtl:text-right ltr:text-left focus:border-white/40 focus:bg-black/40 outline-none transition-all placeholder:text-white/20 shadow-inner"
                 required
                 dir="ltr"
               />
@@ -111,13 +111,13 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
                 id="lite-remember"
                 checked={rememberMe}
                 onChange={e => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded bg-black/30 border-white/20 accent-white cursor-pointer"
+                className="w-4 h-4 rounded-[var(--radius-main)] bg-black/30 border-white/20 accent-white cursor-pointer"
               />
               <label htmlFor="lite-remember" className="text-white text-xs font-bold cursor-pointer select-none">{t('remember_me')}</label>
             </div>
 
             {error && (
-              <div className="bg-red-500/30 border border-red-500/50 p-3 rounded-xl text-white text-[11px] text-center font-black animate-in fade-in slide-in-from-top-2">
+              <div className="bg-red-500/30 border border-red-500/50 p-3 rounded-[var(--radius-main)] text-white text-[11px] text-center font-black animate-in fade-in slide-in-from-top-2">
                 ⚠️ {error}
               </div>
             )}
@@ -125,7 +125,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white text-slate-900 hover:bg-slate-100 active:scale-[0.98] font-black text-lg py-3.5 rounded-xl transition-all shadow-xl flex items-center justify-center gap-3 mt-2 border border-white/50"
+              className="w-full bg-white text-slate-900 hover:bg-slate-100 active:scale-[0.98] font-black text-lg py-3.5 rounded-[var(--radius-main)] transition-all shadow-xl flex items-center justify-center gap-3 mt-2 border border-white/50"
             >
               {loading ? (
                 <div className="flex items-center gap-3">

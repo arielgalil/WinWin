@@ -18,6 +18,8 @@
   --border-main: #e2e8f0;
   --divide-main: #f1f5f9;
   --shadow-main: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --radius-main: 1.5rem;
+  --radius-container: 1.5rem;
 }
 
 .dark-mode {
@@ -39,6 +41,8 @@
   --border-main: rgba(255, 255, 255, 0.15);
   --divide-main: rgba(255, 255, 255, 0.1);
   --shadow-main: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+  --radius-main: 1.5rem;
+  --radius-container: 1.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -53,6 +57,8 @@
     --border-main: rgba(255, 255, 255, 0.15);
     --divide-main: rgba(255, 255, 255, 0.1);
     --shadow-main: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+    --radius-main: 1.5rem;
+    --radius-container: 1.5rem;
   }
 }
 

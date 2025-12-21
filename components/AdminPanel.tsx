@@ -103,7 +103,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <MotionDiv
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex-1 w-full max-w-[1920px] mx-auto bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row overflow-hidden relative"
+          className="flex-1 w-full max-w-[1920px] mx-auto bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col md:flex-row overflow-hidden relative"
         >
           <AdminMobileMenu isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} user={user} userClassName={userClassName} visibleNavItems={visibleNavItems} activeTab={activeTab} onTabChange={handleTabChange as any} onViewDashboard={onViewDashboard} onManualRefresh={refreshData as any} isRefreshing={false} onLogout={onLogout} campaignRole={campaignRole} />
           <AdminSidebar user={user} settings={settings} userClassName={userClassName} visibleNavItems={visibleNavItems} activeTab={activeTab} onTabChange={handleTabChange as any} onViewDashboard={onViewDashboard} onManualRefresh={refreshData as any} isRefreshing={false} onLogout={onLogout} campaignRole={campaignRole} />

@@ -18,9 +18,9 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
   const smoothSpring = { type: "spring" as const, stiffness: 120, damping: 25, mass: 1 };
 
   return (
-    <div className="flex-1 glass-panel rounded-3xl p-0 relative flex flex-col shadow-2xl border-white/10 bg-black/20 overflow-hidden h-full min-h-[320px]">
+    <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-2xl border-white/10 bg-black/20 overflow-hidden h-full min-h-[320px]">
       <h2 className="text-sm md:text-[clamp(0.8rem,1vw,1rem)] font-bold text-white/90 flex items-center shrink-0 px-5 h-11 bg-white/5 border-b border-white/5 backdrop-blur-md">
-        <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20 ml-3">
+        <div className="p-1.5 bg-yellow-500/10 rounded-[var(--radius-main)] border border-yellow-500/20 ml-3">
           <CrownIcon className="w-3.5 h-3.5 text-yellow-400" />
         </div>
         {t('podium_title')}
@@ -68,7 +68,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                   <AnimatedCounter value={cls.score || 0} />
                 </div>
               </MotionDiv>
-              <MotionDiv layout transition={smoothSpring} className={`w-full ${height} rounded-t-xl relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}>
+              <MotionDiv layout transition={smoothSpring} className={`w-full ${height} rounded-t-[var(--radius-main)] relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}>
                 {badge}
               </MotionDiv>
             </div>

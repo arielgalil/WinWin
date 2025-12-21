@@ -121,10 +121,10 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                             <span className="text-slate-400 font-black text-xs tracking-widest uppercase">{t('connecting_to_db')}</span>
                         </MotionDiv>
                     ) : fetchError ? (
-                        <MotionDiv key="error" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-16 bg-red-50 rounded-[3rem] border border-red-100 max-w-xl mx-auto shadow-2xl px-8">
+                        <MotionDiv key="error" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-16 bg-red-50 rounded-[var(--radius-container)] border border-red-100 max-w-xl mx-auto shadow-2xl px-8">
                             <AlertIcon className="w-16 h-16 text-red-600 mx-auto mb-6" />
                             <h3 className="text-2xl font-black text-red-900 mb-3">{t('data_load_error')}</h3>
-                            <button onClick={fetchCampaigns} className="bg-red-600 text-white px-8 py-4 rounded-2xl font-black flex items-center justify-center gap-3 mx-auto transition-all transition-colors duration-300">
+                            <button onClick={fetchCampaigns} className="bg-red-600 text-white px-8 py-4 rounded-[var(--radius-main)] font-black flex items-center justify-center gap-3 mx-auto transition-all transition-colors duration-300">
                                 <RefreshIcon className="w-5 h-5" /> {t('retry')}
                             </button>
                         </MotionDiv>
@@ -134,7 +134,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                 <MotionDiv
                                     key={camp.id}
                                     whileHover={{ y: -8 }}
-                                    className="group relative flex flex-col bg-white rounded-[2.5rem] p-6 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden cursor-pointer"
+                                    className="group relative flex flex-col bg-white rounded-[var(--radius-container)] p-6 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden cursor-pointer"
                                     onClick={() => navigate(`/comp/${camp.slug}`)}
                                 >
                                     <div className="flex items-center justify-between mb-8">
@@ -153,14 +153,14 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                     </div>
 
                                     <div className="space-y-4 mt-auto">
-                                        <button className="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all flex items-center justify-center gap-3 font-black shadow-lg">
+                                        <button className="w-full py-4 rounded-[var(--radius-main)] bg-emerald-500 hover:bg-emerald-600 text-white transition-all flex items-center justify-center gap-3 font-black shadow-lg">
                                             {t('enter_board')} <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
                                         </button>
                                         <div className="grid grid-cols-2 gap-3" onClick={e => e.stopPropagation()}>
-                                            <button onClick={() => navigate(`/vote/${camp.slug}`)} className="py-3 rounded-2xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
+                                            <button onClick={() => navigate(`/vote/${camp.slug}`)} className="py-3 rounded-[var(--radius-main)] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
                                                 <AwardIcon className="w-4 h-4" /> {t('enter_points')}
                                             </button>
-                                            <button onClick={() => navigate(`/admin/${camp.slug}`)} className="py-3 rounded-2xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
+                                            <button onClick={() => navigate(`/admin/${camp.slug}`)} className="py-3 rounded-[var(--radius-main)] bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
                                                 <SettingsIcon className="w-4 h-4" /> {t('manage')}
                                             </button>
                                         </div>
