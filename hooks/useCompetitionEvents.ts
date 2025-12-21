@@ -10,6 +10,7 @@ export const useCompetitionEvents = (
     goals: CompetitionGoal[],
     top5Students: any[],
     settings: AppSettings,
+    isFrozen: boolean,
     onUpdateCommentary?: (text: string) => void
 ) => {
     const { t, language } = useLanguage();
@@ -70,6 +71,15 @@ export const useCompetitionEvents = (
             studentsWithStats.forEach(s => prevScoresRef.current.set(s.id, s.score || 0));
             sortedClasses.forEach(c => prevScoresRef.current.set(c.id, c.score || 0));
             isFirstRender.current = false;
+            return;
+        }
+
+        if (isFrozen) {
+            // Update refs even when frozen to avoid "bursting" when unfreezing
+            prevTotalScoreRef.current = totalInstitutionScore;
+            prevTopClassIdRef.current = sortedClasses.length > 0 ? sortedClasses[0].id : null;
+            studentsWithStats.forEach(s => prevScoresRef.current.set(s.id, s.score || 0));
+            sortedClasses.forEach(c => prevScoresRef.current.set(c.id, c.score || 0));
             return;
         }
 
@@ -148,7 +158,7 @@ export const useCompetitionEvents = (
             prevScoresRef.current.set(c.id, c.score || 0);
         });
 
-    }, [sortedClasses, totalInstitutionScore, goals, studentsWithStats, t]); 
+    }, [sortedClasses, totalInstitutionScore, goals, studentsWithStats, isFrozen, t]); 
 
     const spotlightStudent = spotlightQueue.length > 0 
         ? studentsWithStats.find(s => s.id === spotlightQueue[0]) || null 

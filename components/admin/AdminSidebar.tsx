@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserProfile, AppSettings } from '../../types';
-import { TrophyIcon, SchoolIcon, RefreshIcon, LogoutIcon, UserIcon, TargetIcon, SparklesIcon, ListIcon, DatabaseIcon, LayersIcon, AwardIcon } from '../ui/Icons';
+import { TrophyIcon, SchoolIcon, RefreshIcon, LogoutIcon, UserIcon, TargetIcon, SparklesIcon, ListIcon, DatabaseIcon, LayersIcon, AwardIcon, PauseIcon } from '../ui/Icons';
 import { Logo } from '../ui/Logo';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -17,6 +17,8 @@ interface AdminSidebarProps {
   isRefreshing: boolean;
   onLogout: () => void;
   campaignRole?: string;
+  isFrozen?: boolean;
+  onToggleFreeze?: (val: boolean) => void;
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({
@@ -30,7 +32,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onManualRefresh,
   isRefreshing,
   onLogout,
-  campaignRole
+  campaignRole,
+  isFrozen,
+  onToggleFreeze
 }) => {
   const { t } = useLanguage();
 
@@ -100,6 +104,29 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <TrophyIcon className="w-4 h-4 shrink-0" />
           <span>{t('view_leaderboard')}</span>
         </button>
+
+        {onToggleFreeze && (
+          <button
+            onClick={() => onToggleFreeze(!isFrozen)}
+            className={`w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all font-black text-sm outline-none focus:ring-2 ${isFrozen
+              ? 'text-green-500 hover:text-green-600 hover:bg-green-500/10 focus:ring-green-500/50'
+              : 'text-red-500 hover:text-red-600 hover:bg-red-500/10 focus:ring-red-500/50'
+              }`}
+          >
+            {isFrozen ? (
+              <>
+                <RefreshIcon className="w-4 h-4 shrink-0" />
+                <span>{t('unfreeze_board')}</span>
+              </>
+            ) : (
+              <>
+                <PauseIcon className="w-4 h-4 shrink-0" />
+                <span>{t('freeze_board')}</span>
+              </>
+            )}
+          </button>
+        )}
+
         <button onClick={onManualRefresh} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-cyan-500/50">
           <RefreshIcon className={`w-4 h-4 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
           <span>{t('refresh')}</span>

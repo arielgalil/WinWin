@@ -112,6 +112,7 @@ export interface AppSettings {
   background_music_volume?: number;
   gemini_api_key?: string;
   language?: 'he' | 'en';
+  is_frozen?: boolean;
 }
 
 export interface ActionLog {

@@ -128,8 +128,10 @@ export const useCompetitionData = (slugOverride?: string) => {
         event: '*', 
         schema: 'public', 
         table: 'app_settings', 
-        filter: `campaign_id=eq.${campaignId}` 
-      }, () => invalidate())
+      }, (payload) => {
+        console.log("Realtime: Settings update received", payload);
+        invalidate();
+      })
       .on('postgres_changes', { 
         event: '*', 
         schema: 'public', 
@@ -140,8 +142,10 @@ export const useCompetitionData = (slugOverride?: string) => {
         event: '*', 
         schema: 'public', 
         table: 'campaigns', 
-        filter: `id=eq.${campaignId}` 
-      }, () => invalidate())
+      }, (payload) => {
+        console.log("Realtime: Campaign update received", payload);
+        invalidate();
+      })
       .subscribe((status) => {
         console.log(`Realtime subscription status for ${campaignId}:`, status);
       });
@@ -220,6 +224,13 @@ export const useCompetitionData = (slugOverride?: string) => {
     invalidate();
   };
 
+  const toggleFreeze = async (isFrozen: boolean) => {
+    if (!campaignId) return;
+    const { error } = await supabase.from('app_settings').update({ is_frozen: isFrozen }).eq('campaign_id', campaignId);
+    if (error) console.error("Freeze toggle error:", error);
+    else invalidate();
+  };
+
   return {
     classes,
     // Fix: provide a complete fallback for AppSettings to satisfy TypeScript union type checks in consumers
@@ -248,6 +259,7 @@ export const useCompetitionData = (slugOverride?: string) => {
     updateTickerMessage,
     updateClassTarget,
     updateSettingsGoals,
+    toggleFreeze,
     refreshData: invalidate,
     loadMoreLogs,
     notification: null

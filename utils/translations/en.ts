@@ -43,6 +43,8 @@ export const en = {
     role_admin: "Competition Manager (Admin)",
     role_teacher: "Teacher",
     view_leaderboard: "View Leaderboard",
+    freeze_board: "Freeze Board Live",
+    unfreeze_board: "Unfreeze Board",
 
     // School Settings
     settings_title: "Competition Settings",

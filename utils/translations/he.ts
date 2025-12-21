@@ -43,6 +43,8 @@ export const he = {
     role_admin: "מנהל תחרות",
     role_teacher: "מורה",
     view_leaderboard: "מעבר ללוח התוצאות",
+    freeze_board: "הקפאת הלוח בלייב",
+    unfreeze_board: "שחרור הקפאת לוח",
     
     // School Settings
     settings_title: "הגדרות תחרות",

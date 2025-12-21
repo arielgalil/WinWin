@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הוספת עמודת הקפאה - מערכת תחרויות</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f0fdf4;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #166534;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            background: #1e293b;
+            color: #a5f3fc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            direction: ltr;
+            text-align: left;
+        }
+
+        button {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>הוספת עמודת הקפאת לוח (Freeze)</h1>
+        <p>סקריפט זה מוסיף את עמודת <code>is_frozen</code> לטבלת <code>app_settings</code>.</p>
+
+        <textarea id="sqlCode" readonly>
+-- Migration: Add is_frozen column
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS is_frozen BOOLEAN DEFAULT false;
+
+-- Refresh Supabase Schema Cache
+NOTIFY pgrst, 'reload schema';
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("הקוד הועתק!");
+        }
+    </script>
+</body>
+
+</html>

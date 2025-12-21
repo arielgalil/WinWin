@@ -31,6 +31,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const pathRef = useRef<SVGPathElement>(null);
     const [pathLength, setPathLength] = useState(0);
     const [irises, setIrises] = useState<{ cx: number; cy: number; delay: number }[]>([]);
+    const isFirstMountRef = useRef(true);
 
     useEffect(() => {
         const newIrises = Array.from({ length: 3 }).map(() => ({
@@ -57,6 +58,14 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                 break;
             }
         }
+
+        // On first mount, just record the current state without celebrating
+        if (isFirstMountRef.current) {
+            lastCompletedIndexRef.current = highestCompletedIndex;
+            isFirstMountRef.current = false;
+            return;
+        }
+
         if (highestCompletedIndex > lastCompletedIndexRef.current) {
             triggerCelebration(highestCompletedIndex);
         }
@@ -105,7 +114,10 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const isCompleted = isCelebrationMode || (totalScore >= displayGoal.target_score && sortedGoals.length > 0);
     const missingPoints = Math.max(0, displayGoal.target_score - totalScore);
     const progressOffset = pathLength > 0 ? pathLength * (1 - progressPct) : 0;
-    const irisRadius = progressPct * 1.0;
+
+    // Use Math.sqrt(progressPct) to make the revealed Area linear to progress (Area ∝ r²)
+    // Also increase multiplier to ensure full coverage at 100%
+    const irisRadius = isCelebrationMode ? 1.5 : Math.sqrt(progressPct) * 1.5;
     const rtlPathData = "M 140 90 C 130 10, 20 90, 10 10";
 
     const headerText = sortedGoals.length > 0
@@ -178,7 +190,15 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                                 <mask id="iris-mask" maskContentUnits="objectBoundingBox">
                                     <rect width="1" height="1" fill="black" />
                                     {irises.map((iris, i) => (
-                                        <MotionCircle key={i} cx={iris.cx} cy={iris.cy} fill="white" initial={{ r: 0 }} animate={{ r: irisRadius }} transition={{ duration: 2, ease: 'easeOut', delay: iris.delay }} />
+                                        <MotionCircle
+                                            key={i}
+                                            cx={iris.cx}
+                                            cy={iris.cy}
+                                            fill="white"
+                                            initial={{ r: 0 }}
+                                            animate={{ r: irisRadius }}
+                                            transition={{ duration: 2, ease: 'easeOut', delay: isFirstMountRef.current ? 0 : iris.delay }}
+                                        />
                                     ))}
                                 </mask>
                             </defs>

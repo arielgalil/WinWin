@@ -234,7 +234,7 @@ const App: React.FC = () => {
 
     return (
         <ToastProvider>
-            <div className="flex flex-col min-h-screen bg-[#020617] selection:bg-cyan-500/30">
+            <div className="flex flex-col h-screen bg-[#020617] selection:bg-cyan-500/30 overflow-hidden">
                 {authLoading ? (
                     <LoadingScreen message={t('loading_system')} />
                 ) : (
@@ -253,8 +253,8 @@ const App: React.FC = () => {
                     </div>
                 )}
 
-                {/* GLOBAL FOOTER - Overlay */}
-                <VersionFooter className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto" />
+                {/* GLOBAL FOOTER - Stays at bottom and occupies space */}
+                <VersionFooter className="relative z-50" />
             </div>
         </ToastProvider>
     );

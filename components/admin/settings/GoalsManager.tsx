@@ -32,27 +32,27 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
                     <button onClick={onDelete} className="p-1.5 hover:bg-black/5 rounded-lg text-slate-500/20 hover:text-slate-500 transition-colors"><TrashIcon className="w-4 h-4" /></button>
                 </div>
             </div>
-            <div className="flex flex-col items-center text-center gap-3">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl bg-black/30 border border-white/10 shadow-xl overflow-hidden relative">
+            <div className="flex flex-col items-center text-center gap-5">
+                <div className="w-28 h-28 rounded-2xl flex items-center justify-center text-5xl bg-black/30 border border-white/10 shadow-xl overflow-hidden relative">
                     {goal.image_type === 'upload' ? <img src={goal.image_value} className="w-full h-full object-cover" /> : <span>{goal.image_value}</span>}
-                    {isCompleted && <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]"><CheckIcon className="w-8 h-8 text-white drop-shadow-md" /></div>}
+                    {isCompleted && <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]"><CheckIcon className="w-12 h-12 text-white drop-shadow-md" /></div>}
                 </div>
                 <div className="flex flex-col items-center">
-                    <h4 className="font-black text-white text-base leading-tight mb-1">{goal.name}</h4>
-                    <div className="flex items-center gap-1.5 text-[11px] text-indigo-300 font-black bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20" dir="rtl">
+                    <h4 className="font-black text-white text-xl leading-tight mb-2">{goal.name}</h4>
+                    <div className="flex items-center gap-2 text-xs text-indigo-300 font-black bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20" dir="rtl">
                         <FormattedNumber value={goal.target_score} />
                         <span className="opacity-40">←</span>
                         <FormattedNumber value={prevTarget} />
                     </div>
                 </div>
             </div>
-            <div className="mt-auto space-y-1.5">
-                <div className="flex justify-between text-[10px] font-bold text-slate-500 tracking-wide">
+            <div className="mt-auto space-y-2">
+                <div className="w-full bg-black/40 h-4 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                    <div className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : isActive ? 'bg-yellow-400 shadow-[0_0_8px_#facc15]' : 'bg-slate-700'}`} style={{ width: `${percent}%` }} />
+                </div>
+                <div className="flex justify-between text-xs font-bold text-slate-400 tracking-wide px-1">
                     <span>{t('stage_progress')}</span>
                     <span className={isActive ? 'text-yellow-400' : isCompleted ? 'text-green-400' : ''}>{Math.round(percent)}%</span>
-                </div>
-                <div className="w-full bg-black/40 h-1.5 rounded-full overflow-hidden border border-white/5 shadow-inner">
-                    <div className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : isActive ? 'bg-yellow-400 shadow-[0_0_8px_#facc15]' : 'bg-slate-700'}`} style={{ width: `${percent}%` }} />
                 </div>
             </div>
         </div>

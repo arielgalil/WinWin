@@ -84,7 +84,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
   return (
     <GradientBackground primaryColor={settings.primary_color} secondaryColor={settings.secondary_color} brightness={settings.background_brightness}>
-      <div className="absolute inset-0 flex flex-col overflow-hidden">
+      <div className="relative flex-1 flex flex-col overflow-hidden min-h-0">
         <AnimatePresence>
           {toast && (
             <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-4 left-0 right-0 mx-auto w-fit z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black flex items-center gap-3 backdrop-blur-xl border border-white/20 ${toast.type === 'success' ? 'bg-green-600/90 text-white' : 'bg-red-600/90 text-white'}`}>
@@ -175,7 +175,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
           </div>
         </main>
 
-        <div className="h-28 shrink-0" /> {/* Spacer for ActionDock */}
+
         <LiteActionDock selectedCount={selectedStudentIds.size} selectionLabel={selectionLabel} presets={settings.score_presets || []} onAction={(pts, note) => submitPoints(pts, user.full_name, note)} onClear={clearSelection} isProcessing={isProcessing} />
       </div>
     </GradientBackground>

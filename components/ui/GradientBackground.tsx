@@ -49,7 +49,7 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 w-full h-full font-sans text-white z-0 overflow-hidden low-perf:bg-slate-950 low-perf:!bg-none ${className}`}
+      className={`absolute inset-0 w-full h-full font-sans text-white z-0 overflow-hidden low-perf:bg-slate-950 low-perf:!bg-none ${className}`}
       style={backgroundStyle}
     >
       {children}

@@ -50,6 +50,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         calculateStudentStats(classes),
         [classes]);
 
+    const isFrozen = (!isCampaignActive || settings.is_frozen) && !isSuperUser;
+
     const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
@@ -57,10 +59,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
         settings.goals_config || [],
         studentsWithStats.slice(0, 5),
         settings,
+        isFrozen,
         onUpdateCommentary
     );
-
-    const isFrozen = !isCampaignActive && !isSuperUser;
 
 
 
@@ -81,10 +82,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 <ShareableLeaderboard id="share-leaderboard-capture" settings={settings} topClasses={sortedClasses} top10Students={top10Students} />
 
-                <BurstNotification
-                    data={activeBurst}
-                    onDismiss={() => setActiveBurst(null)}
-                />
+                {!isFrozen && (
+                    <BurstNotification
+                        data={activeBurst}
+                        onDismiss={() => setActiveBurst(null)}
+                    />
+                )}
 
                 <div className="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col gap-2 max-w-[1920px] mx-auto w-full custom-scrollbar">
                     <div className="shrink-0 z-20">

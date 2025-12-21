@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { UserProfile } from '../../types';
-import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon } from '../ui/Icons';
+import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -21,6 +21,8 @@ interface AdminMobileMenuProps {
   isRefreshing: boolean;
   onLogout: () => void;
   campaignRole?: 'admin' | 'teacher' | 'superuser' | null;
+  isFrozen?: boolean;
+  onToggleFreeze?: (val: boolean) => void;
 }
 
 export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
@@ -35,7 +37,9 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   onManualRefresh,
   isRefreshing,
   onLogout,
-  campaignRole: propRole
+  campaignRole: propRole,
+  isFrozen,
+  onToggleFreeze
 }) => {
   const { t } = useLanguage();
   const { campaignRole: hookRole } = useCompetitionData();
@@ -126,20 +130,32 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
 
                 <div className="h-px bg-white/5 my-8" />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className={`grid ${onToggleFreeze ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
                   <button
                     onClick={() => { onViewDashboard(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-main)] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 active:bg-yellow-500/20 gap-3 shadow-lg"
+                    className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 active:bg-yellow-500/20 gap-2 shadow-lg"
                   >
-                    <TrophyIcon className="w-8 h-8" />
-                    <span className="text-xs font-black">{t('view_leaderboard')}</span>
+                    <TrophyIcon className="w-6 h-6" />
+                    <span className="text-[10px] font-black">{t('view_leaderboard')}</span>
                   </button>
+                  {onToggleFreeze && (
+                    <button
+                      onClick={() => { onToggleFreeze(!isFrozen); setIsOpen(false); }}
+                      className={`flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] border gap-2 shadow-lg ${isFrozen
+                        ? 'bg-green-500/10 border-green-500/20 text-green-400 active:bg-green-500/20'
+                        : 'bg-red-500/10 border-red-500/20 text-red-400 active:bg-red-500/20'
+                        }`}
+                    >
+                      {isFrozen ? <RefreshIcon className="w-6 h-6" /> : <PauseIcon className="w-6 h-6" />}
+                      <span className="text-[10px] font-black">{isFrozen ? t('unfreeze_board') : t('freeze_board')}</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => { onManualRefresh(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-main)] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 active:bg-cyan-500/20 gap-3 shadow-lg"
+                    className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 active:bg-cyan-500/20 gap-2 shadow-lg"
                   >
-                    <RefreshIcon className={`w-8 h-8 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    <span className="text-xs font-black">{t('refresh')}</span>
+                    <RefreshIcon className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    <span className="text-[10px] font-black">{t('refresh')}</span>
                   </button>
                 </div>
 

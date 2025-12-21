@@ -67,7 +67,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   }, [activeTabFromUrl, initialTab, isSuper, isAdmin]);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { logs, loadMoreLogs, deleteLog, updateLog, tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage, currentCampaign, updateClassTarget, updateSettingsGoals, refreshData } = useCompetitionData();
+  const { logs, loadMoreLogs, deleteLog, updateLog, tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage, currentCampaign, updateClassTarget, updateSettingsGoals, refreshData, toggleFreeze } = useCompetitionData();
 
   const totalInstitutionScore = useMemo(() => classes.reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
   const userClassName = user.class_id ? classes.find(c => c.id === user.class_id)?.name : null;
@@ -105,8 +105,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           animate={{ opacity: 1, y: 0 }}
           className="flex-1 w-full max-w-[1920px] mx-auto bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col md:flex-row overflow-hidden relative"
         >
-          <AdminMobileMenu isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} user={user} userClassName={userClassName} visibleNavItems={visibleNavItems} activeTab={activeTab} onTabChange={handleTabChange as any} onViewDashboard={onViewDashboard} onManualRefresh={refreshData as any} isRefreshing={false} onLogout={onLogout} campaignRole={campaignRole} />
-          <AdminSidebar user={user} settings={settings} userClassName={userClassName} visibleNavItems={visibleNavItems} activeTab={activeTab} onTabChange={handleTabChange as any} onViewDashboard={onViewDashboard} onManualRefresh={refreshData as any} isRefreshing={false} onLogout={onLogout} campaignRole={campaignRole} />
+          <AdminMobileMenu
+            isOpen={mobileMenuOpen}
+            setIsOpen={setMobileMenuOpen}
+            user={user}
+            userClassName={userClassName}
+            visibleNavItems={visibleNavItems}
+            activeTab={activeTab}
+            onTabChange={handleTabChange as any}
+            onViewDashboard={onViewDashboard}
+            onManualRefresh={refreshData as any}
+            isRefreshing={false}
+            onLogout={onLogout}
+            campaignRole={campaignRole}
+            isFrozen={settings.is_frozen}
+            onToggleFreeze={toggleFreeze}
+          />
+          <AdminSidebar
+            user={user}
+            settings={settings}
+            userClassName={userClassName}
+            visibleNavItems={visibleNavItems}
+            activeTab={activeTab}
+            onTabChange={handleTabChange as any}
+            onViewDashboard={onViewDashboard}
+            onManualRefresh={refreshData as any}
+            isRefreshing={false}
+            onLogout={onLogout}
+            campaignRole={campaignRole}
+            isFrozen={settings.is_frozen}
+            onToggleFreeze={toggleFreeze}
+          />
           <div className="flex-1 flex flex-col min-h-0 bg-white/5 overflow-hidden">
             <main className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-10">
               <Suspense fallback={<LoadingTab />}>
