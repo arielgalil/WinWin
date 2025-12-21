@@ -24,10 +24,14 @@ export const supabaseUrl = getEnv('SUPABASE_URL');
 export const supabaseKey = getEnv('SUPABASE_KEY');
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error("CRITICAL: Supabase environment variables are missing!");
-  // If we are in development, we might want a warning, but in production this should fail safely.
+  const missing = [];
+  if (!supabaseUrl) missing.push("VITE_SUPABASE_URL");
+  if (!supabaseKey) missing.push("VITE_SUPABASE_KEY");
+  
+  console.error(`CRITICAL: Missing Supabase environment variables: ${missing.join(', ')}`);
+  
   if (typeof (import.meta as any).env !== 'undefined' && (import.meta as any).env.PROD) {
-      throw new Error("Missing Supabase credentials in production.");
+      throw new Error(`Missing Supabase credentials in production. Required: ${missing.join(', ')}`);
   }
 }
 
