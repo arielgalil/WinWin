@@ -114,7 +114,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
 
     return (
         <div className={`
-        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[280px] transition-all duration-700
+        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[280px] transition-all duration-700 [isolation:isolate]
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
                 : 'bg-slate-900/40'

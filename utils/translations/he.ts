@@ -39,9 +39,9 @@ export const he = {
     tab_keypad: "מקלדת נקודות",
     
     // Admin Sidebar
-    role_super_user: "Super User (ניהול על)",
-    role_admin: "מנהל תחרות (Admin)",
-    role_teacher: "מורה (Teacher)",
+    role_super_user: "משתמש על",
+    role_admin: "מנהל תחרות",
+    role_teacher: "מורה",
     view_leaderboard: "מעבר ללוח התוצאות",
     
     // School Settings

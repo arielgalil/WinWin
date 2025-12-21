@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UserProfile } from '../../types';
 import { LiteStudentCard } from './LiteStudentCard';
 import { LiteActionDock } from './LiteActionDock';
-import { LogoutIcon, SearchIcon, CheckIcon, AlertIcon, SchoolIcon, HomeIcon, TargetIcon, EditIcon, RefreshIcon } from '../ui/Icons';
+import { LogoutIcon, SearchIcon, CheckIcon, AlertIcon, TargetIcon, EditIcon, RefreshIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GradientBackground } from '../ui/GradientBackground';
 import { useScoreEntry } from '../../hooks/useScoreEntry';
@@ -17,12 +17,10 @@ interface LiteTeacherViewProps {
   user: UserProfile;
   userRole?: 'admin' | 'teacher' | 'superuser' | null;
   onLogout: () => void;
-  onBack?: () => void;
-  isSuperUser?: boolean;
 }
 
 export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
-  user, userRole, onLogout, onBack, isSuperUser: isSuperUserProp
+  user, userRole, onLogout
 }) => {
   const { t } = useLanguage();
   const isAdmin = checkIsAdmin(user.role, userRole);
@@ -86,7 +84,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
   return (
     <GradientBackground primaryColor={settings.primary_color} secondaryColor={settings.secondary_color} brightness={settings.background_brightness}>
-      <div className="fixed inset-0 flex flex-col overflow-hidden">
+      <div className="absolute inset-0 flex flex-col overflow-hidden">
         <AnimatePresence>
           {toast && (
             <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-4 left-0 right-0 mx-auto w-fit z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black flex items-center gap-3 backdrop-blur-xl border border-white/20 ${toast.type === 'success' ? 'bg-green-600/90 text-white' : 'bg-red-600/90 text-white'}`}>

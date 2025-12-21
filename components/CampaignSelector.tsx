@@ -10,14 +10,12 @@ import {
     AwardIcon,
     SettingsIcon,
     ArrowRightIcon,
-    PlusIcon,
     AlertIcon
 } from './ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedNumber } from './ui/FormattedNumber';
 import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
-import { isSuperUser as checkSuperUser } from '../config';
 
 const { useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -86,7 +84,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
 
     return (
         <div className="min-h-full flex flex-col bg-[#fcfdfd] text-slate-900 overflow-x-hidden selection:bg-emerald-100 relative">
-            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute inset-0 bg-gradient-to-tr from-white via-[#f0fdf9] to-[#f5fbff]"></div>
                 <div className="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] bg-emerald-200/20 blur-[120px] rounded-full" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] bg-sky-200/20 blur-[120px] rounded-full" />

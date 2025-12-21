@@ -10,11 +10,10 @@ const MotionDiv = motion.div as any;
 
 interface ClassTickerProps {
   otherClasses: ClassRoom[];
-  totalRankOffset: number;
   highlightClassId: string | null;
 }
 
-export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, totalRankOffset, highlightClassId }) => {
+export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, highlightClassId }) => {
   const { t } = useLanguage();
   const [tickerContent, setTickerContent] = useState<ClassRoom[]>([]);
   const [duration, setDuration] = useState(40);
@@ -96,7 +95,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, tot
           marginRight: MARGIN_RIGHT,
           borderColor: isHighlighted ? '#facc15' : undefined
         }}
-        className={`flex-shrink-0 rounded-[var(--radius-main)] h-[calc(100%-1.2rem)] my-2 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group
+        className={`flex-shrink-0 rounded-[var(--radius-main)] h-full my-0 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
             ${isHighlighted
             ? 'scale-[1.05] bg-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] z-10 border-white/40'
             : `bg-white/5 hover:bg-white/10 border-white/10`
@@ -142,7 +141,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, tot
             />
           </div>
         </div>
-        <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg}`} />
+        <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg} rounded-[var(--radius-main)]`} />
       </div>
     );
   };

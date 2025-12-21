@@ -27,7 +27,6 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     onDelete,
     onUpdate,
     currentUser,
-    settings,
     isAdmin
 }) => {
     const { t, language, isRTL } = useLanguage();
@@ -231,7 +230,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                     <div className="flex items-center justify-center gap-5 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                                                         {isEditing ? (
                                                             <>
-                                                                <button onClick={saveEdit} disabled={isProcessing} aria-label={t('save_changes')} className="p-2 bg-green-600 text-white rounded-xl shadow-lg hover:bg-green-500"><SaveIcon className="w-4 h-4" /></button>
+                                                                <button onClick={saveEdit} disabled={isProcessing} aria-label={t('save_changes_label')} className="p-2 bg-green-600 text-white rounded-xl shadow-lg hover:bg-green-500"><SaveIcon className="w-4 h-4" /></button>
                                                                 <button onClick={() => setEditingLogId(null)} disabled={isProcessing} aria-label={t('cancel_edit')} className="p-2 bg-slate-700 text-white rounded-xl shadow-lg hover:bg-slate-600"><XIcon className="w-4 h-4" /></button>
                                                             </>
                                                         ) : (
@@ -271,9 +270,11 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             <div className="bg-black/60 rounded-[1.5rem] p-6 flex-1 overflow-y-auto border border-white/10 relative min-h-[300px] custom-scrollbar shadow-inner">
                                 {renderFormattedSummary(summary || '')}
                             </div>
-                            <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mt-6 w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-[0_15px_30px_-5px_rgba(79,70,229,0.5)] border border-indigo-400/50">
-                                {isLoadingAI ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <SparklesIcon className="w-6 h-6" />}
-                                {isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}
+                            <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mt-6 w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-[0_15px_30px_-5px_rgba(79,70,229,0.5)] border border-indigo-400/50 relative z-20 cursor-pointer">
+                                <div className="flex items-center justify-center gap-3 pointer-events-none">
+                                    {isLoadingAI ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <SparklesIcon className="w-6 h-6" />}
+                                    <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
+                                </div>
                             </button>
                         </div>
                     </div>

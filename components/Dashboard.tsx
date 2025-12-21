@@ -13,7 +13,6 @@ import { BackgroundMusic } from './dashboard/BackgroundMusic';
 import { useCompetitionEvents } from '../hooks/useCompetitionEvents';
 import { calculateClassStats, calculateStudentStats } from '../utils/rankingUtils';
 import { ShareableLeaderboard } from './dashboard/ShareableLeaderboard';
-import { useLanguage } from '../hooks/useLanguage';
 
 interface DashboardProps {
     classes: ClassRoom[];
@@ -41,9 +40,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     isCampaignActive = true,
     onUpdateCommentary
 }) => {
-    const { t } = useLanguage();
-
-    const [isSharing, setIsSharing] = useState(false);
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
@@ -54,7 +50,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         calculateStudentStats(classes),
         [classes]);
 
-    const { activeBurst, setActiveBurst, spotlightStudent, highlightClassId } = useCompetitionEvents(
+    const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
         totalInstitutionScore,
@@ -66,31 +62,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
     const isFrozen = !isCampaignActive && !isSuperUser;
 
-    const handleShare = async () => {
-        setIsSharing(true);
-        const element = document.getElementById('share-leaderboard-capture');
-        if (!element) { setIsSharing(false); return; }
-        try {
-            const html2canvas = (await import('html2canvas')).default;
-            const canvas = await html2canvas(element, { useCORS: true, backgroundColor: '#0f172a', scale: 1, width: 1080 });
-            canvas.toBlob(async (blob) => {
-                if (!blob) { setIsSharing(false); return; }
-                const file = new File([blob], 'leaderboard.png', { type: 'image/png' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({ title: settings.competition_name, files: [file] });
-                } else {
-                    const link = document.createElement('a');
-                    link.download = 'leaderboard.png';
-                    link.href = canvas.toDataURL();
-                    link.click();
-                }
-                setIsSharing(false);
-            }, 'image/png');
-        } catch (err) {
-            console.error("Sharing failed", err);
-            setIsSharing(false);
-        }
-    };
+
 
     return (
         <GradientBackground
@@ -98,7 +70,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             secondaryColor={settings.secondary_color}
             brightness={settings.background_brightness}
         >
-            <div className="flex flex-col h-full w-full overflow-hidden relative z-10 p-2 md:p-3">
+            <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-2">
                 <FrozenOverlay isFrozen={isFrozen} />
                 <BackgroundMusic
                     url={settings.background_music_url}
@@ -114,7 +86,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     onDismiss={() => setActiveBurst(null)}
                 />
 
-                <div className="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col gap-4 max-w-[1920px] mx-auto w-full custom-scrollbar">
+                <div className="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col gap-2 max-w-[1920px] mx-auto w-full custom-scrollbar">
                     <div className="shrink-0 z-20">
                         <DashboardHeader
                             settings={settings}
@@ -126,7 +98,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         />
                     </div>
 
-                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:flex-1 min-h-0 lg:overflow-hidden pb-4">
+                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:flex-1 min-h-0 lg:overflow-hidden pb-0">
                         <div className="order-1 lg:order-2 flex flex-col min-h-[340px] lg:min-h-0 lg:overflow-hidden">
                             <Podium top3Classes={top3Classes} />
                         </div>
@@ -145,14 +117,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <StudentLeaderboard
                                 topStudents={top10Students}
                                 arenaStudents={arenaStudents}
-                                spotlightStudent={spotlightStudent}
                             />
                         </div>
 
                         <div className="order-4 lg:col-span-3 shrink-0 min-h-[140px] lg:min-h-0 lg:overflow-hidden">
                             <ClassTicker
                                 otherClasses={sortedClasses}
-                                totalRankOffset={0}
                                 highlightClassId={highlightClassId}
                             />
                         </div>

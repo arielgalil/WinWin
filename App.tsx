@@ -182,8 +182,6 @@ const VoteRoute = () => {
                 user={user}
                 userRole={campaignRole}
                 onLogout={async () => { await logout(); navigate('/'); }}
-                onBack={() => navigate(`/comp/${slug}`)}
-                isSuperUser={isSuperUser(user.role) || campaignRole === 'superuser'}
             />
         </CampaignContext>
     );
@@ -255,8 +253,8 @@ const App: React.FC = () => {
                     </div>
                 )}
 
-                {/* GLOBAL FOOTER - Part of Flex flow, pushes the above content area up */}
-                <VersionFooter />
+                {/* GLOBAL FOOTER - Overlay */}
+                <VersionFooter className="absolute bottom-0 left-0 right-0 z-50 pointer-events-auto" />
             </div>
         </ToastProvider>
     );

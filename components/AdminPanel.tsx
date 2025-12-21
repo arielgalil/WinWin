@@ -127,7 +127,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     {activeTab === 'data' && isAdmin && (<DataManagement settings={settings} classes={classes} user={user} />)}
                     {activeTab === 'classes' && isAdmin && (<ClassesManager classes={classes} settings={settings} user={user} onRefresh={refreshData as any} />)}
                     {activeTab === 'messages' && isAdmin && (<MessagesManager messages={tickerMessages} onAdd={addTickerMessage as any} onDelete={deleteTickerMessage as any} onUpdate={updateTickerMessage as any} />)}
-                    {activeTab === 'logs' && (<ActionLogPanel logs={logs} onLoadMore={loadMoreLogs} onDelete={(id) => deleteLog(id)} onUpdate={(id, description, points) => updateLog({ id, description, points })} currentUser={user} settings={settings} isAdmin={isAdmin} />)}
+                    {activeTab === 'logs' && (<ActionLogPanel logs={logs} onLoadMore={loadMoreLogs} onDelete={(id) => deleteLog(id)} onUpdate={(id, description, points) => updateLog({ id, description, points })} currentUser={user} isAdmin={isAdmin} />)}
                   </MotionDiv>
                 </AnimatePresence>
               </Suspense>

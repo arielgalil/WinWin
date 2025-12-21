@@ -41,7 +41,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
       secondaryColor={secondaryColor}
       brightness={Math.max(60, settings?.background_brightness ?? 60)}
     >
-      <div className="fixed inset-0 flex flex-col items-center justify-center p-4 overflow-y-auto">
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 overflow-y-auto">
         <MotionDiv
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

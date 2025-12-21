@@ -23,17 +23,16 @@ interface EnrichedStudent {
 interface StudentLeaderboardProps {
     topStudents: EnrichedStudent[];
     arenaStudents: EnrichedStudent[];
-    spotlightStudent: EnrichedStudent | null;
 }
 
-export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ topStudents, arenaStudents, spotlightStudent }) => {
+export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ topStudents, arenaStudents }) => {
     const { t } = useLanguage();
     const { settings } = useCompetitionData();
     const [activeTab, setActiveTab] = useState<'momentum' | 'top'>('momentum');
     const [isPaused, setIsPaused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
-    const listContainerRef = useRef<HTMLDivElement>(null);
+    const listContainerRef = useRef<HTMLDivElement>(null!);
 
     useAutoScroll(listContainerRef, {
         isHovered,
@@ -46,7 +45,16 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
 
     const momentumList = useMemo(() => {
         const all = [...topStudents, ...arenaStudents];
-        const movers = all.filter(s => (s.rankDiff && s.rankDiff > 0) || s.trend === 'up');
+        // Use a Map to filter by unique ID to avoid duplicate key warnings
+        const uniqueMovers = new Map<string, EnrichedStudent>();
+        all.forEach(s => {
+            if ((s.rankDiff && s.rankDiff > 0) || s.trend === 'up') {
+                if (!uniqueMovers.has(s.id)) {
+                    uniqueMovers.set(s.id, s);
+                }
+            }
+        });
+        const movers = Array.from(uniqueMovers.values());
         movers.sort((a, b) => (b.rankDiff || 0) - (a.rankDiff || 0));
         return movers.slice(0, 10);
     }, [topStudents, arenaStudents]);
@@ -71,7 +79,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
     return (
         <div className="flex flex-col h-full w-full">
             <div
-                className="glass-panel rounded-[var(--radius-container)] p-0 flex flex-col shadow-2xl border-white/10 bg-black/20 flex-1 min-h-[420px] lg:min-h-0 overflow-hidden"
+                className="glass-panel rounded-[var(--radius-container)] p-0 flex flex-col shadow-2xl border-white/10 bg-black/20 flex-1 min-h-[420px] lg:min-h-0 overflow-hidden [isolation:isolate]"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
