@@ -68,7 +68,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                   <AnimatedCounter value={cls.score || 0} />
                 </div>
               </MotionDiv>
-              <MotionDiv layout transition={smoothSpring} className={`w-full ${height} rounded-t-[var(--radius-main)] rounded-b-[var(--radius-main)] relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}>
+              <MotionDiv layout transition={smoothSpring} className={`w-full ${height} rounded-t-[var(--radius-main)] rounded-b-none relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}>
                 {badge}
               </MotionDiv>
             </div>

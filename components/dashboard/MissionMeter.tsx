@@ -164,9 +164,28 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
         ? `${t('stage')} ${displayIndex + 1}: ${displayGoal.name}`
         : competitionName;
 
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [layout, setLayout] = useState<'row' | 'col'>('row');
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+        const observer = new ResizeObserver(entries => {
+            const entry = entries[0];
+            if (entry) {
+                const { width, height } = entry.contentRect;
+                // Switch to column layout if aspect ratio is close to square or portrait
+                setLayout(width / height > 1.2 ? 'row' : 'col');
+            }
+        });
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    const isRow = layout === 'row';
+
     return (
-        <div className={`
-        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[280px] transition-all duration-700 [isolation:isolate]
+        <div ref={containerRef} className={`
+        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[200px] transition-all duration-700 [isolation:isolate]
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
                 : 'bg-slate-900/40'
@@ -194,25 +213,37 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                 )}
             </div>
 
-            <div className="flex-1 w-full flex flex-row items-center justify-between gap-2 relative min-h-0 p-4 lg:p-5 overflow-hidden">
-                <div className="w-1/2 flex flex-col items-center justify-center text-center">
-                    <div className="w-full h-8 md:h-10 mb-1">
-                        <svg viewBox="0 0 150 100" preserveAspectRatio="xMidYMid meet" className="w-full h-full">
+            <div className={`flex-1 w-full flex ${isRow ? 'flex-row items-center' : 'flex-col items-stretch'} justify-between gap-4 relative min-h-0 p-4 lg:p-5 overflow-hidden`}>
+                {/* Graph & Text Container */}
+                <div className={`${isRow ? 'w-1/2 h-full' : 'flex-1'} flex flex-col items-center justify-center text-center overflow-hidden min-h-0 order-2 ${isRow ? '' : 'order-2'}`}>
+                    {/* SVG graph takes available space */}
+                    <div className="flex-1 w-full min-h-0 flex items-center justify-center relative">
+                        <svg viewBox="0 0 150 100" preserveAspectRatio="xMidYMid meet" className="w-full h-full max-h-[160px]">
+                            {/* Shifted path down slightly to use more vertical space if needed */}
                             <path d={rtlPathData} fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="12" strokeLinecap="round" />
                             <MotionPath ref={pathRef} d={rtlPathData} fill="none" stroke="#22c55e" strokeWidth="12" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 1.5, ease: "easeInOut" }} />
                         </svg>
+
+                        {/* Centered Percentage Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center mt-4 pointer-events-none">
+                            <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-none tracking-tighter drop-shadow-lg">
+                                <AnimatedCounter value={percentDisplay} suffix="%" />
+                            </h3>
+                        </div>
                     </div>
-                    <h3 className="text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,4rem)] font-black text-white leading-none tracking-tighter">
-                        <AnimatedCounter value={percentDisplay} suffix="%" />
-                    </h3>
-                    <div className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider">{t('progress')}</div>
-                    <div className={`text-[9px] md:text-[10px] font-bold h-3.5 mt-1 truncate w-full ${isCompleted ? 'text-white animate-pulse' : 'text-slate-300'}`}>
-                        {isCompleted ? t('goal_achieved') : `${t('more_points')} ${missingPoints.toLocaleString()}`}
+
+                    {/* Bottom Info text - compact */}
+                    <div className="shrink-0 mt-2 z-10">
+                        <div className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">{t('progress')}</div>
+                        <div className={`text-[10px] sm:text-xs font-bold h-4 truncate w-full ${isCompleted ? 'text-white animate-pulse' : 'text-slate-300'}`}>
+                            {isCompleted ? t('goal_achieved') : `${t('more_points')} ${missingPoints.toLocaleString()}`}
+                        </div>
                     </div>
                 </div>
 
-                <div className="w-1/2 flex items-center justify-center h-full max-h-full">
-                    <div className="h-full aspect-square max-h-[140px] relative">
+                {/* Target Image Container */}
+                <div className={`${isRow ? 'w-1/2 h-full' : 'flex-[1.2] min-h-0'} flex items-center justify-center order-1 ${isRow ? '' : 'order-1'} overflow-hidden`}>
+                    <div className={`relative h-full aspect-square max-h-full ${isRow ? '' : 'w-auto'}`}>
                         <div className="absolute inset-0 bg-black/30 rounded-[var(--radius-main)] border-2 border-dashed border-white/20 flex items-center justify-center shadow-inner">
                             <span className="text-4xl text-white/10 font-black">?</span>
                         </div>
