@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון סנכרון בזמן אמת (Realtime Fix) - המלא</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #ecfdf5; padding: 40px; color: #064e3b; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #6ee7b7; }
+        h1 { color: #059669; margin-top: 0; font-size: 24px; border-bottom: 2px solid #059669; padding-bottom: 15px; }
+        textarea { width: 100%; height: 400px; font-family: monospace; background: #1e293b; color: #34d399; padding: 20px; border-radius: 12px; direction: ltr; text-align: left; }
+        button { background: #059669; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; width: 100%; }
+        button:hover { background: #047857; }
+        .info-box { background: #d1fae5; border-right: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ תיקון סנכרון בזמן אמת (הפתרון המלא)</h1>
+        
+        <div class="info-box">
+            <strong>למה זה לא מתעדכן?</strong><br>
+            כאשר ניקוד מתעדכן, Supabase שולח רק את המידע שהשתנה. אם הוא לא שולח את ה-<code>campaign_id</code>, המסכים האחרים מסננים את ההודעה ולא מציגים אותה.<br>
+            הסקריפט הזה מכריח את המסד לשלוח את <strong>כל השורה</strong> בכל עדכון, מה שפותר את הבעיה מיידית.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+BEGIN;
+
+-- 1. Reset Realtime Publication
+-- Ensure all tables are part of the 'supabase_realtime' publication
+DROP PUBLICATION IF EXISTS supabase_realtime;
+CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
+
+-- 2. CRITICAL: Set REPLICA IDENTITY to FULL
+-- This ensures that UPDATE events contain the full row data, 
+-- allowing clients to filter by 'campaign_id' even if that column didn't change.
+
+ALTER TABLE classes REPLICA IDENTITY FULL;
+ALTER TABLE students REPLICA IDENTITY FULL;
+ALTER TABLE action_logs REPLICA IDENTITY FULL;
+ALTER TABLE ticker_messages REPLICA IDENTITY FULL;
+ALTER TABLE app_settings REPLICA IDENTITY FULL;
+ALTER TABLE campaigns REPLICA IDENTITY FULL;
+
+-- 3. Verify Publication
+-- Only for debugging purposes in SQL Editor results
+SELECT * FROM pg_publication_tables WHERE pubname = 'supabase_realtime';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+        <p id="msg" style="opacity:0; text-align:center; color:green; font-weight:bold; margin-top:10px;">הועתק!</p>
+    </div>
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select(); 
+            navigator.clipboard.writeText(copyText.value);
+            document.getElementById("msg").style.opacity = 1;
+        }
+    </script>
+</body>
+</html>
+    

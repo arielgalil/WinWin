@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגדרת אחסון קבצים (Logos) - שלב 4</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0fdfa; padding: 40px; color: #134e4a; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #ccfbf1; }
+        h1 { color: #0d9488; margin-top: 0; font-size: 24px; border-bottom: 2px solid #99f6e4; padding-bottom: 15px; }
+        textarea { width: 100%; height: 400px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #2dd4bf; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #0d9488; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #0f766e; transform: translateY(-1px); }
+        .info-box { background: #f0fdfa; border-right: 4px solid #0d9488; padding: 15px; margin: 20px 0; font-size: 15px; color: #115e59; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 הגדרת אחסון לוגואים (Storage)</h1>
+        
+        <div class="info-box">
+            <strong>מה הסקריפט הזה עושה?</strong><br>
+            1. יוצר "דלי" (Bucket) חדש ב-Supabase בשם <code>campaign-logos</code>.<br>
+            2. מגדיר הרשאות כך שכל גולש יוכל <strong>לראות</strong> את הלוגו.<br>
+            3. מגדיר הרשאות כך שרק משתמשים מחוברים יוכלו <strong>להעלות</strong> לוגו.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- STORAGE SETUP FOR LOGOS
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Create the Bucket (if not exists)
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('campaign-logos', 'campaign-logos', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 2. Security Policy: Allow Public Read Access
+-- Everyone needs to see the logo on the dashboard
+DROP POLICY IF EXISTS "Public Access Logos" ON storage.objects;
+CREATE POLICY "Public Access Logos" ON storage.objects FOR SELECT
+USING ( bucket_id = 'campaign-logos' );
+
+-- 3. Security Policy: Allow Authenticated Uploads
+-- Only logged in users (admins/teachers) can upload
+DROP POLICY IF EXISTS "Auth Upload Logos" ON storage.objects;
+CREATE POLICY "Auth Upload Logos" ON storage.objects FOR INSERT 
+WITH CHECK (
+    bucket_id = 'campaign-logos' 
+    AND auth.role() = 'authenticated'
+);
+
+-- 4. Security Policy: Allow Authenticated Updates/Deletes
+DROP POLICY IF EXISTS "Auth Manage Logos" ON storage.objects;
+CREATE POLICY "Auth Manage Logos" ON storage.objects FOR UPDATE
+USING ( bucket_id = 'campaign-logos' AND auth.role() = 'authenticated' );
+
+DROP POLICY IF EXISTS "Auth Delete Logos" ON storage.objects;
+CREATE POLICY "Auth Delete Logos" ON storage.objects FOR DELETE
+USING ( bucket_id = 'campaign-logos' AND auth.role() = 'authenticated' );
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #0d9488; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

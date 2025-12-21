@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון הרשאות (Super Admin Fix) - שלב 2</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff1f2; padding: 40px; color: #881337; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fda4af; }
+        h1 { color: #be123c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fda4af; padding-bottom: 15px; }
+        textarea { width: 100%; height: 500px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #f472b6; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #be123c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #9f1239; transform: translateY(-1px); }
+        .info-box { background: #fff1f2; border-right: 4px solid #be123c; padding: 15px; margin: 20px 0; font-size: 15px; color: #881337; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 תיקון הרשאות ומשתמש-על</h1>
+        
+        <div class="info-box">
+            <strong>עדכון חשוב (Fix Recursion):</strong><br>
+            קוד זה תוקן כדי למנוע שגיאת "infinite recursion" במסד הנתונים.<br>
+            הוא משתמש בפונקציות מיוחדות (Security Definer) כדי לבדוק הרשאות בצורה בטוחה.<br>
+            <br>
+            1. מגדיר הרשאה מיוחדת למייל <code>arielgalula@gmail.com</code> לעשות <strong>הכל</strong>.<br>
+            2. מאפשר למנהלי קמפיינים רגילים לנהל את הכיתות והתלמידים <strong>שלהם בלבד</strong>.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- SUPER ADMIN & MULTI-TENANCY RLS FIX
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Helper Function to check if user is Super Admin
+CREATE OR REPLACE FUNCTION is_super_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN (auth.jwt() ->> 'email') = 'arielgalula@gmail.com';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. Helper Function to check if user belongs to campaign (Safe check)
+CREATE OR REPLACE FUNCTION is_campaign_member(campaign_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = campaign_uuid
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3. Helper Function to check if user is admin of campaign (Safe check)
+-- This breaks the infinite recursion by bypassing RLS on campaign_users table
+CREATE OR REPLACE FUNCTION is_campaign_admin(campaign_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = campaign_uuid
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 4. Fix CAMPAIGNS Table Permissions
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+
+-- Allow everyone to read campaigns (needed for login page/selector)
+DROP POLICY IF EXISTS "Public read campaigns" ON campaigns;
+CREATE POLICY "Public read campaigns" ON campaigns FOR SELECT USING (true);
+
+-- Allow Super Admin to do EVERYTHING on campaigns (Create, Delete, Update)
+DROP POLICY IF EXISTS "Super admin manage campaigns" ON campaigns;
+CREATE POLICY "Super admin manage campaigns" ON campaigns FOR ALL USING (
+    is_super_admin()
+);
+
+-- Allow Campaign Admins to update their OWN campaign (e.g. settings)
+DROP POLICY IF EXISTS "Admins update own campaign" ON campaigns;
+CREATE POLICY "Admins update own campaign" ON campaigns FOR UPDATE USING (
+    is_campaign_admin(id)
+);
+
+
+-- 5. Fix CAMPAIGN_USERS Table Permissions
+ALTER TABLE campaign_users ENABLE ROW LEVEL SECURITY;
+
+-- Users can read their own memberships
+DROP POLICY IF EXISTS "Read own memberships" ON campaign_users;
+CREATE POLICY "Read own memberships" ON campaign_users FOR SELECT USING (
+    auth.uid() = user_id OR is_super_admin()
+);
+
+-- Super Admin can assign users to campaigns
+DROP POLICY IF EXISTS "Super admin manage memberships" ON campaign_users;
+CREATE POLICY "Super admin manage memberships" ON campaign_users FOR ALL USING (
+    is_super_admin()
+);
+
+-- Campaign Admins can manage users in their campaign
+-- Using the Security Definer function avoids recursion
+DROP POLICY IF EXISTS "Campaign admin manage users" ON campaign_users;
+CREATE POLICY "Campaign admin manage users" ON campaign_users FOR ALL USING (
+    is_campaign_admin(campaign_id)
+);
+
+
+-- 6. Fix Child Tables (Classes, Students, etc.)
+-- We need to ensure that data is only accessible if:
+-- a) You are Super Admin
+-- b) You are a member of the campaign this data belongs to
+
+-- CLASSES
+ALTER TABLE classes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation classes" ON classes;
+CREATE POLICY "Tenant isolation classes" ON classes FOR ALL USING (
+    is_super_admin() OR is_campaign_member(campaign_id)
+);
+
+-- STUDENTS
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation students" ON students;
+CREATE POLICY "Tenant isolation students" ON students FOR ALL USING (
+    is_super_admin() OR is_campaign_member(campaign_id)
+);
+
+-- ACTION_LOGS
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation logs" ON action_logs;
+CREATE POLICY "Tenant isolation logs" ON action_logs FOR ALL USING (
+    is_super_admin() OR is_campaign_member(campaign_id)
+);
+
+-- TICKER_MESSAGES
+ALTER TABLE ticker_messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation ticker" ON ticker_messages;
+CREATE POLICY "Tenant isolation ticker" ON ticker_messages FOR ALL USING (
+    is_super_admin() OR is_campaign_member(campaign_id)
+);
+
+-- APP_SETTINGS
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation settings" ON app_settings;
+CREATE POLICY "Tenant isolation settings" ON app_settings FOR ALL USING (
+    is_super_admin() OR is_campaign_member(campaign_id)
+);
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #be123c; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>
+    

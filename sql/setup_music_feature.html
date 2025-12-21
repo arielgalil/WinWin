@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הוספת מוזיקת רקע (DB Update)</title>
+    <style>body{font-family:sans-serif;background:#fdf4ff;padding:40px;color:#701a75}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #f0abfc}textarea{width:100%;height:150px;background:#1e293b;color:#e879f9;padding:15px;border-radius:8px;direction:ltr}button{background:#c026d3;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>הוספת אפשרות למוזיקת רקע (YouTube)</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor כדי לאפשר שמירת קישור למוזיקת רקע, מצב ניגון ועוצמת קול.</p>
+        <textarea id="sql" readonly>
+-- Add background music columns to app_settings
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_url TEXT DEFAULT NULL;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_mode TEXT DEFAULT 'loop'; -- 'loop' or 'once'
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_volume INTEGER DEFAULT 50; -- 0 to 100
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

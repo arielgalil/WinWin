@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הקשחת מבנה נתונים (Strict Hierarchy) - שלב 5</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fef2f2; padding: 40px; color: #7f1d1d; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fecaca; }
+        h1 { color: #b91c1c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fecaca; padding-bottom: 15px; }
+        textarea { width: 100%; height: 500px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #fca5a5; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #b91c1c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #991b1b; transform: translateY(-1px); }
+        .info-box { background: #fef2f2; border-right: 4px solid #b91c1c; padding: 15px; margin: 20px 0; font-size: 15px; color: #7f1d1d; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ הקשחת מבנה והיררכיה (Strict Mode)</h1>
+        
+        <div class="info-box">
+            <strong>פעולה זו היא קריטית לסדר במסד הנתונים:</strong><br>
+            1. היא מוחקת כל נתון (תלמיד, כיתה, לוג) שאין לו <code>campaign_id</code>.<br>
+            2. היא הופכת את השיוך לקמפיין ל-<strong>חובה (NOT NULL)</strong>.<br>
+            3. היא מוודאת שטבלת <code>app_settings</code> משויכת ייחודית לקמפיין (1:1).<br>
+            <br>
+            לאחר הרצת סקריפט זה, לא יהיה ניתן להכניס נתונים "באוויר". הכל יהיה חייב להיות תחת קמפיין, שחייב להיות תחת מוסד.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- STRICT HIERARCHY ENFORCEMENT
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Clean Orphaned Data (Data without a campaign is invalid in strict mode)
+DELETE FROM classes WHERE campaign_id IS NULL;
+DELETE FROM students WHERE campaign_id IS NULL;
+DELETE FROM action_logs WHERE campaign_id IS NULL;
+DELETE FROM ticker_messages WHERE campaign_id IS NULL;
+DELETE FROM app_settings WHERE campaign_id IS NULL;
+
+-- 2. Enforce NOT NULL on campaign_id
+ALTER TABLE classes ALTER COLUMN campaign_id SET NOT NULL;
+ALTER TABLE students ALTER COLUMN campaign_id SET NOT NULL;
+ALTER TABLE action_logs ALTER COLUMN campaign_id SET NOT NULL;
+ALTER TABLE ticker_messages ALTER COLUMN campaign_id SET NOT NULL;
+ALTER TABLE app_settings ALTER COLUMN campaign_id SET NOT NULL;
+
+-- 3. Ensure One-to-One relationship for App Settings per Campaign
+-- A campaign should have exactly one settings row.
+ALTER TABLE app_settings ADD CONSTRAINT unique_settings_per_campaign UNIQUE (campaign_id);
+
+-- 4. Clean Orphaned Campaigns (Campaigns without Institution)
+-- Optional: If you want to force every campaign to belong to an institution
+-- Uncomment lines below if you want to be super strict:
+-- DELETE FROM campaigns WHERE institution_id IS NULL;
+-- ALTER TABLE campaigns ALTER COLUMN institution_id SET NOT NULL;
+
+-- 5. Cascade Deletes (Ensure hierarchy cleanup)
+-- If a Campaign is deleted, delete all its data automatically.
+
+-- Drop existing constraints to recreate them with CASCADE if needed
+ALTER TABLE classes DROP CONSTRAINT IF EXISTS classes_campaign_id_fkey;
+ALTER TABLE classes ADD CONSTRAINT classes_campaign_id_fkey 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE;
+
+ALTER TABLE students DROP CONSTRAINT IF EXISTS students_campaign_id_fkey;
+ALTER TABLE students ADD CONSTRAINT students_campaign_id_fkey 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE;
+
+ALTER TABLE action_logs DROP CONSTRAINT IF EXISTS action_logs_campaign_id_fkey;
+ALTER TABLE action_logs ADD CONSTRAINT action_logs_campaign_id_fkey 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE;
+
+ALTER TABLE ticker_messages DROP CONSTRAINT IF EXISTS ticker_messages_campaign_id_fkey;
+ALTER TABLE ticker_messages ADD CONSTRAINT ticker_messages_campaign_id_fkey 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE;
+
+ALTER TABLE app_settings DROP CONSTRAINT IF EXISTS app_settings_campaign_id_fkey;
+ALTER TABLE app_settings ADD CONSTRAINT app_settings_campaign_id_fkey 
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE;
+
+-- 6. Verify RLS Policies exist for Hierarchy
+-- Ensure users can only modify settings of their own campaign
+DROP POLICY IF EXISTS "Campaign admin manage settings" ON app_settings;
+CREATE POLICY "Campaign admin manage settings" ON app_settings FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM campaign_users 
+        WHERE user_id = auth.uid() 
+        AND campaign_id = app_settings.campaign_id 
+        AND role = 'admin'
+    ) OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #b91c1c; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+
+import { createClient } from '@supabase/supabase-js';
+
+// --- הוראות הגדרה ---
+// 1. צור פרויקט ב-https://supabase.com
+// 2. לך ל-Project Settings -> API
+// 3. העתק את ה-Project URL וה-Anon Public Key
+// 4. הדבק אותם למטה במקום המחרוזות הריקות או הגדר משתני סביבה
+
+// Safely access environment variables
+const getEnv = (key: string) => {
+  if (typeof (import.meta as any).env !== 'undefined') {
+    const val = (import.meta as any).env[`VITE_${key}`] || (import.meta as any).env[key];
+    return val ? val.trim() : undefined;
+  }
+  if (typeof process !== 'undefined' && process.env) {
+    const val = process.env[key];
+    return val ? val.trim() : undefined;
+  }
+  return undefined;
+};
+
+export const supabaseUrl = getEnv('SUPABASE_URL');
+export const supabaseKey = getEnv('SUPABASE_KEY');
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error("CRITICAL: Supabase environment variables are missing!");
+  // If we are in development, we might want a warning, but in production this should fail safely.
+  if (typeof (import.meta as any).env !== 'undefined' && (import.meta as any).env.PROD) {
+      throw new Error("Missing Supabase credentials in production.");
+  }
+}
+
+export const supabase = createClient(supabaseUrl || '', supabaseKey || '');
+
+// Helper to create a temporary client for administrative actions (like creating users)
+// without overwriting the current user's session in local storage.
+export const createTempClient = () => createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false, // Critical: Do not save this session to localStorage
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+    storageKey: 'temp_admin_auth_session' // Unique key to prevent "Multiple GoTrueClient" warning
+  }
+});

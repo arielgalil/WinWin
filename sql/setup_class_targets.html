@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הוספת יעדים לכיתות (Class Targets)</title>
+    <style>body{font-family:sans-serif;background:#f0fdfa;padding:40px;color:#134e4a}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #ccfbf1}textarea{width:100%;height:150px;background:#0f172a;color:#2dd4bf;padding:15px;border-radius:8px;direction:ltr}button{background:#0d9488;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>הוספת יעדים לכיתות (Class Targets)</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor כדי לאפשר לכל כיתה יעד ניקוד משלה.</p>
+        <textarea id="sql" readonly>
+-- Add target_score column to classes table
+ALTER TABLE classes ADD COLUMN IF NOT EXISTS target_score INTEGER DEFAULT 0;
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

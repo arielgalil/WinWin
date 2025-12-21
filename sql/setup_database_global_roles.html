@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שדרוג מערכת הרשאות גלובלית - שלב 6</title>
+    <style>body{font-family:sans-serif;background:#f8fafc;padding:40px;color:#1e293b}.container{max-width:900px;margin:0 auto;background:white;padding:40px;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);border:1px solid #e2e8f0}textarea{width:100%;height:500px;font-family:monospace;background:#0f172a;color:#38bdf8;padding:20px;border-radius:12px;direction:ltr}button{background:#2563eb;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;margin-top:20px;font-weight:bold;font-size:16px}button:hover{background:#1d4ed8}.warning{background:#fef2f2;border-right:4px solid #ef4444;padding:15px;margin-bottom:20px;color:#991b1b;border-radius:4px}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 שדרוג למערכת תפקידים גלובלית (RBAC)</h1>
+        <div class="warning">
+            <strong>שים לב:</strong> סקריפט זה מבטל את הזיהוי לפי אימייל קשיח ומעביר אותו לשדה <code>role</code> בטבלת הפרופילים. 
+            לאחר ההרצה, עליך להגדיר ידנית את עצמך כ-superuser במסד הנתונים כדי להמשיך לנהל את המערכת.
+        </div>
+        <p>העתק והרץ ב-Supabase SQL Editor:</p>
+        <textarea id="sql" readonly>
+-- GLOBAL ROLES SECURITY UPGRADE
+BEGIN;
+
+-- 1. Ensure 'role' field in profiles has correct check constraint
+-- This allows us to have distinct levels of global access.
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('teacher', 'admin', 'superuser'));
+
+-- 2. Update the Super Admin check function
+-- It now checks the 'role' column in the profiles table instead of a hardcoded email.
+-- SECURITY DEFINER is used so it can bypass RLS on the profiles table itself.
+CREATE OR REPLACE FUNCTION is_super_admin()
+RETURNS BOOLEAN AS $$
+DECLARE
+  user_role TEXT;
+BEGIN
+  IF auth.uid() IS NULL THEN
+     RETURN FALSE;
+  END IF;
+  
+  -- Fetch global role from profile
+  SELECT role INTO user_role FROM public.profiles WHERE id = auth.uid();
+  
+  RETURN (user_role = 'superuser');
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3. Migration: Automatically set the primary developer as Super User
+-- Replace with your current email to bootstrap the first superuser.
+UPDATE public.profiles 
+SET role = 'superuser' 
+WHERE email = 'arielgalula@gmail.com';
+
+-- 4. Re-Apply Policies using the new logic
+-- This ensures all child tables (Campaigns, Institutions, etc.) use the dynamic role check.
+
+-- Institutions Policy
+DROP POLICY IF EXISTS "Super admin manage institutions" ON public.institutions;
+CREATE POLICY "Super admin manage institutions" ON public.institutions 
+FOR ALL USING (is_super_admin());
+
+-- Campaigns Policy
+DROP POLICY IF EXISTS "Super admin manage campaigns" ON public.campaigns;
+CREATE POLICY "Super admin manage campaigns" ON public.campaigns 
+FOR ALL USING (is_super_admin());
+
+-- Profile Update Policy
+DROP POLICY IF EXISTS "Manage profiles" ON public.profiles;
+CREATE POLICY "Manage profiles" ON public.profiles 
+FOR UPDATE USING (
+  auth.uid() = id -- User can edit their own profile
+  OR 
+  is_super_admin() -- Super Admin can edit any profile
+);
+
+-- 5. Helper function for bulk setting roles (Admin use only)
+CREATE OR REPLACE FUNCTION set_user_role(target_user_id UUID, new_role TEXT)
+RETURNS VOID AS $$
+BEGIN
+  IF NOT is_super_admin() THEN
+     RAISE EXCEPTION 'Access Denied: Only Super Admins can change global roles';
+  END IF;
+  
+  UPDATE public.profiles SET role = new_role WHERE id = target_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד SQL</button>
+    </div>
+</body>
+</html>

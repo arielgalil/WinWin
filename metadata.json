@@ -1,0 +1,6 @@
+{
+  "name": "WinWin",
+  "description": "מערכת תחרויות וניהול הישגים חינוכיים בזמן אמת.",
+  "version": "3.7.0",
+  "requestFramePermissions": []
+}

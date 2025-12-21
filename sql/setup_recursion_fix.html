@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון שגיאת Recursion - קריטי (מתוקן)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff1f2; padding: 40px; color: #881337; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fda4af; }
+        h1 { color: #be123c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fda4af; padding-bottom: 15px; }
+        textarea { width: 100%; height: 500px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #f472b6; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #be123c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #9f1239; transform: translateY(-1px); }
+        .info-box { background: #fff1f2; border-right: 4px solid #be123c; padding: 15px; margin: 20px 0; font-size: 15px; color: #881337; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ תיקון שגיאת Infinite Recursion (גרסה מתוקנת)</h1>
+        
+        <div class="info-box">
+            <strong>למה זה קורה?</strong><br>
+            שגיאת "infinite recursion" מתרחשת כאשר מדיניות האבטחה (RLS) מנסה לבדוק הרשאות על טבלה על ידי שאילתה לאותה טבלה עצמה.<br>
+            הפתרון הוא שימוש בפונקציות מסוג <code>SECURITY DEFINER</code> המבצעות את הבדיקה בנפרד ממנגנון ה-RLS הרגיל.<br>
+            <br>
+            <strong>הוראות:</strong> העתק את הקוד, הדבק ב-SQL Editor ב-Supabase והרץ.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- FIX INFINITE RECURSION IN RLS POLICIES (V2)
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Helper: Check Super Admin (Simple Email Check)
+CREATE OR REPLACE FUNCTION is_super_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+     RETURN FALSE;
+  END IF;
+  RETURN (auth.jwt() ->> 'email') = 'arielgalula@gmail.com';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 2. Helper: Check Campaign Admin SAFELY
+-- SECURITY DEFINER ensures this runs with owner privileges, bypassing RLS on the select.
+CREATE OR REPLACE FUNCTION is_campaign_admin(campaign_uuid UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+     RETURN FALSE;
+  END IF;
+  
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = campaign_uuid
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 3. FIX CAMPAIGN_USERS
+ALTER TABLE campaign_users ENABLE ROW LEVEL SECURITY;
+
+-- Drop ALL existing policies to be safe (Clean Slate)
+DROP POLICY IF EXISTS "Users read own campaign_users" ON campaign_users;
+DROP POLICY IF EXISTS "Users read own memberships" ON campaign_users;
+DROP POLICY IF EXISTS "Read own memberships" ON campaign_users;
+DROP POLICY IF EXISTS "Read memberships" ON campaign_users;
+DROP POLICY IF EXISTS "Campaign admin manage users" ON campaign_users;
+DROP POLICY IF EXISTS "Admins manage campaign users" ON campaign_users;
+DROP POLICY IF EXISTS "Super admin manage memberships" ON campaign_users;
+DROP POLICY IF EXISTS "Super admin manage all" ON campaign_users;
+DROP POLICY IF EXISTS "Super admin full access" ON campaign_users;
+
+-- Policy 1: Users can see their own rows (or Super Admin sees all)
+CREATE POLICY "Read memberships" ON campaign_users 
+FOR SELECT USING (
+    user_id = auth.uid() OR is_super_admin()
+);
+
+-- Policy 2: Super Admin can do anything
+CREATE POLICY "Super admin full access" ON campaign_users 
+FOR ALL USING (
+    is_super_admin()
+);
+
+-- Policy 3: Campaign Admins can manage users for their campaign
+-- CRITICAL: Use the function, do NOT use a subquery here.
+CREATE POLICY "Campaign admin manage users" ON campaign_users
+FOR ALL USING (
+    is_campaign_admin(campaign_id)
+);
+
+
+-- 4. FIX OTHER TABLES (Re-apply safe checks)
+-- This ensures they don't rely on broken policies elsewhere
+
+-- Helper for general membership (Safe)
+CREATE OR REPLACE FUNCTION is_campaign_member_safe(check_campaign_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+     RETURN FALSE;
+  END IF;
+  
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = check_campaign_id
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Re-apply to Campaigns
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins update own campaign" ON campaigns;
+CREATE POLICY "Admins update own campaign" ON campaigns FOR UPDATE USING (
+    is_campaign_admin(id)
+);
+
+DROP POLICY IF EXISTS "Super admin manage campaigns" ON campaigns;
+CREATE POLICY "Super admin manage campaigns" ON campaigns FOR ALL USING (
+    is_super_admin()
+);
+
+-- Re-apply to Classes
+ALTER TABLE classes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation classes" ON classes;
+CREATE POLICY "Tenant isolation classes" ON classes FOR ALL USING (
+    is_super_admin() OR is_campaign_member_safe(campaign_id)
+);
+
+-- Re-apply to Students
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation students" ON students;
+CREATE POLICY "Tenant isolation students" ON students FOR ALL USING (
+    is_super_admin() OR is_campaign_member_safe(campaign_id)
+);
+
+-- Re-apply to Logs
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation logs" ON action_logs;
+CREATE POLICY "Tenant isolation logs" ON action_logs FOR ALL USING (
+    is_super_admin() OR is_campaign_member_safe(campaign_id)
+);
+
+-- Re-apply to Settings
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Tenant isolation settings" ON app_settings;
+CREATE POLICY "Tenant isolation settings" ON app_settings FOR ALL USING (
+    is_super_admin() OR is_campaign_member_safe(campaign_id)
+);
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #be123c; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

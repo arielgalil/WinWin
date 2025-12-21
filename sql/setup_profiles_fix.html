@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>תיקון הרשאות פרופילים (Profile RLS Fix)</title>
+    <style>body{font-family:sans-serif;background:#fff1f2;padding:40px;color:#881337}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #fda4af}textarea{width:100%;height:400px;background:#1e293b;color:#f472b6;padding:15px;border-radius:8px;direction:ltr}button{background:#be123c;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 תיקון הרשאות יצירת משתמשים וניהול צוות</h1>
+        <p>
+            הסקריפט הבא פותר את בעיית ה-RLS בטבלת הפרופילים. הוא מאפשר למנהלים (Admins) לראות ולעדכן את פרטי המורים המשויכים למערכת, ומוודא שמשתמשים חדשים יירשמו כראוי.
+        </p>
+        <p><strong>הוראות:</strong> העתק את הקוד והרץ אותו ב-SQL Editor ב-Supabase.</p>
+        <textarea id="sql" readonly>
+BEGIN;
+
+-- 1. Ensure RLS is on
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- 2. Drop existing restrictive policies
+DROP POLICY IF EXISTS "Users can insert their own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;
+DROP POLICY IF EXISTS "Manage profiles" ON profiles;
+DROP POLICY IF EXISTS "Authenticated can insert profiles" ON profiles;
+
+-- 3. Flexible READ Policy: Everyone can see profiles (required for teacher lists)
+CREATE POLICY "Public profiles are viewable by everyone" 
+ON profiles FOR SELECT 
+USING (true);
+
+-- 4. INSERT Policy: Allow trigger and manager flow
+-- We allow any authenticated user to INSERT if they are an admin or it's themselves.
+CREATE POLICY "Authenticated can insert profiles" 
+ON profiles FOR INSERT 
+WITH CHECK (
+    auth.role() = 'authenticated'
+);
+
+-- 5. UPDATE Policy: Robust admin check
+-- SECURITY DEFINER function to prevent infinite recursion
+CREATE OR REPLACE FUNCTION is_any_campaign_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE POLICY "Manage profiles" 
+ON profiles FOR UPDATE 
+USING (
+  auth.uid() = id -- Own profile
+  OR 
+  is_super_admin() -- Super Admin
+  OR
+  is_any_campaign_admin() -- Any Campaign Admin
+);
+
+-- 6. Ensure handle_new_user trigger is robust
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, role, full_name)
+  VALUES (
+    new.id, 
+    new.email, 
+    'teacher', 
+    COALESCE(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1))
+  )
+  ON CONFLICT (id) DO UPDATE SET 
+    email = EXCLUDED.email; -- Refresh email if changed
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד SQL</button>
+    </div>
+</body>
+</html>

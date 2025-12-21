@@ -1,0 +1,84 @@
+:root {
+  /* Common Colors */
+  --accent-blue: #2563eb;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+
+  /* Light Theme */
+  --bg-page: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-header: #ffffff;
+  --bg-input: #f8fafc;
+  --text-main: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-main: #e2e8f0;
+  --divide-main: #f1f5f9;
+  --shadow-main: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dark-mode {
+  /* Dark Theme - Refined for better contrast */
+  --bg-page: #0f172a;
+  /* Deep blue-gray */
+  --bg-card: #1e293b;
+  /* Slate-800 for cards */
+  --bg-card-header: #334155;
+  /* Slate-700 for headers */
+  --bg-input: #020617;
+  /* Near black for inputs */
+  --text-main: #f8fafc;
+  /* Slate-50 crisper white */
+  --text-secondary: #cbd5e1;
+  /* Slate-300 secondary text */
+  --text-muted: #94a3b8;
+  /* Slate-400 muted text */
+  --border-main: rgba(255, 255, 255, 0.15);
+  --divide-main: rgba(255, 255, 255, 0.1);
+  --shadow-main: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-mode) {
+    --bg-page: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-header: #334155;
+    --bg-input: #020617;
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-main: rgba(255, 255, 255, 0.15);
+    --divide-main: rgba(255, 255, 255, 0.1);
+    --shadow-main: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+  }
+}
+
+/* Base styles using variables */
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
+  box-shadow: var(--shadow-main);
+}
+
+.input-standard {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-color: var(--border-main);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}

@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שדרוג CRM ומוסדות - שלב 3</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff7ed; padding: 40px; color: #431407; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fed7aa; }
+        h1 { color: #c2410c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fed7aa; padding-bottom: 15px; }
+        textarea { width: 100%; height: 500px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #fdba74; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #ea580c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #c2410c; transform: translateY(-1px); }
+        .info-box { background: #ffedd5; border-right: 4px solid #ea580c; padding: 15px; margin: 20px 0; font-size: 15px; color: #9a3412; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 מעבר למבנה מוסדות (CRM)</h1>
+        
+        <div class="info-box">
+            <strong>מה הסקריפט הזה עושה?</strong><br>
+            1. יוצר טבלת <code>institutions</code> (מוסדות) שתכיל את אנשי הקשר והערות ה-CRM.<br>
+            2. מוסיף עמודות פיננסיות לטבלת הקמפיינים (מחיר, שולם, סטטוס).<br>
+            3. <strong>מיגרציה חכמה:</strong> לכל קמפיין קיים שאין לו מוסד, המערכת תיצור מוסד אוטומטי ותקשר ביניהם, כדי למנוע איבוד נתונים.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- CRM & INSTITUTIONS UPGRADE
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Create Institutions Table
+CREATE TABLE IF NOT EXISTS institutions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    name TEXT NOT NULL,
+    crm_notes TEXT,
+    contacts JSONB DEFAULT '[]'::jsonb -- Array of {name, phone, email, role}
+);
+
+-- Enable RLS
+ALTER TABLE institutions ENABLE ROW LEVEL SECURITY;
+
+-- Super Admin Full Access
+DROP POLICY IF EXISTS "Super admin manage institutions" ON institutions;
+CREATE POLICY "Super admin manage institutions" ON institutions FOR ALL USING (
+    (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+-- 2. Update Campaigns Table
+-- Add link to institution
+ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS institution_id UUID REFERENCES institutions(id) ON DELETE SET NULL;
+
+-- Add Financial Fields to Campaigns
+ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS price INTEGER DEFAULT 0;
+ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS amount_paid INTEGER DEFAULT 0;
+ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS payment_status TEXT CHECK (payment_status IN ('paid', 'partial', 'pending', 'cancelled')) DEFAULT 'pending';
+
+-- 3. Migration: Create Institutions for existing orphaned campaigns
+DO $$
+DECLARE
+    camp RECORD;
+    new_inst_id UUID;
+BEGIN
+    FOR camp IN SELECT * FROM campaigns WHERE institution_id IS NULL LOOP
+        -- Create a new institution for this campaign
+        INSERT INTO institutions (name, crm_notes)
+        VALUES (camp.name, 'נוצר אוטומטית במיגרציה')
+        RETURNING id INTO new_inst_id;
+
+        -- Link campaign to new institution
+        UPDATE campaigns SET institution_id = new_inst_id WHERE id = camp.id;
+    END LOOP;
+END $$;
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #c2410c; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

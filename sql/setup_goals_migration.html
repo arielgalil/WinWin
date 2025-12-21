@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שדרוג יעדים ועיצוב (Goals Migration)</title>
+    <style>body{font-family:sans-serif;background:#fdf2f8;padding:40px;color:#831843}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #fbcfe8}textarea{width:100%;height:200px;background:#0f172a;color:#f472b6;padding:15px;border-radius:8px;direction:ltr}button{background:#db2777;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>הוספת תמיכה בריבוי שלבים ויעדים</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor כדי להוסיף את עמודת ה-JSON שתשמור את כל שלבי התחרות והעיצובים שלהם.</p>
+        <textarea id="sql" readonly>
+-- Add goals_config column to app_settings (JSONB array)
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS goals_config JSONB DEFAULT '[]'::jsonb;
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

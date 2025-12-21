@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>תיקון הגדרות סופי (SQL Super Fix)</title>
+    <style>body{font-family:sans-serif;background:#fff7ed;padding:40px;color:#7c2d12}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #ffedd5}textarea{width:100%;height:450px;background:#1e293b;color:#fb923c;padding:15px;border-radius:8px;direction:ltr;font-family:monospace}button{background:#ea580c;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ תיקון מבנה טבלת הגדרות (Settings Fix)</h1>
+        <p>הרץ את הקוד הבא ב-Supabase SQL Editor. הוא מוודא שכל העמודות קיימות ומאפשר לקוד לשמור נתונים בצורה בטוחה.</p>
+        <textarea id="sql" readonly>
+-- FINAL COMPREHENSIVE SETTINGS FIX V2
+-- This ensures the table structure matches the code exactly.
+
+BEGIN;
+
+-- 1. Ensure all music columns exist
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_url TEXT DEFAULT NULL;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_mode TEXT DEFAULT 'loop';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_music_volume INTEGER DEFAULT 50;
+
+-- 2. Ensure all styling columns exist
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS primary_color TEXT DEFAULT '#4c1d95';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS secondary_color TEXT DEFAULT '#0f172a';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS header_text_color_1 TEXT DEFAULT '#ffffff';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS header_text_color_2 TEXT DEFAULT '#ffffff';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS background_brightness INTEGER DEFAULT 50;
+
+-- 3. Ensure all scoring columns exist
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS min_points INTEGER DEFAULT -100;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS max_points INTEGER DEFAULT 1000;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS points_step INTEGER DEFAULT 5;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS score_presets JSONB DEFAULT '[{"label": "נוכחות", "value": 5}, {"label": "משימה", "value": 10}, {"label": "בונוס", "value": 20}]'::jsonb;
+
+-- 4. Ensure AI columns exist
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS ai_custom_prompt TEXT DEFAULT NULL;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS ai_keywords JSONB DEFAULT '[]'::jsonb;
+
+-- 5. CRITICAL: Ensure campaign_id is unique so UPSERT works
+-- We drop it first to avoid "already exists" errors if it's there
+ALTER TABLE app_settings DROP CONSTRAINT IF EXISTS unique_settings_per_campaign;
+ALTER TABLE app_settings ADD CONSTRAINT unique_settings_per_campaign UNIQUE (campaign_id);
+
+-- 6. Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד ל-Supabase</button>
+    </div>
+</body>
+</html>

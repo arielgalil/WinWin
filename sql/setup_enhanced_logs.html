@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שדרוג יומן פעילות (Enhanced Logs)</title>
+    <style>body{font-family:sans-serif;background:#f0f9ff;padding:40px;color:#0c4a6e}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #bae6fd}textarea{width:100%;height:300px;background:#0f172a;color:#38bdf8;padding:15px;border-radius:8px;direction:ltr}button{background:#0284c7;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>שדרוג יומן פעילות (Auditing)</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor. הוא מוסיף עמודות ליומן הפעילות כדי לאפשר ביטול פעולות וזיהוי מדויק של המבצע.</p>
+        <textarea id="sql" readonly>
+BEGIN;
+
+-- 1. Add user_id to track who performed the action strictly
+ALTER TABLE action_logs ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES profiles(id) ON DELETE SET NULL;
+
+-- 2. Add metadata column for undo/redo logic (snapshots)
+ALTER TABLE action_logs ADD COLUMN IF NOT EXISTS snapshot_data JSONB DEFAULT '{}'::jsonb;
+
+-- 3. Policy update: Ensure users can see logs created by others in their campaign (already covered by existing policies, but good to verify)
+-- No changes needed if "Tenant isolation logs" policy is active.
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

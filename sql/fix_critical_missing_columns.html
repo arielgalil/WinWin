@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>תיקון שגיאת עמודות חסרות (Critical Fix)</title>
+    <style>body{font-family:sans-serif;background:#fef2f2;padding:40px;color:#991b1b}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #fecaca}textarea{width:100%;height:150px;background:#0f172a;color:#fca5a5;padding:15px;border-radius:8px;direction:ltr}button{background:#dc2626;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>תיקון קריטי: הוספת עמודות חסרות</h1>
+        <p>נראה שמסד הנתונים חסר את העמודה <code>target_score</code> בטבלת הכיתות, מה שגורם לקריסת המערכת.</p>
+        <p>הרץ את הקוד הבא ב-Supabase SQL Editor כדי לפתור את הבעיה מיידית.</p>
+        <textarea id="sql" readonly>
+BEGIN;
+
+-- Add target_score column to classes if missing
+ALTER TABLE classes ADD COLUMN IF NOT EXISTS target_score INTEGER DEFAULT 0;
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

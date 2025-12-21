@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיגרציה לריבוי מוסדות (Multi-Tenancy) - שלב 1</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; padding: 40px; color: #334155; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        h1 { color: #0f172a; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; }
+        .step { margin-bottom: 20px; }
+        .step-number { background: #3b82f6; color: white; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; margin-left: 10px; font-weight: bold; }
+        textarea { width: 100%; height: 500px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #a5f3fc; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .info-box { background: #eff6ff; border-right: 4px solid #3b82f6; padding: 15px; margin: 20px 0; font-size: 15px; color: #1e40af; border-radius: 4px; }
+        code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #0f172a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 מעבר לריבוי מוסדות (Multi-Tenancy) - שלב 1</h1>
+        
+        <div class="info-box">
+            <strong>מה זה עושה?</strong><br>
+            סקריפט זה מכין את מסד הנתונים לתמיכה במספר בתי ספר במקביל.<br>
+            הוא יוצר טבלאות חדשות (`campaigns`, `campaign_users`) ומוסיף עמודת `campaign_id` לכל הטבלאות הקיימות.<br>
+            <br>
+            <strong>האם זה בטוח?</strong><br>
+            כן. הסקריפט <u>לא מוחק נתונים</u>. הוא לוקח את כל המידע הקיים ומשייך אותו אוטומטית ל"קמפיין ברירת מחדל" שנבנה על בסיס הגדרות בית הספר הנוכחי שלך.
+        </div>
+
+        <div class="step">
+            <span class="step-number">1</span>
+            העתק את קוד ה-SQL למטה.
+        </div>
+        <div class="step">
+            <span class="step-number">2</span>
+            לך ללוח הבקרה של Supabase -> <strong>SQL Editor</strong>.
+        </div>
+        <div class="step">
+            <span class="step-number">3</span>
+            הדבק והרץ (RUN).
+        </div>
+        
+        <textarea id="sqlCode" readonly>
+-- MULTI-TENANCY MIGRATION SCRIPT (SAFE)
+-- Version: 1.0
+
+BEGIN;
+
+-- 1. Create Campaigns Table
+CREATE TABLE IF NOT EXISTS campaigns (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL, -- URL-friendly ID (e.g., 'amit-bruchin')
+    is_active BOOLEAN DEFAULT true,
+    theme_color TEXT DEFAULT '#4c1d95',
+    secondary_color TEXT DEFAULT '#0f172a',
+    logo_url TEXT,
+    created_by UUID REFERENCES auth.users(id)
+);
+
+-- Enable RLS on campaigns
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read for active campaigns (needed for login page/dashboard identification)
+DROP POLICY IF EXISTS "Public read campaigns" ON campaigns;
+CREATE POLICY "Public read campaigns" ON campaigns FOR SELECT USING (true);
+
+-- 2. Create Campaign Users (Many-to-Many: Users <-> Campaigns)
+CREATE TABLE IF NOT EXISTS campaign_users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE,
+    role TEXT CHECK (role IN ('admin', 'teacher')) DEFAULT 'teacher',
+    UNIQUE(user_id, campaign_id)
+);
+
+ALTER TABLE campaign_users ENABLE ROW LEVEL SECURITY;
+
+-- Allow users to read their own campaign association
+DROP POLICY IF EXISTS "Users read own campaign_users" ON campaign_users;
+CREATE POLICY "Users read own campaign_users" ON campaign_users FOR SELECT USING (auth.uid() = user_id);
+
+-- 3. Backfill Logic (Create Default Campaign & Migrate Data)
+DO $$
+DECLARE
+    default_campaign_id UUID;
+    settings_record RECORD;
+BEGIN
+    -- A. Check if we already have a campaign. If not, create one based on current app_settings.
+    -- We assume the existing app_settings (id=1) holds the current school info.
+    SELECT * INTO settings_record FROM app_settings ORDER BY id ASC LIMIT 1;
+    
+    IF settings_record IS NOT NULL THEN
+        -- Create campaign from existing settings
+        INSERT INTO campaigns (name, slug, theme_color, secondary_color, logo_url)
+        VALUES (
+            COALESCE(settings_record.school_name, 'מוסד ברירת מחדל'), 
+            'default-school', -- You can change this slug manually later
+            COALESCE(settings_record.primary_color, '#4c1d95'),
+            COALESCE(settings_record.secondary_color, '#0f172a'),
+            settings_record.logo_url
+        )
+        ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name -- Dummy update to get ID if exists
+        RETURNING id INTO default_campaign_id;
+    ELSE
+        -- Fallback if no settings exist
+        INSERT INTO campaigns (name, slug) 
+        VALUES ('Default School', 'default-school')
+        ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
+        RETURNING id INTO default_campaign_id;
+    END IF;
+
+    RAISE NOTICE 'Default Campaign ID: %', default_campaign_id;
+
+    -- B. Add campaign_id to tables and backfill data
+    
+    -- Table: CLASSES
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'classes' AND column_name = 'campaign_id') THEN
+        ALTER TABLE classes ADD COLUMN campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+    END IF;
+    -- Assign all existing classes to the default campaign
+    UPDATE classes SET campaign_id = default_campaign_id WHERE campaign_id IS NULL;
+
+
+    -- Table: STUDENTS
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'students' AND column_name = 'campaign_id') THEN
+        ALTER TABLE students ADD COLUMN campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+    END IF;
+    -- Assign all existing students to the default campaign
+    UPDATE students SET campaign_id = default_campaign_id WHERE campaign_id IS NULL;
+
+
+    -- Table: ACTION_LOGS
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'action_logs' AND column_name = 'campaign_id') THEN
+        ALTER TABLE action_logs ADD COLUMN campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+    END IF;
+    -- Assign all existing logs to the default campaign
+    UPDATE action_logs SET campaign_id = default_campaign_id WHERE campaign_id IS NULL;
+
+
+    -- Table: TICKER_MESSAGES
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'ticker_messages' AND column_name = 'campaign_id') THEN
+        ALTER TABLE ticker_messages ADD COLUMN campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+    END IF;
+    UPDATE ticker_messages SET campaign_id = default_campaign_id WHERE campaign_id IS NULL;
+    
+    
+    -- Table: APP_SETTINGS
+    -- We are keeping app_settings table for backward compatibility for now, 
+    -- but linking it to campaign.
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'app_settings' AND column_name = 'campaign_id') THEN
+        ALTER TABLE app_settings ADD COLUMN campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+    END IF;
+    UPDATE app_settings SET campaign_id = default_campaign_id WHERE campaign_id IS NULL;
+
+
+    -- C. Migrate Users (PROFILES) -> CAMPAIGN_USERS
+    -- Copy all existing profiles to be users of the default campaign
+    INSERT INTO campaign_users (user_id, campaign_id, role)
+    SELECT id, default_campaign_id, role
+    FROM profiles
+    WHERE id NOT IN (SELECT user_id FROM campaign_users WHERE campaign_id = default_campaign_id)
+    ON CONFLICT (user_id, campaign_id) DO NOTHING;
+
+END $$;
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #166534; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

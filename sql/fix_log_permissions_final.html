@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון סופי להרשאות יומן (Final Fix)</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fff7ed; padding: 40px; color: #7c2d12; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fdba74; }
+        h1 { color: #ea580c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fdba74; padding-bottom: 15px; }
+        textarea { width: 100%; height: 450px; font-family: monospace; background: #1e293b; color: #fb923c; padding: 20px; border-radius: 12px; direction: ltr; text-align: left; }
+        button { background: #ea580c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; width: 100%; }
+        button:hover { background: #c2410c; }
+        .info-box { background: #ffedd5; border-right: 4px solid #ea580c; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 תיקון סופי: הרשאות מנהל לביטול פעולות</h1>
+        <div class="info-box">
+            <strong>הבעיה:</strong> מנהלי תחרות לא מצליחים לבטל פעולות ("הכפתור נלחץ ולא קורה כלום").<br>
+            <strong>הסיבה:</strong> מדיניות האבטחה (RLS) הקודמת לא זיהתה נכון את מנהלי התחרות בעת ניסיון עדכון שורה קיימת.<br>
+            <strong>הפתרון:</strong> סקריפט זה בונה מחדש את ההרשאות בצורה הנכונה ביותר.
+        </div>
+        <textarea id="sqlCode" readonly>
+BEGIN;
+
+-- 1. Helper Function: Check if user is Admin of a specific campaign (Secure)
+CREATE OR REPLACE FUNCTION public.check_is_campaign_admin(target_campaign_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = target_campaign_id
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. Reset Policies for action_logs
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Manage logs" ON action_logs;
+DROP POLICY IF EXISTS "Update logs" ON action_logs;
+DROP POLICY IF EXISTS "Delete logs" ON action_logs;
+DROP POLICY IF EXISTS "Read logs" ON action_logs;
+DROP POLICY IF EXISTS "Insert logs" ON action_logs;
+DROP POLICY IF EXISTS "Tenant isolation logs" ON action_logs;
+DROP POLICY IF EXISTS "Auth write logs" ON action_logs;
+DROP POLICY IF EXISTS "Public read logs" ON action_logs;
+
+-- Policy A: READ (Everyone can see logs)
+CREATE POLICY "Read logs" ON action_logs 
+FOR SELECT USING (true);
+
+-- Policy B: INSERT (Any authenticated user)
+CREATE POLICY "Insert logs" ON action_logs 
+FOR INSERT WITH CHECK (
+    auth.role() = 'authenticated'
+);
+
+-- Policy C: UPDATE (Undo/Edit)
+-- Allows operation if:
+-- 1. User is Super Admin (Hardcoded for safety)
+-- 2. User is the CREATOR of the log (user_id match)
+-- 3. User is an ADMIN of the campaign the log belongs to (using the helper function)
+CREATE POLICY "Update logs" ON action_logs 
+FOR UPDATE USING (
+    (auth.jwt() ->> 'email') = 'arielgalula@gmail.com' -- Super Admin
+    OR
+    user_id = auth.uid() -- Log Owner
+    OR
+    check_is_campaign_admin(campaign_id) -- Campaign Admin
+);
+
+-- Policy D: DELETE (Hard Delete)
+CREATE POLICY "Delete logs" ON action_logs 
+FOR DELETE USING (
+    (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+    OR
+    user_id = auth.uid()
+    OR
+    check_is_campaign_admin(campaign_id)
+);
+
+-- 3. Refresh Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+    </div>
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select(); 
+            navigator.clipboard.writeText(copyText.value);
+        }
+    </script>
+</body>
+</html>

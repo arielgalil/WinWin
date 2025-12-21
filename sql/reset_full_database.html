@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אתחול מערכת מלא (Master Reset) - תיקון סופי</title>
+    <style>
+        body { font-family: 'Segoe UI', monospace; background: #1a1a1a; padding: 40px; color: #e5e5e5; }
+        .container { max-width: 900px; margin: 0 auto; background: #262626; padding: 40px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #404040; }
+        h1 { color: #ef4444; margin-top: 0; font-size: 28px; border-bottom: 2px solid #ef4444; padding-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        textarea { width: 100%; height: 600px; font-family: 'Consolas', 'Monaco', monospace; background: #0f0f0f; color: #4ade80; padding: 20px; border-radius: 12px; border: 1px solid #404040; direction: ltr; text-align: left; font-size: 13px; line-height: 1.5; margin-top: 15px; resize: vertical; }
+        button { background: #ef4444; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 18px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
+        button:hover { background: #dc2626; }
+        .warning { background: #450a0a; border-right: 4px solid #ef4444; padding: 15px; margin: 20px 0; font-size: 15px; color: #fca5a5; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☢️ אתחול מערכת מלא (Nuclear Reset) - גרסה מתוקנת</h1>
+        
+        <div class="warning">
+            <strong>אזהרה חמורה:</strong><br>
+            סקריפט זה <strong>מוחק את כל הנתונים</strong> בטבלאות הציבוריות (Public Schema).<br>
+            הוא בונה מחדש את הטבלאות public.campaigns וכל התלויות בהן.<br>
+            <br>
+            לאחר ההרצה:<br>
+            1. השגיאה <code>Could not find the table</code> תיעלם.<br>
+            2. המבנה יווצר מחדש בתצורה הקשיחה (Institution -> Campaign).<br>
+            3. המשתמש <code>arielgalula@gmail.com</code> יוגדר כ-Super Admin.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- MASTER RESET SCRIPT v3
+-- Deletes ALL public data and rebuilds the schema strictly with correct hierarchy.
+
+BEGIN;
+
+-- ==========================================
+-- 1. CLEANUP (DROP EVERYTHING)
+-- ==========================================
+-- We use CASCADE to automatically remove dependent triggers, functions, and constraints.
+DROP TABLE IF EXISTS ticker_messages CASCADE;
+DROP TABLE IF EXISTS action_logs CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS classes CASCADE;
+DROP TABLE IF EXISTS app_settings CASCADE;
+DROP TABLE IF EXISTS campaign_users CASCADE;
+DROP TABLE IF EXISTS campaigns CASCADE;
+DROP TABLE IF EXISTS institutions CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+
+-- Drop Functions explicitly to ensure clean slate
+DROP FUNCTION IF EXISTS is_super_admin() CASCADE;
+DROP FUNCTION IF EXISTS is_campaign_admin(uuid) CASCADE;
+DROP FUNCTION IF EXISTS is_campaign_member(uuid) CASCADE;
+DROP FUNCTION IF EXISTS handle_new_user() CASCADE;
+
+-- ==========================================
+-- 2. CREATE TABLES (STRICT HIERARCHY)
+-- ==========================================
+
+-- 2.1 Profiles (Extends Auth Users)
+CREATE TABLE profiles (
+    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    email TEXT,
+    full_name TEXT,
+    role TEXT DEFAULT 'teacher', -- Global default role (legacy support)
+    class_id UUID, -- Legacy direct link, kept for simple teacher assignment
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- 2.2 Institutions (Top Level)
+CREATE TABLE institutions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    name TEXT NOT NULL,
+    crm_notes TEXT,
+    contacts JSONB DEFAULT '[]'::jsonb
+);
+ALTER TABLE institutions ENABLE ROW LEVEL SECURITY;
+
+-- 2.3 Campaigns (Belong to Institution)
+CREATE TABLE campaigns (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    institution_id UUID REFERENCES institutions(id) ON DELETE CASCADE NOT NULL, -- Strict Link
+    name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    theme_color TEXT DEFAULT '#4c1d95',
+    secondary_color TEXT DEFAULT '#0f172a',
+    logo_url TEXT,
+    
+    -- Financials
+    price INTEGER DEFAULT 0,
+    amount_paid INTEGER DEFAULT 0,
+    payment_status TEXT CHECK (payment_status IN ('paid', 'partial', 'pending', 'cancelled')) DEFAULT 'pending',
+    
+    created_by UUID REFERENCES auth.users(id)
+);
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+
+-- 2.4 Campaign Users (Many-to-Many: Who can access which campaign)
+CREATE TABLE campaign_users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL,
+    role TEXT CHECK (role IN ('admin', 'teacher')) DEFAULT 'teacher',
+    UNIQUE(user_id, campaign_id)
+);
+ALTER TABLE campaign_users ENABLE ROW LEVEL SECURITY;
+
+-- 2.5 App Settings (1:1 with Campaign)
+CREATE TABLE app_settings (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL UNIQUE,
+    school_name TEXT,
+    competition_name TEXT,
+    logo_url TEXT,
+    primary_color TEXT,
+    secondary_color TEXT,
+    institution_type TEXT DEFAULT 'ישיבה',
+    
+    -- Scoring Config
+    min_points INTEGER DEFAULT -100,
+    max_points INTEGER DEFAULT 1000,
+    points_step INTEGER DEFAULT 5,
+    score_presets JSONB DEFAULT '[{"label": "נוכחות", "value": 5}, {"label": "משימה", "value": 10}, {"label": "בונוס", "value": 20}]'::jsonb,
+    
+    current_commentary TEXT
+);
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
+
+-- 2.6 Classes
+CREATE TABLE classes (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL,
+    name TEXT NOT NULL,
+    score INTEGER DEFAULT 0,
+    color TEXT DEFAULT 'bg-blue-500'
+);
+ALTER TABLE classes ENABLE ROW LEVEL SECURITY;
+
+-- 2.7 Students
+CREATE TABLE students (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL,
+    class_id UUID REFERENCES classes(id) ON DELETE CASCADE NOT NULL,
+    name TEXT NOT NULL,
+    score INTEGER DEFAULT 0,
+    prev_score INTEGER DEFAULT 0,
+    trend TEXT DEFAULT 'same'
+);
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+
+-- 2.8 Action Logs
+CREATE TABLE action_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL,
+    class_id UUID REFERENCES classes(id) ON DELETE SET NULL,
+    student_id UUID REFERENCES students(id) ON DELETE SET NULL,
+    description TEXT,
+    points INTEGER,
+    teacher_name TEXT
+);
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+
+-- 2.9 Ticker Messages
+CREATE TABLE ticker_messages (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE NOT NULL,
+    text TEXT NOT NULL,
+    display_order INTEGER DEFAULT 0
+);
+ALTER TABLE ticker_messages ENABLE ROW LEVEL SECURITY;
+
+
+-- ==========================================
+-- 3. FUNCTIONS & SECURITY (RLS)
+-- ==========================================
+
+-- 3.1 Super Admin Check
+-- Hardcoded for security & simplicity
+CREATE OR REPLACE FUNCTION is_super_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  -- Change this email to your super admin email
+  RETURN (auth.jwt() ->> 'email') = 'arielgalula@gmail.com';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3.2 Campaign Admin Check (Avoid Recursion)
+-- SECURITY DEFINER is critical here to avoid infinite recursion loops in policies
+CREATE OR REPLACE FUNCTION is_campaign_admin(check_campaign_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = check_campaign_id
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3.3 Campaign Member Check
+CREATE OR REPLACE FUNCTION is_campaign_member(check_campaign_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = check_campaign_id
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3.4 New User Trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, role)
+  VALUES (
+    new.id, 
+    new.email, 
+    COALESCE(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    'teacher'
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+
+-- ==========================================
+-- 4. APPLY POLICIES
+-- ==========================================
+
+-- Profiles
+CREATE POLICY "Public profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
+CREATE POLICY "Users can insert their own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+
+-- Institutions
+CREATE POLICY "Super admin manages institutions" ON institutions FOR ALL USING (is_super_admin());
+
+-- Campaigns
+CREATE POLICY "Public read active campaigns" ON campaigns FOR SELECT USING (true);
+CREATE POLICY "Super admin manages campaigns" ON campaigns FOR ALL USING (is_super_admin());
+CREATE POLICY "Campaign admins update own" ON campaigns FOR UPDATE USING (is_campaign_admin(id));
+
+-- Campaign Users
+CREATE POLICY "Read own memberships" ON campaign_users FOR SELECT USING (auth.uid() = user_id OR is_super_admin());
+CREATE POLICY "Super admin manages all users" ON campaign_users FOR ALL USING (is_super_admin());
+CREATE POLICY "Campaign admins manage their users" ON campaign_users FOR ALL USING (is_campaign_admin(campaign_id));
+
+-- Child Tables (Classes, Students, Logs, Settings, Ticker)
+-- Policy Template applied to all
+CREATE POLICY "Read access for members" ON classes FOR SELECT USING (is_campaign_member(campaign_id) OR is_super_admin());
+CREATE POLICY "Write access for members" ON classes FOR ALL USING (is_campaign_member(campaign_id) OR is_super_admin());
+
+CREATE POLICY "Read access for members" ON students FOR SELECT USING (is_campaign_member(campaign_id) OR is_super_admin());
+CREATE POLICY "Write access for members" ON students FOR ALL USING (is_campaign_member(campaign_id) OR is_super_admin());
+
+CREATE POLICY "Read access for members" ON action_logs FOR SELECT USING (is_campaign_member(campaign_id) OR is_super_admin());
+CREATE POLICY "Write access for members" ON action_logs FOR ALL USING (is_campaign_member(campaign_id) OR is_super_admin());
+
+CREATE POLICY "Read access for members" ON ticker_messages FOR SELECT USING (is_campaign_member(campaign_id) OR is_super_admin());
+CREATE POLICY "Write access for members" ON ticker_messages FOR ALL USING (is_campaign_member(campaign_id) OR is_super_admin());
+
+CREATE POLICY "Read access for members" ON app_settings FOR SELECT USING (is_campaign_member(campaign_id) OR is_super_admin());
+CREATE POLICY "Write access for members" ON app_settings FOR ALL USING (is_campaign_member(campaign_id) OR is_super_admin());
+
+
+-- ==========================================
+-- 5. STORAGE BUCKET (Ensure exists)
+-- ==========================================
+INSERT INTO storage.buckets (id, name, public) VALUES ('campaign-logos', 'campaign-logos', true) ON CONFLICT (id) DO NOTHING;
+DROP POLICY IF EXISTS "Public Access Logos" ON storage.objects;
+CREATE POLICY "Public Access Logos" ON storage.objects FOR SELECT USING ( bucket_id = 'campaign-logos' );
+DROP POLICY IF EXISTS "Auth Upload Logos" ON storage.objects;
+CREATE POLICY "Auth Upload Logos" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'campaign-logos' AND auth.role() = 'authenticated' );
+
+
+-- ==========================================
+-- 6. RE-SYNC SUPER ADMIN PROFILE (If exists in Auth)
+-- ==========================================
+-- This attempts to insert a profile for the super admin if they already exist in auth.users
+-- but the public.profiles table was wiped.
+INSERT INTO public.profiles (id, email, full_name, role)
+SELECT id, email, 'Super Admin', 'admin'
+FROM auth.users
+WHERE email = 'arielgalula@gmail.com'
+ON CONFLICT (id) DO UPDATE SET role = 'admin';
+
+-- Refresh Schema Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד ואתחל הכל
+        </button>
+        <p id="msg" style="color: #ef4444; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק. השתמש בו בזהירות!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

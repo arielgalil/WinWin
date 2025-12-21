@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
+  <title>🌱 תחרות מצמיחה</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script>
+    if (typeof process === 'undefined') {
+      window.process = { env: {} };
+    }
+
+    // Global Log Interceptor for Mobile Debugging
+    window.__LOGS__ = [];
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const addLog = (type, args) => {
+      const msg = args.map(arg =>
+        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+      ).join(' ');
+      window.__LOGS__.push({
+        id: Date.now() + Math.random(),
+        time: new Date().toLocaleTimeString(),
+        type,
+        msg
+      });
+      if (window.__LOGS__.length > 150) window.__LOGS__.shift();
+      window.dispatchEvent(new CustomEvent('app-log-added'));
+    };
+
+    console.log = (...args) => { originalLog(...args); addLog('log', args); };
+    console.error = (...args) => { originalError(...args); addLog('error', args); };
+    console.warn = (...args) => { originalWarn(...args); addLog('warn', args); };
+  </script>
+  <style>
+    /* Global Font: Noto Sans Hebrew */
+    * {
+      font-family: 'Noto Sans Hebrew', sans-serif !important;
+      -webkit-tap-highlight-color: transparent;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Hide scrollbars but allow scrolling for the footer dock if needed */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .text-white,
+    .text-slate-100,
+    .premium-text {
+      -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      background: #020617;
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.low-perf .glass-panel {
+      background: rgba(30, 41, 59, 0.95) !important;
+      backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+
+    @keyframes scroll-horizontal-reverse {
+      0% {
+        transform: translate3d(-50%, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .animate-scroll-horizontal-reverse {
+      animation-name: scroll-horizontal-reverse;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.45.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs",
+    "html2canvas": "https://aistudiocdn.com/html2canvas@^1.4.1",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?external=react,react-dom",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@5.62.7?external=react,react-dom"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>

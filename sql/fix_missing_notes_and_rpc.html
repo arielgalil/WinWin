@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>תיקון שגיאת ניקוד (Notes & RPC Fix)</title>
+    <style>body{font-family:sans-serif;background:#fff7ed;padding:40px;color:#7c2d12}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #ffedd5}textarea{width:100%;height:450px;background:#1e293b;color:#fb923c;padding:15px;border-radius:8px;direction:ltr;font-family:monospace}button{background:#ea580c;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ תיקון שגיאת הזנת ניקוד (Final Fix)</h1>
+        <p>השגיאה שקיבלת נובעת מכך ש-Postgres לא מאפשר למחוק או לשנות ערכי ברירת מחדל של פרמטרים בפונקציה קיימת. הקוד למטה כולל כעת פקודת מחיקה (DROP) לפני היצירה מחדש.</p>
+        <textarea id="sql" readonly>
+-- תיקון עמודת הערות ועדכון פונקציית הטרנזקציה (גרסה סופית)
+BEGIN;
+
+-- 1. הוספת עמודת note לטבלת הלוגים אם היא חסרה
+ALTER TABLE public.action_logs ADD COLUMN IF NOT EXISTS note TEXT;
+
+-- 2. מחיקת גרסאות קודמות של הפונקציה כדי למנוע שגיאות חתימה או התנגשות בערכי ברירת מחדל
+DROP FUNCTION IF EXISTS public.add_score_transaction(uuid, uuid, integer, text, uuid);
+DROP FUNCTION IF EXISTS public.add_score_transaction(uuid, uuid, integer, text, text, uuid);
+
+-- 3. יצירת הפונקציה המעודכנת
+CREATE OR REPLACE FUNCTION public.add_score_transaction(
+  p_class_id UUID,
+  p_student_id UUID,
+  p_points INTEGER,
+  p_teacher_name TEXT,
+  p_note TEXT,
+  p_campaign_id UUID
+)
+RETURNS VOID AS $$
+DECLARE
+    v_old_score INTEGER;
+    v_user_id UUID;
+BEGIN
+    -- קבלת מזהה המשתמש המחובר
+    v_user_id := auth.uid();
+
+    -- עדכון ניקוד הקבוצה
+    UPDATE public.classes 
+    SET score = score + p_points
+    WHERE id = p_class_id;
+
+    -- עדכון ניקוד התלמיד (אם נבחר)
+    IF p_student_id IS NOT NULL THEN
+        -- שמירת הניקוד הישן לצורך מעקב מגמה
+        SELECT score INTO v_old_score FROM public.students WHERE id = p_student_id;
+        
+        UPDATE public.students 
+        SET 
+            prev_score = v_old_score,
+            score = score + p_points,
+            trend = CASE 
+                WHEN p_points > 0 THEN 'up'
+                WHEN p_points < 0 THEN 'down'
+                ELSE trend
+            END
+        WHERE id = p_student_id;
+    END IF;
+
+    -- הכנסת תיעוד ללוג כולל ההערה
+    INSERT INTO public.action_logs (
+        campaign_id,
+        class_id,
+        student_id,
+        points,
+        description,
+        teacher_name,
+        user_id,
+        note,
+        created_at
+    ) VALUES (
+        p_campaign_id,
+        p_class_id,
+        p_student_id,
+        p_points,
+        CASE 
+            WHEN p_student_id IS NULL THEN 'עדכון קבוצתי'
+            ELSE 'עדכון אישי'
+        END,
+        p_teacher_name,
+        v_user_id,
+        p_note,
+        NOW()
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 4. רענון ה-Schema Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד מעודכן</button>
+    </div>
+</body>
+</html>

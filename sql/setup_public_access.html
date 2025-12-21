@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פתיחת גישה ציבורית (Public Read Access) - שלב קריטי</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #ecfeff; padding: 40px; color: #164e63; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #cffafe; }
+        h1 { color: #0891b2; margin-top: 0; font-size: 24px; border-bottom: 2px solid #0891b2; padding-bottom: 15px; }
+        textarea { width: 100%; height: 500px; font-family: monospace; background: #1e293b; color: #22d3ee; padding: 20px; border-radius: 12px; direction: ltr; text-align: left; }
+        button { background: #0891b2; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; width: 100%; }
+        button:hover { background: #0e7490; }
+        .info-box { background: #e0f2fe; border-right: 4px solid #0ea5e9; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 פתיחת גישה ציבורית ללוחות (Public Read)</h1>
+        
+        <div class="info-box">
+            <strong>למה הלוח לא עובד?</strong><br>
+            כברירת מחדל, מדיניות האבטחה (RLS) חוסמת כל מי שלא מחובר.<br>
+            הסקריפט הזה מתיר לכולם (כולל הורים ותלמידים) <strong>לצפות</strong> בנתוני הטבלה, אך משאיר את ה<strong>עריכה</strong> למנהלים בלבד.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+-- PUBLIC READ ACCESS POLICIES
+-- Run this in Supabase SQL Editor
+
+BEGIN;
+
+-- 1. Classes
+DROP POLICY IF EXISTS "Tenant isolation classes" ON classes;
+DROP POLICY IF EXISTS "Public read classes" ON classes;
+-- Allow everyone to read, but only admins/teachers to write
+CREATE POLICY "Public read classes" ON classes FOR SELECT USING (true);
+CREATE POLICY "Auth write classes" ON classes FOR ALL USING (
+  EXISTS (SELECT 1 FROM campaign_users WHERE user_id = auth.uid() AND campaign_id = classes.campaign_id) 
+  OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+-- 2. Students
+DROP POLICY IF EXISTS "Tenant isolation students" ON students;
+DROP POLICY IF EXISTS "Public read students" ON students;
+CREATE POLICY "Public read students" ON students FOR SELECT USING (true);
+CREATE POLICY "Auth write students" ON students FOR ALL USING (
+  EXISTS (SELECT 1 FROM campaign_users WHERE user_id = auth.uid() AND campaign_id = students.campaign_id)
+  OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+-- 3. Ticker Messages
+DROP POLICY IF EXISTS "Tenant isolation ticker" ON ticker_messages;
+DROP POLICY IF EXISTS "Public read ticker" ON ticker_messages;
+CREATE POLICY "Public read ticker" ON ticker_messages FOR SELECT USING (true);
+CREATE POLICY "Auth write ticker" ON ticker_messages FOR ALL USING (
+  EXISTS (SELECT 1 FROM campaign_users WHERE user_id = auth.uid() AND campaign_id = ticker_messages.campaign_id)
+  OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+-- 4. App Settings
+DROP POLICY IF EXISTS "Tenant isolation settings" ON app_settings;
+DROP POLICY IF EXISTS "Public read settings" ON app_settings;
+CREATE POLICY "Public read settings" ON app_settings FOR SELECT USING (true);
+CREATE POLICY "Auth write settings" ON app_settings FOR ALL USING (
+  EXISTS (SELECT 1 FROM campaign_users WHERE user_id = auth.uid() AND campaign_id = app_settings.campaign_id)
+  OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+-- 5. Action Logs (Optional: Decide if public can see logs. Usually yes for transparency)
+DROP POLICY IF EXISTS "Tenant isolation logs" ON action_logs;
+DROP POLICY IF EXISTS "Public read logs" ON action_logs;
+CREATE POLICY "Public read logs" ON action_logs FOR SELECT USING (true);
+CREATE POLICY "Auth write logs" ON action_logs FOR ALL USING (
+  EXISTS (SELECT 1 FROM campaign_users WHERE user_id = auth.uid() AND campaign_id = action_logs.campaign_id)
+  OR (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+);
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+        <p id="msg" style="opacity:0; text-align:center; color:green; font-weight:bold; margin-top:10px;">הועתק!</p>
+    </div>
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select(); 
+            navigator.clipboard.writeText(copyText.value);
+            document.getElementById("msg").style.opacity = 1;
+        }
+    </script>
+</body>
+</html>

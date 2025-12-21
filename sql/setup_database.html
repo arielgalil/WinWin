@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עדכון מסד נתונים (בטוח) - מערכת תחרויות</title>
+    <style>
+        body { font-family: sans-serif; background: #f0fdf4; padding: 20px; color: #1e293b; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h1 { color: #166534; }
+        p { line-height: 1.6; }
+        textarea { width: 100%; height: 400px; font-family: monospace; background: #1e293b; color: #a5f3fc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1; direction: ltr; text-align: left; }
+        button { background: #166534; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        button:hover { background: #15803d; }
+        .note { background: #ecfccb; border-right: 4px solid #84cc16; padding: 10px; margin: 10px 0; font-size: 0.9em; color: #365314; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>עדכון מסד נתונים (Safe Migration)</h1>
+        <p>סקריפט זה מיועד למערכת חיה (Production). הוא <strong>לא מוחק נתונים</strong> אלא רק מוסיף את העמודות הנדרשות ומעדכן הרשאות.</p>
+        
+        <div class="note">
+            <strong>עדכון גרסה 1.4 (תיקון Schema):</strong><br>
+            נוספה פקודת <code>NOTIFY pgrst, 'reload schema'</code> כדי למנוע שגיאות Cache לאחר הוספת עמודות.
+        </div>
+
+        <ol>
+            <li>העתק את קוד ה-SQL המופיע למטה.</li>
+            <li>היכנס ל-<strong>Supabase Dashboard</strong> -> <strong>SQL Editor</strong>.</li>
+            <li>הדבק והרץ (RUN).</li>
+        </ol>
+        
+        <textarea id="sqlCode" readonly>
+-- SAFE MIGRATION SCRIPT
+-- This script DOES NOT delete existing data.
+
+BEGIN;
+
+-- 1. Add columns to action_logs
+ALTER TABLE action_logs ADD COLUMN IF NOT EXISTS student_id UUID REFERENCES students(id) ON DELETE SET NULL;
+ALTER TABLE action_logs ADD COLUMN IF NOT EXISTS class_id UUID REFERENCES classes(id) ON DELETE SET NULL;
+
+-- 2. Add columns to app_settings
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS min_points INTEGER DEFAULT -100;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS max_points INTEGER DEFAULT 1000;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS points_step INTEGER DEFAULT 5;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS score_presets JSONB DEFAULT '[{"label": "נוכחות", "value": 5}, {"label": "משימה", "value": 10}, {"label": "בונוס", "value": 20}]'::jsonb;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS institution_type TEXT DEFAULT 'ישיבה';
+
+-- 3. Update Policies
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Authenticated insert logs" ON action_logs;
+CREATE POLICY "Authenticated insert logs" ON action_logs FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Authenticated select logs" ON action_logs;
+CREATE POLICY "Authenticated select logs" ON action_logs FOR SELECT USING (auth.role() = 'authenticated');
+
+-- 4. Ensure Ticker Messages table exists
+CREATE TABLE IF NOT EXISTS ticker_messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  text TEXT NOT NULL,
+  display_order INTEGER DEFAULT 0,
+  campaign_id UUID
+);
+ALTER TABLE ticker_messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read ticker" ON ticker_messages;
+CREATE POLICY "Public read ticker" ON ticker_messages FOR SELECT USING (true);
+
+-- 5. Refresh User Profile Trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, role, full_name)
+  VALUES (
+    new.id, 
+    new.email, 
+    'teacher', 
+    COALESCE(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1))
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 6. Refresh Supabase Schema Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">העתק קוד SQL</button>
+        <p id="msg" style="color: green; font-weight: bold; opacity: 0; transition: opacity 0.3s;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

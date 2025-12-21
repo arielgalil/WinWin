@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תיקון הרשאות ביטול פעולות (Log Permissions)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff7ed; padding: 40px; color: #7c2d12; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border: 1px solid #fdba74; }
+        h1 { color: #ea580c; margin-top: 0; font-size: 24px; border-bottom: 2px solid #fdba74; padding-bottom: 15px; }
+        textarea { width: 100%; height: 450px; font-family: 'Consolas', 'Monaco', monospace; background: #1e293b; color: #fb923c; padding: 20px; border-radius: 12px; border: 1px solid #475569; direction: ltr; text-align: left; font-size: 14px; line-height: 1.5; margin-top: 15px; }
+        button { background: #ea580c; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        button:hover { background: #c2410c; transform: translateY(-1px); }
+        .info-box { background: #ffedd5; border-right: 4px solid #ea580c; padding: 15px; margin: 20px 0; font-size: 15px; color: #9a3412; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 תיקון הרשאות מנהל לביטול פעולות</h1>
+        
+        <div class="info-box">
+            <strong>הבעיה:</strong> מנהלי תחרות לא מצליחים לבטל פעולות שבוצעו על ידי מורים אחרים (שגיאת הרשאות/RLS).<br>
+            <strong>הפתרון:</strong> סקריפט זה מגדיר מחדש את הרשאות העדכון בטבלת <code>action_logs</code> ומאפשר למנהלים (Admins) לערוך כל שורה בקמפיין שלהם.
+        </div>
+
+        <textarea id="sqlCode" readonly>
+BEGIN;
+
+-- 1. Helper Function: Check if user is Admin of a specific campaign (Secure)
+-- This function bypasses RLS on campaign_users table to avoid infinite recursion
+CREATE OR REPLACE FUNCTION is_campaign_admin_safe(check_campaign_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+  IF auth.uid() IS NULL THEN
+     RETURN FALSE;
+  END IF;
+  
+  RETURN EXISTS (
+    SELECT 1 FROM campaign_users
+    WHERE user_id = auth.uid()
+    AND campaign_id = check_campaign_id
+    AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. Update action_logs Policies
+ALTER TABLE action_logs ENABLE ROW LEVEL SECURITY;
+
+-- Drop generic/conflicting policies to ensure clean slate for UPDATE
+DROP POLICY IF EXISTS "Tenant isolation logs" ON action_logs;
+DROP POLICY IF EXISTS "Auth write logs" ON action_logs;
+DROP POLICY IF EXISTS "Public read logs" ON action_logs;
+DROP POLICY IF EXISTS "Admins manage logs" ON action_logs;
+DROP POLICY IF EXISTS "Users manage own logs" ON action_logs;
+
+-- Policy A: READ (Everyone can see logs, or at least members)
+CREATE POLICY "Read logs" ON action_logs 
+FOR SELECT USING (true);
+
+-- Policy B: INSERT (Any authenticated member can add logs)
+CREATE POLICY "Insert logs" ON action_logs 
+FOR INSERT WITH CHECK (
+    auth.role() = 'authenticated'
+);
+
+-- Policy C: UPDATE/DELETE (The Critical Fix)
+-- Allows operation if:
+-- 1. User is Super Admin
+-- 2. User is the CREATOR of the log (user_id match)
+-- 3. User is an ADMIN of the campaign the log belongs to
+CREATE POLICY "Manage logs" ON action_logs 
+FOR UPDATE USING (
+    (auth.jwt() ->> 'email') = 'arielgalula@gmail.com' -- Super Admin
+    OR
+    user_id = auth.uid() -- Log Owner
+    OR
+    is_campaign_admin_safe(campaign_id) -- Campaign Admin
+);
+
+-- Apply same logic for DELETE
+CREATE POLICY "Delete logs" ON action_logs 
+FOR DELETE USING (
+    (auth.jwt() ->> 'email') = 'arielgalula@gmail.com'
+    OR
+    user_id = auth.uid()
+    OR
+    is_campaign_admin_safe(campaign_id)
+);
+
+-- 3. Refresh Cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="copyToClipboard()">
+            העתק קוד SQL
+        </button>
+        <p id="msg" style="color: #c2410c; font-weight: bold; opacity: 0; transition: opacity 0.3s; margin-top: 10px;">הקוד הועתק בהצלחה!</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("sqlCode");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const msg = document.getElementById("msg");
+            msg.style.opacity = 1;
+            setTimeout(() => msg.style.opacity = 0, 2000);
+        }
+    </script>
+</body>
+</html>

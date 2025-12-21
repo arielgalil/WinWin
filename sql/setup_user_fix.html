@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>תיקון הוספת משתמשים קיימים (SQL Fix)</title>
+    <style>body{font-family:sans-serif;background:#f0f9ff;padding:40px;color:#0c4a6e}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #bae6fd}textarea{width:100%;height:300px;background:#0f172a;color:#38bdf8;padding:15px;border-radius:8px;direction:ltr}button{background:#0284c7;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>תיקון הוספת משתמשים קיימים</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor. הוא יוצר פונקציה המאפשרת להוסיף משתמש שכבר קיים במערכת לקמפיין הנוכחי, ומונע את השגיאה "User already registered".</p>
+        <textarea id="sql" readonly>
+-- Function to link an existing user to a campaign by email
+CREATE OR REPLACE FUNCTION add_existing_user_to_campaign(
+  target_email TEXT,
+  target_campaign_id UUID,
+  target_role TEXT,
+  target_full_name TEXT DEFAULT NULL
+)
+RETURNS TEXT AS $$
+DECLARE
+  target_user_id UUID;
+BEGIN
+  -- 1. Find user ID by email (Secure lookup)
+  SELECT id INTO target_user_id FROM auth.users WHERE email = target_email;
+
+  IF target_user_id IS NULL THEN
+    RETURN 'User not found'; -- Signal to client that user really doesn't exist
+  END IF;
+
+  -- 2. Ensure Profile Exists (If user existed but profile was deleted/missing)
+  INSERT INTO public.profiles (id, email, role, full_name)
+  VALUES (
+    target_user_id, 
+    target_email, 
+    'teacher', 
+    COALESCE(target_full_name, split_part(target_email, '@', 1))
+  )
+  ON CONFLICT (id) DO UPDATE SET 
+    full_name = COALESCE(profiles.full_name, EXCLUDED.full_name);
+
+  -- 3. Link to Campaign
+  INSERT INTO public.campaign_users (user_id, campaign_id, role)
+  VALUES (target_user_id, target_campaign_id, target_role)
+  ON CONFLICT (user_id, campaign_id) DO UPDATE SET role = EXCLUDED.role;
+
+  RETURN 'Success';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>

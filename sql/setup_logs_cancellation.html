@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הוספת ביטול פעולות (Soft Delete Log)</title>
+    <style>body{font-family:sans-serif;background:#f0f9ff;padding:40px;color:#0c4a6e}.container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:12px;border:1px solid #bae6fd}textarea{width:100%;height:200px;background:#0f172a;color:#38bdf8;padding:15px;border-radius:8px;direction:ltr}button{background:#0284c7;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-top:10px;font-weight:bold}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>הוספת אפשרות ביטול פעולות (Soft Delete)</h1>
+        <p>הרץ סקריפט זה ב-Supabase SQL Editor כדי לאפשר ביטול פעולות ביומן מבלי למחוק אותן פיזית.</p>
+        <textarea id="sql" readonly>
+BEGIN;
+
+-- Add is_cancelled column to action_logs
+ALTER TABLE action_logs ADD COLUMN IF NOT EXISTS is_cancelled BOOLEAN DEFAULT false;
+
+-- Refresh schema cache
+NOTIFY pgrst, 'reload schema';
+
+COMMIT;
+        </textarea>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('sql').value)">העתק קוד</button>
+    </div>
+</body>
+</html>
