@@ -108,7 +108,8 @@ export const en = {
     load_error: "Loading Error",
     back_to_selection: "Back to Selection",
     loading_campaign_data: "Loading competition data...",
-    campaign_not_found: "Competition not found or invalid link.",
+campaign_not_found: "Competition not found or invalid link.",
+    competition_access_denied: "Access denied. You don't have permission to access this competition.",
     identifying_permissions: "Identifying permissions...",
     loading_system: "Loading system...",
 

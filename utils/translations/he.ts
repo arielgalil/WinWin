@@ -112,7 +112,8 @@ export const he = {
     load_error: "שגיאה בטעינה",
     back_to_selection: "חזרה לבחירה",
     loading_campaign_data: "טוען נתוני תחרות...",
-    campaign_not_found: "התחרות לא נמצאה או שהקישור אינו תקין.",
+campaign_not_found: "התחרות לא נמצאה או שהקישור אינו תקין.",
+    competition_access_denied: "הגישה נדחתה. אין לך הרשאה לגשת לתחרות זו.",
     identifying_permissions: "מזהה הרשאות...",
     loading_system: "טוען מערכת...",
     

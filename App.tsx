@@ -95,8 +95,10 @@ const LanguageSync: React.FC = () => {
 const CampaignContext: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useLanguage();
     const { isLoadingCampaign, isCampaignError, campaignFetchError, currentCampaign } = useCompetitionData();
+    
     if (isLoadingCampaign) return <LoadingScreen message={t('loading_campaign_data')} />;
     if (isCampaignError || !currentCampaign) return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
+    
     return (
         <>
             <LanguageSync />
@@ -111,6 +113,9 @@ const DashboardRoute = () => {
     const navigate = useNavigate();
     const { slug } = useParams();
     const { classes, settings, tickerMessages, currentCampaign, campaignRole, updateCommentary } = useCompetitionData();
+
+    // Dashboard is public - anyone can view the leaderboard
+    // Management functions are protected within the Dashboard component
 
     return (
         <CampaignContext>
@@ -174,6 +179,12 @@ const VoteRoute = () => {
     const { campaignRole, settings, currentCampaign } = useCompetitionData();
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
+    
+    // Security fix: Check campaign membership
+    // Only block if we're certain user has no access
+    if (campaignRole === null && !isSuperUser(user.role)) {
+        return <ErrorScreen message={t('competition_access_denied')} />;
+    }
 
     return (
         <CampaignContext>
@@ -198,10 +209,15 @@ const LoginRoute = () => {
         if (user && !authLoading) {
             if (slug) {
                 if (campaignRole) {
+                    // User has access to this campaign
                     if (campaignRole === 'admin' || campaignRole === 'superuser' || isSuperUser(user.role)) navigate(`/admin/${slug}`, { replace: true });
                     else if (campaignRole === 'teacher') navigate(`/vote/${slug}`, { replace: true });
                     else navigate(`/comp/${slug}`, { replace: true });
+                } else if (campaignRole === null) {
+                    // User is confirmed to not have access to this campaign
+                    // Let them see the error on login page
                 }
+                // campaignRole === undefined means still loading, useEffect will run again when it resolves
             } else {
                 if (isSuperUser(user.role)) navigate('/super', { replace: true });
                 else navigate('/', { replace: true });
@@ -209,7 +225,17 @@ const LoginRoute = () => {
         }
     }, [user, authLoading, slug, navigate, campaignRole]);
 
-    if (slug && (isLoadingCampaign || (user && !campaignRole))) return <LoadingScreen message={t('identifying_permissions')} />;
+    if (slug && (isLoadingCampaign || (user && campaignRole === undefined))) return <LoadingScreen message={t('identifying_permissions')} />;
+
+    // Show access denied message if user is logged in but not authorized for this campaign
+    if (slug && user && campaignRole === null) {
+        return (
+            <>
+                <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('error')} />
+                <ErrorScreen message={t('competition_access_denied')} />
+            </>
+        );
+    }
 
     return (
         <>

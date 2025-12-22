@@ -73,14 +73,33 @@ export const useCompetitionData = (slugOverride?: string) => {
     enabled: !!campaignId,
   });
 
-  const { data: campaignRole } = useQuery({
+  const { data: campaignRole, isLoading: isLoadingRole } = useQuery({
     queryKey: ['role', campaignId, user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.from('campaign_users').select('role').eq('campaign_id', campaignId).eq('user_id', user?.id).single();
-      if (error) console.error("Role fetch error:", error);
-      return data?.role;
+      try {
+        const { data, error } = await supabase.from('campaign_users').select('role').eq('campaign_id', campaignId).eq('user_id', user?.id).single();
+        if (error) {
+          // If no rows found, user is not a member - return null
+          if (error.code === 'PGRST116') {
+            console.log('User is not a member of this campaign');
+            return null;
+          }
+          // For other errors (like RLS violations), return undefined to indicate uncertainty
+          console.warn('Role query failed with error:', error.code, error.message);
+          return undefined;
+        }
+        console.log('User role found:', data?.role);
+        return data?.role;
+      } catch (err) {
+        console.error('Unexpected error in role query:', err);
+        return undefined;
+      }
     },
     enabled: !!campaignId && !!user?.id,
+    retry: 2, // Allow more retries to handle temporary issues
+    retryDelay: 1000,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
   });
 
   const { data: logsData, fetchNextPage: loadMoreLogs } = useInfiniteQuery({
@@ -207,6 +226,7 @@ export const useCompetitionData = (slugOverride?: string) => {
     }) as AppSettings,
     currentCampaign: campaign,
     campaignRole,
+    isLoadingRole,
     isLoadingCampaign,
     isCampaignError,
     campaignFetchError,
