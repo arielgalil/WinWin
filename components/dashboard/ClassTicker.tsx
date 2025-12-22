@@ -22,6 +22,14 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
   const CARD_WIDTH = 190;
   const MARGIN_RIGHT = 12;
 
+  // Generate consistent group icon for each class based on their ID
+  const getGroupIcon = (cls: ClassRoom) => {
+    const hash = cls.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const iconTypes = [CompassIcon, FootprintsIcon, MapIcon, TargetIcon, TrophyIcon];
+    const iconIndex = hash % iconTypes.length;
+    return iconTypes[iconIndex];
+  };
+
   useEffect(() => {
     if (!otherClasses || otherClasses.length === 0) {
       setTickerContent([]);
@@ -64,11 +72,8 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     const progress = hasTarget ? Math.min(100, (currentScore / targetScore) * 100) : 0;
     const isGoalReached = hasTarget && currentScore >= targetScore;
 
-    let StatusIcon = CompassIcon;
-    if (isGoalReached) StatusIcon = TrophyIcon;
-    else if (progress >= 90) StatusIcon = TargetIcon;
-    else if (progress >= 60) StatusIcon = MapIcon;
-    else if (progress >= 30) StatusIcon = FootprintsIcon;
+    // Use group-related icon instead of progress-based
+    const StatusIcon = getGroupIcon(cls);
 
     let statusColor = 'text-cyan-400';
     let statusBg = 'bg-cyan-500/10';
@@ -87,7 +92,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
       progressBg = 'bg-yellow-500';
     }
 
-    return (
+return (
       <div
         key={uniqueKey}
         style={{
@@ -95,68 +100,73 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
           marginRight: MARGIN_RIGHT,
           borderColor: isHighlighted ? '#facc15' : undefined
         }}
-        className={`flex-shrink-0 rounded-[var(--radius-main)] h-[calc(100%-1.5rem)] my-3 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+        className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
             ${isHighlighted
-            ? 'scale-[1.05] bg-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] z-10 border-white/40'
-            : `bg-white/5 hover:bg-white/10 border-white/10`
+            ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
+            : `bg-white/10 hover:bg-white/15 border-white/20`
           }
           `}
       >
-        <div className="flex items-center justify-between p-2.5 pb-0.5 shrink-0 z-10">
-          <div className={`w-6 h-6 rounded-full flex items-center justify-center border text-[10px] font-black shrink-0 shadow-lg
+        {/* Upper Section: Rank + Name + Status Icon */}
+        <div className="flex items-center justify-between p-2 pb-0 shrink-0">
+          <div className={`w-5 h-5 rounded-full flex items-center justify-center border text-[9px] font-black shrink-0 shadow-lg
                 ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :
               displayRank === 2 ? 'bg-slate-300 text-slate-900 border-white/50' :
                 displayRank === 3 ? 'bg-orange-500 text-white border-orange-300' :
                   'bg-white/10 text-white border-white/10'}`}>
             {displayRank}
           </div>
-          <h3 className="flex-1 px-2 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-sm">
+          <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-sm leading-none">
             {cls.name}
           </h3>
-          <div className={`w-6 h-6 rounded-full flex items-center justify-center border ${statusBg} ${statusBorder} ${statusColor} transition-all duration-500 shadow-lg`}>
-            <StatusIcon className={`w-3 h-3 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
+          <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${statusBg} ${statusBorder} ${statusColor} transition-all duration-500 shadow-lg`}>
+            <StatusIcon className={`w-2.5 h-2.5 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-4">
-          <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+        {/* Middle Section: Score (larger font) */}
+        <div className="flex-1 flex items-center justify-center px-2 py-0">
+          <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
             <FormattedNumber value={currentScore} />
           </div>
         </div>
 
+        {/* Lower Section: Progress Bar + Percentage (conditional) */}
         <div className="shrink-0 relative">
-          {hasTarget && (
-            <div className="absolute bottom-1.5 left-1.5 z-20">
-              <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded-[var(--radius-main)] backdrop-blur-sm border border-white/5 text-outline-sm`}>
-                {Math.round(progress)}%
-              </span>
-            </div>
+          {hasTarget && targetScore > 0 && (
+            <>
+              <div className="absolute bottom-2 left-2 z-20">
+                <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded-[var(--radius-main)] backdrop-blur-sm border border-white/5 text-outline-sm`}>
+                  {Math.round(progress)}%
+                </span>
+              </div>
+              <div className="w-full h-1 bg-white/5 overflow-hidden">
+                <MotionDiv
+                  className={`h-full ${progressBg} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                />
+              </div>
+            </>
           )}
-          <div className="w-full h-1 bg-white/5 overflow-hidden">
-            <MotionDiv
-              className={`h-full ${progressBg} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}
-              initial={{ width: 0 }}
-              animate={{ width: `${hasTarget ? progress : 0}%` }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-            />
-          </div>
         </div>
-        <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg} rounded-[var(--radius-main)]`} />
+        <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg} rounded-[var(--radius-container)]`} />
       </div>
     );
   };
 
   return (
     <div
-      className="h-full min-h-[140px] w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/10 bg-slate-900/40"
+      className="h-full min-h-[144px] w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/20 bg-slate-900/60"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-11 bg-white/10 border-b border-white/10 backdrop-blur-md">
+      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-11 bg-white/20 border-b border-white/20 backdrop-blur-md">
         <div className="p-1.5 bg-blue-500/10 border border-blue-500/30 rounded-full ml-2 backdrop-blur-sm shadow-[0_0_20px_rgba(59,130,246,0.2)]">
           <ListIcon className="w-3.5 h-3.5 text-blue-400" />
         </div>
-        {t('points_ticker')}
+        {t('tab_my_class')}
       </h2>
 
       <div className="flex-1 flex items-center overflow-hidden relative w-full mask-gradient">

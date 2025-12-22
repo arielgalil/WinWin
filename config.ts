@@ -42,5 +42,5 @@ export const isAdmin = (userRole?: string | null, campaignRole?: string | null) 
   const cleanUserRole = userRole?.toLowerCase().trim();
   const cleanCampaignRole = campaignRole?.toLowerCase().trim();
   
-  return cleanUserRole === 'admin' || cleanCampaignRole === 'admin';
+  return cleanUserRole === 'admin' || cleanCampaignRole === 'admin' || cleanCampaignRole === 'competition_admin';
 };

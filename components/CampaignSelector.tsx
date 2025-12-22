@@ -145,7 +145,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                             </div>
                                         </div>
                                         <div className="text-left flex flex-col items-end">
-                                            <div className="text-2xl font-black text-slate-800 tracking-tighter tabular-nums">
+                                            <div className="text-3xl font-black text-slate-800 tracking-tighter tabular-nums">
                                                 <FormattedNumber value={camp.total_score || 0} />
                                             </div>
                                         </div>

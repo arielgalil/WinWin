@@ -104,7 +104,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <MotionDiv
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex-1 w-full max-w-[1920px] mx-auto bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col md:flex-row overflow-hidden relative"
+          className="flex-1 w-full max-w-[1920px] mx-auto bg-black/60 backdrop-blur-3xl border border-white/20 rounded-[var(--radius-container)] shadow-[0_25px_50px_rgba(0,0,0,0.5)] flex flex-col md:flex-row overflow-hidden relative"
         >
           <AdminMobileMenu
             isOpen={mobileMenuOpen}

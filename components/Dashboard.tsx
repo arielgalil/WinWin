@@ -54,7 +54,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
     const isFrozen = (!isCampaignActive || !!settings.is_frozen) && !isSuperUser;
 
-    const { activeBurst, setActiveBurst, highlightClassId, topContributors } = useCompetitionEvents(
+    const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
         totalInstitutionScore,
@@ -73,7 +73,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 secondaryColor={settings.secondary_color}
                 brightness={settings.background_brightness}
             >
-                <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-0">
+                <div className="flex flex-col h-screen w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-0">
                 <FrozenOverlay isFrozen={isFrozen} />
                 <BackgroundMusic
                     url={settings.background_music_url}
@@ -101,30 +101,30 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         />
                     </div>
 
-                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:overflow-hidden pb-0">
-                        <div className="order-1 lg:order-2 flex flex-col min-h-[340px] lg:min-h-0 lg:overflow-hidden">
+                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:overflow-hidden pb-0 flex-1 lg:flex-grow">
+                        <div className="order-1 lg:order-2 flex flex-col min-h-[280px] lg:min-h-0 lg:overflow-hidden">
                             <Podium top3Classes={top3Classes} />
                         </div>
 
-                        <div className="order-2 lg:order-1 flex flex-col min-h-[480px] lg:overflow-hidden">
+                        <div className="order-2 lg:order-1 flex flex-col min-h-[320px] lg:overflow-hidden">
                             <MissionMeter
                                 totalScore={totalInstitutionScore}
                                 goals={settings.goals_config || []}
                                 legacyTargetScore={settings.target_score}
                                 legacyImageUrl={settings.logo_url}
                                 competitionName={settings.competition_name}
-                                topContributors={topContributors}
+                                classes={classes}
                             />
                         </div>
 
-                        <div className="order-3 flex flex-col min-h-[420px] lg:min-h-0 lg:overflow-hidden">
+                        <div className="order-3 flex flex-col min-h-[300px] lg:min-h-0 lg:overflow-hidden">
                             <StudentLeaderboard
                                 topStudents={top10Students}
                                 arenaStudents={arenaStudents}
                             />
                         </div>
 
-                        <div className="order-4 lg:col-span-3 shrink-0 min-h-[140px] lg:min-h-0 lg:overflow-hidden">
+                        <div className="order-4 lg:col-span-3 shrink-0 min-h-[144px] lg:min-h-0 lg:overflow-hidden">
                             <ClassTicker
                                 otherClasses={sortedClasses}
                                 highlightClassId={highlightClassId}

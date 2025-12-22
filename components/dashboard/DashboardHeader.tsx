@@ -123,7 +123,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             <div className="shrink-0">
                                 {isAi ? <SparklesIcon className="w-4 h-4 text-yellow-400 animate-pulse" /> : <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />}
                             </div>
-                            <span className={`text-sm md:text-base lg:text-[clamp(1rem,1.2vw,1.15rem)] font-black tracking-tight leading-tight line-clamp-2 lg:line-clamp-1 transition-colors text-white ${isAi ? 'text-yellow-100' : ''}`}>
+                            <span className={`text-base md:text-lg lg:text-[clamp(1.1rem,1.4vw,1.3rem)] font-black tracking-tight leading-tight line-clamp-2 lg:line-clamp-1 transition-colors text-white ${isAi ? 'text-yellow-100' : ''}`}>
                                 {parseFormattedText(currentText).map((part, i) => {
                                     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
                                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
@@ -147,11 +147,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 {/* 3. Global Score (Left) */}
                 <div className="order-2 lg:order-3 flex items-center justify-end rtl:mr-auto ltr:ml-auto gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
-                        <div className="flex items-center gap-2 text-[9px] font-bold tracking-tight mb-0.5">
+                        <div className="flex items-center gap-2 text-[12px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>
                             <span className="text-emerald-400">{t('together')}</span>
                         </div>
-                        <span className="text-xl lg:text-[clamp(1.4rem,1.9vw,1.75rem)] font-black font-mono text-white tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                        <span className="text-lg lg:text-[clamp(1.2rem,1.7vw,1.6rem)] font-black font-mono text-white tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
                             <FormattedNumber value={totalInstitutionScore} />
                         </span>
                     </div>

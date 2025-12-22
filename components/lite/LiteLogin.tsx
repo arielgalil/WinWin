@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '../../hooks/useLanguage';
-import { LockIcon, SchoolIcon, ArrowRightIcon, SproutIcon } from '../ui/Icons';
+import { LockIcon, ArrowRightIcon } from '../ui/Icons';
 import { GradientBackground } from '../ui/GradientBackground';
 import { AppSettings } from '../../types';
 import { motion } from 'framer-motion';
@@ -17,9 +17,10 @@ interface LiteLoginProps {
   savedEmail?: string;
   settings?: AppSettings;
   onBack?: () => void;
+  backText?: string;
 }
 
-export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, savedEmail, settings, onBack }) => {
+export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, savedEmail, settings, onBack, backText }) => {
   const { t } = useLanguage();
   const [email, setEmail] = useState(savedEmail || '');
   const [password, setPassword] = useState('');
@@ -150,7 +151,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
               className="mt-6 flex items-center gap-3 text-white/70 hover:text-white transition-all text-sm font-black bg-white/5 hover:bg-white/10 px-6 py-2.5 rounded-full border border-white/10 shadow-lg active:scale-95 group"
             >
               <ArrowRightIcon className="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-0 ltr:rotate-180" />
-              {t('back_to_campaigns')}
+              {backText || t('back_to_campaigns')}
             </button>
           )}
         </div>

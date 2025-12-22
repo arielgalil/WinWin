@@ -39,7 +39,7 @@ export const he = {
     tab_messages: "הודעות רצות",
     tab_logs: "יומן פעילות ו-AI",
     tab_data: "ניהול נתונים",
-    tab_my_class: "מצב קבוצה",
+    tab_my_class: "מצב קבוצתי",
     tab_keypad: "מקלדת נקודות",
     
     // Admin Sidebar
@@ -321,7 +321,7 @@ export const he = {
     group_goals_title: "יעדי קבוצה אישיים",
     teacher_can_update_warning: "שימו לב: גם המורה האחראי על הקבוצה יכול לעדכן את היעד בעצמו דרך ממשק הניקוד.",
     no_target_set: "טרם נקבע יעד",
-    more_points_label: "נקודות נוספות ליעד",
+    more_points_label: "לא צריך להיות טקס באזור של הגרף, אלא ככה: גרף ובשורה חדשה את המספר עם סימן",
     current_label: "נוכחי",
     missing_points_label: "חסר",
     enter_target_placeholder: "הזן יעד...",

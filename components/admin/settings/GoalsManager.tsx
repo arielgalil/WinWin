@@ -127,7 +127,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 <div className="flex justify-between items-center mb-6">
                     <h4 className="font-black text-white flex items-center gap-2 text-lg">{editingId ? <EditIcon className="w-5 h-5 text-indigo-400" /> : <PlusIcon className="w-5 h-5 text-green-400" />} {editingId ? t('edit_stage_title') : t('add_stage_title')}</h4>
                     <div className="bg-indigo-500/10 px-4 py-2 rounded-xl border border-indigo-500/20 text-indigo-200 text-xs font-black shadow-inner">
-                        <span className="opacity-60 ml-2 font-bold uppercase tracking-tighter">{t('current_institution_score')}</span>
+                        <span className="opacity-60 ml-2 font-bold uppercase tracking-tighter text-sm">{t('current_institution_score')}</span>
                         <FormattedNumber value={totalScore} />
                     </div>
                 </div>

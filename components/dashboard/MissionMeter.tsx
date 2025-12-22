@@ -2,9 +2,8 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { TargetIcon } from '../ui/Icons';
-import { CompetitionGoal } from '../../types';
+import { CompetitionGoal, ClassRoom } from '../../types';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
-
 import { useLanguage } from '../../hooks/useLanguage';
 
 const MotionPath = motion.path as any;
@@ -16,7 +15,7 @@ interface MissionMeterProps {
     legacyTargetScore?: number;
     legacyImageUrl?: string | null;
     competitionName: string;
-    topContributors?: string[];
+    classes?: ClassRoom[];
 }
 
 export const MissionMeter: React.FC<MissionMeterProps> = ({
@@ -25,7 +24,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     legacyTargetScore,
     legacyImageUrl,
     competitionName,
-    topContributors = []
+    classes = []
 }) => {
     const { t } = useLanguage();
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
@@ -165,29 +164,38 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
         return emojis[Math.floor(Math.random() * emojis.length)];
     }, []);
 
-    const shoutoutMessage = useMemo(() => {
-        if (!topContributors || topContributors.length === 0) return null;
+const shoutoutMessage = useMemo(() => {
+        // Get top 2-3 groups by score (not just recent contributors)
+        const topGroups = (classes && classes.length > 0) 
+            ? classes
+                .sort((a: any, b: any) => b.score - a.score)
+                .slice(0, 3)
+                .map((c: any) => c.name)
+            : [];
 
-        const names = topContributors.length > 1
-            ? `${topContributors.slice(0, -1).join(', ')} ו-${topContributors[topContributors.length - 1]}`
-            : topContributors[0];
+        if (!topGroups || topGroups.length === 0) return null;
 
+        const names = topGroups.length > 1
+            ? `${topGroups.slice(0, -1).join(', ')} ו-${topGroups[topGroups.length - 1]}`
+            : topGroups[0];
+
+        // Very short messages for top groups approaching goal
         const templates = [
-            `כל הכבוד ל${names}!`,
-            `שאפו ל${names} שמעלים את הרף!`,
-            `${names} מובילים אותנו ליעד!`,
-            `תראו את ${names} משקיעים ומצליחים!`,
-            `הכוח של ${names} מקדם את כולנו!`
+            `${names} בוערים!`,
+            `${names} מובילים!`,
+            `${names} קובעים!`,
+            `${names} מתקדמים!`,
+            `${names} מנצחים!`
         ];
 
         return templates[Math.floor(Math.random() * templates.length)];
-    }, [topContributors]);
+    }, [classes]);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
     return (
         <div ref={containerRef} className={`
-        glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[480px] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
+        glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
                 : 'bg-slate-900/50'
@@ -203,7 +211,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                         }`}>
                         <TargetIcon className={`w-3 h-3 ${isCelebrationMode ? 'text-black' : 'text-orange-400'}`} />
                     </div>
-                    <h2 className="text-sm font-black text-white truncate uppercase tracking-tight">
+                    <h2 className="text-base font-black text-white truncate uppercase tracking-tight" dir="rtl">
                         {headerText}
                     </h2>
                 </div>
@@ -216,11 +224,11 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                 )}
             </div>
 
-            <div className="flex-1 flex flex-col p-3 sm:p-4 lg:p-6 gap-3 sm:gap-4 min-h-0">
+            <div className="flex-1 flex flex-col p-2 sm:p-3 lg:p-4 gap-3 sm:gap-4 min-h-0">
 
-                {/* 1. Centered Image (Top) - 60% Height */}
-                <div className="flex-[1.5] flex items-center justify-center">
-                    <div className="relative h-full aspect-square max-h-full group shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20 bg-black/60">
+{/* 1. Centered Image (Top) - 65% Height */}
+                <div className="flex flex-col items-center justify-center h-[65%]">
+                    <div className="relative w-full max-w-[240px] aspect-square group shadow-[0_15px_40px_rgba(0,0,0,0.4)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20 bg-black/60">
                         <div className="absolute inset-0 flex items-center justify-center opacity-10">
                             <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white">?</span>
                         </div>
@@ -229,7 +237,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                                 <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-600/30 to-purple-600/30">
-                                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl filter drop-shadow-2xl brightness-125">
+                                    <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl filter drop-shadow-2xl brightness-125">
                                         {displayGoal.image_value || '🏆'}
                                     </span>
                                 </div>
@@ -248,14 +256,13 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                     </div>
                 </div>
 
-                {/* 2. Stats Section (2 Columns) - 40% Height */}
-                <div className="flex-1 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 pt-3 sm:pt-4" dir="rtl">
+                {/* 2. Stats Section (2 Columns) - 50% Height */}
+                <div className="flex-1 grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4 pt-0" dir="rtl">
 
                     {/* Visual Progress Column (Visually Right) */}
-                    <div className="flex flex-col items-center justify-center">
-                        {/* Higher Visibility Path with Percentage */}
-                        <div className="relative w-full h-32 flex flex-col items-center justify-center">
-                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-24 drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">
+                    <div className="flex flex-col items-start justify-start pt-0">
+                        <div className="relative w-full h-40 flex flex-col items-center justify-start -mt-4">
+                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-16 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
                                 <defs>
                                     <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
                                         <stop offset="0%" stopColor="#4ade80" />
@@ -263,38 +270,34 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                                     </linearGradient>
                                 </defs>
                                 {/* Future Path: Highly Visible Trail */}
-                                <path d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="16" strokeLinecap="round" strokeDasharray="4 8" />
-                                <MotionPath ref={pathRef} d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="url(#progress-gradient)" strokeWidth="16" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 2, ease: "easeInOut" }} />
+                                <path d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="16" strokeLinecap="round" strokeDasharray="4 8" />
+                                <MotionPath ref={pathRef} d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="url(#progress-gradient)" strokeWidth="18" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 2, ease: "easeInOut" }} />
                             </svg>
-                            {/* Percentage: Aligned below the path line */}
-                            <div className="absolute bottom-2 flex items-center gap-1">
-                                <span className="text-base sm:text-lg md:text-xl font-black text-white/90">%</span>
-                                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
+{/* Percentage: Aligned below the path line */}
+                            <div className="absolute bottom-6 flex items-end gap-1" dir="rtl">
+                                <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white/90">%</span>
+                                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
                                     <AnimatedCounter value={percentDisplay} />
                                 </h3>
-                            </div>
+                                <span className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-black text-white/90 pb-1"> משלב {displayIndex + 1}!</span>
+</div>
                         </div>
                     </div>
 
                     {/* Content Logic Column (Visually Left) */}
-                    <div className="flex flex-col justify-center items-start">
+                    <div className="flex flex-col justify-center items-start text-right">
                         {isCompleted && displayIndex === sortedGoals.length - 1 ? (
-                            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white drop-shadow-lg animate-bounce py-2">
+                            <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base font-black text-white drop-shadow-lg animate-bounce py-2" dir="rtl">
                                 הגעתם יחד לשיא! {celebrationEmoji}
                             </div>
                         ) : (
-                            <>
-                                <div className="text-[10px] xs:text-xs sm:text-sm font-black text-white/90 mb-0.5 brightness-125">
-                                    {t('more_points')} {missingPoints.toLocaleString()} {t('points_short')}
-                                </div>
-                                <div className="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white mb-2 drop-shadow-xl">
-                                    {t('to_stage')} {displayIndex + 1}!
-                                </div>
-                            </>
+                            <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm font-black text-white/90 mb-1 brightness-125" dir="rtl">
+                                {t('more_points')} <span className="text-xs xs:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">{missingPoints.toLocaleString()}</span> {t('points_short')} ליעד!
+                            </div>
                         )}
 
                         {shoutoutMessage && (
-                            <div className="mt-1 text-[8px] xs:text-[9px] sm:text-[10px] font-bold text-green-300 italic leading-tight border-r-2 border-green-500/40 pr-1 sm:pr-2 drop-shadow-sm max-w-[80px] xs:max-w-[100px] sm:max-w-[120px] animate-in fade-in slide-in-from-right duration-1000">
+                            <div className="mt-1 text-sm xs:text-xs sm:text-sm md:text-base font-bold text-green-300 leading-tight border-r-2 border-green-500/40 pr-2 sm:pr-3 drop-shadow-sm max-w-[120px] xs:max-w-[150px] sm:max-w-[180px] animate-in fade-in slide-in-from-right duration-1000" dir="rtl">
                                 "{shoutoutMessage}"
                             </div>
                         )}

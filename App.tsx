@@ -220,7 +220,24 @@ const LoginRoute = () => {
                 error={loginError}
                 savedEmail={savedEmail}
                 settings={slug ? settings : undefined}
-                onBack={() => navigate('/')}
+                onBack={() => {
+                // Smart back navigation based on referrer or current path context
+                const referrer = document.referrer;
+                const currentPath = window.location.hash || window.location.pathname;
+                
+                // Check if coming from a competition page
+                if (referrer.includes('/comp/') || currentPath.includes('/login/') && currentPath !== '/login' && currentPath !== '#/login') {
+                    // Extract slug from current path and navigate back to competition
+                    const slugMatch = currentPath.match(/\/login\/([^\/]+)/);
+                    if (slugMatch && slugMatch[1]) {
+                        navigate(`/comp/${slugMatch[1]}`);
+                        return;
+                    }
+                }
+                
+                // Default to campaigns page
+                navigate('/');
+            }}
             />
         </>
     );

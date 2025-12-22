@@ -19,7 +19,18 @@ interface SchoolSettingsProps {
 export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefresh }) => {
     const { t } = useLanguage();
     const { showToast } = useToast();
-    const [formData, setFormData] = useState<Partial<AppSettings>>({});
+    const [formData, setFormData] = useState<Partial<AppSettings>>({
+        min_points: -100,
+        max_points: 1000,
+        points_step: 5,
+        background_brightness: 50,
+        background_music_volume: 50,
+        primary_color: '#4c1d95',
+        secondary_color: '#0f172a',
+        header_text_color_1: '#ffffff',
+        header_text_color_2: '#ffffff',
+        background_music_mode: 'loop'
+    });
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
 
@@ -350,8 +361,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('min_points_label')}</label>
                             <input
                                 type="number"
-                                value={formData.min_points}
-                                onChange={e => updateForm({ min_points: parseInt(e.target.value) })}
+                                value={formData.min_points ?? -100}
+                                onChange={e => updateForm({ min_points: parseInt(e.target.value) || -100 })}
                                 className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
                                 dir="ltr"
                             />
@@ -360,8 +371,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('max_points_label')}</label>
                             <input
                                 type="number"
-                                value={formData.max_points}
-                                onChange={e => updateForm({ max_points: parseInt(e.target.value) })}
+                                value={formData.max_points ?? 1000}
+                                onChange={e => updateForm({ max_points: parseInt(e.target.value) || 1000 })}
                                 className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
                                 dir="ltr"
                             />
@@ -370,8 +381,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points_step_label')}</label>
                             <input
                                 type="number"
-                                value={formData.points_step}
-                                onChange={e => updateForm({ points_step: parseInt(e.target.value) })}
+                                value={formData.points_step ?? 5}
+                                onChange={e => updateForm({ points_step: parseInt(e.target.value) || 5 })}
                                 className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
                                 dir="ltr"
                             />
@@ -398,13 +409,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <div className="flex gap-2 items-end bg-black/20 p-3 rounded-[var(--radius-main)]">
                             <div className="flex-1">
                                 <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('button_label')}</label>
-                                <input value={newPresetLabel} onChange={e => setNewPresetLabel(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] px-2 py-1 text-white text-sm" placeholder="למשל: מבחן" />
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] px-2 py-1 text-white text-sm" placeholder="למשל: מבחן" />
                             </div>
                             <div className="w-24">
                                 <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points')}</label>
                                 <input
                                     type="number"
-                                    value={newPresetValue}
+                                    value={newPresetValue || ''}
                                     onChange={e => setNewPresetValue(e.target.value)}
                                     className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] px-2 py-1 text-white text-sm font-bold text-center"
                                     placeholder="10"

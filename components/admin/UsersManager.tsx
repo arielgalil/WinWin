@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ClassRoom, UserProfile, Campaign } from '../../types';
-import { UsersIcon, EditIcon, CheckIcon, XIcon, UploadIcon, RefreshIcon, LockIcon, CrownIcon } from '../ui/Icons';
+import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, EditIcon, CheckIcon, XIcon, SettingsIcon, UserIcon } from '../ui/Icons';
 import { DeleteButton } from '../ui/DeleteButton';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase, createTempClient } from '../../supabaseClient';
@@ -9,8 +9,10 @@ import { parseExcelFile } from '../../utils/excelUtils';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
-import { cleanEmail, normalizeString } from '../../utils/stringUtils';
+import { cleanEmail } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
+import { useUsersManager } from '../../../hooks/useUsersManager';
+import { UserTableRow } from './users/UserTableRow';
 
 interface UsersManagerProps {
     classes: ClassRoom[];
@@ -336,7 +338,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                                     'bg-blue-500/20 text-blue-300'
                                                 }`}>
                                                 {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
-                                                {u.role === 'admin' && <AdminIcon className="w-3 h-3" />}
+                                                {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
                                                 {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
                                                 {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
                                             </span>
