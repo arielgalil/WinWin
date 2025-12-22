@@ -9,10 +9,12 @@ import { createClient } from '@supabase/supabase-js';
 
 // Safely access environment variables
 const getEnv = (key: string) => {
+  // Try Vite environment variables first (client-side)
   if (typeof (import.meta as any).env !== 'undefined') {
     const val = (import.meta as any).env[`VITE_${key}`] || (import.meta as any).env[key];
     return val ? val.trim() : undefined;
   }
+  // Fallback to process.env (server-side)
   if (typeof process !== 'undefined' && process.env) {
     const val = process.env[key];
     return val ? val.trim() : undefined;
@@ -20,9 +22,11 @@ const getEnv = (key: string) => {
   return undefined;
 };
 
-export const supabaseUrl = getEnv('SUPABASE_URL');
-export const supabaseKey = getEnv('SUPABASE_KEY');
+// Client-side configuration - only expose what's necessary
+const supabaseUrl = getEnv('SUPABASE_URL');
+const supabaseKey = getEnv('SUPABASE_KEY');
 
+// Validate required environment variables
 if (!supabaseUrl || !supabaseKey) {
   const missing = [];
   if (!supabaseUrl) missing.push("VITE_SUPABASE_URL");
@@ -35,7 +39,11 @@ if (!supabaseUrl || !supabaseKey) {
   }
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseKey || '');
+// Create client with validated credentials
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Export only what's needed for client-side
+export { supabaseUrl, supabaseKey };
 
 // Helper to create a temporary client for administrative actions (like creating users)
 // without overwriting the current user's session in local storage.

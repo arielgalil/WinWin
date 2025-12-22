@@ -113,6 +113,11 @@ export interface AppSettings {
   gemini_api_key?: string;
   language?: 'he' | 'en';
   is_frozen?: boolean;
+  settings_updated_at?: string;
+  users_updated_at?: string;
+  goals_updated_at?: string;
+  classes_updated_at?: string;
+  logs_updated_at?: string;
 }
 
 export interface ActionLog {

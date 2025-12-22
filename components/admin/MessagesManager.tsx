@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
 import { TickerMessage } from '../../types';
-import { SparklesIcon, PlusIcon, EditIcon, CheckIcon, XIcon, LayersIcon } from '../ui/Icons';
+import { SparklesIcon, PlusIcon, EditIcon, LayersIcon } from '../ui/Icons';
 import { DeleteButton } from '../ui/DeleteButton';
-import { ConfirmationModal } from '../ui/ConfirmationModal';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
-import { useConfirmation } from '../../hooks/useConfirmation';
+
 import { normalizeString } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
 
@@ -36,7 +36,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     const [isReordering, setIsReordering] = useState(false);
 
     const { showToast } = useToast();
-    const { modalConfig, openConfirmation, closeConfirmation } = useConfirmation();
+    
     const { getErrorMessage } = useErrorFormatter();
 
     const placeholders = [
@@ -64,7 +64,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
         try {
             await onAdd(cleanMsg);
             setNewMessage('');
-            showToast(t('message_added_success'), 'success');
+            showToast(t('save'), 'success');
         } catch (err: any) {
             showToast(getErrorMessage(err), 'error');
         }
@@ -76,7 +76,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
             try {
                 await onUpdate(editingId, { text: cleanEdit });
                 setEditingId(null);
-                showToast(t('message_updated_success'), 'success');
+                showToast(t('save'), 'success');
             } catch (err: any) {
                 showToast(getErrorMessage(err), 'error');
             }
@@ -99,14 +99,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
 
     return (
         <div className="max-w-5xl mx-auto space-y-8 flex flex-col h-full px-4">
-            <ConfirmationModal
-                isOpen={modalConfig.isOpen}
-                title={modalConfig.title}
-                message={modalConfig.message}
-                isDanger={modalConfig.isDanger}
-                onConfirm={modalConfig.onConfirm}
-                onCancel={modalConfig.onCancel}
-            />
+            
             <div className="flex flex-col gap-1">
                 <h2 className="text-3xl font-black text-white flex items-center gap-3">
                     <LayersIcon className="w-8 h-8 text-cyan-400" /> {t('messages_mgmt_title')}
@@ -138,26 +131,26 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                         <AnimatePresence initial={false}>
                             {messages.map((msg, index) => (
                                 <MotionDiv key={msg.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`p-4 rounded-2xl border flex gap-3 ${editingId === msg.id ? 'bg-cyan-900/30 border-cyan-500' : 'bg-slate-900/50 border-white/5'}`}>
-                                    <div className="flex flex-col gap-1 items-center justify-center shrink-0 ltr:border-r rtl:border-l border-white/5 ltr:pr-3 rtl:pl-3 ltr:mr-1 rtl:ml-1">
-                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-1 text-slate-500 hover:text-white"><ArrowUpIcon className="w-4 h-4" /></button>
+                                    <div className="flex flex-col gap-2 items-center justify-center shrink-0 ltr:border-r rtl:border-l border-white/5 ltr:pr-3 rtl:pl-3 ltr:mr-1 rtl:ml-1">
+                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 min-w-[44px] min-h-[44px] text-slate-500 hover:text-white rounded-lg transition-colors active:scale-95"><ArrowUpIcon className="w-5 h-5" /></button>
                                         <span className="text-[10px] text-slate-600 font-black">{index + 1}</span>
-                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-1 text-slate-500 hover:text-white"><ArrowDownIcon className="w-4 h-4" /></button>
+                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 min-w-[44px] min-h-[44px] text-slate-500 hover:text-white rounded-lg transition-colors active:scale-95"><ArrowDownIcon className="w-5 h-5" /></button>
                                     </div>
                                     <div className="flex-1 flex flex-col gap-2 min-w-0">
                                         {editingId === msg.id ? (
                                             <>
                                                 <textarea value={editText} onChange={e => setEditText(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-xl p-2 text-white outline-none resize-none h-20" />
-                                                <div className="flex gap-2 justify-end"><button onClick={saveEdit} className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-black uppercase">{t('save')}</button><button onClick={() => setEditingId(null)} className="bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-black uppercase">{t('cancel')}</button></div>
+                                                <div className="flex gap-3 justify-end"><button onClick={saveEdit} className="bg-green-600 text-white px-4 py-2.5 min-h-[44px] rounded-lg text-xs font-black uppercase active:scale-95 transition-all">{t('save')}</button><button onClick={() => setEditingId(null)} className="bg-slate-700 text-white px-4 py-2.5 min-h-[44px] rounded-lg text-xs font-black uppercase active:scale-95 transition-all">{t('cancel')}</button></div>
                                             </>
                                         ) : (
                                             <>
                                                 <p className="text-white text-base font-bold leading-relaxed">{msg.text}</p>
                                                 <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
-                                                    <div className="flex gap-4">
-                                                        <button onClick={() => { setEditingId(msg.id); setEditText(msg.text); }} className="text-cyan-400 hover:text-cyan-200 text-[10px] font-black uppercase flex items-center gap-1.5 transition-colors"><EditIcon className="w-3.5 h-3.5" /> {t('edit_message')}</button>
-                                                        <button onClick={() => onAdd(msg.text)} className="text-slate-500 hover:text-white text-[10px] font-black uppercase flex items-center gap-1.5 transition-colors"><LayersIcon className="w-3.5 h-3.5" /> {t('duplicate_message')}</button>
+                                                    <div className="flex gap-4 items-center">
+                                                        <DeleteButton onClick={() => onDelete(msg.id)} />
+                                                        <button onClick={() => { setEditingId(msg.id); setEditText(msg.text); }} className="text-cyan-400 hover:text-cyan-200 text-[10px] font-black uppercase flex items-center gap-2 transition-colors"><EditIcon className="w-4 h-4" /> {t('edit_message')}</button>
+                                                        <button onClick={() => onAdd(msg.text)} className="text-blue-400 hover:text-blue-200 text-[10px] font-black uppercase flex items-center gap-2 transition-colors"><LayersIcon className="w-4 h-4" /> {t('duplicate_message')}</button>
                                                     </div>
-                                                    <DeleteButton onClick={() => onDelete(msg.id)} />
                                                 </div>
                                             </>
                                         )}

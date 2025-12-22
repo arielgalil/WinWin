@@ -13,7 +13,6 @@ interface ConfirmationModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  isDanger?: boolean;
   showCancel?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -25,7 +24,6 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   confirmText,
   cancelText,
-  isDanger = false,
   showCancel = true,
   onConfirm,
   onCancel
@@ -52,7 +50,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="relative bg-slate-900 border border-white/10 p-6 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
           >
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto ${isDanger ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto bg-slate-500/20 text-slate-400">
               <AlertIcon className="w-6 h-6" />
             </div>
 
@@ -65,18 +63,15 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               {showCancel && (
                 <button
                   onClick={onCancel}
-                  className="flex-1 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition-colors"
+                  className="flex-1 py-2 rounded-xl bg-slate-600 text-white font-bold hover:bg-slate-500 transition-colors shadow-lg"
                 >
                   {finalCancelText}
                 </button>
               )}
               <button
                 onClick={onConfirm}
-                className={`py-2 rounded-xl text-white font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${!showCancel ? 'flex-1 w-full' : 'flex-1'
-                  } ${isDanger
-                    ? 'bg-red-600 hover:bg-red-500 shadow-red-500/20'
-                    : 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20'
-                  }`}
+                className={`py-2 rounded-xl bg-slate-600 text-white font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${!showCancel ? 'flex-1 w-full' : 'flex-1'
+                  } hover:bg-slate-500`}
               >
                 {finalConfirmText}
               </button>

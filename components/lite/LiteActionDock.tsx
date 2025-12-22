@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ScorePreset } from '../../types';
 import { PlusIcon, ArrowRightIcon, SendIcon, EditIcon, XIcon } from '../ui/Icons';
+import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { triggerHaptic } from '../../utils/haptics';
@@ -97,7 +98,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                             placeholder={t('add_note_placeholder')}
                                             className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-blue-300/50 rtl:text-right ltr:text-left"
                                         />
-                                        <button onClick={() => { setNote(''); setShowNoteInput(false); }} className="text-slate-400 p-1 hover:text-white transition-colors"><XIcon className="w-4 h-4" /></button>
+                                        <button onClick={() => { setNote(''); setShowNoteInput(false); }} className="text-slate-400 p-3 min-w-[44px] min-h-[44px] hover:text-white transition-colors rounded-lg hover:bg-slate-700/50 active:scale-95"><XIcon className="w-5 h-5" /></button>
                                     </div>
                                 </MotionDiv>
                             )}
@@ -155,7 +156,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                             {mode === 'custom' && (
                                 <form onSubmit={handleCustomSubmit} className="flex gap-3 h-full absolute inset-0 z-10 items-center px-3 py-3">
                                     <button type="button" onClick={() => setMode('presets')} className="h-full px-5 rounded-[var(--radius-main)] bg-slate-600/80 border-2 border-slate-500/40 transition-colors hover:bg-slate-500 hover:text-white"><ArrowRightIcon className="w-8 h-8 text-white rtl:rotate-0 ltr:rotate-180" /></button>
-                                    <input ref={inputRef} type="number" value={customValue} onChange={(e) => setCustomValue(e.target.value)} placeholder="0" className="w-32 h-full bg-black/40 text-white text-center text-5xl font-black rounded-[var(--radius-main)] outline-none border-2 border-white/20 focus:border-blue-500 shadow-inner backdrop-blur-sm" dir="ltr" inputMode="decimal" />
+                                    <input ref={inputRef} type="text" value={formatNumberWithCommas(customValue)} onChange={(e) => setCustomValue(parseFormattedNumber(e.target.value).toString())} placeholder="0" className="w-32 h-full bg-black/40 text-white text-center text-5xl font-black rounded-[var(--radius-main)] outline-none border-2 border-white/20 focus:border-blue-500 shadow-inner backdrop-blur-sm" dir="ltr" inputMode="decimal" />
                                     <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-black rounded-[var(--radius-main)] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 backdrop-blur-md ${isNegative ? 'bg-red-600/90 border-red-200/30' : 'bg-emerald-600/90 border-teal-200/30'}`}>
                                         <span className="text-5xl font-black leading-none drop-shadow-md" dir="ltr"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
                                         <div className="rtl:scale-x-1 ltr:scale-x-[-1] opacity-90"><SendIcon className="w-8 h-8 text-white" /></div>

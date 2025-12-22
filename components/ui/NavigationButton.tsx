@@ -11,15 +11,15 @@ interface NavigationButtonProps {
 }
 
 const sizeClasses = {
-    sm: 'w-5 h-5',
-    md: 'w-7 h-7',
-    lg: 'w-9 h-9'
+    sm: 'w-12 h-12 min-w-[44px] min-h-[44px]',
+    md: 'w-14 h-14 min-w-[44px] min-h-[44px]',
+    lg: 'w-16 h-16 min-w-[44px] min-h-[44px]'
 };
 
 const iconSizes = {
-    sm: 'w-3 h-3',
-    md: 'w-4 h-4',
-    lg: 'w-5 h-5'
+    sm: 'w-5 h-5',
+    md: 'w-6 h-6',
+    lg: 'w-7 h-7'
 };
 
 export const NavigationButton: React.FC<NavigationButtonProps> = ({

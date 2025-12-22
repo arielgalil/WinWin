@@ -1,9 +1,11 @@
 
 // Central configuration file
 const getEnvVar = (key: string, fallback: string = ''): string => {
+  // Try Vite environment variables first (client-side)
   if (typeof (import.meta as any).env !== 'undefined') {
     return (import.meta as any).env[`VITE_${key}`] || (import.meta as any).env[key] || fallback;
   }
+  // Fallback to process.env (server-side)
   if (typeof process !== 'undefined' && process.env) {
     return process.env[key] || fallback;
   }

@@ -204,14 +204,16 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 </button>
                             )}
 
-                            <button 
-                                onClick={() => setIsLowPerf(!isLowPerf)} 
-                                className={`w-7 h-7 flex items-center justify-center ${isLowPerf ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
-                                title={t('tv_mode')}
-                                style={getNavButtonStyle()}
-                            >
-                                <ZapIcon className="w-4 h-4" />
-                            </button>
+                            {isBoardActive && (
+                                <button 
+                                    onClick={() => setIsLowPerf(!isLowPerf)} 
+                                    className={`w-7 h-7 flex items-center justify-center ${isLowPerf ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    title={t('tv_mode')}
+                                    style={getNavButtonStyle()}
+                                >
+                                    <ZapIcon className="w-4 h-4" />
+                                </button>
+                            )}
 
                             {isSuperUser && (
                                 <button 
@@ -350,14 +352,16 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                     </button>
                                                 )}
 
-                                                {/* TV Mode */}
-                                                <button
-                                                    onClick={() => setIsLowPerf(!isLowPerf)}
-                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
-                                                >
-                                                    <ZapIcon className="w-3 h-3" />
-                                                    {t('tv_mode')}
-                                                </button>
+                                                {/* TV Mode - Only on leaderboard */}
+                                                {isBoardActive && (
+                                                    <button
+                                                        onClick={() => setIsLowPerf(!isLowPerf)}
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                    >
+                                                        <ZapIcon className="w-3 h-3" />
+                                                        {t('tv_mode')}
+                                                    </button>
+                                                )}
 
                                                 {/* Debug Console */}
                                                 <button

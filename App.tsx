@@ -148,10 +148,23 @@ const AdminRoute = () => {
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
-    const canAccess = isSuperUser(user.role) || campaignRole === 'admin' || campaignRole === 'superuser';
+    // Enhanced security: Explicit role checking with fallback to deny
+    const userRole = user.role?.toLowerCase().trim();
+    const campaignRoleClean = campaignRole?.toLowerCase().trim();
+    
+    const isSuper = isSuperUser(userRole);
+    const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
+    const isCampaignSuper = campaignRoleClean === 'superuser' || campaignRoleClean === 'super_user';
+    
+    const canAccess = isSuper || isAdmin || isCampaignSuper;
 
-    if (!canAccess && campaignRole === 'teacher') return <Navigate to={`/vote/${slug}`} replace />;
-    if (!canAccess) return <Navigate to={`/comp/${slug}`} replace />;
+    // Security: Explicit deny if role is null/undefined or not authorized
+    if (!canAccess) {
+      if (campaignRoleClean === 'teacher') {
+        return <Navigate to={`/vote/${slug}`} replace />;
+      }
+      return <Navigate to={`/comp/${slug}`} replace />;
+    }
 
     return (
         <CampaignContext>
@@ -180,9 +193,16 @@ const VoteRoute = () => {
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
     
-    // Security fix: Check campaign membership
-    // Only block if we're certain user has no access
-    if (campaignRole === null && !isSuperUser(user.role)) {
+    // Enhanced security: Explicit role checking
+    const userRole = user.role?.toLowerCase().trim();
+    const campaignRoleClean = campaignRole?.toLowerCase().trim();
+    
+    const isSuper = isSuperUser(userRole);
+    const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
+    const isTeacher = campaignRoleClean === 'teacher';
+    
+    // Security: Explicit deny if user has no role in campaign and is not superuser
+    if (!isSuper && !isAdmin && !isTeacher) {
         return <ErrorScreen message={t('competition_access_denied')} />;
     }
 
@@ -270,6 +290,7 @@ const LoginRoute = () => {
 };
 
 import { ToastProvider } from './hooks/useToast';
+import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
 const App: React.FC = () => {
     const { t } = useLanguage();
@@ -277,26 +298,28 @@ const App: React.FC = () => {
 
     return (
         <ToastProvider>
-            <div className="flex flex-col h-screen bg-[#020617] selection:bg-cyan-500/30 overflow-hidden">
-                {authLoading ? (
-                    <LoadingScreen message={t('loading_system')} />
-                ) : (
-                    <div className="flex-1 flex flex-col min-h-0 relative">
-                        <Routes>
-                            <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
-                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={{} as any} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
-                            <Route path="/login" element={<LoginRoute />} />
-                            <Route path="/login/:slug" element={<LoginRoute />} />
-                            <Route path="/comp/:slug" element={<DashboardRoute />} />
-                            <Route path="/admin/:slug" element={<AdminRoute />} />
-                            <Route path="/admin/:slug/:tab" element={<AdminRoute />} />
-                            <Route path="/vote/:slug" element={<VoteRoute />} />
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
-                    </div>
-                )}
+            <RouteErrorBoundary>
+                <div className="flex flex-col h-screen bg-[#020617] selection:bg-cyan-500/30 overflow-hidden">
+                    {authLoading ? (
+                        <LoadingScreen message={t('loading_system')} />
+                    ) : (
+                        <div className="flex-1 flex flex-col min-h-0 relative">
+                            <Routes>
+                                <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
+                                <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
+                                <Route path="/login" element={<LoginRoute />} />
+                                <Route path="/login/:slug" element={<LoginRoute />} />
+                                <Route path="/comp/:slug" element={<DashboardRoute />} />
+                                <Route path="/admin/:slug" element={<AdminRoute />} />
+                                <Route path="/admin/:slug/:tab" element={<AdminRoute />} />
+                                <Route path="/vote/:slug" element={<VoteRoute />} />
+                                <Route path="*" element={<Navigate to="/" replace />} />
+                            </Routes>
+                        </div>
+                    )}
 
-            </div>
+                </div>
+            </RouteErrorBoundary>
         </ToastProvider>
     );
 };

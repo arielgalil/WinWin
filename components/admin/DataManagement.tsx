@@ -1,21 +1,22 @@
-
 import React, { useState } from 'react';
-import { AppSettings, ClassRoom, UserProfile, ActionLog } from '../../types';
-import { DatabaseIcon, DownloadIcon, UploadIcon, AlertIcon, TrashIcon, CheckIcon, RefreshIcon, UsersIcon } from '../ui/Icons';
+import { AppSettings } from '../../types';
+import { DatabaseIcon, DownloadIcon, UploadIcon, AlertIcon, CheckIcon, RefreshIcon, UsersIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase } from '../../supabaseClient';
 import { useCompetitionData } from '../../hooks/useCompetitionData';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
 interface DataManagementProps {
     settings: AppSettings;
-    classes: ClassRoom[];
-    user: UserProfile;
+    onSave?: () => Promise<void>;
 }
 
-export const DataManagement: React.FC<DataManagementProps> = ({ settings, classes, user }) => {
+export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave }) => {
     const { t } = useLanguage();
     const { refreshData } = useCompetitionData();
+    const { triggerSave } = useSaveNotification();
+
     const [isExporting, setIsExporting] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
@@ -97,7 +98,10 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, classe
 
             if (data.settings) {
                 const { id, ...cleanSettings } = data.settings;
-                await supabase.from('app_settings').update(cleanSettings).eq('campaign_id', campaignId);
+                await supabase.from('app_settings').update({
+                    ...cleanSettings,
+                    settings_updated_at: new Date().toISOString()
+                }).eq('campaign_id', campaignId);
             }
 
             if (data.classes && Array.isArray(data.classes)) {
@@ -126,6 +130,8 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, classe
                 }
             }
 
+            triggerSave('data-management');
+            if (onSave) await onSave();
             setStatusMsg({ type: 'success', text: t('import_success_refresh') });
             setTimeout(() => window.location.reload(), 2000);
 
@@ -163,6 +169,8 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, classe
                         await supabase.from('classes').update({ score: 0 }).eq('campaign_id', campaignId);
                     }
 
+                    triggerSave('data-management');
+                    if (onSave) await onSave();
                     setStatusMsg({ type: 'success', text: t('reset_success') });
                     refreshData();
                 } catch (err: any) {
@@ -175,41 +183,84 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, classe
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8 pb-10">
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} isDanger={modalConfig.isDanger} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
-            <h2 className="text-3xl font-black text-white flex items-center gap-3"><DatabaseIcon className="w-8 h-8 text-cyan-400" /> {t('data_mgmt_title')}</h2>
-            {statusMsg && <div className={`p-4 rounded-xl border flex items-center gap-3 ${statusMsg.type === 'success' ? 'bg-green-500/20 border-green-500/50 text-green-200' : 'bg-red-500/20 border-red-500/50 text-red-200'}`}><CheckIcon className="w-5 h-5" /> <span className="font-bold">{statusMsg.text}</span> </div>}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-6">
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2"><DownloadIcon className="w-5 h-5 text-green-400" /> {t('export_backup_title')}</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => handleExport('full')} disabled={isExporting} className="p-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl text-white text-sm font-bold transition-all flex flex-col items-center gap-2"><DatabaseIcon className="w-5 h-5 text-blue-300" /> {t('full_backup')}</button>
-                        <button onClick={() => handleExport('structure')} disabled={isExporting} className="p-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl text-white text-sm font-bold transition-all flex flex-col items-center gap-2"><UploadIcon className="w-5 h-5 text-purple-300" /> {t('structure_backup')}</button>
-                        <button onClick={() => handleExport('settings')} disabled={isExporting} className="p-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl text-white text-sm font-bold transition-all flex flex-col items-center gap-2"><CheckIcon className="w-5 h-5 text-yellow-300" /> {t('settings_backup')}</button>
-                        <button onClick={() => handleExport('staff')} disabled={isExporting} className="p-3 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl text-white text-sm font-bold transition-all flex flex-col items-center gap-2"><UsersIcon className="w-5 h-5 text-pink-300" /> {t('staff_backup')}</button>
-                    </div>
-                    <div className="border-t border-white/10 pt-6">
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4"><UploadIcon className="w-5 h-5 text-orange-400" /> {t('data_restore_title')}</h3>
-                        <label className={`w-full flex items-center justify-center p-4 border-2 border-dashed border-slate-600 rounded-2xl cursor-pointer hover:bg-white/5 transition-all ${isImporting ? 'opacity-50' : ''}`}>
-                            <div className="flex flex-col items-center gap-2">{isImporting ? <RefreshIcon className="w-6 h-6 animate-spin text-orange-400" /> : <UploadIcon className="w-6 h-6 text-orange-400" />} <span className="text-sm text-slate-300 font-bold">{t('select_backup_file')}</span> </div>
-                            <input type="file" accept=".json" className="hidden" onChange={handleImportTrigger} disabled={isImporting} />
-                        </label>
+        <div className="max-w-5xl mx-auto space-y-6">
+            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
+            
+            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
+                <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+                    <div className="flex items-center gap-3">
+                        <DatabaseIcon className="w-6 h-6 text-cyan-400" />
+                        <h3 className="text-xl font-bold text-white">{t('data_mgmt_title')}</h3>
                     </div>
                 </div>
-                <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-6">
-                    <h3 className="text-xl font-bold text-slate-300 flex items-center gap-2"><AlertIcon className="w-5 h-5 text-slate-400" /> {t('danger_zone_title')}</h3>
-                    <div className="space-y-4">
-                        <div className="bg-red-900/20 p-4 rounded-xl border border-red-500/20 flex justify-between items-center">
-                            <div><h4 className="text-white font-bold">{t('reset_logs_label')}</h4><p className="text-xs text-red-200/70">{t('reset_logs_desc')}</p></div>
-                            <button onClick={() => handleReset('logs')} disabled={isResetting} className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold">{t('execute_action')}</button>
+
+                {statusMsg && (
+                    <div className={`mb-6 p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${statusMsg.type === 'success' ? 'bg-green-500/20 border-green-500/50 text-green-200' : 'bg-red-500/20 border-red-500/50 text-red-200'}`}>
+                        <CheckIcon className="w-5 h-5" /> 
+                        <span className="font-bold">{statusMsg.text}</span> 
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                        <div className="bg-black/20 p-5 rounded-2xl border border-white/5 space-y-4 shadow-inner">
+                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                                <DownloadIcon className="w-4 h-4 text-green-400" /> {t('export_backup_title')}
+                            </h4>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button onClick={() => handleExport('full')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
+                                    <DatabaseIcon className="w-5 h-5 text-blue-300" /> {t('full_backup')}
+                                </button>
+                                <button onClick={() => handleExport('structure')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
+                                    <UploadIcon className="w-5 h-5 text-purple-300" /> {t('structure_backup')}
+                                </button>
+                                <button onClick={() => handleExport('settings')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
+                                    <CheckIcon className="w-5 h-5 text-yellow-300" /> {t('settings_backup')}
+                                </button>
+                                <button onClick={() => handleExport('staff')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
+                                    <UsersIcon className="w-5 h-5 text-pink-300" /> {t('staff_backup')}
+                                </button>
+                            </div>
                         </div>
-                        <div className="bg-red-900/20 p-4 rounded-xl border border-red-500/20 flex justify-between items-center">
-                            <div><h4 className="text-white font-bold">{t('reset_scores_label')}</h4><p className="text-xs text-red-200/70">{t('reset_scores_desc')}</p></div>
-                            <button onClick={() => handleReset('scores')} disabled={isResetting} className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold">{t('execute_action')}</button>
+
+                        <div className="bg-black/20 p-5 rounded-2xl border border-white/5 space-y-4 shadow-inner">
+                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                                <UploadIcon className="w-4 h-4 text-orange-400" /> {t('data_restore_title')}
+                            </h4>
+                            <label className={`w-full flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/10 rounded-2xl cursor-pointer hover:bg-white/5 transition-all ${isImporting ? 'opacity-50' : ''}`}>
+                                {isImporting ? <RefreshIcon className="w-8 h-8 animate-spin text-orange-400 mb-2" /> : <UploadIcon className="w-8 h-8 text-orange-400 mb-2" />}
+                                <span className="text-xs text-slate-300 font-bold">{t('select_backup_file')}</span>
+                                <input type="file" accept=".json" className="hidden" onChange={handleImportTrigger} disabled={isImporting} />
+                            </label>
                         </div>
-                        <div className="bg-red-600/20 p-4 rounded-xl border border-red-500 flex justify-between items-center">
-                            <div><h4 className="text-white font-bold">{t('reset_full_label')}</h4><p className="text-xs text-red-100">{t('reset_full_desc')}</p></div>
-                            <button onClick={() => handleReset('full')} disabled={isResetting} className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold">{t('execute_full_reset')}</button>
+                    </div>
+
+                    <div className="bg-red-950/10 p-5 rounded-2xl border border-red-500/20 space-y-4 shadow-inner">
+                        <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
+                            <AlertIcon className="w-4 h-4" /> {t('danger_zone_title')}
+                        </h4>
+                        <div className="space-y-3">
+                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
+                                <div className="min-w-0">
+                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_logs_label')}</h5>
+                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_logs_desc')}</p>
+                                </div>
+                                <button onClick={() => handleReset('logs')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_action')}</button>
+                            </div>
+                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
+                                <div className="min-w-0">
+                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_scores_label')}</h5>
+                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_scores_desc')}</p>
+                                </div>
+                                <button onClick={() => handleReset('scores')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_action')}</button>
+                            </div>
+                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
+                                <div className="min-w-0">
+                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_full_label')}</h5>
+                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_full_desc')}</p>
+                                </div>
+                                <button onClick={() => handleReset('full')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_full_reset')}</button>
+                            </div>
                         </div>
                     </div>
                 </div>

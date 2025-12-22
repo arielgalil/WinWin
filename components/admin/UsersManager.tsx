@@ -11,19 +11,22 @@ import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { cleanEmail } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
-import { useUsersManager } from '../../../hooks/useUsersManager';
-import { UserTableRow } from './users/UserTableRow';
+import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
 interface UsersManagerProps {
     classes: ClassRoom[];
     currentCampaign?: Campaign | null;
     currentUser?: UserProfile;
     onRefresh?: () => Promise<void>;
+    settings: any;
+    onSave?: () => Promise<void>;
 }
 
 
-export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCampaign, currentUser, onRefresh }) => {
+export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCampaign, currentUser, onRefresh, onSave }) => {
     const { t } = useLanguage();
+    const { triggerSave } = useSaveNotification();
+
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
     const [editingUserId, setEditingUserId] = useState<string | null>(null);
     const [editFormData, setEditFormData] = useState<Partial<UserProfile>>({});
@@ -37,7 +40,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
     const [isBulkImporting, setIsBulkImporting] = useState(false);
 
     const { showToast } = useToast();
-    const { modalConfig, openConfirmation, closeConfirmation } = useConfirmation();
+    const { modalConfig, openConfirmation } = useConfirmation();
     const { getErrorMessage } = useErrorFormatter();
 
     const alphabeticalClasses = [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he'));
@@ -66,10 +69,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
         const mappedUsers: UserProfile[] = data.map((item: any) => ({
             id: item.user_id,
             email: item.profiles?.email || t('sync_pending'),
-            full_name: item.profiles?.full_name || (item.user_id === currentUser?.id ? currentUser.full_name : t('new_user_label')),
+            full_name: item.profiles?.full_name || (item.user_id === currentUser?.id ? currentUser?.full_name : t('new_user_label')),
             class_id: item.profiles?.class_id,
-            // Critical: In Team Management, 'role' usually refers to campaign role, 
-            // but for superusers we prioritize their global role.
             role: item.profiles?.role === 'superuser' ? 'superuser' : item.role
         }));
 
@@ -141,6 +142,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 if (profileError) console.error("Failed to assign class:", profileError);
             }
 
+            triggerSave('data-management');
+            if (onSave) await onSave();
             resetCreateForm();
 
         } catch (err: any) {
@@ -165,7 +168,6 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 class_id: editFormData.class_id || null
             }).eq('id', id);
 
-            // Do not update role if the user being edited is a superuser
             if (editFormData.role && editFormData.role !== 'superuser') {
                 await supabase.from('campaign_users').update({
                     role: editFormData.role
@@ -176,6 +178,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
             setUserCreationStatus(t('user_details_updated'));
             fetchUsers();
             showToast(t('user_details_updated'), 'success');
+            triggerSave('data-management');
+            if (onSave) await onSave();
         } catch (err: any) {
             showToast(getErrorMessage(err, 'update_error_msg'), 'error');
         }
@@ -187,6 +191,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
             await supabase.from('campaign_users').delete().match({ user_id: id, campaign_id: currentCampaign.id });
             showToast(t('user_deleted_success'), 'success');
             fetchUsers();
+            triggerSave('data-management');
+            if (onSave) await onSave();
         } catch (err: any) {
             showToast(getErrorMessage(err), 'error');
         }
@@ -212,6 +218,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
             }
             showToast(t('save_success'), 'success');
             fetchUsers();
+            triggerSave('data-management');
+            if (onSave) await onSave();
         } catch (e: any) {
             showToast(getErrorMessage(e), 'error');
         } finally {
@@ -220,30 +228,31 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
     };
 
     return (
-        <>
+        <div className="max-w-5xl mx-auto space-y-6">
             <ConfirmationModal
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}
                 message={modalConfig.message}
-                isDanger={modalConfig.isDanger}
                 showCancel={modalConfig.showCancel}
                 onConfirm={modalConfig.onConfirm}
                 onCancel={modalConfig.onCancel}
             />
 
-            <div className="max-w-5xl mx-auto space-y-8 px-4">
-                <h2 className="text-3xl font-black text-white flex items-center gap-3">
-                    <UsersIcon className="w-8 h-8 text-blue-400" />
-                    {t('team_mgmt_title', { campaign: currentCampaign?.name || '' })}
-                </h2>
+            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
+                <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+                    <div className="flex items-center gap-3">
+                        <UsersIcon className="w-6 h-6 text-blue-400" />
+                        <h3 className="text-xl font-bold text-white">{t('team_mgmt_title', { campaign: currentCampaign?.name || '' })}</h3>
+                    </div>
+                </div>
 
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl">
+                <div className="mb-8">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-                        <h3 className="text-xl font-bold text-white">{t('add_staff_member')}</h3>
+                        <h4 className="text-sm font-bold text-white/70">{t('add_staff_member')}</h4>
                         <div className="flex items-center gap-2">
-                            <label className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 text-green-300 px-3 py-1.5 rounded-[var(--radius-main)] border border-green-500/30 cursor-pointer transition-all">
+                            <label className="flex items-center gap-2 bg-green-600/10 hover:bg-green-600/20 text-green-400 px-3 py-1.5 rounded-xl border border-green-500/20 cursor-pointer transition-all active:scale-95">
                                 {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
-                                <span className="text-sm font-bold">{t('import_from_excel')}</span>
+                                <span className="text-xs font-bold">{t('import_from_excel')}</span>
                                 <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {
@@ -259,83 +268,83 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                         </div>
                     </div>
 
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-black/20 p-4 rounded-2xl border border-white/5">
                         <div className="md:col-span-3">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('full_name_label')}</label>
-                            <input type="text" value={newUserFullName} onChange={e => setNewUserFullName(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
+                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('full_name_label')}</label>
+                            <input type="text" value={newUserFullName} onChange={e => setNewUserFullName(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required />
                         </div>
                         <div className="md:col-span-3">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('email_label')}</label>
-                            <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required />
+                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('email_label')}</label>
+                            <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('password_label')}</label>
-                            <input type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500" required minLength={6} />
+                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('password_label')}</label>
+                            <input type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required minLength={6} />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('role_label')}</label>
-                            <select value={newUserRole} onChange={e => setNewUserRole(e.target.value as 'admin' | 'teacher')} className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500">
+                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('role_label')}</label>
+                            <select value={newUserRole} onChange={e => setNewUserRole(e.target.value as 'admin' | 'teacher')} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all">
                                 <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
                                 <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
                             </select>
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('group_assignment_label')}</label>
+                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('group_assignment_label')}</label>
                             <select
                                 value={newUserClassId}
                                 onChange={e => setNewUserClassId(e.target.value)}
-                                className="w-full bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500"
+                                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all"
                             >
                                 <option value="" className="bg-slate-900">{t('no_assignment')}</option>
                                 {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
                             </select>
                         </div>
                         <div className="md:col-span-12 mt-2">
-                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-[var(--radius-main)] font-bold text-sm transition-colors shadow-lg">
+                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl font-black text-xs transition-all shadow-lg active:scale-95">
                                 {t('add_join_user_button')}
                             </button>
                         </div>
                     </form>
-                    {userCreationStatus && <div className="mt-2 text-sm font-bold p-2 rounded bg-white/5 text-blue-300 border border-blue-500/20">{userCreationStatus}</div>}
+                    {userCreationStatus && <div className="mt-3 text-[10px] font-bold p-2 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 animate-in fade-in">{userCreationStatus}</div>}
                 </div>
 
-                <div className="bg-white/5 rounded-[var(--radius-main)] border border-white/10 overflow-hidden shadow-xl">
+                <div className="bg-black/20 rounded-2xl border border-white/5 overflow-hidden shadow-inner">
                     <table className="w-full rtl:text-right ltr:text-left">
-                        <thead className="bg-white/5 text-slate-400 text-xs font-bold">
+                        <thead className="bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-wider">
                             <tr>
                                 <th className="p-4">{t('name_email_header')}</th>
                                 <th className="p-4">{t('role_header')}</th>
                                 <th className="p-4">{t('group_header')}</th>
-                                <th className="p-4">{t('actions_header')}</th>
+                                <th className="p-4 text-center">{t('actions_header')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 text-sm text-slate-200">
+                        <tbody className="divide-y divide-white/5 text-xs text-slate-200">
                             {usersList.map(u => (
-                                <tr key={u.id} className={`hover:bg-white/5 transition-colors ${u.id === currentUser?.id ? 'bg-blue-500/5' : ''}`}>
+                                <tr key={u.id} className={`hover:bg-white/5 transition-colors ${currentUser && u.id === currentUser.id ? 'bg-blue-500/5' : ''}`}>
                                     <td className="p-4">
                                         {editingUserId === u.id ? (
-                                            <input className="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-full text-white outline-none focus:border-blue-500" value={editFormData.full_name || ''} onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} />
+                                            <input className="bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 w-full text-white outline-none focus:border-blue-500 transition-all" value={editFormData.full_name || ''} onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} />
                                         ) : (
                                             <div>
-                                                <div className="font-bold flex items-center gap-2 text-white">
+                                                <div className="font-black flex items-center gap-2 text-white">
                                                     {u.full_name}
                                                     {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-400 animate-pulse" />}
-                                                    {u.id === currentUser?.id && <span className="text-sm bg-blue-500/30 px-2 py-1 rounded text-blue-200">{t('me')}</span>}
+                                                    {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300 font-black">{t('me')}</span>}
                                                 </div>
-                                                <div className="text-xs opacity-60 tabular-nums">{u.email}</div>
+                                                <div className="text-[10px] opacity-40 tabular-nums">{u.email}</div>
                                             </div>
                                         )}
                                     </td>
                                     <td className="p-4">
                                         {editingUserId === u.id && u.role !== 'superuser' ? (
-                                            <select className="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-white outline-none" value={editFormData.role} onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}>
+                                            <select className="bg-slate-900 border border-white/10 rounded-lg px-2 py-1 text-white outline-none" value={editFormData.role} onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}>
                                                 <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
                                                 <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
                                             </select>
                                         ) : (
-                                            <span className={`px-2 py-1 rounded text-sm font-bold flex items-center gap-1 ${u.role === 'superuser' ? 'bg-amber-500/20 text-amber-300' :
-                                                u.role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
-                                                    'bg-blue-500/20 text-blue-300'
+                                            <span className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                                                u.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' :
+                                                    'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                                                 }`}>
                                                 {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
                                                 {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
@@ -346,23 +355,27 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                     </td>
                                     <td className="p-4">
                                         {editingUserId === u.id ? (
-                                            <select className="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-full text-white outline-none" value={editFormData.class_id || ''} onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}>
+                                            <select className="bg-slate-900 border border-white/10 rounded-lg px-2 py-1 w-full text-white outline-none" value={editFormData.class_id || ''} onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}>
                                                 <option value="" className="bg-slate-900">{t('no_assignment')}</option>
                                                 {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
                                             </select>
-                                        ) : (u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-')}
+                                        ) : (
+                                            <span className="font-bold opacity-80">
+                                                {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
+                                            </span>
+                                        )}
                                     </td>
-                                    <td className="p-4">
-                                        <div className="flex gap-4">
+                                    <td className="p-4 text-center">
+                                        <div className="flex gap-2 justify-center">
                                             {editingUserId === u.id ? (
                                                 <>
-                                                    <button onClick={() => saveUserChanges(u.id)} className="p-1.5 bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
-                                                    <button onClick={() => setEditingUserId(null)} className="p-1.5 bg-slate-600/20 text-slate-400 hover:bg-slate-600/30 rounded transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
+                                                    <button onClick={() => saveUserChanges(u.id)} className="p-3 min-w-[44px] min-h-[44px] bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white rounded-lg transition-all active:scale-95" title={t('save')}><CheckIcon className="w-5 h-5" /></button>
+                                                    <button onClick={() => setEditingUserId(null)} className="p-3 min-w-[44px] min-h-[44px] bg-slate-700/20 text-slate-400 hover:bg-slate-700 hover:text-white rounded-lg transition-all active:scale-95" title={t('cancel')}><XIcon className="w-5 h-5" /></button>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <button onClick={() => { setEditingUserId(u.id); setEditFormData(u); }} className="p-1.5 hover:bg-white/10 rounded text-blue-300 transition-colors" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                    {u.id !== currentUser?.id && !isSuperUser(u.role) && <DeleteButton onClick={() => handleDeleteUser(u.id)} />}
+                                                    {currentUser && u.id !== currentUser.id && !isSuperUser(u.role) && <DeleteButton onClick={() => handleDeleteUser(u.id)} />}
+                                                    <button onClick={() => { setEditingUserId(u.id); setEditFormData(u); }} className="p-3 min-w-[44px] min-h-[44px] bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg transition-colors border border-amber-500/30 active:scale-95" title={t('edit_action')}><EditIcon className="w-5 h-5" /></button>
                                                 </>
                                             )}
                                         </div>
@@ -373,6 +386,6 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     </table>
                 </div>
             </div>
-        </>
+        </div>
     );
 };

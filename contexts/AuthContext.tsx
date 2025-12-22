@@ -46,13 +46,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return;
         }
 
-        try {
+try {
             console.log(`[AUTH] Fetching profile for ID: ${userId}`);
 
-            const { data: profileData, error: profileError } = await (Promise.race([
+            const { data: profileData, error: profileError } = await Promise.race([
                 supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
-                new Promise<{ data: any; error: any }>((_, reject) => setTimeout(() => reject(new Error('Profile Timeout')), 6000))
-            ]) as Promise<{ data: UserProfile | null; error: any }>);
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Profile Timeout')), 6000))
+            ]);
 
             if (profileError) throw profileError;
 
@@ -92,27 +92,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const hardReset = async () => {
         console.log("[AUTH] Initiating NUCLEAR RESET...");
         try {
-            localStorage.clear();
-            sessionStorage.clear();
-
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i];
-                const eqPos = cookie.indexOf("=");
-                const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
-                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            // Safe localStorage clear with try-catch
+            try {
+                localStorage.clear();
+            } catch (e) {
+                console.warn("Failed to clear localStorage:", e);
+            }
+            
+            // Safe sessionStorage clear
+            try {
+                sessionStorage.clear();
+            } catch (e) {
+                console.warn("Failed to clear sessionStorage:", e);
             }
 
-            if ('serviceWorker' in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
+            // Safe cookie clear
+            try {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i];
+                    const eqPos = cookie.indexOf("=");
+                    const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
                 }
+            } catch (e) {
+                console.warn("Failed to clear cookies:", e);
+            }
+
+            // Safe service worker cleanup
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+            } catch (e) {
+                console.warn("Failed to unregister service workers:", e);
             }
 
             window.location.href = window.location.origin + "/?reset=" + Date.now() + "#/";
             window.location.reload();
         } catch (e) {
+            console.error("Hard reset failed:", e);
             window.location.reload();
         }
     };
@@ -160,9 +182,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUser(null);
                 userRef.current = null;
                 setIsPasswordRecovery(false);
-                if (typeof localStorage !== 'undefined') {
-                    localStorage.removeItem('metziacha_elevation_token');
-                }
                 updateLoadingState(false, "Signed out");
             }
         });

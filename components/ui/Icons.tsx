@@ -24,6 +24,7 @@ import {
   X,
   Download,
   AlertTriangle,
+  ShieldAlert,
   Layers,
   List,
   Search,
@@ -48,7 +49,6 @@ import {
   Send,
   Link,
   Settings,
-  ShieldAlert,
   Calculator,
   DollarSign,
   Sprout,
@@ -60,7 +60,8 @@ import {
   Zap,
   CheckCircle,
   AlertCircle,
-  Info
+  Info,
+  Clock
 } from 'lucide-react';
 
 export const TrophyIcon = ({ className }: { className?: string }) => <Trophy className={className} />;
@@ -122,3 +123,4 @@ export const MusicIcon = ({ className }: { className?: string }) => <Music class
 export const Volume2Icon = ({ className }: { className?: string }) => <Volume2 className={className} />;
 export const VolumeXIcon = ({ className }: { className?: string }) => <VolumeX className={className} />;
 export const ZapIcon = ({ className }: { className?: string }) => <Zap className={className} />;
+export const ClockIcon = ({ className }: { className?: string }) => <Clock className={className} />;

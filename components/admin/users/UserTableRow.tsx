@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile, ClassRoom } from '../../../types';
-import { CheckIcon, XIcon, EditIcon, CrownIcon, SettingsIcon, UserIcon, DeleteButton } from '../../ui/Icons';
+import { CheckIcon, XIcon, EditIcon, CrownIcon, SettingsIcon, UserIcon } from '../../ui/Icons';
+import { DeleteButton } from '../../ui/DeleteButton';
 import { useLanguage } from '../../../hooks/useLanguage';
 
 interface UserTableRowProps {
@@ -67,7 +68,7 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
                 {isEditing ? (
                     <select className="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-full text-white outline-none" 
                             value={editFormData.role || ''} 
-                            onChange={e => onEditFormChange({ ...editFormData, role: e.target.value })}>
+                            onChange={e => onEditFormChange({ ...editFormData, role: e.target.value as 'admin' | 'teacher' | 'superuser' })}>
                         <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
                         <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
                     </select>
@@ -106,31 +107,31 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
                         <>
                             <button 
                                 onClick={() => onSave(user.id)} 
-                                className="p-1.5 bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded transition-colors" 
+                                className="p-3 min-w-[44px] min-h-[44px] bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded-lg transition-colors active:scale-95" 
                                 title={t('save')}
                             >
-                                <CheckIcon className="w-4 h-4" />
+                                <CheckIcon className="w-5 h-5" />
                             </button>
                             <button 
                                 onClick={onCancel} 
-                                className="p-1.5 bg-slate-600/20 text-slate-400 hover:bg-slate-600/30 rounded transition-colors" 
+                                className="p-3 min-w-[44px] min-h-[44px] bg-slate-600/20 text-slate-400 hover:bg-slate-600/30 rounded-lg transition-colors active:scale-95" 
                                 title={t('cancel')}
                             >
-                                <XIcon className="w-4 h-4" />
+                                <XIcon className="w-5 h-5" />
                             </button>
                         </>
                     ) : (
                         <>
-                            <button 
-                                onClick={() => { onEdit(user); onEditFormChange(user); }} 
-                                className="p-1.5 hover:bg-white/10 rounded text-blue-300 transition-colors" 
-                                title={t('edit_action')}
-                            >
-                                <EditIcon className="w-4 h-4" />
-                            </button>
                             {user.id !== currentUser?.id && (
                                 <DeleteButton onClick={() => onDelete(user)} />
                             )}
+                            <button 
+                                onClick={() => { onEdit(user); onEditFormChange(user); }} 
+                                className="p-3 min-w-[44px] min-h-[44px] bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg transition-colors border border-amber-500/30 active:scale-95" 
+                                title={t('edit_action')}
+                            >
+                                <EditIcon className="w-5 h-5" />
+                            </button>
                         </>
                     )}
                 </div>

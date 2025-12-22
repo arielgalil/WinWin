@@ -1,10 +1,23 @@
 // Environment variable configuration with security validation
 
+// Helper function to get environment variables consistently
+const getEnvVar = (key: string, fallback: string = ''): string => {
+  // Try Vite environment variables first (client-side)
+  if (typeof (import.meta as any).env !== 'undefined') {
+    return (import.meta as any).env[`VITE_${key}`] || (import.meta as any).env[key] || fallback;
+  }
+  // Fallback to process.env (server-side)
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || fallback;
+  }
+  return fallback;
+};
+
 // Only expose non-sensitive environment variables to client
 export const publicEnv = {
-  APP_VERSION: process.env.VITE_APP_VERSION || '1.0.0',
-  API_URL: process.env.VITE_API_URL || 'http://localhost:3000',
-  NODE_ENV: process.env.NODE_ENV || 'development'
+  APP_VERSION: getEnvVar('APP_VERSION', '1.0.0'),
+  API_URL: getEnvVar('API_URL', 'http://localhost:3000'),
+  NODE_ENV: getEnvVar('NODE_ENV', 'development')
 };
 
 // Server-side only environment variables (never exposed to browser)

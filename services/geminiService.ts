@@ -46,7 +46,7 @@ export const testGeminiConnection = async (overrideKey?: string, lang: Language 
         if (overrideKey) {
             const { GoogleGenAI } = await import("@google/genai");
             const ai = new GoogleGenAI({ apiKey: overrideKey });
-            const response = await ai.models.generateContent({
+            await ai.models.generateContent({
                 model: 'gemini-2.5-flash-lite-preview-09-2025',
                 contents: "ping",
             });
@@ -60,6 +60,17 @@ export const testGeminiConnection = async (overrideKey?: string, lang: Language 
     }
 };
 
+// Sanitize input for AI prompts
+const sanitizeForAI = (input: string): string => {
+  if (!input) return '';
+  return input
+    .replace(/[<>]/g, '') // Remove HTML tags
+    .replace(/javascript:/gi, '') // Remove JS protocols
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .substring(0, 200) // Limit length
+    .trim();
+};
+
 export const generateCompetitionCommentary = async (
   topClasses: ClassRoom[],
   recentAction: string,
@@ -69,10 +80,15 @@ export const generateCompetitionCommentary = async (
   lang: Language = 'he',
   contributors?: string[]
 ): Promise<string> => {
-  const leaders = topClasses.slice(0, 3).map(c => c.name).join(", ");
-  const recentNames = contributors && contributors.length > 0 ? contributors.join(", ") : leaders;
+  // Sanitize all inputs
+  const sanitizedLeaders = topClasses.slice(0, 3).map(c => sanitizeForAI(c.name)).filter(Boolean).join(", ");
+  const sanitizedContributors = contributors && contributors.length > 0 
+    ? contributors.map(sanitizeForAI).filter(Boolean).join(", ") 
+    : sanitizedLeaders;
+  const sanitizedAction = sanitizeForAI(recentAction);
+  const sanitizedNote = sanitizeForAI(actionNote || '');
   
-  const prompt = `Recent Contributors: ${recentNames}. Total Score: ${totalInstitutionScore}. Goal Progress: ${recentAction}. Note: ${actionNote || ''}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
+  const prompt = `Recent Contributors: ${sanitizedContributors}. Total Score: ${totalInstitutionScore}. Goal Progress: ${sanitizedAction}. Note: ${sanitizedNote}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
   
   try {
       return await callGeminiFunction({

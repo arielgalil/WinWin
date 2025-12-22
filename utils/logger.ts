@@ -1,38 +1,45 @@
-interface LogContext {
-  component?: string;
-  action?: string;
-  data?: any;
-}
+// Production-safe logging utility
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-class Logger {
-  private isDevelopment = process.env.NODE_ENV === 'development';
+const isProduction = (): boolean => {
+  return typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
+};
 
-  private log = (level: 'error' | 'warn' | 'info' | 'debug', message: string, context?: LogContext) => {
-    if (!this.isDevelopment) return;
+const shouldLog = (level: LogLevel): boolean => {
+  // In production, only log errors and warnings
+  if (isProduction()) {
+    return level === 'error' || level === 'warn';
+  }
+  return true; // In development, log everything
+};
 
-    const timestamp = new Date().toISOString();
-    const prefix = context ? `[${timestamp}] [${context.component || 'App'}${context.action ? `:${context.action}` : ''}]` : `[${timestamp}]`;
-    
-    switch (level) {
-      case 'error':
-        console.error(`${prefix} ${message}`, context?.data);
-        break;
-      case 'warn':
-        console.warn(`${prefix} ${message}`, context?.data);
-        break;
-      case 'info':
-        console.info(`${prefix} ${message}`, context?.data);
-        break;
-      case 'debug':
-        console.log(`${prefix} ${message}`, context?.data);
-        break;
+const formatLog = (level: LogLevel, ...args: any[]): string => {
+  const timestamp = new Date().toISOString();
+  const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
+  return `${prefix} ${args.map(arg => 
+    typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+  ).join(' ')}`;
+};
+
+export const logger = {
+  debug: (...args: any[]) => {
+    if (shouldLog('debug')) {
+      console.log(formatLog('debug', ...args));
     }
-  };
-
-  error = (message: string, context?: LogContext) => this.log('error', message, context);
-  warn = (message: string, context?: LogContext) => this.log('warn', message, context);
-  info = (message: string, context?: LogContext) => this.log('info', message, context);
-  debug = (message: string, context?: LogContext) => this.log('debug', message, context);
-}
-
-export const logger = new Logger();
+  },
+  info: (...args: any[]) => {
+    if (shouldLog('info')) {
+      console.log(formatLog('info', ...args));
+    }
+  },
+  warn: (...args: any[]) => {
+    if (shouldLog('warn')) {
+      console.warn(formatLog('warn', ...args));
+    }
+  },
+  error: (...args: any[]) => {
+    if (shouldLog('error')) {
+      console.error(formatLog('error', ...args));
+    }
+  }
+};

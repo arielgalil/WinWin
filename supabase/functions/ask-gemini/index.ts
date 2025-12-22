@@ -4,7 +4,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// @ts-ignore: Deno is available in Edge Functions
+// @ts-ignore: Deno is available in Edge Functions environment
 Deno.serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -24,7 +24,7 @@ Deno.serve(async (req: Request) => {
 
     // Model and API Key selection
     const modelName = model || 'gemini-2.5-flash-lite-preview-09-2025';
-    // @ts-ignore: Deno is available in Edge Functions
+    // @ts-ignore: Deno.env is available in Edge Functions environment
     const apiKey = Deno.env.get("GEMINI_API_KEY") || Deno.env.get("API_KEY");
     
     if (!apiKey) {
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
     console.error("Function error:", error);
     return new Response(JSON.stringify({ error: error.message || "Internal Function Error" }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200, 
+      status: 500, 
     });
   }
 });

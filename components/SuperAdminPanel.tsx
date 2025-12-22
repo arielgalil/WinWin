@@ -12,7 +12,7 @@ import { VersionFooter } from './ui/VersionFooter';
 const { useNavigate } = ReactRouterDOM as any;
 
 interface SuperAdminPanelProps {
-    user: UserProfile;
+    user: UserProfile | null;
     onLogout: () => void;
     onSelectCampaign: (campaign: Campaign) => void;
 }
@@ -214,8 +214,8 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                         <h1 className="text-lg font-black tracking-tight text-[var(--text-main)]">🌱 מערכת תחרויות מצמיחה - פאנל משתמש על</h1>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-yellow-300' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}>{isDarkMode ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}</button>
-                        <button onClick={onLogout} className="p-2 rounded-[var(--radius-main)] border border-red-500/20 text-red-500 hover:bg-red-500/10 transition-colors"><LogoutIcon className="w-4 h-4" /></button>
+                        <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-3 min-w-[44px] min-h-[44px] rounded-[var(--radius-main)] border transition-all active:scale-95 ${isDarkMode ? 'bg-slate-800 border-slate-700 text-yellow-300' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}>{isDarkMode ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}</button>
+                        <button onClick={onLogout} className="p-3 min-w-[44px] min-h-[44px] rounded-[var(--radius-main)] border border-red-500/20 text-red-500 hover:bg-red-500/10 transition-colors active:scale-95"><LogoutIcon className="w-5 h-5" /></button>
                     </div>
                 </div>
             </header>
@@ -240,7 +240,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                     <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-[var(--radius-main)] text-red-500 mb-6 flex items-center gap-3">
                         <AlertIcon className="w-6 h-6 shrink-0" />
                         <div className="flex-1"><span className="font-bold block">{t('data_load_error')}</span><span className="text-xs break-all">{fetchError}</span></div>
-                        <button onClick={fetchInstitutions} className="bg-red-500/10 p-2 rounded-[var(--radius-main)] transition-colors"><RefreshIcon className="w-4 h-4" /></button>
+                        <button onClick={fetchInstitutions} className="bg-red-500/10 p-3 min-w-[44px] min-h-[44px] rounded-[var(--radius-main)] transition-colors active:scale-95"><RefreshIcon className="w-5 h-5" /></button>
                     </div>
                 )}
                 {isLoading ? <div className="text-center py-20"><RefreshIcon className="w-10 h-10 animate-spin mx-auto opacity-20" /></div> : (
@@ -257,8 +257,8 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                                             <PlusIcon className="w-3.5 h-3.5" />
                                             <span>{t('add_competition')}</span>
                                         </button>
-                                        <button onClick={() => { setInstForm(inst); setShowInstModal(true); }} className="p-2 hover:bg-black/5 rounded-[var(--radius-main)] transition-colors text-[var(--text-secondary)]"><EditIcon className="w-5 h-5 opacity-60" /></button>
-                                        <button onClick={() => handleDeleteInstitution(inst.id)} className="p-2 hover:bg-black/5 text-slate-500/20 hover:text-slate-500 rounded-[var(--radius-main)] transition-colors"><TrashIcon className="w-5 h-5 opacity-60" /></button>
+                                        <button onClick={() => handleDeleteInstitution(inst.id)} className="p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 text-slate-500/20 hover:text-slate-500 rounded-[var(--radius-main)] transition-colors active:scale-95"><TrashIcon className="w-5 h-5 opacity-60" /></button>
+                                        <button onClick={() => { setInstForm(inst); setShowInstModal(true); }} className="p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 rounded-[var(--radius-main)] transition-colors text-[var(--text-secondary)] active:scale-95"><EditIcon className="w-5 h-5 opacity-60" /></button>
                                     </div>
                                 </div>
                                 <div className="p-5 space-y-4">
@@ -282,45 +282,45 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <button onClick={() => handleToggleActive(camp)} className={`p-2 rounded-[var(--radius-main)] flex items-center justify-center transition-all ${camp.is_active ? 'text-green-500 hover:bg-green-500/10' : 'text-red-500 hover:bg-red-500/10'}`} title={camp.is_active ? t('active_status') : t('inactive_status')}>
+                                                            <button onClick={() => handleToggleActive(camp)} className={`p-3 min-w-[44px] min-h-[44px] rounded-[var(--radius-main)] flex items-center justify-center transition-all active:scale-95 ${camp.is_active ? 'text-green-500 hover:bg-green-500/10' : 'text-red-500 hover:bg-red-500/10'}`} title={camp.is_active ? t('active_status') : t('inactive_status')}>
                                                                 {camp.is_active ? <PauseIcon className="w-5 h-5" /> : <PlayIcon className="w-5 h-5" />}
                                                             </button>
-                                                            <div className="flex gap-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                                                <button onClick={() => { setCampForm(camp); setShowCampModal(true); }} title={t('edit')} className="p-2 hover:bg-black/5 rounded-[var(--radius-main)] transition-colors text-[var(--text-secondary)]"><EditIcon className="w-4 h-4" /></button>
-                                                                <button onClick={() => handleDeleteCampaign(camp.id)} title={t('delete')} className="p-2 hover:bg-black/5 text-slate-500/20 hover:text-slate-500 rounded-[var(--radius-main)] transition-colors"><TrashIcon className="w-4 h-4" /></button>
+                                                            <div className="flex gap-3 opacity-100 transition-opacity">
+                                                                <button onClick={() => handleDeleteCampaign(camp.id)} title={t('delete')} className="p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 text-slate-500/20 hover:text-slate-500 rounded-[var(--radius-main)] transition-colors active:scale-95"><TrashIcon className="w-5 h-5" /></button>
+                                                                <button onClick={() => { setCampForm(camp); setShowCampModal(true); }} title={t('edit')} className="p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 rounded-[var(--radius-main)] transition-colors text-[var(--text-secondary)] active:scale-95"><EditIcon className="w-5 h-5" /></button>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     {/* Action Buttons Grid */}
-                                                    <div className="grid grid-cols-3 gap-2">
-                                                        <div className="flex flex-col gap-1">
-                                                            <button onClick={() => navigate(`/comp/${camp.slug}`)} title={t('open_board')} className="h-10 bg-yellow-500/10 text-yellow-500 rounded-[var(--radius-main)] border border-yellow-500/20 hover:bg-yellow-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2">
+                                                    <div className="grid grid-cols-3 gap-3">
+                                                        <div className="flex flex-col gap-2">
+                                                            <button onClick={() => navigate(`/comp/${camp.slug}`)} title={t('open_board')} className="h-12 min-h-[44px] bg-yellow-500/10 text-yellow-500 rounded-[var(--radius-main)] border border-yellow-500/20 hover:bg-yellow-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2 active:scale-95">
                                                                 <TrophyIcon className="w-4 h-4" />
                                                                 <span>{t('open_board')}</span>
                                                             </button>
-                                                            <button onClick={() => handleCopy(window.location.origin + '/comp/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center py-1 hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-                                                                <CopyIcon className="w-3.5 h-3.5" />
+                                                            <button onClick={() => handleCopy(window.location.origin + '/comp/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all active:scale-95">
+                                                                <CopyIcon className="w-5 h-5" />
                                                             </button>
                                                         </div>
 
-                                                        <div className="flex flex-col gap-1">
-                                                            <button onClick={() => navigate(`/vote/${camp.slug}`)} title={t('points_interface')} className="h-10 bg-pink-500/10 text-pink-500 rounded-[var(--radius-main)] border border-pink-500/20 hover:bg-pink-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2">
+                                                        <div className="flex flex-col gap-2">
+                                                            <button onClick={() => navigate(`/vote/${camp.slug}`)} title={t('points_interface')} className="h-12 min-h-[44px] bg-pink-500/10 text-pink-500 rounded-[var(--radius-main)] border border-pink-500/20 hover:bg-pink-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2 active:scale-95">
                                                                 <CalculatorIcon className="w-4 h-4" />
                                                                 <span>{t('points_interface')}</span>
                                                             </button>
-                                                            <button onClick={() => handleCopy(window.location.origin + '/vote/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center py-1 hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-                                                                <CopyIcon className="w-3.5 h-3.5" />
+                                                            <button onClick={() => handleCopy(window.location.origin + '/vote/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all active:scale-95">
+                                                                <CopyIcon className="w-5 h-5" />
                                                             </button>
                                                         </div>
 
-                                                        <div className="flex flex-col gap-1">
-                                                            <button onClick={() => navigate(`/admin/${camp.slug}`)} title={t('competition_settings')} className="h-10 bg-blue-500/10 text-blue-500 rounded-[var(--radius-main)] border border-blue-500/20 hover:bg-blue-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2">
+                                                        <div className="flex flex-col gap-2">
+                                                            <button onClick={() => navigate(`/admin/${camp.slug}`)} title={t('competition_settings')} className="h-12 min-h-[44px] bg-blue-500/10 text-blue-500 rounded-[var(--radius-main)] border border-blue-500/20 hover:bg-blue-500/20 transition-all flex items-center justify-center font-bold text-[10px] gap-2 active:scale-95">
                                                                 <SettingsIcon className="w-4 h-4" />
                                                                 <span>{t('competition_settings')}</span>
                                                             </button>
-                                                            <button onClick={() => handleCopy(window.location.origin + '/admin/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center py-1 hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-                                                                <CopyIcon className="w-3.5 h-3.5" />
+                                                            <button onClick={() => handleCopy(window.location.origin + '/admin/' + camp.slug)} title={t('copy_link')} className="flex items-center justify-center p-3 min-w-[44px] min-h-[44px] hover:bg-black/5 rounded-[var(--radius-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all active:scale-95">
+                                                                <CopyIcon className="w-5 h-5" />
                                                             </button>
                                                         </div>
                                                     </div>

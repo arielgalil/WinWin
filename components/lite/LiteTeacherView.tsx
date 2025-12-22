@@ -144,7 +144,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
             <div className={`${glassCardStyle} rounded-[var(--radius-main)] p-3 shadow-xl`}>
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-2"><TargetIcon className="w-4 h-4 text-blue-300" /><span className="text-sm font-bold text-white">{t('class_target_title')}</span></div>
-                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[10px] bg-white/10 px-2 py-1 rounded-[calc(var(--radius-main)*0.5)] text-slate-300 flex items-center gap-1 hover:bg-white/20 transition-colors uppercase font-black"><EditIcon className="w-3 h-3" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
+                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[10px] bg-white/10 px-4 py-2.5 min-h-[44px] rounded-[calc(var(--radius-main)*0.5)] text-slate-300 flex items-center gap-2 hover:bg-white/20 transition-colors uppercase font-black active:scale-95"><EditIcon className="w-4 h-4" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
               </div>
               {isEditingTarget ? (
                 <div className="flex gap-2">

@@ -31,18 +31,18 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ onClick, className =
   };
 
   return (
-    <div className={`relative flex items-center justify-center min-w-[100px] h-10 ${className}`}>
+    <div className={`relative flex items-center justify-center min-w-[44px] h-10 ${className}`}>
       <button
         onClick={handleClick}
-        className={`transition-all duration-300 rounded-xl flex items-center justify-center overflow-hidden h-9
+        className={`p-3 min-w-[44px] min-h-[44px] rounded-lg transition-all active:scale-95
             ${stage === 'confirm'
-            ? 'bg-red-600 text-white w-28 shadow-lg shadow-red-900/40 z-10'
-            : 'text-slate-500/30 hover:text-slate-500 hover:bg-slate-500/10 w-9'
+            ? 'bg-slate-700 text-white shadow-lg z-10'
+            : 'bg-slate-600/20 text-slate-400 hover:bg-slate-600/30 hover:text-slate-300'
           }`}
         title={stage === 'idle' ? t('delete_action') : t('click_again_to_confirm')}
       >
         {stage === 'confirm' ? (
-          <span className="text-[10px] font-black whitespace-nowrap flex items-center gap-1 animate-in fade-in zoom-in duration-200 px-2">
+          <span className="text-[10px] font-black whitespace-nowrap flex items-center gap-1 animate-in fade-in zoom-in duration-200">
             <TrendDownIcon className="w-3 h-3" /> {t('confirm_deletion')}
           </span>
         ) : (

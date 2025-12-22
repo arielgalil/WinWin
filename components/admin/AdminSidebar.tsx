@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserProfile, AppSettings } from '../../types';
-import { TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon } from '../ui/Icons';
+import { TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, CheckIcon, AlertCircleIcon } from '../ui/Icons';
 import { Logo } from '../ui/Logo';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -12,8 +12,9 @@ interface AdminSidebarProps {
   visibleNavItems: any[];
   activeTab: string;
   onTabChange: (id: string) => void;
+  onTabHover?: (id: string) => void;
   onViewDashboard: () => void;
-  onManualRefresh: () => void;
+  onManualRefresh: () => Promise<boolean>;
   isRefreshing: boolean;
   onLogout: () => void;
   campaignRole?: string;
@@ -28,15 +29,28 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   visibleNavItems,
   activeTab,
   onTabChange,
+  onTabHover,
   onViewDashboard,
   onManualRefresh,
-  isRefreshing,
   onLogout,
   campaignRole,
   isFrozen,
   onToggleFreeze
 }) => {
   const { t } = useLanguage();
+  const [localRefreshStatus, setLocalRefreshStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleRefreshClick = async () => {
+    setLocalRefreshStatus('loading');
+    const success = await onManualRefresh();
+    if (success) {
+      setLocalRefreshStatus('success');
+      setTimeout(() => setLocalRefreshStatus('idle'), 2000);
+    } else {
+      setLocalRefreshStatus('error');
+      setTimeout(() => setLocalRefreshStatus('idle'), 3000);
+    }
+  };
 
   // Determine Role Label with clearer text
   const getRoleLabel = () => {
@@ -48,7 +62,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const isAnySuperUser = isSuperUser(user.role) || isSuperUser(campaignRole);
 
   return (
-    <div className="hidden md:flex bg-[var(--bg-card)]/40 p-6 w-80 lg:w-96 flex-col justify-between border-l border-[var(--border-main)] shrink-0 h-full overflow-y-auto custom-scrollbar">
+    <div className="hidden md:flex bg-[var(--bg-card)]/40 p-4 w-64 flex-col justify-between border-l border-[var(--border-main)] shrink-0 h-full overflow-y-auto custom-scrollbar max-h-screen">
       <div>
         <div className="mb-8 p-6 bg-black/5 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-inner">
           <div className="flex items-center gap-3 mb-3">
@@ -78,63 +92,80 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
         </div>
 
-        <nav className="space-y-3" aria-label="תפריט ניהול">
-          {visibleNavItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              aria-current={activeTab === item.id ? 'page' : undefined}
-              className={`w-full text-right py-4 px-6 rounded-[var(--radius-main)] flex items-center gap-4 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-500/50 text-base ${activeTab === item.id
-                ? `bg-blue-600 text-white font-black border-r-4 shadow-lg ${item.color}`
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-black/5 border-r-4 border-transparent'
-                }`}
-            >
-              <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'opacity-100' : 'opacity-70'}`} />
-              <div className="flex flex-col text-right leading-tight">
-                <span className="text-sm font-bold">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
-                {item.subtitle && <span className="text-[10px] font-bold opacity-70">{item.subtitle}</span>}
-              </div>
-            </button>
-          ))}
+        <nav className="space-y-1 mt-2" aria-label="תפריט ניהול">
+          {visibleNavItems.map((item, index) => 
+            item.divider ? (
+              <div key={`divider-${index}`} className="my-4 border-t border-[var(--border-main)] opacity-50" />
+            ) : (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                onMouseEnter={() => onTabHover?.(item.id)}
+                aria-current={activeTab === item.id ? 'page' : undefined}
+                className={`w-full text-right py-4 px-6 rounded-[var(--radius-main)] flex items-center gap-4 transition-all duration-200 outline-none focus:ring-2 focus:ring-white/20 text-base ${activeTab === item.id
+                  ? `bg-white/20 text-white font-black border-r-4 shadow-lg backdrop-blur-sm border-white/40`
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-black/5 border-r-4 border-transparent'
+                  }`}
+              >
+                <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'opacity-100' : 'opacity-70'}`} />
+                <div className="flex flex-col text-right leading-tight">
+                  <span className="text-sm font-bold">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
+                  {item.subtitle && <span className="text-[10px] font-bold opacity-70">{item.subtitle}</span>}
+                </div>
+              </button>
+            )
+          )}
         </nav>
       </div>
 
-      <div className="space-y-3 mt-6 pt-6 border-t border-[var(--border-main)]">
-        <button onClick={onViewDashboard} className="w-full text-right py-3 px-4 rounded-[var(--radius-main)] flex items-center gap-3 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-500/10 transition-all font-black text-base outline-none focus:ring-2 focus:ring-yellow-500/50">
-          <TrophyIcon className="w-5 h-5 shrink-0" />
-          <span>{t('view_leaderboard')}</span>
-        </button>
-
-        {onToggleFreeze && (
-          <button
-            onClick={() => onToggleFreeze(!isFrozen)}
-            className={`w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all font-black text-sm outline-none focus:ring-2 ${isFrozen
-              ? 'text-green-500 hover:text-green-600 hover:bg-green-500/10 focus:ring-green-500/50'
-              : 'text-red-500 hover:text-red-600 hover:bg-red-500/10 focus:ring-red-500/50'
-              }`}
-          >
-{isFrozen ? (
-                <>
-                  <RefreshIcon className="w-5 h-5 shrink-0" />
-                  <span>{t('unfreeze_board')}</span>
-                </>
-              ) : (
-                <>
-                  <PauseIcon className="w-5 h-5 shrink-0" />
-                  <span>{t('freeze_board')}</span>
-                </>
-              )}
+      <div className="mt-6 pt-6 border-t border-[var(--border-main)]">
+        <div className="flex items-center justify-between gap-2">
+          <button onClick={onLogout} className="p-3 rounded-[var(--radius-main)] flex items-center justify-center text-red-500 hover:text-red-600 hover:bg-red-500/10 transition-all outline-none focus:ring-2 focus:ring-red-500/50" title={t('logout')}>
+            <LogoutIcon className="w-5 h-5 shrink-0" />
           </button>
-        )}
 
-        <button onClick={onManualRefresh} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-cyan-500/50">
-          <RefreshIcon className={`w-5 h-5 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
-          <span>{t('refresh')}</span>
-        </button>
-        <button onClick={onLogout} className="w-full text-right py-2 px-3 rounded-[var(--radius-main)] flex items-center gap-3 text-red-500 hover:text-red-600 hover:bg-red-500/10 transition-all font-black text-sm outline-none focus:ring-2 focus:ring-red-500/50">
-          <LogoutIcon className="w-5 h-5 shrink-0" />
-          <span>{t('logout')}</span>
-        </button>
+          <div className="flex items-center gap-2">
+            <button onClick={onViewDashboard} className="p-3 rounded-[var(--radius-main)] flex items-center justify-center text-yellow-500 hover:text-yellow-600 hover:bg-yellow-500/10 transition-all outline-none focus:ring-2 focus:ring-yellow-500/50" title={t('view_leaderboard')}>
+              <TrophyIcon className="w-5 h-5 shrink-0" />
+            </button>
+
+            <button 
+              onClick={handleRefreshClick} 
+              className={`p-3 transition-all outline-none 
+                ${localRefreshStatus === 'loading' ? 'text-blue-400' : 
+                  localRefreshStatus === 'success' ? 'text-green-500' : 
+                  localRefreshStatus === 'error' ? 'text-red-500' : 
+                  'text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-[var(--radius-main)]'
+                }`} 
+              title={t('refresh')}
+            >
+              {localRefreshStatus === 'success' ? (
+                <CheckIcon className="w-5 h-5 shrink-0" />
+              ) : localRefreshStatus === 'error' ? (
+                <AlertCircleIcon className="w-5 h-5 shrink-0" />
+              ) : (
+                <RefreshIcon className={`w-5 h-5 shrink-0 ${localRefreshStatus === 'loading' ? 'animate-spin' : ''}`} />
+              )}
+            </button>
+
+            {onToggleFreeze && (
+              <button
+                onClick={() => onToggleFreeze(!isFrozen)}
+                className={`p-3 rounded-[var(--radius-main)] flex items-center justify-center transition-all outline-none focus:ring-2 ${isFrozen
+                  ? 'text-green-500 hover:text-green-600 hover:bg-green-500/10 focus:ring-green-500/50'
+                  : 'text-red-500 hover:text-red-600 hover:bg-red-500/10 focus:ring-red-500/50'
+                  }`}
+                title={isFrozen ? t('unfreeze_board') : t('freeze_board')}
+              >
+                {isFrozen ? (
+                  <RefreshIcon className="w-5 h-5 shrink-0" />
+                ) : (
+                  <PauseIcon className="w-5 h-5 shrink-0" />
+                )}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
     </div>

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
+import { useConfirmation } from '../../hooks/useConfirmation';
 import { ClassRoom, AppSettings, ScorePreset } from '../../types';
-import { SchoolIcon, RefreshIcon, XIcon, UploadIcon, SparklesIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon } from '../ui/Icons';
+import { RefreshIcon, XIcon, UploadIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon, SparklesIcon } from '../ui/Icons';
 import { supabase } from '../../supabaseClient';
 import { FormattedNumber } from '../ui/FormattedNumber';
+import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSaveNotification } from '../../contexts/SaveNotificationContext';
+import { ConfirmationModal } from '../ui/ConfirmationModal';
 
 const MotionDiv = motion.div as any;
 
@@ -14,11 +18,18 @@ interface SchoolSettingsProps {
     classes?: ClassRoom[];
     onRefresh?: () => Promise<void>;
     totalScore: number;
+    tickerMessages?: TickerMessage[];
+    addTickerMessage?: (message: string) => Promise<void>;
+    deleteTickerMessage?: (id: string) => Promise<void>;
+    updateTickerMessage?: (id: string, updates: Partial<TickerMessage>) => Promise<void>;
 }
 
-export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefresh }) => {
+export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefresh, tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage }) => {
     const { t } = useLanguage();
     const { showToast } = useToast();
+    const { triggerSave } = useSaveNotification();
+    const { modalConfig, openConfirmation, closeConfirmation } = useConfirmation();
+    
     const [formData, setFormData] = useState<Partial<AppSettings>>({
         min_points: -100,
         max_points: 1000,
@@ -57,11 +68,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         if (e) e.preventDefault();
         if (isSaving) return;
 
-        // הוצאת מזהה הקמפיין - קריטי לשמירה
         const campaignId = settings.campaign_id || formData.campaign_id;
 
         if (!campaignId) {
-            console.error("Save Error: Missing Campaign ID", { settings, formData });
             showToast(t('missing_campaign_id_error'), 'error');
             return;
         }
@@ -69,9 +78,6 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         setIsSaving(true);
 
         try {
-            console.log("Saving settings for campaign:", campaignId);
-
-            // בניית אובייקט נתונים נקי לשמירה
             const payload = {
                 campaign_id: campaignId,
                 school_name: formData.school_name || '',
@@ -89,20 +95,19 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 background_music_url: formData.background_music_url || null,
                 background_music_mode: formData.background_music_mode || 'loop',
                 background_music_volume: formData.background_music_volume ?? 50,
-                language: formData.language || 'he'
+                language: formData.language || 'he',
+                settings_updated_at: new Date().toISOString()
             };
 
-            // ביצוע Upsert (עדכון או הכנסה) מבוסס על campaign_id
-            const { error, data } = await supabase
+            const { error } = await supabase
                 .from('app_settings')
-                .upsert(payload, { onConflict: 'campaign_id' })
-                .select();
+                .upsert(payload, { onConflict: 'campaign_id' });
 
             if (error) throw error;
 
-            console.log("Save complete:", data);
             showToast(t('settings_saved_success'), 'success');
             setHasChanges(false);
+            triggerSave('settings');
 
             if (onRefresh) {
                 await onRefresh();
@@ -154,34 +159,40 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
     const removePreset = (index: number) => {
         const currentPresets = formData.score_presets || [];
-        const updated = currentPresets.filter((_, i) => i !== index);
-        updateForm({ score_presets: updated });
+        const presetToRemove = currentPresets[index];
+        
+        openConfirmation({
+            title: 'Delete Score Preset',
+            message: `Are you sure you want to delete the preset "${presetToRemove?.label || ''}"?`,
+            onConfirm: async () => {
+                closeConfirmation();
+                const updated = currentPresets.filter((_, i) => i !== index);
+                updateForm({ score_presets: updated });
+            }
+        });
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-32">
-            <h2 className="text-3xl font-black text-white flex items-center gap-3">
-                <SchoolIcon className="w-8 h-8 text-green-400" /> {t('settings_title')}
-            </h2>
-
-            <form onSubmit={handleSaveSettings} className="space-y-8">
-
+        <div className="max-w-5xl mx-auto space-y-6 pb-8">
+            <form onSubmit={handleSaveSettings} className="space-y-6">
                 {/* 1. פרטים ולוגו */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-4 shadow-xl">
-                    <h3 className="text-xl font-bold text-white mb-2">{t('details_logo')}</h3>
+                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-3 shadow-xl backdrop-blur-md">
+                    <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                         <StarIcon className="w-5 h-5 text-blue-400" /> {t('details_logo')}
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('institution_name')}</label>
-                            <input value={formData.school_name || ''} onChange={e => updateForm({ school_name: e.target.value })} className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white" />
+                            <input value={formData.school_name || ''} onChange={e => updateForm({ school_name: e.target.value })} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white focus:border-blue-500/50 outline-none transition-all" />
                         </div>
                         <div>
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('competition_name_setting')}</label>
-                            <input value={formData.competition_name || ''} onChange={e => updateForm({ competition_name: e.target.value })} className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white" />
+                            <input value={formData.competition_name || ''} onChange={e => updateForm({ competition_name: e.target.value })} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white focus:border-blue-500/50 outline-none transition-all" />
                         </div>
 
                         <div>
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('language_setting')}</label>
-                            <div className="flex bg-slate-900 p-1 rounded-[var(--radius-main)] border border-slate-700">
+                            <div className="flex bg-slate-900/50 p-1 rounded-[var(--radius-main)] border border-white/10">
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'he' })}
@@ -203,25 +214,25 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('logo_upload')}</label>
                             <div className="flex gap-4 items-center">
                                 <div className="flex-1 flex gap-2">
-                                    <input value={formData.logo_url || ''} onChange={e => updateForm({ logo_url: e.target.value })} className="flex-1 bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white dir-ltr text-xs" placeholder="https://..." />
-                                    <label className="bg-slate-700 hover:bg-slate-600 px-3 rounded-[var(--radius-main)] flex items-center justify-center cursor-pointer">
-                                        {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
+                                    <input value={formData.logo_url || ''} onChange={e => updateForm({ logo_url: e.target.value })} className="flex-1 bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white dir-ltr text-xs focus:border-blue-500/50 outline-none transition-all" placeholder="https://..." />
+                                    <label className="bg-slate-700 hover:bg-slate-600 px-4 rounded-[var(--radius-main)] flex items-center justify-center cursor-pointer transition-colors">
+                                        {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin text-white" /> : <UploadIcon className="w-4 h-4 text-white" />}
                                         <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
                                     </label>
                                 </div>
                                 {formData.logo_url && (
-                                    <div className="w-12 h-12 bg-white/10 rounded-[var(--radius-main)] p-1 border border-white/20 shrink-0">
+                                    <div className="w-14 h-14 bg-white/10 rounded-[var(--radius-main)] p-1 border border-white/20 shrink-0">
                                         <img src={formData.logo_url} alt="Preview" className="w-full h-full object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                                     </div>
                                 )}
                             </div>
-                            {uploadError && <p className="text-red-400 text-xs mt-1">{uploadError}</p>}
+                            {uploadError && <p className="text-red-400 text-xs mt-1 font-bold">{uploadError}</p>}
                         </div>
                     </div>
                 </div>
 
                 {/* 2. מוזיקה ואווירה */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-6 shadow-xl">
+                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-6 shadow-xl backdrop-blur-md">
                     <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
                         <MusicIcon className="w-5 h-5 text-indigo-400" /> {t('music_atmosphere')}
                     </h3>
@@ -233,8 +244,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.background_music_url || ''}
                                         onChange={e => updateForm({ background_music_url: e.target.value })}
-                                        className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-3 pr-10 text-white dir-ltr text-sm"
-                                        placeholder="https://www.youtube.com/watch?v=... או list=..."
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 pr-10 text-white dir-ltr text-sm focus:border-blue-500/50 outline-none transition-all"
+                                        placeholder="https://www.youtube.com/watch?v=..."
                                     />
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
                                         <MusicIcon className="w-4 h-4" />
@@ -243,7 +254,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             </div>
                             <div>
                                 <label className="block text-slate-400 text-xs font-bold mb-1">{t('playback_mode')}</label>
-                                <div className="flex bg-slate-900 p-1 rounded-[var(--radius-main)] border border-slate-700">
+                                <div className="flex bg-slate-900/50 p-1 rounded-[var(--radius-main)] border border-white/10">
                                     <button
                                         type="button"
                                         onClick={() => updateForm({ background_music_mode: 'loop' })}
@@ -290,7 +301,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
 
                 {/* 3. עיצוב חזותי */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl">
+                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
                     <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                         <SparklesIcon className="w-5 h-5 text-pink-400" /> {t('visual_design')}
                     </h3>
@@ -299,21 +310,21 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-slate-400 text-xs font-bold mb-1">{t('primary_color_label')}</label>
-                                <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-[var(--radius-main)] border border-slate-600">
+                                <div className="flex items-center gap-2 bg-slate-900/50 p-2 rounded-[var(--radius-main)] border border-white/10">
                                     <input type="color" value={formData.primary_color || '#4c1d95'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-10 h-10 rounded cursor-pointer bg-transparent border-none" />
                                     <span className="text-xs font-mono dir-ltr">{formData.primary_color}</span>
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-slate-400 text-xs font-bold mb-1">{t('secondary_color_label')}</label>
-                                <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-[var(--radius-main)] border border-slate-600">
+                                <div className="flex items-center gap-2 bg-slate-900/50 p-2 rounded-[var(--radius-main)] border border-white/10">
                                     <input type="color" value={formData.secondary_color || '#0f172a'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-10 h-10 rounded cursor-pointer bg-transparent border-none" />
                                     <span className="text-xs font-mono dir-ltr">{formData.secondary_color}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-slate-900/50 rounded-[var(--radius-main)] p-4 border border-slate-700 flex flex-col justify-center">
+                        <div className="bg-slate-900/50 rounded-[var(--radius-main)] p-4 border border-white/10 flex flex-col justify-center">
                             <label className="block text-slate-300 text-sm font-bold mb-4 flex items-center justify-between">
                                 <span>{t('lighting_effect')}</span>
                                 <span className="text-xs bg-white/10 px-2 py-0.5 rounded-[var(--radius-main)]">{formData.background_brightness || 50}%</span>
@@ -337,53 +348,66 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
                         <div>
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('header_color_1')}</label>
-                            <div className="flex items-center gap-2 bg-slate-900 p-1.5 rounded-[var(--radius-main)] border border-slate-600">
+                            <div className="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-[var(--radius-main)] border border-white/10">
                                 <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none" />
                             </div>
                         </div>
                         <div>
                             <label className="block text-slate-400 text-xs font-bold mb-1">{t('header_color_2')}</label>
-                            <div className="flex items-center gap-2 bg-slate-900 p-1.5 rounded-[var(--radius-main)] border border-slate-600">
+                            <div className="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-[var(--radius-main)] border border-white/10">
                                 <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none" />
                             </div>
                         </div>
-                    </div>
-                </div>
+                 </div>
+            </div>
 
-                {/* 4. הגדרות ניקוד */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl">
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <StarIcon className="w-5 h-5 text-yellow-400" /> {t('scoring_settings')}
-                    </h3>
+            {/* Messages Management */}
+            <div className="border-t border-white/5 pt-4">
+                <h4 className="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
+                    <SparklesIcon className="w-4 h-4" /> {t('tab_messages')}
+                </h4>
+                {/* <MessagesManager 
+                    messages={tickerMessages} 
+                    onAdd={addTickerMessage} 
+                    onDelete={deleteTickerMessage} 
+                    onUpdate={updateTickerMessage} 
+                /> */}
+            </div>
+
+            {/* 4. הגדרות ניקוד */}
+            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-6 shadow-xl backdrop-blur-md">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <SparklesIcon className="w-5 h-5 text-pink-400" /> {t('visual_design')}
+                </h3>
 
                     <div className="grid grid-cols-3 gap-4 mb-6">
                         <div>
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('min_points_label')}</label>
                             <input
-                                type="number"
-                                value={formData.min_points ?? -100}
-                                onChange={e => updateForm({ min_points: parseInt(e.target.value) || -100 })}
-                                className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
+                                type="text"
+                                value={formatNumberWithCommas(formData.min_points ?? -100)}
+                                onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
                                 dir="ltr"
                             />
                         </div>
                         <div>
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('max_points_label')}</label>
                             <input
-                                type="number"
-                                value={formData.max_points ?? 1000}
-                                onChange={e => updateForm({ max_points: parseInt(e.target.value) || 1000 })}
-                                className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
+                                type="text"
+                                value={formatNumberWithCommas(formData.max_points ?? 1000)}
+                                onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
                                 dir="ltr"
                             />
                         </div>
                         <div>
                             <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points_step_label')}</label>
                             <input
-                                type="number"
-                                value={formData.points_step ?? 5}
-                                onChange={e => updateForm({ points_step: parseInt(e.target.value) || 5 })}
-                                className="w-full bg-slate-900 border border-slate-600 rounded-[var(--radius-main)] p-2 text-white text-center font-bold"
+                                type="text"
+                                value={formatNumberWithCommas(formData.points_step ?? 5)}
+                                onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
                                 dir="ltr"
                             />
                         </div>
@@ -393,12 +417,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <label className="block text-slate-400 text-xs font-bold mb-2">{t('existing_buttons')}</label>
                         <div className="flex flex-wrap gap-2 mb-6">
                             {(formData.score_presets || []).map((preset, idx) => (
-                                <div key={idx} className="bg-slate-800 border border-slate-600 rounded-[var(--radius-main)] px-3 py-1 flex items-center gap-2">
+                                <div key={idx} className="bg-slate-800 border border-white/10 rounded-[var(--radius-main)] px-3 py-1 flex items-center gap-2 shadow-sm">
                                     <span className="text-sm font-bold text-white">{preset.label}</span>
                                     <span className="text-xs bg-black/30 px-1.5 rounded-[var(--radius-main)] text-yellow-300 font-mono">
                                         <FormattedNumber value={preset.value} forceSign={true} />
                                     </span>
-                                    <button type="button" onClick={() => removePreset(idx)} className="text-slate-500 hover:text-red-400"><XIcon className="w-3 h-3" /></button>
+                                    <button type="button" onClick={() => removePreset(idx)} className="text-slate-500 hover:text-red-400 transition-colors"><XIcon className="w-3 h-3" /></button>
                                 </div>
                             ))}
                         </div>
@@ -406,23 +430,23 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
                     <div className="border-t border-white/5 pt-4">
                         <h4 className="text-sm font-bold text-slate-300 mb-3">{t('add_new_button')}</h4>
-                        <div className="flex gap-2 items-end bg-black/20 p-3 rounded-[var(--radius-main)]">
+                        <div className="flex gap-2 items-end bg-black/20 p-3 rounded-[var(--radius-main)] border border-white/5">
                             <div className="flex-1">
                                 <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] px-2 py-1 text-white text-sm" placeholder="למשל: מבחן" />
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500/50" placeholder="למשל: מבחן" />
                             </div>
                             <div className="w-24">
                                 <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points')}</label>
                                 <input
-                                    type="number"
-                                    value={newPresetValue || ''}
-                                    onChange={e => setNewPresetValue(e.target.value)}
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-[var(--radius-main)] px-2 py-1 text-white text-sm font-bold text-center"
+                                    type="text"
+                                    value={formatNumberWithCommas(newPresetValue || '')}
+                                    onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
+                                    className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm font-bold text-center outline-none focus:border-blue-500/50"
                                     placeholder="10"
                                     dir="ltr"
                                 />
                             </div>
-                            <button type="button" onClick={handleAddPreset} className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-[var(--radius-main)] font-bold text-sm h-[30px] flex items-center">
+                            <button type="button" onClick={handleAddPreset} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-[var(--radius-main)] font-bold text-sm h-[38px] flex items-center transition-all active:scale-95 shadow-lg">
                                 {t('add')}
                             </button>
                         </div>
@@ -455,6 +479,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     </AnimatePresence>
                 </div>
             )}
+
+            <ConfirmationModal 
+                isOpen={modalConfig.isOpen} 
+                title={modalConfig.title} 
+                message={modalConfig.message} 
+                onConfirm={modalConfig.onConfirm} 
+                onCancel={() => closeConfirmation()} 
+            />
 
         </div>
     );
