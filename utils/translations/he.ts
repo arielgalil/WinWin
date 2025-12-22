@@ -29,8 +29,8 @@ export const he = {
     debug_tip: "טיפ: אם יש שגיאה אדומה בעדכון ניקוד, העתק את הלוגיקה ושלח אותה לתיקון.",
     copied_to_clipboard: "הועתק ללוח! 📋",
     
-    // Navigation / Tabs
-    tab_points: "ניהול ניקוד",
+// Navigation / Tabs
+    tab_points: "ניקוד ומצב קבוצתי",
     tab_school: "ניהול תחרות",
     tab_ai: "בינה מלאכותית",
     tab_goals: "ניהול יעדים",
@@ -41,6 +41,10 @@ export const he = {
     tab_data: "ניהול נתונים",
     tab_my_class: "מצב קבוצתי",
     tab_keypad: "מקלדת נקודות",
+    
+    
+    
+
     
     // Admin Sidebar
     role_super_user: "משתמש על",
@@ -204,6 +208,7 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     
     // Action Log & AI Summary
     activity_log_and_ai_title: "יומן פעילות ו-AI",
+    settings_title: "הגדרות תחרות",
     activity_log_and_ai_description: "מעקב אחר כלל פעולות הניקוד במערכת וניתוח חכם של המגמות.",
     activity_history_title: "היסטוריית פעולות",
     time: "זמן",
@@ -229,7 +234,8 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     cancel_short: "לבטל",
     modify_action_title: "%{action} פעולה",
     modify_action_confirm: "האם אתה בטוח שברצונך %{action} פעולה זו? הניקוד יתעדכן בהתאם.",
-    action_completed_successfully: "בוצע בהצלחה",
+    action_completed_successfully: "הפעולה הושלמה בהצלחה",
+    
     error_prefix: "שגיאה: %{error}",
     update_error_prefix: "שגיאה בעדכון: %{error}",
     edit_action: "ערוך פעולה",

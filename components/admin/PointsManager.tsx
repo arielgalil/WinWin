@@ -44,7 +44,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   const teacherClasses = isAdmin ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')) : classes.filter(c => c.id === user.class_id);
 
   return (
-    <div className="max-w-6xl mx-auto h-full flex flex-col gap-6 px-4">
+    <div className="max-w-none mx-auto h-full flex flex-col gap-8 px-6 lg:px-8">
       <AnimatePresence>
         {toast && (
           <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black bg-slate-800 border border-white/20 text-white flex items-center gap-3 backdrop-blur-xl">

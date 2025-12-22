@@ -26,7 +26,7 @@ export const en = {
     copied_to_clipboard: "Copied to clipboard! 📋",
 
     // Navigation / Tabs
-    tab_points: "Points Management",
+    tab_points: "Points & Class Status",
     tab_school: "School Settings",
     tab_ai: "Artificial Intelligence",
     tab_goals: "Goals Management",
@@ -34,9 +34,15 @@ export const en = {
     tab_classes: "Groups Management",
     tab_messages: "Ticker Messages",
     tab_logs: "Activity Log & AI",
-    tab_data: "Data Management",
+tab_data: "Data Management",
     tab_my_class: "My Group Status",
     tab_keypad: "Points Keypad",
+    
+    // Updated Admin Navigation
+    tab_settings: "Settings",
+    tab_data_management: "Data Management",
+    
+    
 
     // Admin Sidebar
     role_super_user: "Super User (Global Admin)",
