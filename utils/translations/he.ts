@@ -208,7 +208,6 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     
     // Action Log & AI Summary
     activity_log_and_ai_title: "יומן פעילות ו-AI",
-    settings_title: "הגדרות תחרות",
     activity_log_and_ai_description: "מעקב אחר כלל פעולות הניקוד במערכת וניתוח חכם של המגמות.",
     activity_history_title: "היסטוריית פעולות",
     time: "זמן",
