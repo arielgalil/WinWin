@@ -100,7 +100,6 @@ export const useScoreEntry = (initialClassId: string | null) => {
       if (isGroupScore) {
           await addPoints({ 
             classId: selectedClassId, 
-            studentId: undefined, 
             points, 
             teacherName: teacherFullName,
             note

@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "analyze": "ANALYZE=true npm run build",
+    "build": "tsc && vite build"
+  }
+}

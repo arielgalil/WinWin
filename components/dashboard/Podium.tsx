@@ -19,7 +19,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
 
   return (
     <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-2xl border-white/10 bg-black/20 overflow-hidden h-full min-h-[320px] [isolation:isolate]">
-      <h2 className="text-sm md:text-[clamp(0.8rem,1vw,1rem)] font-bold text-white/90 flex items-center shrink-0 px-5 h-11 bg-white/5 border-b border-white/5 backdrop-blur-md">
+      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-11 bg-white/5 border-b border-white/5 backdrop-blur-md">
         <div className="p-1.5 bg-yellow-500/10 rounded-[var(--radius-main)] border border-yellow-500/20 ml-3">
           <CrownIcon className="w-3.5 h-3.5 text-yellow-400" />
         </div>

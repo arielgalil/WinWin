@@ -16,6 +16,7 @@ interface MissionMeterProps {
     legacyTargetScore?: number;
     legacyImageUrl?: string | null;
     competitionName: string;
+    topContributors?: string[];
 }
 
 export const MissionMeter: React.FC<MissionMeterProps> = ({
@@ -23,7 +24,8 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     goals,
     legacyTargetScore,
     legacyImageUrl,
-    competitionName
+    competitionName,
+    topContributors = []
 }) => {
     const { t } = useLanguage();
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
@@ -125,21 +127,18 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
         image_type: 'upload',
         image_value: legacyImageUrl
     };
-    const prevTarget = displayIndex > 0 ? sortedGoals[displayIndex - 1].target_score : 0;
+    
     const isCelebrationMode = celebratingGoalIndex !== null;
 
     let progressPct = 0;
     if (isCelebrationMode) {
         progressPct = 1;
     } else if (sortedGoals.length > 0) {
-        const stageRange = displayGoal.target_score - prevTarget;
-        const scoreInStage = Math.max(0, totalScore - prevTarget);
-        const raw = stageRange > 0 ? scoreInStage / stageRange : 0;
+        // Absolute cumulative progress towards current target
+        const raw = displayGoal.target_score > 0 ? totalScore / displayGoal.target_score : 0;
         progressPct = Math.min(Math.max(raw, 0), 1);
     } else if (legacyTargetScore) {
-        const stageRange = legacyTargetScore;
-        const scoreInStage = Math.max(0, totalScore);
-        const raw = stageRange > 0 ? scoreInStage / stageRange : 0;
+        const raw = legacyTargetScore > 0 ? totalScore / legacyTargetScore : 0;
         progressPct = Math.min(Math.max(raw, 0), 1);
     }
 
@@ -149,48 +148,52 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const progressOffset = pathLength > 0 ? pathLength * (1 - progressPct) : 0;
 
     // Multi-Iris Calibrated Reveal
-    // k = sqrt(Progress / (pi * sum(w^2))) * boost
-    // using heuristic boost 0.8 to map roughly to unit square area
     const sumWeightsSq = irises.reduce((acc, iris) => acc + iris.weight * iris.weight, 0) || 1;
-    // Strict Area: Area = Progress. k = sqrt(Progress / (pi * sum(w^2)))
     const baseK = Math.sqrt(progressPct / (Math.PI * sumWeightsSq));
 
     // If complete, force full reveal
     const finalK = (isCelebrationMode || progressPct >= 1) ? 2.0 : baseK;
 
-    const rtlPathData = "M 140 90 C 130 10, 20 90, 10 10";
+    
 
     const headerText = sortedGoals.length > 0
         ? `${t('stage')} ${displayIndex + 1}: ${displayGoal.name}`
         : competitionName;
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [layout, setLayout] = useState<'row' | 'col'>('row');
-
-    useEffect(() => {
-        if (!containerRef.current) return;
-        const observer = new ResizeObserver(entries => {
-            const entry = entries[0];
-            if (entry) {
-                const { width, height } = entry.contentRect;
-                // Switch to column layout if aspect ratio is close to square or portrait
-                setLayout(width / height > 1.2 ? 'row' : 'col');
-            }
-        });
-        observer.observe(containerRef.current);
-        return () => observer.disconnect();
+    const celebrationEmoji = useMemo(() => {
+        const emojis = ['🏆', '🥇', '👑', '⭐', '✨'];
+        return emojis[Math.floor(Math.random() * emojis.length)];
     }, []);
 
-    const isRow = layout === 'row';
+    const shoutoutMessage = useMemo(() => {
+        if (!topContributors || topContributors.length === 0) return null;
+
+        const names = topContributors.length > 1
+            ? `${topContributors.slice(0, -1).join(', ')} ו-${topContributors[topContributors.length - 1]}`
+            : topContributors[0];
+
+        const templates = [
+            `כל הכבוד ל${names}!`,
+            `שאפו ל${names} שמעלים את הרף!`,
+            `${names} מובילים אותנו ליעד!`,
+            `תראו את ${names} משקיעים ומצליחים!`,
+            `הכוח של ${names} מקדם את כולנו!`
+        ];
+
+        return templates[Math.floor(Math.random() * templates.length)];
+    }, [topContributors]);
+
+    const containerRef = useRef<HTMLDivElement>(null);
 
     return (
         <div ref={containerRef} className={`
-        glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-xl border-white/10 overflow-hidden h-full min-h-[200px] transition-all duration-700 [isolation:isolate]
+        glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[480px] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
-                : 'bg-slate-900/40'
+                : 'bg-slate-900/50'
             }
     `}>
+            {/* Header */}
             <div className="flex justify-between items-center shrink-0 z-10 w-full px-5 h-11 bg-white/10 border-b border-white/10 backdrop-blur-md">
                 <div className="flex items-center min-w-0">
                     <div className={`p-1 rounded-full border ml-2 backdrop-blur-sm transition-all duration-500 shrink-0
@@ -200,7 +203,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                         }`}>
                         <TargetIcon className={`w-3 h-3 ${isCelebrationMode ? 'text-black' : 'text-orange-400'}`} />
                     </div>
-                    <h2 className="text-xs md:text-sm font-black text-white truncate">
+                    <h2 className="text-sm font-black text-white truncate uppercase tracking-tight">
                         {headerText}
                     </h2>
                 </div>
@@ -213,46 +216,22 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                 )}
             </div>
 
-            <div className={`flex-1 w-full flex ${isRow ? 'flex-row items-center' : 'flex-col items-stretch'} justify-between gap-4 relative min-h-0 p-4 lg:p-5 overflow-hidden`}>
-                {/* Graph & Text Container */}
-                <div className={`${isRow ? 'w-1/2 h-full' : 'flex-1'} flex flex-col items-center justify-center text-center overflow-hidden min-h-0 order-2 ${isRow ? '' : 'order-2'}`}>
-                    {/* SVG graph takes available space */}
-                    <div className="flex-1 w-full min-h-0 flex items-center justify-center relative">
-                        <svg viewBox="0 0 150 100" preserveAspectRatio="xMidYMid meet" className="w-full h-full max-h-[160px]">
-                            {/* Shifted path down slightly to use more vertical space if needed */}
-                            <path d={rtlPathData} fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="12" strokeLinecap="round" />
-                            <MotionPath ref={pathRef} d={rtlPathData} fill="none" stroke="#22c55e" strokeWidth="12" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 1.5, ease: "easeInOut" }} />
-                        </svg>
+            <div className="flex-1 flex flex-col p-3 sm:p-4 lg:p-6 gap-3 sm:gap-4 min-h-0">
 
-                        {/* Centered Percentage Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center mt-4 pointer-events-none">
-                            <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-none tracking-tighter drop-shadow-lg">
-                                <AnimatedCounter value={percentDisplay} suffix="%" />
-                            </h3>
+                {/* 1. Centered Image (Top) - 60% Height */}
+                <div className="flex-[1.5] flex items-center justify-center">
+                    <div className="relative h-full aspect-square max-h-full group shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20 bg-black/60">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white">?</span>
                         </div>
-                    </div>
-
-                    {/* Bottom Info text - compact */}
-                    <div className="shrink-0 mt-2 z-10">
-                        <div className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">{t('progress')}</div>
-                        <div className={`text-[10px] sm:text-xs font-bold h-4 truncate w-full ${isCompleted ? 'text-white animate-pulse' : 'text-slate-300'}`}>
-                            {isCompleted ? t('goal_achieved') : `${t('more_points')} ${missingPoints.toLocaleString()}`}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Target Image Container */}
-                <div className={`${isRow ? 'w-1/2 h-full' : 'flex-[1.2] min-h-0'} flex items-center justify-center order-1 ${isRow ? '' : 'order-1'} overflow-hidden`}>
-                    <div className={`relative h-full aspect-square max-h-full ${isRow ? '' : 'w-auto'}`}>
-                        <div className="absolute inset-0 bg-black/30 rounded-[var(--radius-main)] border-2 border-dashed border-white/20 flex items-center justify-center shadow-inner">
-                            <span className="text-4xl text-white/10 font-black">?</span>
-                        </div>
-                        <div className="absolute inset-0 rounded-[var(--radius-main)] overflow-hidden" style={{ mask: 'url(#iris-mask)', WebkitMask: 'url(#iris-mask)' }}>
+                        <div className="absolute inset-0" style={{ mask: 'url(#iris-mask)', WebkitMask: 'url(#iris-mask)' }}>
                             {displayGoal.image_type === 'upload' && displayGoal.image_value ? (
-                                <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover" />
+                                <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-black/40">
-                                    <span className="text-4xl md:text-6xl filter drop-shadow-xl">{displayGoal.image_value || '🏆'}</span>
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-600/30 to-purple-600/30">
+                                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl filter drop-shadow-2xl brightness-125">
+                                        {displayGoal.image_value || '🏆'}
+                                    </span>
                                 </div>
                             )}
                         </div>
@@ -261,19 +240,64 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
                                 <mask id="iris-mask" maskContentUnits="objectBoundingBox">
                                     <rect width="1" height="1" fill="black" />
                                     {irises.map((iris, i) => (
-                                        <MotionCircle
-                                            key={i}
-                                            cx={iris.cx}
-                                            cy={iris.cy}
-                                            fill="white"
-                                            initial={{ r: 0 }}
-                                            animate={{ r: finalK * iris.weight }}
-                                            transition={{ duration: 2, ease: 'easeOut', delay: isFirstMountRef.current ? 0 : iris.delay }}
-                                        />
+                                        <MotionCircle key={i} cx={iris.cx} cy={iris.cy} fill="white" initial={{ r: 0 }} animate={{ r: finalK * iris.weight }} transition={{ duration: 2.5, ease: [0.34, 1.56, 0.64, 1], delay: isFirstMountRef.current ? 0 : iris.delay }} />
                                     ))}
                                 </mask>
                             </defs>
                         </svg>
+                    </div>
+                </div>
+
+                {/* 2. Stats Section (2 Columns) - 40% Height */}
+                <div className="flex-1 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6 pt-3 sm:pt-4" dir="rtl">
+
+                    {/* Visual Progress Column (Visually Right) */}
+                    <div className="flex flex-col items-center justify-center">
+                        {/* Higher Visibility Path with Percentage */}
+                        <div className="relative w-full h-32 flex flex-col items-center justify-center">
+                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-24 drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">
+                                <defs>
+                                    <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
+                                        <stop offset="0%" stopColor="#4ade80" />
+                                        <stop offset="100%" stopColor="#22c55e" />
+                                    </linearGradient>
+                                </defs>
+                                {/* Future Path: Highly Visible Trail */}
+                                <path d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="16" strokeLinecap="round" strokeDasharray="4 8" />
+                                <MotionPath ref={pathRef} d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="url(#progress-gradient)" strokeWidth="16" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 2, ease: "easeInOut" }} />
+                            </svg>
+                            {/* Percentage: Aligned below the path line */}
+                            <div className="absolute bottom-2 flex items-center gap-1">
+                                <span className="text-base sm:text-lg md:text-xl font-black text-white/90">%</span>
+                                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
+                                    <AnimatedCounter value={percentDisplay} />
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Content Logic Column (Visually Left) */}
+                    <div className="flex flex-col justify-center items-start">
+                        {isCompleted && displayIndex === sortedGoals.length - 1 ? (
+                            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white drop-shadow-lg animate-bounce py-2">
+                                הגעתם יחד לשיא! {celebrationEmoji}
+                            </div>
+                        ) : (
+                            <>
+                                <div className="text-[10px] xs:text-xs sm:text-sm font-black text-white/90 mb-0.5 brightness-125">
+                                    {t('more_points')} {missingPoints.toLocaleString()} {t('points_short')}
+                                </div>
+                                <div className="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white mb-2 drop-shadow-xl">
+                                    {t('to_stage')} {displayIndex + 1}!
+                                </div>
+                            </>
+                        )}
+
+                        {shoutoutMessage && (
+                            <div className="mt-1 text-[8px] xs:text-[9px] sm:text-[10px] font-bold text-green-300 italic leading-tight border-r-2 border-green-500/40 pr-1 sm:pr-2 drop-shadow-sm max-w-[80px] xs:max-w-[100px] sm:max-w-[120px] animate-in fade-in slide-in-from-right duration-1000">
+                                "{shoutoutMessage}"
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

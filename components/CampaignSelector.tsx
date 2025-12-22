@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedNumber } from './ui/FormattedNumber';
 import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
+import { VersionFooter } from './ui/VersionFooter';
 
 const { useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -90,7 +91,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                 <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] bg-sky-200/20 blur-[120px] rounded-full" />
             </div>
 
-            <main className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-8 md:px-8 md:pt-12 flex-1 pb-10 rtl:text-right ltr:text-left">
+            <main className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-8 md:px-8 md:pt-12 flex-1 pb-0 rtl:text-right ltr:text-left">
                 <div className="flex flex-row items-center justify-start gap-5 md:gap-8 mb-12">
                     <MotionDiv initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-20 h-20 md:w-28 md:h-28 bg-white rounded-full shadow-[0_15px_35px_rgba(16,185,129,0.1)] flex items-center justify-center text-emerald-500 border-4 border-white shrink-0 overflow-hidden relative">
                         <div className="absolute inset-0 bg-emerald-50/30" />
@@ -176,6 +177,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                     )}
                 </AnimatePresence>
             </main>
+            <VersionFooter />
         </div>
     );
 };

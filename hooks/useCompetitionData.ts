@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
@@ -59,6 +59,8 @@ export const useCompetitionData = (slugOverride?: string) => {
       })) as ClassRoom[];
     },
     enabled: !!campaignId,
+    refetchInterval: 3000, // Refresh every 3 seconds for near real-time updates
+    staleTime: 1000, // Consider data stale after 1 second
   });
 
   const { data: tickerMessages = [] } = useQuery({
@@ -100,76 +102,34 @@ export const useCompetitionData = (slugOverride?: string) => {
     queryClient.invalidateQueries({ queryKey: ['settings', campaignId] });
   }, [queryClient, campaignId]);
 
-  useEffect(() => {
-    if (!campaignId) return;
-    
-    // Explicitly listen to changes in key tables to ensure real-time updates work reliably
-    const channel = supabase.channel(`realtime_${campaignId}`)
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'classes', 
-        filter: `campaign_id=eq.${campaignId}` 
-      }, (payload) => {
-        console.log("Realtime: Classes update received", payload);
-        invalidate();
-      })
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'students', 
-        filter: `campaign_id=eq.${campaignId}` 
-      }, () => invalidate())
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'action_logs', 
-        filter: `campaign_id=eq.${campaignId}` 
-      }, () => invalidate())
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'app_settings', 
-      }, (payload) => {
-        console.log("Realtime: Settings update received", payload);
-        invalidate();
-      })
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'ticker_messages', 
-        filter: `campaign_id=eq.${campaignId}` 
-      }, () => invalidate())
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'campaigns', 
-      }, (payload) => {
-        console.log("Realtime: Campaign update received", payload);
-        invalidate();
-      })
-      .subscribe((status) => {
-        console.log(`Realtime subscription status for ${campaignId}:`, status);
-      });
-
-    return () => { 
-      supabase.removeChannel(channel); 
-    };
-  }, [campaignId, invalidate]);
+  // Realtime subscriptions moved to useRealtimeSubscriptions hook to avoid duplication
 
   const addPoints = async (payload: { classId: string; studentId?: string; points: number; teacherName: string; note?: string }) => {
-    const { error } = await supabase.rpc('add_score_transaction', {
-        p_class_id: payload.classId,
-        p_student_id: payload.studentId,
-        p_points: payload.points,
-        p_teacher_name: payload.teacherName,
-        p_note: payload.note,
-        p_campaign_id: campaignId
-    });
+    // Build parameters object, excluding undefined values
+    const rpcParams: any = {
+      p_class_id: payload.classId,
+      p_points: payload.points,
+      p_teacher_name: payload.teacherName,
+      p_campaign_id: campaignId
+    };
+
+    // Always include these parameters, passing NULL explicitly when needed
+    rpcParams.p_student_id = payload.studentId || null;
+    rpcParams.p_note = payload.note || null;
+
+    console.log("Calling add_score_transaction with params:", rpcParams);
+    
+    const { error } = await supabase.rpc('add_score_transaction', rpcParams);
     if (error) {
       console.error("RPC Point Transaction Error:", error);
       throw error;
     }
+    
+    // Immediate refresh for critical data
+    await queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
+    await queryClient.refetchQueries({ queryKey: ['classes', campaignId] });
+    
+    // Also refresh other related data
     invalidate();
   };
 
@@ -262,7 +222,11 @@ export const useCompetitionData = (slugOverride?: string) => {
     updateClassTarget,
     updateSettingsGoals,
     toggleFreeze,
-    refreshData: invalidate,
+    refreshData: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
+      await queryClient.refetchQueries({ queryKey: ['classes', campaignId] });
+      invalidate();
+    },
     loadMoreLogs,
     notification: null
   };

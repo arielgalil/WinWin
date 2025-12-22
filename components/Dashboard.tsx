@@ -13,6 +13,8 @@ import { BackgroundMusic } from './dashboard/BackgroundMusic';
 import { useCompetitionEvents } from '../hooks/useCompetitionEvents';
 import { calculateClassStats, calculateStudentStats } from '../utils/rankingUtils';
 import { ShareableLeaderboard } from './dashboard/ShareableLeaderboard';
+import { VersionFooter } from './ui/VersionFooter';
+import { DashboardErrorBoundary } from './ui/ErrorBoundaries';
 
 interface DashboardProps {
     classes: ClassRoom[];
@@ -50,14 +52,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
         calculateStudentStats(classes),
         [classes]);
 
-    const isFrozen = (!isCampaignActive || settings.is_frozen) && !isSuperUser;
+    const isFrozen = (!isCampaignActive || !!settings.is_frozen) && !isSuperUser;
 
-    const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
+    const { activeBurst, setActiveBurst, highlightClassId, topContributors } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
         totalInstitutionScore,
         settings.goals_config || [],
-        studentsWithStats.slice(0, 5),
         settings,
         isFrozen,
         onUpdateCommentary
@@ -66,12 +67,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
 
     return (
-        <GradientBackground
-            primaryColor={settings.primary_color}
-            secondaryColor={settings.secondary_color}
-            brightness={settings.background_brightness}
-        >
-            <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-2">
+        <DashboardErrorBoundary>
+            <GradientBackground
+                primaryColor={settings.primary_color}
+                secondaryColor={settings.secondary_color}
+                brightness={settings.background_brightness}
+            >
+                <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-0">
                 <FrozenOverlay isFrozen={isFrozen} />
                 <BackgroundMusic
                     url={settings.background_music_url}
@@ -89,30 +91,29 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     />
                 )}
 
-                <div className="flex-1 overflow-y-auto lg:overflow-hidden flex flex-col gap-2 max-w-[1920px] mx-auto w-full custom-scrollbar">
+                <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col gap-2 max-w-[1920px] mx-auto w-full custom-scrollbar">
                     <div className="shrink-0 z-20">
                         <DashboardHeader
                             settings={settings}
                             commentary={commentary}
                             customMessages={tickerMessages}
                             totalInstitutionScore={totalInstitutionScore}
-                            isMusicPlaying={isMusicPlaying}
-                            setIsMusicPlaying={setIsMusicPlaying}
                         />
                     </div>
 
-                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:flex-1 min-h-0 lg:overflow-hidden pb-0">
+                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:overflow-hidden pb-0">
                         <div className="order-1 lg:order-2 flex flex-col min-h-[340px] lg:min-h-0 lg:overflow-hidden">
                             <Podium top3Classes={top3Classes} />
                         </div>
 
-                        <div className="order-2 lg:order-1 flex flex-col min-h-[280px] lg:min-h-0 lg:overflow-hidden">
+                        <div className="order-2 lg:order-1 flex flex-col min-h-[480px] lg:overflow-hidden">
                             <MissionMeter
                                 totalScore={totalInstitutionScore}
                                 goals={settings.goals_config || []}
                                 legacyTargetScore={settings.target_score}
                                 legacyImageUrl={settings.logo_url}
                                 competitionName={settings.competition_name}
+                                topContributors={topContributors}
                             />
                         </div>
 
@@ -131,7 +132,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                     </div>
                 </div>
+                <VersionFooter musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }} />
             </div>
-        </GradientBackground>
-    );
+                </GradientBackground>
+            </DashboardErrorBoundary>
+        );
 };

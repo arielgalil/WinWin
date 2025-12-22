@@ -67,7 +67,9 @@ export const PointsKeypad: React.FC<PointsKeypadProps> = ({
                             key={idx}
                             type="button"
                             onClick={() => setPoints(preset.value)}
-                            className={`px-4 py-3 rounded-xl border border-white/10 text-white font-bold transition-all hover:scale-105 active:scale-95 flex flex-col items-center min-w-[80px]
+                            aria-pressed={points === preset.value}
+                            aria-label={`${preset.label}: ${preset.value} points`}
+                            className={`px-4 py-3 rounded-xl border border-white/10 text-white font-bold transition-all hover:scale-105 active:scale-95 flex flex-col items-center min-w-[80px] focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent outline-none
                                 ${points === preset.value
                                     ? isPresetNegative
                                         ? 'bg-red-600 border-red-400 shadow-lg'
@@ -88,14 +90,15 @@ export const PointsKeypad: React.FC<PointsKeypadProps> = ({
                 <button type="button" onClick={() => handlePointsChange(points + stepSize)} className="w-12 h-12 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg active:scale-95 transition-transform">+</button>
 
                 <div className="bg-slate-900 border border-slate-700 rounded-2xl w-32 h-16 flex flex-col items-center justify-center relative">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider absolute top-1">{t('points_label')}</span>
+                    <span className="text-xs text-slate-500 font-bold uppercase tracking-wider absolute top-1">{t('points_label')}</span>
                     <input
                         type="text"
                         inputMode="decimal"
                         value={points === 0 ? '' : points.toString()}
                         onChange={handleManualInputChange}
                         placeholder="0"
-                        className={`bg-transparent text-center text-3xl font-black w-full outline-none appearance-none mt-1 ${isNegative ? 'text-red-400' : 'text-white'}`}
+                        aria-label={`${t('points_label')} ${points}`}
+                        className={`bg-transparent text-center text-3xl font-black w-full outline-none appearance-none mt-1 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:ring-offset-slate-900 rounded-xl ${isNegative ? 'text-red-400' : 'text-white'}`}
                         dir="ltr"
                     />
                 </div>

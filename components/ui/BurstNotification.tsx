@@ -84,7 +84,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDi
             {data && theme && (
                 <MotionDiv
                     key="burst-container"
-                    className="fixed inset-0 z-[200] flex items-center justify-center p-4 pointer-events-auto"
+                    className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4 pointer-events-auto"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -111,13 +111,13 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDi
                             stiffness: 300,
                             damping: 30
                         }}
-                        className={`relative w-full max-w-lg h-[70vh] md:h-[65vh] ${theme.bg} rounded-[4rem] p-2 shadow-[0_0_120px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col`}
+                        className={`relative w-full max-w-[90vw] sm:max-w-lg h-[60vh] sm:h-[65vh] ${theme.bg} rounded-[2rem] sm:rounded-[4rem] p-1.5 sm:p-2 shadow-[0_0_120px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col`}
                     >
                         {/* Inner Container */}
-                        <div className="bg-black/10 w-full h-full rounded-[3.5rem] p-8 flex flex-col items-center justify-center gap-8 backdrop-blur-lg border border-white/20 relative overflow-hidden text-center">
+                        <div className="bg-black/10 w-full h-full rounded-[1.5rem] sm:rounded-[3.5rem] p-3 sm:p-4 md:p-6 lg:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 backdrop-blur-lg border border-white/20 relative overflow-hidden text-center">
 
                             {/* Rotating Icon Section */}
-                            <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center shrink-0">
+                            <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 flex items-center justify-center shrink-0">
                                 {/* Outer Slow Ring */}
                                 <MotionDiv
                                     animate={{ rotate: 360 }}
@@ -162,7 +162,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDi
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3 }}
-                                    className="text-2xl md:text-3xl font-bold text-white/80 uppercase tracking-[0.2em] drop-shadow-md"
+                                    className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-white/90 uppercase tracking-[0.1em] drop-shadow-md"
                                 >
                                     {data.title}
                                 </MotionH2>
@@ -171,7 +171,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDi
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: 0.4 }}
-                                    className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] break-words w-full"
+                                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] break-words w-full"
                                 >
                                     {data.subTitle}
                                 </MotionH3>

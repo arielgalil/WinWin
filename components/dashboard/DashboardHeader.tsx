@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppSettings, TickerMessage } from '../../types';
-import { SparklesIcon, SproutIcon, MusicIcon, Volume2Icon, VolumeXIcon } from '../ui/Icons';
+import { SparklesIcon, SproutIcon } from '../ui/Icons';
 import { generateFillerMessages } from '../../services/geminiService';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { Logo } from '../ui/Logo';
@@ -16,12 +16,10 @@ interface DashboardHeaderProps {
     commentary: string;
     customMessages: TickerMessage[];
     totalInstitutionScore: number;
-    isMusicPlaying?: boolean;
-    setIsMusicPlaying?: (playing: boolean) => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-    settings, commentary, customMessages, totalInstitutionScore, isMusicPlaying, setIsMusicPlaying
+    settings, commentary, customMessages, totalInstitutionScore
 }) => {
     const { t } = useLanguage();
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -87,10 +85,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
     return (
         <div className="flex flex-col gap-2 w-full">
-            <div className="flex flex-col lg:flex-row items-stretch gap-2.5 z-10 shrink-0">
+            <div className="flex flex-row flex-wrap lg:flex-nowrap items-stretch gap-2.5 z-10 shrink-0">
 
                 {/* 1. Brand Card (Right) */}
-                <div className="flex items-center justify-center px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
+                <div className="order-1 flex items-center justify-start px-3 lg:px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex items-center gap-3 min-w-0 rtl:flex-row ltr:flex-row">
                         <Logo
                             src={settings.logo_url}
@@ -105,15 +103,15 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             >
                                 {settings.competition_name}
                             </h1>
-                            <p className="text-white font-bold text-[9px] md:text-[10px] tracking-tight truncate leading-none opacity-50">
+                            <p className="text-white font-bold text-sm md:text-base tracking-tight truncate leading-none text-slate-400">
                                 {settings.school_name}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* 2. Ticker Card (Center) */}
-                <div className="flex-1 relative overflow-hidden px-8 py-2 min-h-[40px] lg:min-h-0 flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
+                {/* 2. Ticker Card (Center on Desktop, Bottom on Mobile) */}
+                <div className="order-3 lg:order-2 w-full lg:flex-1 relative overflow-hidden px-8 py-2 min-h-[45px] lg:min-h-0 flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
                     <AnimatePresence mode="wait">
                         <MotionDiv
                             key={`${currentIndex}-${chunkIdx}`}
@@ -140,15 +138,15 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     {chunks.length > 1 && (
                         <div className="absolute rtl:right-3 ltr:left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
                             {chunks.map((_, idx) => (
-                                <div key={idx} className={`w-1 h-1 rounded-full transition-all duration-300 ${idx === chunkIdx ? 'bg-white h-2.5 shadow-[0_0_5px_white]' : 'bg-white/20'}`} />
+                                <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === chunkIdx ? 'bg-white h-2.5 shadow-[0_0_5px_white]' : 'bg-white/20'}`} />
                             ))}
                         </div>
                     )}
                 </div>
 
                 {/* 3. Global Score (Left) */}
-                <div className="flex items-center justify-center gap-4 px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 lg:flex-initial lg:min-w-[260px]">
-                    <div className="flex flex-col items-center lg:items-end justify-center leading-none">
+                <div className="order-2 lg:order-3 flex items-center justify-end rtl:mr-auto ltr:ml-auto gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
+                    <div className="flex flex-col items-end justify-center leading-none">
                         <div className="flex items-center gap-2 text-[9px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>
                             <span className="text-emerald-400">{t('together')}</span>
@@ -163,15 +161,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     </div>
                 </div>
 
-                {/* 4. Music Toggle (Optional) */}
-                {settings.background_music_url && (
-                    <button
-                        onClick={() => setIsMusicPlaying?.(!isMusicPlaying)}
-                        className={`flex items-center justify-center w-[55px] lg:w-[65px] rounded-[var(--radius-container)] border transition-all duration-300 shadow-xl ${isMusicPlaying ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-black/40 border-white/10 text-white/40'}`}
-                    >
-                        {isMusicPlaying ? <Volume2Icon className="w-6 h-6 animate-pulse" /> : <VolumeXIcon className="w-6 h-6" />}
-                    </button>
-                )}
+                
             </div>
         </div>
     );

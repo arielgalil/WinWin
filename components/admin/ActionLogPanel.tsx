@@ -196,11 +196,11 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                         <tr key={log.id} className={`transition-all duration-300 group ${isCancelled ? 'bg-red-950/40 grayscale opacity-70' : 'hover:bg-white/5'}`}>
                                             <td className="p-4 text-slate-300 whitespace-nowrap text-xs font-bold leading-tight">
                                                 {new Date(log.created_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}<br />
-                                                <span className="text-[10px] opacity-70 font-black">{new Date(log.created_at).toLocaleTimeString(language === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                                                <span className="text-xs text-slate-400 font-black">{new Date(log.created_at).toLocaleTimeString(language === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-black text-white shadow-xl shrink-0 ${isMine ? 'bg-cyan-600 ring-2 ring-cyan-400/40' : 'bg-slate-700'}`}>
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black text-white shadow-xl shrink-0 ${isMine ? 'bg-cyan-600 ring-2 ring-cyan-400/40' : 'bg-slate-700'}`}>
                                                         {log.teacher_name?.charAt(0) || 'U'}
                                                     </div>
                                                     <span className={`font-black text-xs ${isCancelled ? 'text-slate-400 line-through' : isMine ? 'text-cyan-400' : 'text-white'}`}>
@@ -218,7 +218,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                             </td>
                                             <td className="p-4 text-center">
                                                 {isEditing ? (
-                                                    <input type="number" value={editForm.points} onChange={e => setEditForm({ ...editForm, points: Number(e.target.value) })} className="bg-slate-950 border border-indigo-500 rounded-lg px-2 py-1 text-white w-16 text-center font-black outline-none focus:ring-2 focus:ring-indigo-500/50" />
+                                                    <input 
+                                                        type="number" 
+                                                        value={editForm.points} 
+                                                        onChange={e => setEditForm({ ...editForm, points: Number(e.target.value) })} 
+                                                        aria-label="Edit points value"
+                                                        className="bg-slate-950 border border-indigo-500 rounded-lg px-2 py-1 text-white w-16 text-center font-black outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-1 focus:ring-offset-slate-900" 
+                                                    />
                                                 ) : (
                                                     <span className={`font-black px-3 py-1 rounded-lg text-xs tabular-nums border ${isCancelled ? 'bg-slate-800 text-slate-400 line-through border-transparent' : log.points > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}>
                                                         <FormattedNumber value={log.points} forceSign={true} />

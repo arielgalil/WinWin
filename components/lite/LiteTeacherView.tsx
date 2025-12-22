@@ -10,6 +10,7 @@ import { useScoreEntry } from '../../hooks/useScoreEntry';
 import { Logo } from '../ui/Logo';
 import { useLanguage } from '../../hooks/useLanguage';
 import { isAdmin as checkIsAdmin } from '../../config';
+import { VersionFooter } from '../ui/VersionFooter';
 
 const MotionDiv = motion.div as any;
 
@@ -84,7 +85,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
   return (
     <GradientBackground primaryColor={settings.primary_color} secondaryColor={settings.secondary_color} brightness={settings.background_brightness}>
-      <div className="relative flex-1 flex flex-col overflow-hidden min-h-0">
+      <div className="relative h-full w-full flex flex-col overflow-hidden min-h-0">
         <AnimatePresence>
           {toast && (
             <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-4 left-0 right-0 mx-auto w-fit z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black flex items-center gap-3 backdrop-blur-xl border border-white/20 ${toast.type === 'success' ? 'bg-green-600/90 text-white' : 'bg-red-600/90 text-white'}`}>
@@ -147,7 +148,14 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
               </div>
               {isEditingTarget ? (
                 <div className="flex gap-2">
-                  <input type="number" value={targetInputValue} onChange={e => setTargetInputValue(e.target.value)} className="flex-1 bg-black/40 border border-blue-500 rounded-[var(--radius-main)] px-3 py-2 text-white font-bold text-center outline-none ring-2 ring-blue-500/20" autoFocus />
+                  <input 
+                        type="number" 
+                        value={targetInputValue} 
+                        onChange={e => setTargetInputValue(e.target.value)} 
+                        aria-label="Set target score"
+                        className="flex-1 bg-black/40 border border-blue-500 rounded-[var(--radius-main)] px-3 py-2 text-white font-bold text-center outline-none ring-2 ring-blue-500/20 focus:ring-4 focus:ring-blue-500/40 focus:ring-offset-1 focus:ring-offset-black" 
+                        autoFocus 
+                    />
                   <button onClick={handleSaveTarget} className="bg-green-600 text-white px-5 rounded-[var(--radius-main)] font-bold active:scale-95 transition-all shadow-lg">{t('save')}</button>
                 </div>
               ) : (
@@ -177,6 +185,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
 
         <LiteActionDock selectedCount={selectedStudentIds.size} selectionLabel={selectionLabel} presets={settings.score_presets || []} onAction={(pts, note) => submitPoints(pts, user.full_name, note)} onClear={clearSelection} isProcessing={isProcessing} />
+        <VersionFooter />
       </div>
     </GradientBackground>
   );

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { BurstNotificationData, ClassRoom, CompetitionGoal, AppSettings } from '../types';
 import { generateCompetitionCommentary } from '../services/geminiService';
 import { useLanguage } from './useLanguage';
@@ -8,7 +8,6 @@ export const useCompetitionEvents = (
     studentsWithStats: any[],
     totalInstitutionScore: number,
     goals: CompetitionGoal[],
-    top5Students: any[],
     settings: AppSettings,
     isFrozen: boolean,
     onUpdateCommentary?: (text: string) => void
@@ -18,15 +17,18 @@ export const useCompetitionEvents = (
     const [activeBurst, setActiveBurst] = useState<BurstNotificationData | null>(null);
     const [spotlightQueue, setSpotlightQueue] = useState<string[]>([]);
     const [highlightClassId, setHighlightClassId] = useState<string | null>(null);
+    const [topContributors, setTopContributors] = useState<string[]>([]);
 
     const prevTotalScoreRef = useRef(totalInstitutionScore);
     const prevTopClassIdRef = useRef<string | null>(null);
     const prevScoresRef = useRef<Map<string, number>>(new Map());
     const isFirstRender = useRef(true);
     const isGeneratingAi = useRef(false);
+    const lastJumpTime = useRef(0);
+    
 
-    // AI Commentary Trigger logic
-    const triggerAiCommentary = async (eventDesc: string, note?: string) => {
+    // Debounced AI Commentary Trigger logic
+    const triggerAiCommentary = useCallback(async (eventDesc: string, note?: string, contributors?: string[]) => {
         if (!onUpdateCommentary || isGeneratingAi.current) return;
         isGeneratingAi.current = true;
         try {
@@ -36,15 +38,16 @@ export const useCompetitionEvents = (
                 settings,
                 totalInstitutionScore,
                 note,
-                language
+                language,
+                contributors
             );
             if (commentary) onUpdateCommentary(commentary);
         } catch (e) {
             console.error("AI automated commentary failed", e);
         } finally {
-            setTimeout(() => { isGeneratingAi.current = false; }, 10000); // Throttling
+            setTimeout(() => { isGeneratingAi.current = false; }, 5000); // Reduced to 5 seconds
         }
-    };
+    }, [onUpdateCommentary, sortedClasses, settings, totalInstitutionScore, language]);
 
     useEffect(() => {
         if (!activeBurst && burstQueue.length > 0) {
@@ -83,6 +86,17 @@ export const useCompetitionEvents = (
             return;
         }
 
+        const deltas = sortedClasses.map(c => {
+            const prev = prevScoresRef.current.get(c.id) || 0;
+            return { name: c.name, delta: c.score - prev };
+        }).filter(d => d.delta > 0).sort((a,b) => b.delta - a.delta);
+        
+        const currentTopContributors = deltas.slice(0, 3).map(d => d.name);
+        if (currentTopContributors.length > 0) {
+            setTopContributors(currentTopContributors);
+        }
+        const hasScoreIncrease = totalInstitutionScore > prevTotalScoreRef.current;
+
         // 1. Goal Detection
         const currentGoal = goals.find(g => prevTotalScoreRef.current < g.target_score && totalInstitutionScore >= g.target_score);
         if (currentGoal) {
@@ -94,7 +108,7 @@ export const useCompetitionEvents = (
                 subTitle: currentGoal.name,
                 value: `${t('total_label')} ${totalInstitutionScore.toLocaleString()}`
             }]);
-            triggerAiCommentary(t('ai_event_goal_reached', { goalName: currentGoal.name }));
+            triggerAiCommentary(t('ai_event_goal_reached', { goalName: currentGoal.name }), undefined, currentTopContributors);
         }
         prevTotalScoreRef.current = totalInstitutionScore;
 
@@ -109,19 +123,23 @@ export const useCompetitionEvents = (
                     subTitle: currentTopClass.name,
                     value: t('rising_to_first')
                 }]);
-                triggerAiCommentary(t('ai_event_leader_change', { className: currentTopClass.name }));
+                triggerAiCommentary(t('ai_event_leader_change', { className: currentTopClass.name }), undefined, currentTopContributors);
             }
             prevTopClassIdRef.current = currentTopClass.id;
         }
 
-        // 3. Jumps
+        // 3. Jumps (reduced frequency, higher threshold)
         let foundSignificantJump = false;
+        const currentTime = Date.now();
+        
         studentsWithStats.forEach(s => {
             const prev = prevScoresRef.current.get(s.id);
             if (prev !== undefined && s.score > prev) {
                 const diff = s.score - prev;
-                if (diff >= 25 && !foundSignificantJump) {
+                // Increased threshold from 25 to 50 points and added time-based throttling (10 seconds)
+                if (diff >= 50 && !foundSignificantJump && currentTime - lastJumpTime.current > 30000) {
                     foundSignificantJump = true;
+                    lastJumpTime.current = currentTime;
                     setBurstQueue(queue => [...queue, {
                         id: `star-${s.id}-${Date.now()}`,
                         type: 'STAR_STUDENT',
@@ -129,7 +147,7 @@ export const useCompetitionEvents = (
                         subTitle: s.name,
                         value: diff
                     }]);
-                    triggerAiCommentary(t('ai_event_student_jump', { studentName: s.name }), `${diff} ${t('points_plural')}`);
+                    triggerAiCommentary(t('ai_event_student_jump', { studentName: s.name }), `${diff} ${t('points_plural')}`, currentTopContributors);
                 }
             }
             prevScoresRef.current.set(s.id, s.score || 0);
@@ -140,8 +158,8 @@ export const useCompetitionEvents = (
             if (prev !== undefined && c.score > prev) {
                 const diff = c.score - prev;
                 
-                // 4. Significant Group Jump (Class Boost)
-                if (diff >= 100) {
+                // 4. Significant Group Jump (Class Boost) - increased threshold and added throttling
+                if (diff >= 200 && currentTime - lastJumpTime.current > 45000) { // Further increased to 200 points, 45 second throttle
                     setBurstQueue(queue => [...queue, {
                         id: `boost-${c.id}-${Date.now()}`,
                         type: 'CLASS_BOOST',
@@ -149,20 +167,26 @@ export const useCompetitionEvents = (
                         subTitle: c.name,
                         value: diff
                     }]);
-                    triggerAiCommentary(t('ai_event_class_jump', { className: c.name }), `${diff} ${t('points_plural')}`);
+                    triggerAiCommentary(t('ai_event_class_jump', { className: c.name }), `${diff} ${t('points_plural')}`, currentTopContributors);
                 }
 
+                // Highlight class with reduced duration
                 setHighlightClassId(c.id);
-                setTimeout(() => setHighlightClassId(null), 5000);
+                setTimeout(() => setHighlightClassId(null), 3000); // Reduced from 5000ms to 3000ms
             }
             prevScoresRef.current.set(c.id, c.score || 0);
         });
 
-    }, [sortedClasses, totalInstitutionScore, goals, studentsWithStats, isFrozen, t]); 
+        // Trigger AI Commentary for general score increase if no other event fired
+        if (hasScoreIncrease && currentTopContributors.length > 0 && !currentGoal && !foundSignificantJump && deltas[0].delta < 50 && prevTopClassIdRef.current === sortedClasses[0]?.id) {
+            triggerAiCommentary("General Score Increase", undefined, currentTopContributors);
+        }
+
+    }, [sortedClasses, totalInstitutionScore, goals, studentsWithStats, isFrozen, t, triggerAiCommentary]); 
 
     const spotlightStudent = spotlightQueue.length > 0 
         ? studentsWithStats.find(s => s.id === spotlightQueue[0]) || null 
         : null;
 
-    return { activeBurst, setActiveBurst, spotlightStudent, highlightClassId };
+    return { activeBurst, setActiveBurst, spotlightStudent, highlightClassId, topContributors };
 };

@@ -38,9 +38,11 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
     if (!videoData) return;
 
     // Load YouTube API
-    if (!window.YT) {
+    // Load YouTube IFrame API if not already loaded (with caching)
+    if (!window.YT && !document.querySelector('script[src*="youtube.com/iframe_api"]')) {
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
+      tag.async = true;
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     }

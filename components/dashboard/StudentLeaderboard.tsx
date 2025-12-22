@@ -84,7 +84,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <div className="flex justify-between items-center shrink-0 px-5 h-11 bg-white/5 border-b border-white/5 backdrop-blur-md">
-                    <h2 className="text-xs md:text-sm font-bold text-white/90 flex items-center">
+                    <h2 className="text-sm font-black text-white flex items-center">
                         <div className={`p-1 rounded-[var(--radius-main)] border ml-2.5 transition-all duration-500
                     ${isMomentumMode
                                 ? 'bg-yellow-500/10 border-yellow-500/20'
@@ -98,8 +98,22 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                         <span>{isMomentumMode ? t('stars_momentum') : t('student_stars', { instType })}</span>
                     </h2>
                     <div className="flex items-center gap-1">
-                        <button onClick={() => handleTabClick('momentum')} className={`w-1.5 h-1.5 rounded-full transition-all ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`} />
-                        <button onClick={() => handleTabClick('top')} className={`w-1.5 h-1.5 rounded-full transition-all ${activeTab === 'top' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`} />
+                        <button 
+                            onClick={() => handleTabClick('momentum')} 
+                            className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                            role="tab"
+                            aria-selected={activeTab === 'momentum'}
+                            aria-controls="momentum-panel"
+                            aria-label={t('stars_momentum')}
+                        />
+                        <button 
+                            onClick={() => handleTabClick('top')} 
+                            className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'top' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                            role="tab"
+                            aria-selected={activeTab === 'top'}
+                            aria-controls="top-panel"
+                            aria-label={t('student_stars', { instType })}
+                        />
                     </div>
                 </div>
 
@@ -109,13 +123,13 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                             <MotionDiv key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="space-y-1.5 pb-2" >
                                 {displayList.map((student, idx) => (
                                     <div key={student.id} className={`relative flex items-center py-1.5 lg:py-2 px-3 lg:px-4 rounded-[var(--radius-main)] border transition-all duration-300 ${isMomentumMode ? 'bg-white/5 border-yellow-500/10' : idx === 0 ? 'bg-white/10 border-pink-500/30 shadow-lg shadow-pink-500/5' : 'bg-white/5 border-white/5 hover:bg-white/10'}`} >
-                                        <div className={`w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-[10px] lg:text-xs shrink-0 ml-2.5 ${isMomentumMode ? 'bg-yellow-500 text-black' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                                        <div className={`w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 ml-2.5 ${isMomentumMode ? 'bg-yellow-500 text-black' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
                                             {isMomentumMode ? <TrendUpIcon className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> : student.rank}
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                                                 <span className="font-bold text-xs md:text-sm lg:text-[clamp(0.8rem,1.1vw,0.95rem)] text-white truncate leading-none">{student.name}</span>
-                                                <div className="flex items-center text-[8px] lg:text-[9px] text-white/50 bg-white/5 px-1 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap">
+                                                <div className="flex items-center text-xs text-white/50 bg-white/5 px-2 py-1 rounded-[var(--radius-main)] font-bold whitespace-nowrap">
                                                     {student.className}
                                                 </div>
                                             </div>

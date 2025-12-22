@@ -253,8 +253,6 @@ const App: React.FC = () => {
                     </div>
                 )}
 
-                {/* GLOBAL FOOTER - Stays at bottom and occupies space */}
-                <VersionFooter className="relative z-50" />
             </div>
         </ToastProvider>
     );

@@ -11,6 +11,7 @@ import { GradientBackground } from './ui/GradientBackground';
 import { FrozenOverlay } from './ui/FrozenOverlay';
 import { useLanguage } from '../hooks/useLanguage';
 import { isAdmin as checkIsAdmin, isSuperUser as checkIsSuperUser } from '../config';
+import { VersionFooter } from './ui/VersionFooter';
 
 const { useParams, useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -163,6 +164,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </main>
           </div>
         </MotionDiv>
+        <VersionFooter />
       </div>
     </GradientBackground>
   );

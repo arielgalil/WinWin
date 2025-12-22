@@ -7,6 +7,7 @@ import { ConfirmationModal } from './ui/ConfirmationModal';
 import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/useToast';
+import { VersionFooter } from './ui/VersionFooter';
 
 const { useNavigate } = ReactRouterDOM as any;
 
@@ -385,6 +386,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                     </div>
                 </div>
             )}
+            <VersionFooter />
         </div>
     );
 };

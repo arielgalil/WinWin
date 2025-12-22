@@ -318,7 +318,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                                 <div className="font-bold flex items-center gap-2 text-white">
                                                     {u.full_name}
                                                     {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-400 animate-pulse" />}
-                                                    {u.id === currentUser?.id && <span className="text-[10px] bg-blue-500/30 px-1.5 rounded text-blue-200">{t('me')}</span>}
+                                                    {u.id === currentUser?.id && <span className="text-sm bg-blue-500/30 px-2 py-1 rounded text-blue-200">{t('me')}</span>}
                                                 </div>
                                                 <div className="text-xs opacity-60 tabular-nums">{u.email}</div>
                                             </div>
@@ -331,10 +331,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                                 <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
                                             </select>
                                         ) : (
-                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'superuser' ? 'bg-amber-500/20 text-amber-300' :
+                                            <span className={`px-2 py-1 rounded text-sm font-bold flex items-center gap-1 ${u.role === 'superuser' ? 'bg-amber-500/20 text-amber-300' :
                                                 u.role === 'admin' ? 'bg-purple-500/20 text-purple-300' :
                                                     'bg-blue-500/20 text-blue-300'
                                                 }`}>
+                                                {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
+                                                {u.role === 'admin' && <AdminIcon className="w-3 h-3" />}
+                                                {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
                                                 {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
                                             </span>
                                         )}

@@ -95,7 +95,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
           marginRight: MARGIN_RIGHT,
           borderColor: isHighlighted ? '#facc15' : undefined
         }}
-        className={`flex-shrink-0 rounded-[var(--radius-main)] h-full my-0 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+        className={`flex-shrink-0 rounded-[var(--radius-main)] h-[calc(100%-1.5rem)] my-3 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
             ${isHighlighted
             ? 'scale-[1.05] bg-white/20 shadow-[0_0_40px_rgba(255,255,255,0.15)] z-10 border-white/40'
             : `bg-white/5 hover:bg-white/10 border-white/10`
@@ -152,7 +152,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-10 bg-white/10 border-b border-white/10 backdrop-blur-md">
+      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-11 bg-white/10 border-b border-white/10 backdrop-blur-md">
         <div className="p-1.5 bg-blue-500/10 border border-blue-500/30 rounded-full ml-2 backdrop-blur-sm shadow-[0_0_20px_rgba(59,130,246,0.2)]">
           <ListIcon className="w-3.5 h-3.5 text-blue-400" />
         </div>

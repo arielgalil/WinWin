@@ -66,10 +66,13 @@ export const generateCompetitionCommentary = async (
   settings: AppSettings,
   totalInstitutionScore: number,
   actionNote?: string,
-  lang: Language = 'he'
+  lang: Language = 'he',
+  contributors?: string[]
 ): Promise<string> => {
   const leaders = topClasses.slice(0, 3).map(c => c.name).join(", ");
-  const prompt = `Action: ${recentAction}. Note: ${actionNote || 'none'}. Leaders: ${leaders}. Total Institution Score: ${totalInstitutionScore}. Write 1 short exciting Hebrew sentence for a school leaderboard ticker.`;
+  const recentNames = contributors && contributors.length > 0 ? contributors.join(", ") : leaders;
+  
+  const prompt = `Recent Contributors: ${recentNames}. Total Score: ${totalInstitutionScore}. Goal Progress: ${recentAction}. Note: ${actionNote || ''}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
   
   try {
       return await callGeminiFunction({

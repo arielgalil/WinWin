@@ -79,10 +79,10 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
         <>
             <DebugConsole isOpen={isDebugOpen} onClose={() => setIsDebugOpen(false)} />
 
-            {/* Footer Container: Occupies physical space, solid background */}
-            <footer className={`w-full bg-zinc-950 border-t border-white/5 pt-1 shrink-0 z-50 ${className}`}>
+            {/* Footer Container: Transparent with exactly 4px (py-1) vertical padding */}
+            <footer className={`w-full bg-transparent py-1 shrink-0 z-50 ${className}`}>
                 <div className="max-w-[1920px] mx-auto flex justify-center px-4">
-                    <nav className="bg-zinc-600/60 backdrop-blur-md border border-white/20 h-8 flex items-center px-4 rounded-full shadow-lg hover:bg-zinc-600/70 transition-all">
+                    <nav className="bg-zinc-900/60 backdrop-blur-xl border border-white/30 h-9 flex items-center px-4 rounded-full shadow-2xl hover:bg-zinc-900/80 transition-all">
 
                         {/* 1. Branding (Right Side) */}
                         <div className="flex items-center gap-1.5 ml-3 shrink-0 h-5 border-l border-white/10 pl-3 sm:gap-2">
