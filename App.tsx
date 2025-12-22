@@ -7,7 +7,7 @@ import { SuperAdminPanel } from './components/SuperAdminPanel';
 import { LiteTeacherView } from './components/lite/LiteTeacherView';
 import { LiteLogin } from './components/lite/LiteLogin';
 import { SproutIcon, AlertIcon, HomeIcon, TrashIcon } from './components/ui/Icons';
-import { VersionFooter } from './components/ui/VersionFooter';
+
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
 import { useCompetitionData } from './hooks/useCompetitionData';

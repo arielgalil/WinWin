@@ -1,6 +1,4 @@
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
     HomeIcon,
     CrownIcon,
@@ -35,17 +33,29 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     className = ''
 }) => {
     const { t } = useLanguage();
-    const navigate = useNavigate();
-    const { slug: urlSlug } = useParams();
-    const { pathname } = useLocation();
-
-    // Fallback slug extraction since VersionFooter is outside the main Routes context
-    const slug = urlSlug || pathname.split('/').find((seg: string, i: number, arr: string[]) =>
-        ['comp', 'admin', 'vote', 'login'].includes(arr[i - 1]) ? seg : null
-    );
-
     const { user } = useAuth();
-    const { campaignRole } = useCompetitionData(slug);
+    
+    // Simple fallback for router functionality
+    const [fallbackSlug, setFallbackSlug] = useState('');
+    const [fallbackPath, setFallbackPath] = useState('/');
+    
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const path = window.location.pathname;
+            setFallbackPath(path);
+            
+            // Extract slug from path
+            const segments = path.split('/');
+            const slugIndex = segments.findIndex((_, i) => 
+                ['comp', 'admin', 'vote', 'login'].includes(segments[i - 1])
+            );
+            if (slugIndex !== -1) {
+                setFallbackSlug(segments[slugIndex]);
+            }
+        }
+    }, []);
+
+    const { campaignRole } = useCompetitionData(fallbackSlug);
 
     const [isLowPerf, setIsLowPerf] = useState(localStorage.getItem('winwin_low_perf') === 'true');
     const [isDebugOpen, setIsDebugOpen] = useState(false);
@@ -62,10 +72,17 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     const isSuperUser = checkSuperUser(user?.role);
     const isAdmin = isSuperUser || user?.role === 'admin' || campaignRole === 'admin' || campaignRole === 'superuser';
 
-    const isBoardActive = pathname.includes('/comp/');
-    const isManageActive = pathname.includes('/admin/');
-    const isVoteActive = pathname.includes('/vote/');
-    const isHomeActive = pathname === '/' || pathname === '/super' || pathname.includes('/login');
+    const isBoardActive = fallbackPath.includes('/comp/');
+    const isManageActive = fallbackPath.includes('/admin/');
+    const isVoteActive = fallbackPath.includes('/vote/');
+    const isHomeActive = fallbackPath === '/' || fallbackPath === '/super' || fallbackPath.includes('/login');
+
+    // Simple navigation function
+    const navigate = (path: string) => {
+        if (typeof window !== 'undefined') {
+            window.location.href = path;
+        }
+    };
 
     // --- Unified Icon Class (White, Glowing, Centered) ---
     const getIconClass = (isActive: boolean) => `
@@ -96,20 +113,20 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 <HomeIcon className="w-4 h-4" />
                             </button>
 
-                            {slug && (
-                                <button onClick={() => navigate(`/comp/${slug}`)} title={t('score_board')} className={getIconClass(isBoardActive)}>
+                            {fallbackSlug && (
+                                <button onClick={() => navigate(`/comp/${fallbackSlug}`)} title={t('score_board')} className={getIconClass(isBoardActive)}>
                                     <TrophyIcon className="w-4 h-4" />
                                 </button>
                             )}
 
-                            {user && slug && (
-                                <button onClick={() => navigate(isAdmin ? `/admin/${slug}/points` : `/vote/${slug}`)} title={t('enter_points')} className={getIconClass(isVoteActive)}>
+                            {user && fallbackSlug && (
+                                <button onClick={() => navigate(isAdmin ? `/admin/${fallbackSlug}/points` : `/vote/${fallbackSlug}`)} title={t('enter_points')} className={getIconClass(isVoteActive)}>
                                     <CalculatorIcon className="w-4 h-4" />
                                 </button>
                             )}
 
-                            {user && isAdmin && slug && (
-                                <button onClick={() => navigate(`/admin/${slug}/school`)} title={t('manage')} className={getIconClass(isManageActive)}>
+                            {user && isAdmin && fallbackSlug && (
+                                <button onClick={() => navigate(`/admin/${fallbackSlug}/school`)} title={t('manage')} className={getIconClass(isManageActive)}>
                                     <SettingsIcon className="w-4 h-4" />
                                 </button>
                             )}
@@ -117,7 +134,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             <div className="w-px h-4 bg-white/10 mx-1.5" />
 
                             {/* 3. Utility Icons (Music, TV Mode, Debug, Super) */}
-                            {musicState && slug && isBoardActive && (
+                            {musicState && fallbackSlug && isBoardActive && (
                                 <button onClick={musicState.onToggle} className={getIconClass(musicState.isPlaying)} title={t('music')}>
                                     {musicState.isPlaying ? <Volume2Icon className="w-4 h-4" /> : <VolumeXIcon className="w-4 h-4" />}
                                 </button>
@@ -128,7 +145,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             </button>
 
                             {isSuperUser && (
-                                <button onClick={() => navigate('/super')} className={getIconClass(pathname === '/super')} title={t('system_admin')}>
+                                <button onClick={() => navigate('/super')} className={getIconClass(fallbackPath === '/super')} title={t('system_admin')}>
                                     <CrownIcon className="w-4 h-4" />
                                 </button>
                             )}
@@ -142,16 +159,16 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         <div className="mr-2 flex items-center border-r border-white/10 pr-2">
                             {!user ? (
                                 <button
-                                    onClick={() => navigate(slug ? `/login/${slug}` : '/login')}
+                                    onClick={() => navigate(fallbackSlug ? `/login/${fallbackSlug}` : '/login')}
                                     title={t('login_title')}
-                                    className={getIconClass(pathname.includes('/login'))}
+                                    className={getIconClass(fallbackPath.includes('/login'))}
                                 >
                                     <LockIcon className="w-4 h-4" />
                                 </button>
                             ) : (
                                 <div className="w-7 h-7 flex items-center justify-center">
                                     <button
-                                        onClick={() => navigate(isAdmin && slug ? `/admin/${slug}` : '/')}
+                                        onClick={() => navigate(isAdmin && fallbackSlug ? `/admin/${fallbackSlug}` : '/')}
                                         title={user.full_name}
                                         className="w-6 h-6 rounded-full bg-transparent border-[1.5px] border-white flex items-center justify-center text-[9px] font-black text-white transition-all hover:scale-110 active:scale-95 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                                     >
