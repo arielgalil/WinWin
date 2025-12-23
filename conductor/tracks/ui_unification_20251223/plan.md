@@ -1,0 +1,26 @@
+# Track Plan: Admin Panel UI Unification
+
+This plan outlines the steps to unify the Admin Panel UI, ensuring consistency and mobile-first responsiveness.
+
+## Phase 1: Infrastructure & Shared Components
+- [ ] **Task: Audit Existing Admin Components.** Scan `components/admin` to identify all unique UI patterns and variations.
+- [ ] **Task: Define Shared Action Buttons.** Write tests and implement a standardized `AdminActionButton` with color variants (Edit, Delete, Secondary).
+- [ ] **Task: Refactor ConfirmModal.** Write tests and implement focus trapping and standard RTL button ordering for `ConfirmationModal`.
+- [ ] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
+
+## Phase 2: Responsive Data Grids
+- [ ] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile.
+- [ ] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit.
+- [ ] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
+
+## Phase 3: Area-by-Area Unification
+- [ ] **Task: Unify ClassesManager UI.** Refactor the Classes management area to use the new shared components.
+- [ ] **Task: Unify UsersManager UI.** Refactor the Users management area to use the new shared components.
+- [ ] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components.
+- [ ] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
+
+## Phase 4: Quality Assurance & Polishing
+- [ ] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively.
+- [ ] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas.
+- [ ] **Task: Final UI/UX Consistency Pass.** Ensure spacing, typography, and animations are perfectly aligned across all areas.
+- [ ] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**
