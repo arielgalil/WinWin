@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -14,6 +13,7 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   showCancel?: boolean;
+  isDanger?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -25,18 +25,40 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   confirmText,
   cancelText,
   showCancel = true,
+  isDanger = false,
   onConfirm,
   onCancel
 }) => {
   const { t, dir } = useLanguage();
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
   const finalConfirmText = confirmText || t('confirm_action');
   const finalCancelText = cancelText || t('cancel');
 
+  // Simple focus trapping / auto-focus
+  useEffect(() => {
+    if (isOpen) {
+      // Small timeout to ensure animation has started/rendered
+      const timer = setTimeout(() => {
+        confirmButtonRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  // Close on Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onCancel();
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onCancel]);
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir={dir}>
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4" dir={dir}>
           <MotionDiv
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -48,33 +70,43 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative bg-slate-900 border border-white/10 p-6 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
+            className="relative bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 p-8 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
           >
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto bg-slate-500/20 text-slate-400">
-              <AlertIcon className="w-6 h-6" />
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 mx-auto ${
+              isDanger 
+                ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' 
+                : 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+            }`}>
+              <AlertIcon className="w-8 h-8" />
             </div>
 
-            <h3 className="text-xl font-bold text-white text-center mb-2">{title}</h3>
-            <p className="text-slate-300 text-center mb-6 text-sm leading-relaxed whitespace-pre-line">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">{title}</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-center mb-8 text-sm leading-relaxed whitespace-pre-line">
               {message}
             </p>
 
             <div className="flex gap-3">
+              {/* Confirm is first in DOM to be Right-most in RTL flex-row */}
+              <button
+                ref={confirmButtonRef}
+                onClick={onConfirm}
+                className={`flex-[2] py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
+                  isDanger
+                    ? 'bg-red-600 hover:bg-red-700 text-white shadow-red-500/20'
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20'
+                }`}
+              >
+                {finalConfirmText}
+              </button>
+              
               {showCancel && (
                 <button
                   onClick={onCancel}
-                  className="flex-1 py-2 rounded-xl bg-slate-600 text-white font-bold hover:bg-slate-500 transition-colors shadow-lg"
+                  className="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
                 >
                   {finalCancelText}
                 </button>
               )}
-              <button
-                onClick={onConfirm}
-                className={`py-2 rounded-xl bg-slate-600 text-white font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${!showCancel ? 'flex-1 w-full' : 'flex-1'
-                  } hover:bg-slate-500`}
-              >
-                {finalConfirmText}
-              </button>
             </div>
           </MotionDiv>
         </div>
