@@ -65,12 +65,10 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const { t } = useLanguage();
     const [goals, setGoals] = useState<CompetitionGoal[]>(settings.goals_config || []);
     const [gridSize] = useState(settings.hex_grid_size || 30);
-    const [formState, setFormState] = useState<Partial<CompetitionGoal>>({ name: '', target_score: 1000, image_type: 'emoji', image_value: '🏆' });
+    const [formState, setFormState] = useState<Partial<CompetitionGoal>>({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
-    const [isTargetScoreFocused, setIsTargetScoreFocused] = useState(false);
-    const [tempTargetScore, setTempTargetScore] = useState('');
     const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; isDanger: boolean; onConfirm: () => void; }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
 
     const minScoreAllowed = useMemo(() => {
@@ -80,10 +78,6 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
         }
         return goals.length > 0 ? goals[goals.length - 1].target_score : 0;
     }, [goals, editingId]);
-
-    const currentCumulativeScore = useMemo(() => {
-        return totalScore;
-    }, [totalScore]);
 
     const handleGoalImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -107,12 +101,21 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
             return;
         }
         if (formState.target_score <= minScoreAllowed) {
-            setFormError(t('score_must_be_higher', { minScore: minScoreAllowed }));
+            setFormError(`היעד חייב להיות גבוה מהניקוד ההתחלתי (${formatNumberWithCommas(minScoreAllowed)})`);
             return;
         }
         let updated = [...goals];
-        if (editingId) updated = updated.map(g => g.id === editingId ? { ...g, name: formState.name!, target_score: Number(formState.target_score), image_type: formState.image_type || 'emoji', image_value: formState.image_value || '🏆' } : g);
-        else updated.push({ id: Math.random().toString(36).substr(2, 9), name: formState.name!, target_score: Number(formState.target_score), image_type: formState.image_type || 'emoji', image_value: formState.image_value || '🏆' });
+        const newGoal: CompetitionGoal = {
+            id: editingId || Math.random().toString(36).substr(2, 9),
+            name: formState.name,
+            target_score: Number(formState.target_score),
+            image_type: formState.image_type || 'emoji',
+            image_value: formState.image_value || '🏆'
+        };
+
+        if (editingId) updated = updated.map(g => g.id === editingId ? newGoal : g);
+        else updated.push(newGoal);
+
         updated.sort((a, b) => a.target_score - b.target_score);
         setGoals(updated);
         onUpdateSettings(updated, gridSize);
@@ -121,81 +124,149 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
     const resetForm = (currentGoals = goals) => {
         setEditingId(null); setFormError(null);
-        const max = currentGoals.length > 0 ? Math.max(...currentGoals.map(g => g.target_score)) : 0;
-        setFormState({ name: '', target_score: max + 1000, image_type: 'emoji', image_value: '🏆' });
+        setFormState({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
     };
 
+    const pointsNeeded = formState.target_score ? formState.target_score - minScoreAllowed : 0;
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" dir="rtl">
             <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {goals.map((goal, idx) => <GoalCard key={goal.id} goal={goal} idx={idx} totalScore={totalScore} prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} onEdit={() => { setEditingId(goal.id); setFormState(goal); }} onDelete={() => setModalConfig({ isOpen: true, title: t('delete_stage_title'), message: t('confirm_delete_stage'), isDanger: true, onConfirm: () => { const up = goals.filter(g => g.id !== goal.id); setGoals(up); onUpdateSettings(up, gridSize); setModalConfig(prev => ({ ...prev, isOpen: false })); } })} isEditing={editingId === goal.id} />)}
             </div>
-            <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/10 relative shadow-2xl">
-                <div className="flex justify-between items-center mb-6">
-                    <h4 className="font-black text-white flex items-center gap-2 text-lg">{editingId ? <EditIcon className="w-5 h-5 text-indigo-400" /> : <PlusIcon className="w-5 h-5 text-green-400" />} {editingId ? t('edit_stage_title') : t('add_stage_title')}</h4>
-                    <div className="bg-indigo-500/10 px-4 py-2 rounded-xl border border-indigo-500/20 text-indigo-200 text-xs font-black shadow-inner">
-                        <span className="opacity-60 ml-2 font-bold uppercase tracking-tighter text-sm" dangerouslySetInnerHTML={{ __html: t('current_institution_score') }}></span>
-                        <FormattedNumber value={totalScore} />
+
+            <div className="bg-slate-900/50 p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md">
+                <div className="grid grid-cols-[1.5fr_0.6fr_1fr_1.8fr] gap-x-6 gap-y-3 items-end">
+
+                    {/* Row 1: Headers */}
+                    <div className="text-indigo-400 font-black text-xl mb-1">
+                        שלב {editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1)}:
                     </div>
-                </div>
-                <div className="space-y-4">
-                    <div className="flex items-center gap-4 flex-wrap">
-                        <span className="text-xs text-indigo-400 font-black bg-indigo-500/10 px-3 py-2 rounded-lg border border-indigo-500/20">
-                            {t('step_label', { number: (goals?.length || 0) + 1 })}
-                        </span>
-                        <div className="flex flex-col items-center">
-                            <span className="text-[10px] text-slate-400 font-bold">{t('current_cumulative_score_label', { score: formatNumberWithCommas(currentCumulativeScore) })}</span>
-                            <div className="flex items-center gap-2 mt-2">
-                                <span className="text-lg text-slate-300">Goal ending score</span>
-                                <span className="text-2xl text-slate-500">→</span>
-                                <div className="relative">
-                                    <input 
-                                        type="text"
-                                        value={isTargetScoreFocused ? tempTargetScore : formatNumberWithCommas(formState.target_score || minScoreAllowed + 1)}
-                                        onChange={e => {
-                                            const value = e.target.value;
-                                            setTempTargetScore(value);
-                                            const parsed = parseFormattedNumber(value);
-                                            if (!isNaN(parsed) && parsed > 0) {
-                                                setFormState({ ...formState, target_score: parsed });
-                                            }
-                                        }}
-                                        onFocus={() => {
-                                            setIsTargetScoreFocused(true);
-                                            setTempTargetScore('');
-                                        }}
-                                        onBlur={() => {
-                                            setIsTargetScoreFocused(false);
-                                            const parsed = parseFormattedNumber(tempTargetScore);
-                                            if (!isNaN(parsed) && parsed > 0) {
-                                                setFormState({ ...formState, target_score: parsed });
-                                            }
-                                        }}
-                                        className={`w-32 bg-slate-800 border rounded-xl px-4 py-2 text-lg font-mono text-center outline-none transition-colors shadow-inner ${
-                                            isTargetScoreFocused ? 'border-slate-600 text-gray-400' : 'border-slate-700 text-white focus:border-indigo-500'
-                                        } ${formState.target_score && formState.target_score <= currentCumulativeScore ? 'border-red-500' : ''}`}
-                                    />
-                                    {isTargetScoreFocused && (
-                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                            <span className="text-gray-600 font-mono text-lg">
-                                                {formatNumberWithCommas(currentCumulativeScore)}
-                                            </span>
-                                        </div>
-                                    )}
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1">
+                        התחלה:
+                    </div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1">
+                        ניקוד סיום*:
+                    </div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1 text-center">
+                        פרס סיום השלב (תמונה/אמוג'י)
+                    </div>
+
+                    {/* Row 2: Input Fields */}
+
+                    {/* Col 1: Stage Name */}
+                    <div className="flex flex-col gap-1.5 justify-end">
+                        <input
+                            type="text"
+                            value={formState.name}
+                            placeholder="שם השלב (למשל: המשימה הראשונה)*"
+                            onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
+                            className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500 transition-all focus:bg-slate-800"
+                        />
+                    </div>
+
+                    {/* Col 2: Starting Score Display (Narrower, arrow moved outside) */}
+                    <div className="flex items-center justify-between gap-4 h-[52px]">
+                        <div className="bg-slate-800/40 rounded-xl px-3 py-2 border border-slate-700/50 flex items-center justify-center min-w-[70px]">
+                            <span className="text-white/60 font-mono font-bold text-lg">{formatNumberWithCommas(minScoreAllowed)}</span>
+                        </div>
+                        <span className="text-indigo-400 font-black text-4xl drop-shadow-[0_0_10px_rgba(129,140,248,0.6)] animate-pulse">←</span>
+                    </div>
+
+                    {/* Col 3: Ending Score Input (Narrower) */}
+                    <div className="relative">
+                        <div className="flex items-center bg-slate-800 rounded-2xl px-4 py-2.5 border border-slate-700 focus-within:border-indigo-500 transition-all shadow-inner h-[52px]">
+                            <input
+                                type="text"
+                                value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
+                                placeholder="יעד..."
+                                onChange={e => {
+                                    const val = parseFormattedNumber(e.target.value);
+                                    setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
+                                }}
+                                className="w-full bg-transparent text-white font-mono font-black text-xl outline-none placeholder:text-slate-600"
+                            />
+                        </div>
+
+                        {/* Inline Feedback */}
+                        <div className="absolute top-full right-0 w-full pt-1 z-10">
+                            {formState.target_score && formState.target_score > minScoreAllowed && (
+                                <div className="text-[10px] font-black text-indigo-400 whitespace-nowrap bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20 inline-flex gap-1 items-center" dir="rtl">
+                                    <span>כלומר:</span>
+                                    <span className="font-mono" dir="ltr">+{formatNumberWithCommas(pointsNeeded)}</span>
                                 </div>
-                            </div>
-                            {formState.target_score && formState.target_score <= currentCumulativeScore && (
-                                <div className="text-red-400 text-xs font-bold mt-2">
-                                    The new goal must be higher than the current score!
+                            )}
+                            {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
+                                <div className="text-[10px] font-black text-red-400 bg-red-950/30 px-2 py-0.5 rounded border border-red-500/20">
+                                    נמוך מדי
                                 </div>
                             )}
                         </div>
                     </div>
-                    
-                    <div className="flex gap-4 mt-4"><div className="flex-1 space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">{t('stage_image_label')}</label><div className="flex gap-2"><div className="flex bg-slate-800 rounded-xl p-2 border border-slate-700 shadow-inner gap-2"><button onClick={() => setFormState({ ...formState, image_type: 'emoji' })} className={`w-12 h-12 min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center transition-all active:scale-95 ${formState.image_type === 'emoji' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>😊</button><button onClick={() => setFormState({ ...formState, image_type: 'upload' })} className={`w-12 h-12 min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center transition-all active:scale-95 ${formState.image_type === 'upload' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}><UploadIcon className="w-5 h-5" /></button></div><div className="flex-1">{formState.image_type === 'emoji' ? <input value={formState.image_value} onChange={e => setFormState({ ...formState, image_value: e.target.value })} className="w-full h-full bg-slate-800 border border-slate-700 rounded-xl px-4 text-center text-xl outline-none focus:border-indigo-500 transition-colors shadow-inner" /> : <label className="flex items-center justify-center w-full h-full bg-slate-800 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-700/50 transition-colors shadow-inner">{isGoalUploading ? <RefreshIcon className="w-5 h-5 animate-spin text-indigo-400" /> : <span className="text-[10px] font-black text-slate-400 uppercase tracking-tight">{t('upload_file')}</span>}<input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} /></label>}</div></div></div><div className="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center overflow-hidden self-end mb-0.5 shadow-lg">{formState.image_type === 'upload' && formState.image_value ? <img src={formState.image_value} className="w-full h-full object-cover" /> : <span className="text-2xl">{formState.image_value}</span>}</div></div>
-                    <div className="md:col-span-12 mt-4">{formError && <div className="text-xs text-red-400 font-bold bg-red-900/20 p-2.5 rounded-xl border border-red-500/20 mb-3 animate-in fade-in slide-in-from-top-1">⚠️ {formError}</div>}<div className="flex gap-3"><button onClick={handleSaveGoal} disabled={!formState.name || !formState.target_score || isGoalUploading || (formState.target_score !== undefined && formState.target_score <= currentCumulativeScore)} className={`flex-1 py-4 rounded-xl font-black text-white shadow-xl transition-all active:scale-[0.98] ${(!formState.name || !formState.target_score || (formState.target_score !== undefined && formState.target_score <= currentCumulativeScore)) ? 'bg-slate-700 opacity-50' : 'bg-green-600 hover:bg-green-500'}`}>{editingId ? t('update_stage_details') : t('add_stage_to_list')}</button>{editingId && <button onClick={() => resetForm()} className="px-6 py-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold transition-all shadow-xl">{t('cancel')}</button>}</div></div>
+
+                    {/* Col 4: Prize Selector (Wider, more space) */}
+                    <div className="flex items-center gap-6 bg-white/5 rounded-2xl p-3 border border-white/5 shadow-inner h-[80px] justify-center">
+                        <div className="w-16 h-16 bg-black/40 rounded-2xl border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden shrink-0 shadow-2xl group-hover:border-indigo-500 transition-colors">
+                            {formState.image_type === 'upload' && formState.image_value ? (
+                                <img src={formState.image_value} className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-4xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{formState.image_value || '🏆'}</span>
+                            )}
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex bg-slate-800 rounded-xl p-1.5 border border-white/10 shadow-lg">
+                                <button
+                                    onClick={() => setFormState(prev => ({ ...prev, image_type: 'emoji' }))}
+                                    className={`px-3 py-1 rounded-lg transition-all ${formState.image_type === 'emoji' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}
+                                >
+                                    <span className="text-sm">😊</span>
+                                </button>
+                                <label className={`px-3 py-1 rounded-lg cursor-pointer transition-all ${formState.image_type === 'upload' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>
+                                    {isGoalUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} />
+                                </label>
+                            </div>
+                            {formState.image_type === 'emoji' && (
+                                <input
+                                    type="text"
+                                    value={formState.image_value}
+                                    onChange={e => setFormState(prev => ({ ...prev, image_value: e.target.value }))}
+                                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-2 py-1 text-center text-xs text-white outline-none focus:border-indigo-500"
+                                    placeholder="אמוג'י..."
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Row 3: Action Buttons */}
+                    <div className="col-span-3" />
+                    <div className="pt-6">
+                        <button
+                            onClick={handleSaveGoal}
+                            disabled={!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
+                            className={`w-full py-4 rounded-2xl font-black text-lg text-white shadow-2xl transition-all active:scale-[0.98] whitespace-nowrap ${(!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed)
+                                    ? 'bg-slate-800 text-slate-600 opacity-50 cursor-not-allowed'
+                                    : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/40 hover:-translate-y-0.5'
+                                }`}
+                        >
+                            {editingId ? 'עדכן פרטי שלב' : '🚀 הוסף שלב חדש'}
+                        </button>
+                        {editingId && (
+                            <button onClick={() => resetForm()} className="w-full text-slate-500 hover:text-white transition-colors font-bold text-xs py-2 text-center">
+                                ביטול עריכה
+                            </button>
+                        )}
+                    </div>
+
                 </div>
+
+                {formError && (
+                    <div className="mt-8 text-xs text-red-400 font-bold bg-red-900/20 p-3 rounded-xl border border-red-500/20 animate-in fade-in slide-in-from-top-1">
+                        ⚠️ {formError}
+                    </div>
+                )}
             </div>
         </div>
     );
