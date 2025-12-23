@@ -18,6 +18,6 @@ export const formatLastSaved = (dateString: string | null, language: 'he' | 'en'
   }
   
   const timePart = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  const timePrefix = language === 'he' ? 'בשעה' : 'at';
-  return `${datePart} ${timePrefix} ${timePart}`;
+  const separator = ',';
+  return `${datePart}${separator} ${timePart}`;
 };

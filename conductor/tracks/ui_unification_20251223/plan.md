@@ -6,7 +6,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Audit Existing Admin Components.** Scan `components/admin` to identify all unique UI patterns and variations. (e126786)
 - [x] **Task: Define Shared Action Buttons.** Write tests and implement a standardized `AdminActionButton` with color variants (Edit, Delete, Secondary). (f0662fa)
 - [x] **Task: Refactor ConfirmModal.** Write tests and implement focus trapping and standard RTL button ordering for `ConfirmationModal`. (917fea0)
-- [ ] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
+- [~] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
 
 ## Phase 2: Responsive Data Grids
 - [ ] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile.
@@ -22,5 +22,6 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 ## Phase 4: Quality Assurance & Polishing
 - [ ] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively.
 - [ ] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas.
+- [ ] **Task: Refine Border Radius.** Apply subtle rounded corners to all cards, except for the bottom edges of charts/graphs.
 - [ ] **Task: Final UI/UX Consistency Pass.** Ensure spacing, typography, and animations are perfectly aligned across all areas.
 - [ ] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**

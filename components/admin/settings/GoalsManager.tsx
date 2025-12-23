@@ -1,8 +1,6 @@
-
 import React, { useState, useMemo } from 'react';
 import { CompetitionGoal, AppSettings } from '../../../types';
-import { PlusIcon, RefreshIcon, EditIcon, CheckIcon, UploadIcon } from '../../ui/Icons';
-import { DeleteButton } from '../../ui/DeleteButton';
+import { RefreshIcon, EditIcon, CheckIcon, UploadIcon, TrashIcon, TargetIcon, SparklesIcon } from '../../ui/Icons';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../../utils/stringUtils';
 import { supabase } from '../../../supabaseClient';
 import { FormattedNumber } from '../../ui/FormattedNumber';
@@ -15,7 +13,7 @@ interface GoalsManagerProps {
     totalScore: number;
 }
 
-const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: number; prevTarget: number; onEdit: () => void; onDelete: () => void; isEditing: boolean; }> = ({
+const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: number; prevTarget: number; onEdit: (e: React.MouseEvent) => void; onDelete: (e: React.MouseEvent) => void; isEditing: boolean; }> = ({
     goal, idx, totalScore, prevTarget, onEdit, onDelete, isEditing
 }) => {
     const { t } = useLanguage();
@@ -26,40 +24,58 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
     const isActive = !isCompleted && totalScore >= prevTarget;
 
     return (
-        <div className={`relative flex flex-col gap-4 p-5 rounded-2xl border transition-all duration-300 group ${isEditing ? 'bg-indigo-600/20 border-indigo-400 ring-2 ring-indigo-400/30' : 'bg-white/5 border-white/10'}`}>
-            <div className="flex justify-between items-start">
-                <span className="text-[10px] font-black text-slate-400 bg-black/20 px-2 py-1 rounded border border-white/5 uppercase tracking-wider">{t('stage_label', { index: idx + 1 })}</span>
-                <div className="flex gap-3 opacity-100 transition-opacity">
-                    <DeleteButton onClick={onDelete} />
-                    <button onClick={onEdit} className="p-3 min-w-[44px] min-h-[44px] bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg transition-colors border border-amber-500/30 active:scale-95"><EditIcon className="w-5 h-5" /></button>
+        <div className={`relative flex flex-col gap-3 p-4 rounded-xl border transition-all duration-300 group ${isEditing ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-400 ring-2 ring-indigo-400/30' : 'bg-white dark:bg-[#1e1e2e] border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md'}`}>
+            <div className="flex justify-between items-center bg-gray-50 dark:bg-black/20 p-2 rounded-lg border border-gray-100 dark:border-white/5">
+                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('stage_label', { index: idx + 1 })}</span>
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(e); }}
+                        className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
+                        title="מחיקה"
+                    >
+                        <TrashIcon className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(e); }}
+                        className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
+                        title="עריכה"
+                    >
+                        <EditIcon className="w-3.5 h-3.5" />
+                    </button>
                 </div>
             </div>
-            <div className="flex flex-col items-center text-center gap-5">
-                <div className="w-28 h-28 rounded-2xl flex items-center justify-center text-5xl bg-black/30 border border-white/10 shadow-xl overflow-hidden relative">
+
+            <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-gray-100 dark:bg-black/20 border border-gray-200 dark:border-white/10 overflow-hidden relative shrink-0">
                     {goal.image_type === 'upload' ? <img src={goal.image_value} className="w-full h-full object-cover" /> : <span>{goal.image_value}</span>}
-                    {isCompleted && <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]"><CheckIcon className="w-12 h-12 text-white drop-shadow-md" /></div>}
+                    {isCompleted && <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]"><CheckIcon className="w-6 h-6 text-green-600 dark:text-green-400 drop-shadow-sm" /></div>}
                 </div>
-                <div className="flex flex-col items-center">
-                    <h4 className="font-black text-white text-xl leading-tight mb-2">{goal.name}</h4>
-                    <div className="flex items-center gap-2 text-xs text-indigo-300 font-black bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20" dir="ltr">
+                <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate leading-tight mb-1">{goal.name}</h4>
+                    <div className="flex items-center gap-2 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full w-fit" dir="ltr">
                         <FormattedNumber value={goal.target_score} />
                         <span className="opacity-40">←</span>
                         <FormattedNumber value={prevTarget} />
                     </div>
                 </div>
             </div>
-            <div className="mt-auto space-y-2">
-                <div className="w-full bg-black/40 h-4 rounded-full overflow-hidden border border-white/5 shadow-inner">
-                    <div className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : isActive ? 'bg-yellow-400 shadow-[0_0_8px_#facc15]' : 'bg-slate-700'}`} style={{ width: `${percent}%` }} />
+
+            <div className="space-y-1.5 pt-1">
+                <div className="w-full bg-gray-100 dark:bg-white/10 h-2 rounded-full overflow-hidden">
+                    <div className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500' : isActive ? 'bg-amber-400' : 'bg-gray-400 dark:bg-gray-600'} opacity-90`} style={{ width: `${percent}%` }} />
                 </div>
-                <div className="flex justify-between text-xs font-bold text-slate-400 tracking-wide px-1">
+                <div className="flex justify-between text-[9px] font-bold text-gray-400 tracking-wide px-1">
                     <span>{t('stage_progress')}</span>
-                    <span className={isActive ? 'text-yellow-400' : isCompleted ? 'text-green-400' : ''}>{Math.round(percent)}%</span>
+                    <span className={isActive ? 'text-amber-500' : isCompleted ? 'text-green-500' : ''}>{Math.round(percent)}%</span>
                 </div>
             </div>
         </div>
     );
 };
+
+const quickEmojis = ['🏆', '🥇', '🥈', '🥉', '🎁', '💎', '🌟', '🎈', '🍦', '🍭'];
 
 export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSettings, totalScore }) => {
     const { t } = useLanguage();
@@ -69,6 +85,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
+    const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; isDanger: boolean; onConfirm: () => void; }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
 
     const minScoreAllowed = useMemo(() => {
@@ -96,10 +113,18 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const handleSaveGoal = () => {
         setFormError(null);
         if (!formState.name || !formState.target_score) return;
-        if (formState.image_type === 'emoji' && formState.image_value && [...formState.image_value].length > 1) {
-            setFormError(t('emoji_only_error'));
-            return;
+
+        if (formState.image_type === 'emoji' && formState.image_value) {
+            const segmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter
+                ? new (Intl as any).Segmenter()
+                : null;
+            const segments = segmenter ? [...segmenter.segment(formState.image_value)] : [...formState.image_value];
+            if (segments.length > 2) {
+                setFormError(t('emoji_only_error'));
+                return;
+            }
         }
+
         if (formState.target_score <= minScoreAllowed) {
             setFormError(`היעד חייב להיות גבוה מהניקוד ההתחלתי (${formatNumberWithCommas(minScoreAllowed)})`);
             return;
@@ -122,7 +147,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
         resetForm(updated);
     };
 
-    const resetForm = (currentGoals = goals) => {
+    const resetForm = () => {
         setEditingId(null); setFormError(null);
         setFormState({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
     };
@@ -130,54 +155,78 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const pointsNeeded = formState.target_score ? formState.target_score - minScoreAllowed : 0;
 
     return (
-        <div className="space-y-6" dir="rtl">
+        <div className="space-y-8" dir="rtl">
             <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {goals.map((goal, idx) => <GoalCard key={goal.id} goal={goal} idx={idx} totalScore={totalScore} prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} onEdit={() => { setEditingId(goal.id); setFormState(goal); }} onDelete={() => setModalConfig({ isOpen: true, title: t('delete_stage_title'), message: t('confirm_delete_stage'), isDanger: true, onConfirm: () => { const up = goals.filter(g => g.id !== goal.id); setGoals(up); onUpdateSettings(up, gridSize); setModalConfig(prev => ({ ...prev, isOpen: false })); } })} isEditing={editingId === goal.id} />)}
             </div>
 
-            <div className="bg-slate-900/50 p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md">
-                <div className="grid grid-cols-[1.5fr_0.6fr_1fr_1.8fr] gap-x-6 gap-y-3 items-end">
-
-                    {/* Row 1: Headers */}
-                    <div className="text-indigo-400 font-black text-xl mb-1">
-                        שלב {editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1)}:
+            <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-200 dark:border-white/10">
+                <div className="flex items-center justify-between mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 text-indigo-500">
+                            <TargetIcon className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                {editingId ? t('edit_goal_title') : t('add_goal_title')}
+                            </h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">{t('define_stages_desc')}</p>
+                        </div>
                     </div>
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1">
+                </div>
+
+                <div className="grid grid-cols-[0.85fr_0.68fr_0.68fr_2.04fr] gap-x-4 gap-y-2 items-start">
+
+                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1">
+                        שלב {editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1)}: שם השלב/יעד<span className="text-red-500 mr-0.5">*</span>:
+                    </label>
+
+                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
                         התחלה:
-                    </div>
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1">
-                        ניקוד סיום*:
-                    </div>
-                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 mb-1 text-center">
-                        פרס סיום השלב (תמונה/אמוג'י)
-                    </div>
+                    </label>
 
-                    {/* Row 2: Input Fields */}
+                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
+                        ניקוד סיום<span className="text-red-500 mr-0.5">*</span>:
+                    </label>
 
-                    {/* Col 1: Stage Name */}
-                    <div className="flex flex-col gap-1.5 justify-end">
+                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
+                        פרס סיום (תמונה/אמוג'י):
+                    </label>
+
+                    {/* Row 2: Inputs */}
+                    <div className="relative">
                         <input
                             type="text"
                             value={formState.name}
-                            placeholder="שם השלב (למשל: המשימה הראשונה)*"
+                            maxLength={30}
+                            placeholder="למשל: המשימה הראשונה"
                             onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
-                            className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500 transition-all focus:bg-slate-800"
+                            className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-gray-200 dark:border-white/10'}`}
                         />
-                    </div>
-
-                    {/* Col 2: Starting Score Display (Narrower, arrow moved outside) */}
-                    <div className="flex items-center justify-between gap-4 h-[52px]">
-                        <div className="bg-slate-800/40 rounded-xl px-3 py-2 border border-slate-700/50 flex items-center justify-center min-w-[70px]">
-                            <span className="text-white/60 font-mono font-bold text-lg">{formatNumberWithCommas(minScoreAllowed)}</span>
+                        <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
+                            {!formState.name && (
+                                <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
+                                    <span>⚠️</span>
+                                    <span>שדה חובה</span>
+                                </span>
+                            )}
+                            <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-400' : 'text-gray-400'}`}>
+                                {formState.name?.length || 0}/30
+                            </span>
                         </div>
-                        <span className="text-indigo-400 font-black text-4xl drop-shadow-[0_0_10px_rgba(129,140,248,0.6)] animate-pulse">←</span>
                     </div>
 
-                    {/* Col 3: Ending Score Input (Narrower) */}
+                    <div className="flex items-center gap-2 h-[38px]">
+                        <div className="flex-1 flex items-center justify-center bg-white/50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 h-full overflow-hidden">
+                            <span className="text-gray-600 dark:text-gray-300 font-mono font-bold text-sm truncate px-1">{formatNumberWithCommas(minScoreAllowed)}</span>
+                        </div>
+                        <span className="text-gray-400 font-black text-xl pb-0.5">←</span>
+                    </div>
+
                     <div className="relative">
-                        <div className="flex items-center bg-slate-800 rounded-2xl px-4 py-2.5 border border-slate-700 focus-within:border-indigo-500 transition-all shadow-inner h-[52px]">
+                        <div className={`flex items-center rounded-lg border transition-all h-[38px] bg-white dark:bg-white/5 ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-gray-200 dark:border-white/10 focus-within:ring-2 focus-within:ring-indigo-500'}`}>
                             <input
                                 type="text"
                                 value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
@@ -186,75 +235,103 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     const val = parseFormattedNumber(e.target.value);
                                     setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
                                 }}
-                                className="w-full bg-transparent text-white font-mono font-black text-xl outline-none placeholder:text-slate-600"
+                                className="flex-1 bg-transparent border-none text-gray-900 dark:text-white font-mono font-bold text-sm outline-none placeholder:text-gray-400 placeholder:text-xs placeholder:font-sans placeholder:font-normal text-center px-2 h-full w-full"
                             />
                         </div>
-
-                        {/* Inline Feedback */}
-                        <div className="absolute top-full right-0 w-full pt-1 z-10">
-                            {formState.target_score && formState.target_score > minScoreAllowed && (
-                                <div className="text-[10px] font-black text-indigo-400 whitespace-nowrap bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20 inline-flex gap-1 items-center" dir="rtl">
-                                    <span>כלומר:</span>
-                                    <span className="font-mono" dir="ltr">+{formatNumberWithCommas(pointsNeeded)}</span>
-                                </div>
-                            )}
+                        <div className="absolute top-full left-0 right-0 z-10 pt-1 flex flex-col items-start px-1">
                             {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
-                                <div className="text-[10px] font-black text-red-400 bg-red-950/30 px-2 py-0.5 rounded border border-red-500/20">
-                                    נמוך מדי
+                                <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
+                                    <span>⚠️</span>
+                                    <span>ניקוד נמוך מדי</span>
+                                </span>
+                            )}
+                            {pointsNeeded > 0 && (
+                                <div className="text-[9px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-500/20 inline-flex gap-0.5 items-center" dir="ltr">
+                                    <span>{formatNumberWithCommas(pointsNeeded)}</span>
+                                    <span>+</span>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Col 4: Prize Selector (Wider, more space) */}
-                    <div className="flex items-center gap-6 bg-white/5 rounded-2xl p-3 border border-white/5 shadow-inner h-[80px] justify-center">
-                        <div className="w-16 h-16 bg-black/40 rounded-2xl border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden shrink-0 shadow-2xl group-hover:border-indigo-500 transition-colors">
+                    <div className="flex gap-4 bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 min-h-[105px] items-stretch">
+                        <div className="w-[80px] h-[80px] bg-gray-100 dark:bg-black/40 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group self-center">
                             {formState.image_type === 'upload' && formState.image_value ? (
                                 <img src={formState.image_value} className="w-full h-full object-cover" />
                             ) : (
-                                <span className="text-4xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{formState.image_value || '🏆'}</span>
+                                <span className="text-4xl text-gray-800 dark:text-white">{formState.image_value || '🏆'}</span>
                             )}
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <div className="flex bg-slate-800 rounded-xl p-1.5 border border-white/10 shadow-lg">
+
+                        <div className="flex flex-col justify-between flex-1 py-1">
+                            <div className="flex gap-3">
                                 <button
-                                    onClick={() => setFormState(prev => ({ ...prev, image_type: 'emoji' }))}
-                                    className={`px-3 py-1 rounded-lg transition-all ${formState.image_type === 'emoji' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setFormState(prev => ({ ...prev, image_type: 'emoji' }));
+                                    }}
+                                    className="flex items-center gap-2 group cursor-pointer"
                                 >
-                                    <span className="text-sm">😊</span>
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
+                                        {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                    </div>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>אמוג'י</span>
                                 </button>
-                                <label className={`px-3 py-1 rounded-lg cursor-pointer transition-all ${formState.image_type === 'upload' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}>
-                                    {isGoalUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} />
-                                </label>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setFormState(prev => ({ ...prev, image_type: 'upload' }));
+                                    }}
+                                    className="flex items-center gap-2 group cursor-pointer"
+                                >
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
+                                        {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                    </div>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>תמונה</span>
+                                </button>
                             </div>
-                            {formState.image_type === 'emoji' && (
-                                <input
-                                    type="text"
-                                    value={formState.image_value}
-                                    onChange={e => setFormState(prev => ({ ...prev, image_value: e.target.value }))}
-                                    className="w-full bg-slate-800/50 border border-white/10 rounded-lg px-2 py-1 text-center text-xs text-white outline-none focus:border-indigo-500"
-                                    placeholder="אמוג'י..."
-                                />
+
+                            {formState.image_type === 'emoji' ? (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setIsEmojiModalOpen(true);
+                                    }}
+                                    className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
+                                >
+                                    <span>הכנס אמוג'י</span>
+                                    <span className="text-sm">🍦</span>
+                                </button>
+                            ) : (
+                                <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
+                                    {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
+                                    <span>{isGoalUploading ? 'מעלה...' : 'העלה תמונה'}</span>
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
+                                </label>
                             )}
                         </div>
                     </div>
 
-                    {/* Row 3: Action Buttons */}
-                    <div className="col-span-3" />
-                    <div className="pt-6">
+                    <div className="col-span-3 h-0" />
+                    <div className="flex flex-col gap-2">
                         <button
                             onClick={handleSaveGoal}
                             disabled={!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
-                            className={`w-full py-4 rounded-2xl font-black text-lg text-white shadow-2xl transition-all active:scale-[0.98] whitespace-nowrap ${(!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed)
-                                    ? 'bg-slate-800 text-slate-600 opacity-50 cursor-not-allowed'
-                                    : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/40 hover:-translate-y-0.5'
+                            className={`w-full py-2.5 rounded-lg font-bold text-sm text-white transition-all active:scale-[0.98] whitespace-nowrap shadow-md ${(!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed)
+                                ? 'bg-gray-400 dark:bg-gray-700 opacity-50 cursor-not-allowed'
+                                : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20'
                                 }`}
                         >
-                            {editingId ? 'עדכן פרטי שלב' : '🚀 הוסף שלב חדש'}
+                            {editingId ? 'עדכן שלב/יעד' : '+ הוסף שלב/יעד'}
                         </button>
                         {editingId && (
-                            <button onClick={() => resetForm()} className="w-full text-slate-500 hover:text-white transition-colors font-bold text-xs py-2 text-center">
+                            <button type="button" onClick={() => resetForm()} className="w-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-bold text-[10px] py-1 text-center">
                                 ביטול עריכה
                             </button>
                         )}
@@ -263,11 +340,75 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 </div>
 
                 {formError && (
-                    <div className="mt-8 text-xs text-red-400 font-bold bg-red-900/20 p-3 rounded-xl border border-red-500/20 animate-in fade-in slide-in-from-top-1">
+                    <div className="mt-4 text-[10px] text-red-500 dark:text-red-400 font-bold bg-red-50 dark:bg-red-500/10 p-2 rounded-lg border border-red-200 dark:border-red-500/20 animate-in fade-in slide-in-from-top-1 text-center">
                         ⚠️ {formError}
                     </div>
                 )}
             </div>
+
+            {/* Emoji Selection Modal */}
+            {isEmojiModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200" dir="rtl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h4 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg">
+                                    <SparklesIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                </div>
+                                {t('prize_emoji_selection' as any)}
+                            </h4>
+                            <button type="button" onClick={(e) => { e.preventDefault(); setIsEmojiModalOpen(false); }} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-2xl">&times;</button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">הכנס אמוג'י בעצמך:</label>
+                                <input
+                                    type="text"
+                                    value={formState.image_value}
+                                    onChange={e => setFormState(prev => ({ ...prev, image_value: e.target.value }))}
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-3xl text-center outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="הכנס אמוג'י..."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">או בחר מהמהירים:</label>
+                                <div className="grid grid-cols-5 gap-2">
+                                    {quickEmojis.map(emoji => (
+                                        <button
+                                            key={emoji}
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setFormState(prev => ({ ...prev, image_value: emoji }));
+                                                setIsEmojiModalOpen(false);
+                                            }}
+                                            className={`text-2xl p-2 rounded-xl transition-all border ${formState.image_value === emoji ? 'bg-indigo-50 dark:bg-indigo-500/20 border-indigo-400' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-gray-500'}`}
+                                        >
+                                            {emoji}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setIsEmojiModalOpen(false);
+                                }}
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <span>אישור ובחירה</span>
+                                <CheckIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

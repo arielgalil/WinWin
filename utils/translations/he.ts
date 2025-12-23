@@ -16,7 +16,7 @@ export const he = {
     for_label: "עבור",
     yeshiva: "ישיבה",
     save_changes_label: "שמור שינויים",
-    changes_saved: "השינויים נשמרו בהצלחה",
+    changes_saved: "✅ השינוי נשמר",
     confirm_action: "אישור",
     points_plural: "נקודות",
     confirm_deletion: "אשר מחיקה",
@@ -43,6 +43,13 @@ export const he = {
     tab_data_management: "ניהול קבוצות וצוות",
     tab_my_class: "מצב קבוצתי",
     tab_keypad: "מקלדת נקודות",
+    
+    // Header Descriptions
+    points_mgmt_desc: "ניהול נקודות ויומן פעילות",
+    goals_mgmt_desc: "ניהול יעדים ופרסים",
+    classes_management_desc: "ניהול קבוצות, תלמידים וצוות",
+    activity_log_description: "צפייה ביומן פעילות ושימוש ב-AI",
+    settings_title_clean: "הגדרות תחרות",
     
     
     
@@ -281,6 +288,10 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     confirm_delete_stage: "האם אתה בטוח שברצונך למחוק שלב זה? הפעולה אינה ניתנת לביטול.",
     edit_stage_title: "עריכת שלב קיים",
     add_stage_title: "הוספת שלב תחרות חדש",
+    add_goal_title: "הוספת יעד מוסדי חדש",
+    edit_goal_title: "עריכת יעד קיים",
+    define_stages_desc: "הגדרת שלבים וחשיפת פרסים",
+    prize_emoji_selection: "בחירת אמוג'י לפרס",
     current_institution_score: "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
     current_cumulative_score_label: "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
     stage_name_label: "שם השלב",
@@ -295,6 +306,8 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     
     // Users Manager
     team_mgmt_title: "ניהול צוות - %{campaign}",
+    team_mgmt_title_clean: "ניהול צוות התחרות",
+    team_mgmt_subtitle: "ניהול מנהלים ומורים המשתתפים בתחרות",
     add_staff_member: "הוספת איש צוות",
     import_from_excel: "ייבוא מאקסל",
     import_users_title: "ייבוא משתמשים",
@@ -366,14 +379,19 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     students_count: "%{count} תלמידים",
     student_total: "סה\"כ תלמידים",
     manage_students_tooltip: "נהל תלמידים",
+    manage_students_button: "ניהול תלמידים",
     edit_group_tooltip: "ערוך קבוצה",
     manage_students_title: "ניהול רשימת תלמידים",
     search_student_placeholder: "חפש תלמיד...",
     new_student_placeholder: "שם תלמיד חדש...",
     close_window: "סגור חלון",
+    students_label: "תלמידים",
+    add_new_class_button: "הוספת קבוצה חדשה",
+    confirm_delete_group_warning: "אזהרה: מחיקת הקבוצה תמחוק את כל התלמידים והניקוד המשויכים אליה לצמיתות. האם להמשיך?",
 
     // Data Management
     data_mgmt_title: "ניהול נתונים וגיבוי",
+    data_mgmt_subtitle: "ניהול גיבויים, ייצוא נתונים ואיפוס המערכת",
     export_completed: "הייצוא הושלם בהצלחה",
     export_error: "שגיאה בייצוא: %{error}",
     restore_from_backup: "שחזור מגיבוי",
@@ -401,6 +419,9 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     reset_full_label: "איפוס מלא (הכל)",
     reset_full_desc: "מוחק הכל ומתחיל מאפס",
     execute_action: "בצע",
+    reset_logs_btn: "אפס היסטוריה",
+    reset_scores_btn: "אפס ניקוד",
+    reset_all_btn: "בצע איפוס מלא",
     execute_full_reset: "בצע איפוס מלא",
 
     run_code_supabase_msg: "נא להריץ את הקוד ב-Supabase SQL Editor תחת הפרויקט שלך.",
@@ -456,7 +477,7 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     ai_default_prompt_label: "ברירת המחדל (לקריאה בלבד)",
     ai_custom_prompt_label: "פרומפט מותאם אישית",
     ai_custom_prompt_placeholder: "כתוב כאן את ההנחיות החדשות...",
-    ai_keywords_title: "מילות מפתח (Context Tags)",
+    ai_keywords_title: "מילות מפתח",
     ai_keywords_desc: "הוסף מילים שה-AI ישתדל לשלב בפרשנות (לדוגמה: סלוגן בית ספרי, ערך החודש, דמויות מפתח).",
     ai_keywords_placeholder: "הקלד תגית ולחץ אנטר...",
     ai_no_tags: "אין תגיות מוגדרות",

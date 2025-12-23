@@ -43,8 +43,8 @@ export const SaveNotificationBadge: React.FC<SaveNotificationBadgeProps> = ({ no
       <ClockIcon className="w-3.5 h-3.5 text-orange-400" />
       <span className="font-bold whitespace-nowrap">
         {notification
-          ? `${language === 'he' ? 'נשמר לארחונה:' : 'Last saved'}: ${formatLocalDate(notification.timestamp)}`
-          : (language === 'he' ? 'לא נשמר לארחונה:' : 'Not saved recently')}
+          ? `${language === 'he' ? 'נשמר לאחרונה' : 'Last saved'}: ${formatLocalDate(notification.timestamp)}`
+          : (language === 'he' ? 'לא נשמר לאחרונה' : 'Not saved recently')}
       </span>
       {notification && (
         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse ml-1" />

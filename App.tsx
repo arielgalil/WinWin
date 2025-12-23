@@ -13,6 +13,7 @@ import { useAuth } from './hooks/useAuth';
 import { useCompetitionData } from './hooks/useCompetitionData';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 const LoadingScreen = ({ message }: { message?: string }) => {
     const { t } = useLanguage();
@@ -95,10 +96,10 @@ const LanguageSync: React.FC = () => {
 const CampaignContext: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useLanguage();
     const { isLoadingCampaign, isCampaignError, campaignFetchError, currentCampaign } = useCompetitionData();
-    
+
     if (isLoadingCampaign) return <LoadingScreen message={t('loading_campaign_data')} />;
     if (isCampaignError || !currentCampaign) return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
-    
+
     return (
         <>
             <LanguageSync />
@@ -151,19 +152,19 @@ const AdminRoute = () => {
     // Enhanced security: Explicit role checking with fallback to deny
     const userRole = user.role?.toLowerCase().trim();
     const campaignRoleClean = campaignRole?.toLowerCase().trim();
-    
+
     const isSuper = isSuperUser(userRole);
     const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
     const isCampaignSuper = campaignRoleClean === 'superuser' || campaignRoleClean === 'super_user';
-    
+
     const canAccess = isSuper || isAdmin || isCampaignSuper;
 
     // Security: Explicit deny if role is null/undefined or not authorized
     if (!canAccess) {
-      if (campaignRoleClean === 'teacher') {
-        return <Navigate to={`/vote/${slug}`} replace />;
-      }
-      return <Navigate to={`/comp/${slug}`} replace />;
+        if (campaignRoleClean === 'teacher') {
+            return <Navigate to={`/vote/${slug}`} replace />;
+        }
+        return <Navigate to={`/comp/${slug}`} replace />;
     }
 
     return (
@@ -192,15 +193,15 @@ const VoteRoute = () => {
     const { campaignRole, settings, currentCampaign } = useCompetitionData();
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
-    
+
     // Enhanced security: Explicit role checking
     const userRole = user.role?.toLowerCase().trim();
     const campaignRoleClean = campaignRole?.toLowerCase().trim();
-    
+
     const isSuper = isSuperUser(userRole);
     const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
     const isTeacher = campaignRoleClean === 'teacher';
-    
+
     // Security: Explicit deny if user has no role in campaign and is not superuser
     if (!isSuper && !isAdmin && !isTeacher) {
         return <ErrorScreen message={t('competition_access_denied')} />;
@@ -267,23 +268,23 @@ const LoginRoute = () => {
                 savedEmail={savedEmail}
                 settings={slug ? settings : undefined}
                 onBack={() => {
-                // Smart back navigation based on referrer or current path context
-                const referrer = document.referrer;
-                const currentPath = window.location.hash || window.location.pathname;
-                
-                // Check if coming from a competition page
-                if (referrer.includes('/comp/') || currentPath.includes('/login/') && currentPath !== '/login' && currentPath !== '#/login') {
-                    // Extract slug from current path and navigate back to competition
-                    const slugMatch = currentPath.match(/\/login\/([^\/]+)/);
-                    if (slugMatch && slugMatch[1]) {
-                        navigate(`/comp/${slugMatch[1]}`);
-                        return;
+                    // Smart back navigation based on referrer or current path context
+                    const referrer = document.referrer;
+                    const currentPath = window.location.hash || window.location.pathname;
+
+                    // Check if coming from a competition page
+                    if (referrer.includes('/comp/') || currentPath.includes('/login/') && currentPath !== '/login' && currentPath !== '#/login') {
+                        // Extract slug from current path and navigate back to competition
+                        const slugMatch = currentPath.match(/\/login\/([^\/]+)/);
+                        if (slugMatch && slugMatch[1]) {
+                            navigate(`/comp/${slugMatch[1]}`);
+                            return;
+                        }
                     }
-                }
-                
-                // Default to campaigns page
-                navigate('/');
-            }}
+
+                    // Default to campaigns page
+                    navigate('/');
+                }}
             />
         </>
     );
@@ -292,14 +293,15 @@ const LoginRoute = () => {
 import { ToastProvider } from './hooks/useToast';
 import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
-const App: React.FC = () => {
+const AppInner: React.FC = () => {
     const { t } = useLanguage();
     const { authLoading } = useAuth();
+    const { theme } = useTheme();
 
     return (
         <ToastProvider>
             <RouteErrorBoundary>
-                <div className="flex flex-col h-screen bg-[#020617] selection:bg-cyan-500/30 overflow-hidden">
+                <div className={`flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-[#020617]' : 'bg-[#F1F5F9]'}`}>
                     {authLoading ? (
                         <LoadingScreen message={t('loading_system')} />
                     ) : (
@@ -317,12 +319,18 @@ const App: React.FC = () => {
                             </Routes>
                         </div>
                     )}
-
                 </div>
             </RouteErrorBoundary>
         </ToastProvider>
     );
 };
 
+const App: React.FC = () => {
+    return (
+        <ThemeProvider>
+            <AppInner />
+        </ThemeProvider>
+    );
+};
 
 export default App;

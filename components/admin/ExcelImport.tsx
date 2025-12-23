@@ -72,7 +72,7 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport, isOpen, onCl
         onCancel={onClose}
         isDisabled={isProcessing}
       >
-        <div className="mt-4 p-4 border-2 border-dashed border-white/20 rounded-lg">
+        <div className="mt-4 p-6 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-black/20">
           <input
             ref={fileInputRef}
             type="file"
@@ -81,10 +81,10 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport, isOpen, onCl
             className="hidden"
           />
           <div className="flex flex-col items-center gap-3">
-            <UploadIcon className="w-8 h-8 text-white/60" />
-            <div className="text-center text-white/80">
+            <UploadIcon className="w-8 h-8 text-gray-400" />
+            <div className="text-center text-gray-700 dark:text-gray-200">
               <p className="font-medium">{t('drag_or_click_excel')}</p>
-              <p className="text-sm text-white/60">{t('excel_format_info')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('excel_format_info')}</p>
             </div>
           </div>
         </div>

@@ -205,7 +205,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     });
 
     return (
-        <div className={`min-h-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 flex flex-col`} dir={dir}>
+        <div className={`min-h-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 flex flex-col admin-view`} dir={dir}>
             <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} isDanger={modalConfig.isDanger} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
             <header className="bg-[var(--bg-card-header)] border-b border-[var(--border-main)] sticky top-0 z-40 px-4 h-16 shadow-sm shrink-0 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto h-full flex items-center justify-between">

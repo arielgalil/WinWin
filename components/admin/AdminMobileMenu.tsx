@@ -72,107 +72,106 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
     setIsOpen(false);
   };
 
-  return (
-    <div className="md:hidden sticky top-0 z-[100] bg-slate-900 shadow-2xl w-full border-b border-white/10 shrink-0">
-      <div className="flex items-center justify-between p-3 relative z-[120]">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-3 bg-white/10 text-white rounded-[var(--radius-main)] active:scale-95 transition-transform"
-          >
-            {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3 dir-rtl">
-          <div className="text-left">
-            <p className="text-white font-black text-sm leading-tight">{user.full_name}</p>
-            <p className="text-blue-400 text-[10px] uppercase font-black tracking-widest">
-              {getRoleLabel()}
-              {userClassName && ` | ${userClassName}`}
-            </p>
-          </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-white shadow-lg border border-white/20 ${isAnySuperUser ? 'bg-gradient-to-br from-amber-400 to-orange-600' : 'bg-gradient-to-br from-pink-500 to-rose-600'}`}>
-            {user.full_name?.charAt(0).toUpperCase() || 'U'}
-          </div>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <MotionDiv
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950 z-[110] flex flex-col overflow-hidden"
-            style={{ height: '100dvh', width: '100vw' }}
-          >
-            {/* Spacer for sticky header */}
-            <div className="h-[72px] shrink-0" />
-
-            <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col">
-              <div className="space-y-3 pb-12">
-                <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 px-2">{t('app_name')}</p>
-
-                {visibleNavItems.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleLinkClick(item.id)}
-                    className={`w-full text-right py-4 px-6 rounded-[var(--radius-main)] flex items-center gap-5 transition-all active:scale-[0.98] border-y-0 border-l-0 border-solid ${activeTab === item.id
-                      ? 'bg-white/10 text-white font-black border-r-[6px] shadow-xl ' + item.color
-                      : 'text-slate-400 border-r-[6px] border-transparent bg-white/5'
-                      }`}
-                  >
-                    <item.icon className={`w-7 h-7 shrink-0 ${activeTab === item.id ? 'text-white' : 'text-slate-500'}`} />
-                    <span className="text-xl font-black">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
-                  </button>
-                ))}
-
-                <div className="h-px bg-white/5 my-8" />
-
-                <div className={`grid ${onToggleFreeze ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
-                  <button
-                    onClick={() => { onViewDashboard(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 active:bg-yellow-500/20 gap-2 shadow-lg"
-                  >
-                    <TrophyIcon className="w-6 h-6" />
-                    <span className="text-[10px] font-black">{t('view_leaderboard')}</span>
-                  </button>
-                  {onToggleFreeze && (
-                    <button
-                      onClick={() => { onToggleFreeze(!isFrozen); setIsOpen(false); }}
-                      className={`flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] border gap-2 shadow-lg ${isFrozen
-                        ? 'bg-green-500/10 border-green-500/20 text-green-400 active:bg-green-500/20'
-                        : 'bg-red-500/10 border-red-500/20 text-red-400 active:bg-red-500/20'
-                        }`}
-                    >
-                      {isFrozen ? <RefreshIcon className="w-6 h-6" /> : <PauseIcon className="w-6 h-6" />}
-                      <span className="text-[10px] font-black">{isFrozen ? t('unfreeze_board') : t('freeze_board')}</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={() => { onManualRefresh(); setIsOpen(false); }}
-                    className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-main)] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 active:bg-cyan-500/20 gap-2 shadow-lg"
-                  >
-                    <RefreshIcon className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    <span className="text-[10px] font-black">{t('refresh')}</span>
-                  </button>
-                </div>
-
-                <button
-                  onClick={onLogout}
-                  className="w-full mt-8 py-5 rounded-[var(--radius-main)] flex items-center justify-center gap-4 text-red-400 bg-red-500/10 border border-red-500/20 active:bg-red-500/20 font-black text-lg shadow-lg"
-                >
-                  <LogoutIcon className="w-6 h-6" />
-                  <span>{t('logout')}</span>
-                </button>
+      return (
+          <div className="md:hidden sticky top-0 z-[100] bg-white dark:bg-[#1e1e2e] shadow-sm w-full border-b border-gray-200 dark:border-white/10 shrink-0">
+              <div className="flex items-center justify-between p-4 relative z-[120]">
+                  <div className="flex items-center gap-3">
+                      <button
+                          onClick={() => setIsOpen(!isOpen)}
+                          className="p-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 rounded-lg active:scale-95 transition-transform hover:bg-gray-200 dark:hover:bg-white/10"
+                      >
+                          {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+                      </button>
+                  </div>
+  
+                  <div className="flex items-center gap-3 dir-rtl">
+                      <div className="text-left">
+                          <p className="text-gray-900 dark:text-white font-bold text-base leading-tight">{user.full_name}</p>
+                          <p className="text-indigo-600 dark:text-indigo-400 text-[10px] uppercase font-bold tracking-wide">
+                              {getRoleLabel()}
+                              {userClassName && ` | ${userClassName}`}
+                          </p>
+                      </div>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md border border-white/10 text-sm ${isAnySuperUser ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}`}>
+                          {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                  </div>
               </div>
-            </div>
-
-            <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shrink-0" />
-          </MotionDiv>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+  
+              <AnimatePresence>
+                  {isOpen && (
+                      <MotionDiv
+                          initial={{ opacity: 0, x: isRTL ? '100%' : '-100%' }}
+                          animate={{ opacity: 1, x: '0%' }}
+                          exit={{ opacity: 0, x: isRTL ? '100%' : '-100%' }}
+                          transition={{ duration: 0.2 }}
+                          className="fixed inset-0 bg-white dark:bg-[#1e1e2e] z-[110] flex flex-col overflow-hidden"
+                          style={{ height: '100dvh', width: '100vw' }}
+                      >
+                          {/* Spacer for sticky header */}
+                          <div className="h-[76px] shrink-0" />
+  
+                          <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col">
+                              <div className="space-y-4 pb-12">
+                                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-6 px-2">{t('app_name')}</p>
+  
+                                  {visibleNavItems.map(item => (
+                                      <button
+                                          key={item.id}
+                                          onClick={() => handleLinkClick(item.id)}
+                                          className={`w-full text-right py-3 px-5 rounded-lg flex items-center gap-4 transition-all active:scale-[0.98] border border-transparent
+                                              ${activeTab === item.id
+                                                  ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm'
+                                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 font-medium'
+                                              }`}
+                                      >
+                                          <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                                          <span className="text-lg font-bold">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
+                                      </button>
+                                  ))}
+  
+                                  <div className="h-px bg-gray-200 dark:bg-white/10 my-8" />
+  
+                                  <div className={`grid ${onToggleFreeze ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}>
+                                      <button
+                                          onClick={() => { onViewDashboard(); setIsOpen(false); }}
+                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 active:bg-amber-100 dark:active:bg-amber-500/20 gap-2 shadow-sm transition-all"
+                                      >
+                                          <TrophyIcon className="w-6 h-6" />
+                                          <span className="text-xs font-bold">{t('view_leaderboard')}</span>
+                                      </button>
+                                      {onToggleFreeze && (
+                                          <button
+                                              onClick={() => { onToggleFreeze(!isFrozen); setIsOpen(false); }}
+                                              className={`flex flex-col items-center justify-center p-4 rounded-xl border gap-2 shadow-sm transition-all ${isFrozen
+                                                  ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-600 dark:text-green-400 active:bg-green-100 dark:active:bg-green-500/20'
+                                                  : 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 active:bg-red-100 dark:active:bg-red-500/20'
+                                                  }`}
+                                          >
+                                              {isFrozen ? <RefreshIcon className="w-6 h-6" /> : <PauseIcon className="w-6 h-6" />}
+                                              <span className="text-xs font-bold">{isFrozen ? t('unfreeze_board') : t('freeze_board')}</span>
+                                          </button>
+                                      )}
+                                      <button
+                                          onClick={() => { onManualRefresh(); setIsOpen(false); }}
+                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400 active:bg-cyan-100 dark:active:bg-cyan-500/20 gap-2 shadow-sm transition-all"
+                                      >
+                                          <RefreshIcon className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+                                          <span className="text-xs font-bold">{t('refresh')}</span>
+                                      </button>
+                                  </div>
+  
+                                  <button
+                                      onClick={onLogout}
+                                      className="w-full mt-8 py-4 rounded-lg flex items-center justify-center gap-4 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 font-bold text-lg shadow-sm transition-all active:scale-95 hover:bg-red-100 dark:hover:bg-red-500/20"
+                                  >
+                                      <LogoutIcon className="w-6 h-6" />
+                                      <span>{t('logout')}</span>
+                                  </button>
+                              </div>
+                          </div>
+                      </MotionDiv>
+                  )}
+              </AnimatePresence>
+          </div>
+      );};

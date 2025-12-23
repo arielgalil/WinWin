@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ClassRoom, UserProfile } from '../../types';
-import { ListIcon, PlusIcon, TrashIcon, EditIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
-import { DeleteButton } from '../ui/DeleteButton';
+import { PlusIcon, TrashIcon, EditIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -171,9 +170,9 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
     const handleDeleteStudent = async (id: string, studentName: string) => {
         openConfirmation({
-            title: t('delete_student_title'), 
-            message: t('confirm_delete_student', { studentName }), 
-            isDanger: true, 
+            title: t('delete_student_title'),
+            message: t('confirm_delete_student', { studentName }),
+            isDanger: true,
             onConfirm: async () => {
                 closeConfirmation();
                 try {
@@ -276,73 +275,143 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-6">
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={modalConfig.onCancel} showCancel={modalConfig.showCancel} />
+        <div className="max-w-6xl mx-auto space-y-6">
+            <ConfirmationModal
+                isOpen={modalConfig.isOpen}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                onConfirm={modalConfig.onConfirm}
+                onCancel={modalConfig.onCancel}
+                showCancel={modalConfig.showCancel}
+            />
 
-            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md space-y-6">
-                <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                    <div className="flex items-center gap-3">
-                        <ListIcon className="w-6 h-6 text-purple-400" />
-                        <h3 className="text-xl font-bold text-white">{t('classes_management_title')}</h3>
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 dark:border-white/5 pb-6 mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
+                            <UsersIcon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('classes_management_title')}</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('classes_management_desc')}</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex justify-between items-center mb-6 gap-4 flex-wrap">
-                    <p className="text-slate-400 font-medium text-sm">{t('classes_management_desc')}</p>
-                    <div className="flex gap-3">
-                        <label className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 cursor-pointer shadow-lg active:scale-95 transition-all text-sm">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = '.xlsx,.xls';
+                                input.onchange = (e: any) => handleSmartImport(e);
+                                input.click();
+                            }}
+                            disabled={isImporting}
+                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                        >
                             {isImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
-                            <span>{isImporting ? t('processing') : t('smart_import')}</span>
-                            <input type="file" className="hidden" accept=".xlsx,.xls,.csv" onChange={handleSmartImport} disabled={isImporting} />
-                        </label>
-                        <button onClick={() => setIsAddingClass(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-all text-sm">
+                            {t('smart_import')}
+                        </button>
+
+                        <button
+                            onClick={() => setIsAddingClass(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 text-sm"
+                        >
                             <PlusIcon className="w-4 h-4" />
-                            {t('add_group_button')}
+                            {t('add_new_group')}
                         </button>
                     </div>
                 </div>
 
                 {importStatus && (
-                    <div className="bg-blue-500/10 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 text-blue-300 font-bold animate-pulse mb-6 text-sm">
+                    <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-xl flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold animate-pulse mb-6 text-sm">
                         <RefreshIcon className="w-4 h-4 animate-spin" />
                         {importStatus}
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
-                            <MotionDiv initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-black/40 border border-indigo-500/30 p-6 rounded-2xl flex flex-col gap-4 shadow-2xl backdrop-blur-xl">
-                                <h3 className="text-white font-black text-lg">{editingClass ? t('edit_group') : t('add_new_group')}</h3>
-                                <input value={newClassName} onChange={e => setNewClassName(e.target.value)} placeholder={t('group_name_placeholder')} className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-indigo-500 transition-all shadow-inner" autoFocus />
-                                <div className="flex flex-wrap gap-2">
-                                    {AVAILABLE_COLORS.map(c => (
-                                        <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : 'opacity-50 hover:opacity-100 transition-opacity'}`} />
-                                    ))}
+                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
+                                <h3 className="text-gray-900 dark:text-white font-bold text-base flex items-center gap-2 mb-2">
+                                    {editingClass ? t('edit_group') : t('add_new_group')}
+                                </h3>
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('group_name_placeholder')}</label>
+                                        <input 
+                                            value={newClassName} 
+                                            onChange={e => setNewClassName(e.target.value)} 
+                                            placeholder={t('group_name_placeholder')} 
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                            autoFocus 
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Group Color</label>
+                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/10">
+                                            {AVAILABLE_COLORS.map(c => (
+                                                <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#1e1e2e] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex gap-2 mt-2">
-                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-xl transition-all shadow-lg active:scale-95">{t('save')}</button>
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-4 py-2.5 text-slate-400 font-bold hover:text-white transition-colors">{t('cancel')}</button>
+                                <div className="flex gap-3 mt-auto pt-2">
+                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg text-xs">{t('save')}</button>
+                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-4 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg border border-gray-200 dark:border-white/10 text-xs">{t('cancel')}</button>
                                 </div>
                             </MotionDiv>
                         )}
                     </AnimatePresence>
 
                     {visibleClasses.map(cls => (
-                        <div key={cls.id} className="bg-black/20 border border-white/5 p-6 rounded-2xl flex flex-col gap-4 group hover:bg-white/5 hover:border-white/10 transition-all shadow-lg">
-                            <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-6 h-6 rounded-full ${cls.color} shadow-[0_0_10px_currentColor]`} />
+                        <div key={cls.id} className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group overflow-hidden">
+                            <div className="flex justify-between items-start p-6 pb-4">
+                                <div className="flex items-center gap-4">
+                                    <div className={`w-12 h-12 rounded-xl ${cls.color} flex items-center justify-center text-white shadow-sm`}>
+                                        <UsersIcon className="w-6 h-6" />
+                                    </div>
                                     <div>
-                                        <h3 className="text-lg font-black text-white">{cls.name}</h3>
-                                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">{t('students_count', { count: cls.students.length })}</p>
+                                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{cls.name}</h4>
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{cls.students?.length || 0} {t('students_label')}</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-3 opacity-100 transition-all">
-                                    <button onClick={() => { setSelectedClassId(cls.id); setView('students'); }} className="p-3 min-w-[44px] min-h-[44px] bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white rounded-lg transition-all active:scale-95" title={t('manage_students_tooltip')}><UsersIcon className="w-5 h-5" /></button>
-                                    <DeleteButton onClick={() => handleDeleteClass(cls.id)} />
-                                    <button onClick={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color); setIsAddingClass(false); }} className="p-3 min-w-[44px] min-h-[44px] bg-amber-600/10 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg transition-all active:scale-95" title={t('edit_group_tooltip')}><EditIcon className="w-5 h-5" /></button>
+
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); setIsAddingClass(true); }}
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-indigo-500 rounded-full transition-all"
+                                        title={t('edit_group')}
+                                    >
+                                        <EditIcon className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            openConfirmation({
+                                                title: t('confirm_deletion'),
+                                                message: t('confirm_delete_group_warning'),
+                                                isDanger: true,
+                                                onConfirm: () => handleDeleteClass(cls.id)
+                                            });
+                                        }}
+                                        className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 rounded-full transition-all"
+                                        title={t('confirm_deletion')}
+                                    >
+                                        <TrashIcon className="w-4 h-4" />
+                                    </button>
                                 </div>
+                            </div>
+
+                            <div className="px-6 pb-6 mt-auto">
+                                <button
+                                    onClick={() => { setSelectedClassId(cls.id); setView('students'); }}
+                                    className="w-full py-2.5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                                >
+                                    <PlusIcon className="w-4 h-4" />
+                                    {t('manage_students_button')}
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -352,47 +421,73 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
             <AnimatePresence>
                 {view === 'students' && selectedClass && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                        <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-                        <MotionDiv initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-slate-900 border border-white/20 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
-                            <div className="p-6 border-b border-white/10 flex justify-between items-center shrink-0 bg-black/20">
+                        <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                        <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+                            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center shrink-0 bg-gray-50/50 dark:bg-white/5">
                                 <div className="flex items-center gap-4">
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${selectedClass.color}`}>
-                                        <UsersIcon className="w-6 h-6" />
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm ${selectedClass.color}`}>
+                                        <UsersIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-black text-white">{selectedClass.name}</h3>
-                                        <p className="text-slate-400 text-sm font-bold">{t('manage_students_title')}</p>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-none">{selectedClass.name}</h3>
+                                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setView('list')} className="p-3 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-all"><XIcon className="w-6 h-6" /></button>
+                                <button onClick={() => setView('list')} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"><XIcon className="w-5 h-5" /></button>
                             </div>
 
-                            <div className="p-6 flex flex-col gap-6 overflow-hidden">
-                                <div className="flex flex-col md:flex-row gap-4">
-                                    <div className="relative flex-1">
-                                        <SearchIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                                        <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-black/40 border border-white/10 rounded-xl py-3 ltr:pl-12 rtl:pr-12 text-white outline-none focus:border-blue-500 shadow-inner" />
+                            <div className="p-6 flex flex-col gap-6 overflow-hidden bg-white dark:bg-[#1e1e2e]">
+                                <div className="flex flex-col md:flex-row gap-6">
+                                    <div className="relative flex-[2]">
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+                                        <div className="relative">
+                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <input 
+                                                value={searchTerm} 
+                                                onChange={e => setSearchTerm(e.target.value)} 
+                                                placeholder={t('search_student_placeholder')} 
+                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10" 
+                                            />
+                                        </div>
                                     </div>
-                                    <form onSubmit={handleAddStudent} className="flex-1 flex gap-2">
-                                        <input value={newStudentName} onChange={e => setNewStudentName(e.target.value)} placeholder={t('new_student_placeholder')} className="flex-1 bg-black/40 border border-white/10 rounded-xl px-5 text-white outline-none focus:border-blue-500 shadow-inner" />
-                                        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-6 rounded-xl font-black shadow-lg transition-all active:scale-95">{t('add')}</button>
+                                    <form onSubmit={handleAddStudent} className="flex-[3] flex flex-col gap-2">
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('new_student_placeholder')}</label>
+                                        <div className="flex gap-3">
+                                            <input 
+                                                value={newStudentName} 
+                                                onChange={e => setNewStudentName(e.target.value)} 
+                                                placeholder={t('new_student_placeholder')} 
+                                                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                            />
+                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg shadow-md transition-all text-sm">{t('add')}</button>
+                                        </div>
                                     </form>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                         {selectedClass.students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase())).map(student => (
-                                            <div key={student.id} className="bg-white/5 border border-white/5 p-4 rounded-xl flex justify-between items-center group/item hover:bg-white/10 transition-all">
-                                                <span className="text-white font-bold">{student.name}</span>
-                                                <button onClick={() => handleDeleteStudent(student.id, student.name)} className="opacity-100 p-3 min-w-[44px] min-h-[44px] text-slate-500 hover:text-red-400 transition-all rounded-lg hover:bg-red-500/10 active:scale-95"><TrashIcon className="w-5 h-5" /></button>
+                                            <div key={student.id} className="p-3 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 flex justify-between items-center group hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all">
+                                                <span className="text-gray-700 dark:text-gray-200 font-semibold text-sm">{student.name}</span>
+                                                <button 
+                                                    onClick={() => handleDeleteStudent(student.id, student.name)} 
+                                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                                >
+                                                    <TrashIcon className="w-4 h-4" />
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="p-6 bg-black/40 border-t border-white/10 flex justify-center shrink-0">
-                                <button onClick={() => setView('list')} className="px-10 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-white font-black transition-all border border-white/10">{t('close_window')}</button>
+                            <div className="p-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end shrink-0">
+                                <button 
+                                    onClick={() => setView('list')} 
+                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                                >
+                                    {t('close_window')}
+                                </button>
                             </div>
                         </MotionDiv>
                     </div>

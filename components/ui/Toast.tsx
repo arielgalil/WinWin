@@ -17,44 +17,76 @@ export const Toast: React.FC<ToastProps> = ({ message, type = 'info', onClose })
     const getIcon = () => {
         switch (type) {
             case 'success':
-                return <CheckCircleIcon className="w-5 h-5 text-green-400" />;
+                return <CheckCircleIcon className="w-5 h-5 text-emerald-400" />;
             case 'error':
-                return <AlertCircleIcon className="w-5 h-5 text-red-400" />;
+                return <AlertCircleIcon className="w-5 h-5 text-rose-400" />;
             case 'info':
             default:
-                return <InfoIcon className="w-5 h-5 text-blue-400" />;
+                return <InfoIcon className="w-5 h-5 text-sky-400" />;
         }
     };
 
-    const getBgColor = () => {
+    const getTypeStyles = () => {
         switch (type) {
             case 'success':
-                return 'bg-green-500/10 border-green-500/20';
+                return {
+                    bg: 'bg-emerald-950/95',
+                    border: 'border-emerald-500/60',
+                    glow: 'shadow-emerald-900/40',
+                    progress: 'bg-emerald-400'
+                };
             case 'error':
-                return 'bg-red-500/10 border-red-500/20';
+                return {
+                    bg: 'bg-rose-950/95',
+                    border: 'border-rose-500/60',
+                    glow: 'shadow-rose-900/40',
+                    progress: 'bg-rose-400'
+                };
             case 'info':
             default:
-                return 'bg-slate-900/90 border-white/10';
+                return {
+                    bg: 'bg-slate-900/98',
+                    border: 'border-white/40',
+                    glow: 'shadow-black/60',
+                    progress: 'bg-sky-400'
+                };
         }
     };
 
+    const styles = getTypeStyles();
+
     return (
-        <AnimatePresence>
-            <MotionDiv
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border backdrop-blur-xl shadow-2xl ${getBgColor()}`}
+        <MotionDiv
+            layout
+            initial={{ opacity: 0, y: -40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } }}
+            className={`pointer-events-auto relative group flex items-center gap-4 px-5 py-4 rounded-2xl border backdrop-blur-2xl shadow-2xl ${styles.bg} ${styles.border} ${styles.glow} overflow-hidden`}
+        >
+            {/* Background Reflection */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-none" />
+
+            <div className="shrink-0 relative">
+                <div className={`absolute inset-0 ${styles.bg} blur-xl rounded-full`} />
+                {getIcon()}
+            </div>
+
+            <p className="text-sm font-black text-white flex-1 relative tracking-tight">{message}</p>
+
+            <button
+                onClick={onClose}
+                className="p-1.5 hover:bg-white/10 rounded-xl transition-all text-white/40 hover:text-white active:scale-90 relative"
             >
-                <div className="shrink-0">{getIcon()}</div>
-                <p className="text-sm font-bold text-white flex-1">{message}</p>
-                <button
-                    onClick={onClose}
-                    className="p-1 hover:bg-white/10 rounded-lg transition-colors text-slate-400"
-                >
-                    <XIcon className="w-4 h-4" />
-                </button>
-            </MotionDiv>
-        </AnimatePresence>
+                <XIcon className="w-4 h-4" />
+            </button>
+
+            {/* Progress Bar Animation */}
+            <MotionDiv
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: 4, ease: "linear" }}
+                className={`absolute bottom-0 left-0 h-1 ${styles.progress}`}
+            />
+        </MotionDiv>
     );
 };

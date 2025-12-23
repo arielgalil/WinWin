@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Admin Panel UI Unification
+## [~] Track: Admin Panel UI Unification
 *Link: [./conductor/tracks/ui_unification_20251223/](./conductor/tracks/ui_unification_20251223/)*

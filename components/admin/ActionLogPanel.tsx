@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActionLog, UserProfile, AppSettings } from '../../types';
-import { SparklesIcon, LayersIcon, RefreshIcon, CopyIcon, CheckIcon, EditIcon, XIcon, UndoIcon, SaveIcon, TrashIcon, AlertIcon } from '../ui/Icons';
+import { SparklesIcon, RefreshIcon, CopyIcon, CheckIcon, EditIcon, XIcon, UndoIcon, SaveIcon, TrashIcon, AlertIcon } from '../ui/Icons';
 import { generateAdminSummary } from '../../services/geminiService';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
@@ -150,9 +150,9 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     };
 
     const renderFormattedSummary = (text: string) => {
-        if (!text) return <div className="absolute inset-0 flex items-center justify-center text-center text-slate-300 p-6 font-bold italic">{t('click_below_for_ai_analysis')}</div>;
+        if (!text) return <div className="absolute inset-0 flex items-center justify-center text-center text-[var(--text-secondary)] p-6 font-bold italic">{t('click_below_for_ai_analysis')}</div>;
         return text.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
-            <p key={i} className="mb-4 text-slate-100 leading-relaxed text-sm font-medium">
+            <p key={i} className="mb-4 text-[var(--text-main)] leading-relaxed text-sm font-medium">
                 {parseFormattedText(paragraph).map((part, j) => {
                     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
@@ -165,12 +165,12 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8 flex flex-col pb-12 h-full relative" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="max-w-6xl mx-auto space-y-8 flex flex-col pb-12 h-full relative" dir={isRTL ? 'rtl' : 'ltr'}>
             <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
 
             <AnimatePresence>
                 {actionStatus && (
-                    <MotionDiv initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0 }} className={`fixed top-12 left-1/2 z-[100] px-8 py-3 rounded-full shadow-2xl font-black flex items-center gap-3 border border-white/20 ${actionStatus.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                    <MotionDiv initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0 }} className={`fixed top-12 left-1/2 z-[100] px-8 py-3 rounded-full shadow-2xl font-bold flex items-center gap-3 border border-white/10 ${actionStatus.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
                         {actionStatus.type === 'success' ? <CheckIcon className="w-5 h-5" /> : <AlertIcon className="w-5 h-5" />}
                         {actionStatus.text}
                     </MotionDiv>
@@ -179,53 +179,49 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
                 <div className="lg:col-span-2 flex flex-col gap-6 min-h-0">
-                    <div className="bg-white/5 rounded-[var(--radius-main)] border border-white/10 flex flex-col flex-1 min-h-0 shadow-xl backdrop-blur-md overflow-hidden">
-                        <div className="p-6 border-b border-white/10 flex items-center gap-3 bg-black/20">
-                             <LayersIcon className="w-6 h-6 text-indigo-400" />
-                             <h3 className="text-xl font-bold text-white">{t('activity_history_title')}</h3>
-                        </div>
+                    <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 flex flex-col flex-1 min-h-0 shadow-sm overflow-hidden">
                         <div className="custom-scrollbar overflow-x-auto flex-1">
                             <table className="w-full text-right border-collapse">
-                                <thead className="sticky top-0 bg-slate-900/90 backdrop-blur-md z-10 text-slate-400 text-[11px] font-black uppercase tracking-wider">
+                                <thead className="sticky top-0 bg-gray-50 dark:bg-white/5 z-10 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">
                                     <tr>
-                                        <th className="p-4 border-b border-white/5">{t('time')}</th>
-                                        <th className="p-4 border-b border-white/5">{t('performer')}</th>
-                                        <th className="p-4 border-b border-white/5">{t('description')}</th>
-                                        <th className="p-4 border-b border-white/5 text-center">{t('points')}</th>
-                                        {isAdmin && <th className="p-4 border-b border-white/5 text-center">{t('actions')}</th>}
+                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('time')}</th>
+                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('performer')}</th>
+                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('description')}</th>
+                                        <th className="p-4 border-b border-gray-200 dark:border-white/10 text-center">{t('points')}</th>
+                                        {isAdmin && <th className="p-4 border-b border-gray-200 dark:border-white/10 text-center">{t('actions')}</th>}
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                     {logs.map((log) => {
                                         const isMine = log.user_id === currentUser?.id;
                                         const isCancelled = log.is_cancelled;
                                         const isEditing = editingLogId === log.id;
 
                                         return (
-                                            <tr key={log.id} className={`group hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-40 grayscale' : ''}`}>
-                                                <td className="p-4 text-xs text-slate-400 font-mono">
+                                            <tr key={log.id} className={`group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                                                <td className="p-4 text-xs text-gray-400 font-mono">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-xl shrink-0 ${isMine ? 'bg-cyan-600 ring-2 ring-cyan-400/40' : 'bg-indigo-500/20 border border-indigo-500/30 text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-400' : 'text-white'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-xs font-semibold whitespace-nowrap ${isMine ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-900 dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="bg-slate-900 border border-indigo-500/50 rounded-lg p-2 text-sm text-white w-full outline-none" />
+                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
                                                     ) : (
-                                                        <span className="text-sm text-slate-300 font-medium line-clamp-1">{log.description}</span>
+                                                        <span className="text-sm text-gray-600 dark:text-gray-300 font-medium line-clamp-1">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
-                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="bg-slate-900 border border-indigo-500/50 rounded-lg p-2 text-sm text-white w-20 text-center font-bold outline-none" />
+                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500" />
                                                     ) : (
-                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-green-400' : 'text-rose-400'}`}>
+                                                        <span className={`text-sm font-bold tabular-nums ${log.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
                                                         </span>
                                                     )}
@@ -235,13 +231,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
-                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-3 min-w-[44px] min-h-[44px] bg-green-600 rounded-lg text-white hover:bg-green-500 transition-colors shadow-lg active:scale-95"><SaveIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => setEditingLogId(null)} className="p-3 min-w-[44px] min-h-[44px] bg-slate-700 rounded-lg text-white hover:bg-slate-600 transition-colors shadow-lg active:scale-95"><XIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors"><SaveIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"><XIcon className="w-4 h-4" /></button>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => startEditing(log)} className="p-3 min-w-[44px] min-h-[44px] bg-white/5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-3 min-w-[44px] min-h-[44px] rounded-lg transition-all border active:scale-95 ${isCancelled ? 'bg-green-600/20 text-green-400 border-green-500/30 hover:bg-green-600 hover:text-white' : 'bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-600 hover:text-white'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
+                                                                    <button onClick={() => startEditing(log)} className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-lg transition-all ${isCancelled ? 'text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10' : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
                                                                 </>
                                                             )}
                                                         </div>
@@ -250,7 +246,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                             </tr>
                                         );
                                     })}
-                                    <tr ref={bottomRef}><td colSpan={5} className="p-8 text-center text-slate-500 text-[10px] font-black uppercase tracking-widest">{t('end_of_list')}</td></tr>
+                                    <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-gray-400 text-[10px] font-bold uppercase tracking-widest">{t('end_of_list')}</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -259,25 +255,23 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
                 {isAdmin && (
                     <div className="md:col-span-1 flex flex-col gap-6 md:sticky md:top-4 order-1 md:order-2">
-                        <div className="bg-gradient-to-br from-indigo-950/80 to-purple-950/80 p-8 rounded-[2rem] border border-indigo-500/30 flex flex-col h-[600px] shadow-2xl backdrop-blur-xl">
+                        <div className="bg-indigo-50 dark:bg-[#1e1e2e] p-6 rounded-2xl border border-indigo-100 dark:border-white/10 flex flex-col h-[600px] shadow-sm">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-xl font-black text-white flex items-center gap-3">
-                                    <SparklesIcon className="w-6 h-6 text-indigo-400 animate-pulse" /> {t('summary_ai_title')}
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                    <SparklesIcon className="w-5 h-5 text-indigo-500 animate-pulse" /> {t('summary_ai_title')}
                                 </h3>
                                 {summary && (
-                                    <button onClick={handleCopySummary} className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-black shadow-lg ${isCopied ? 'bg-green-600 text-white' : 'bg-white/10 text-slate-200 border border-white/10 hover:bg-white/20'}`}>
-                                        {isCopied ? <CheckIcon className="w-4 h-4" /> : <CopyIcon className="w-4 h-4" />}
+                                    <button onClick={handleCopySummary} className={`p-2 rounded-lg transition-all flex items-center gap-2 text-xs font-bold ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
+                                        {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
                                         {isCopied ? t('copied') : t('copy')}
                                     </button>
                                 )}
                             </div>
-                            <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mb-6 w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-[0_15px_30px_-5px_rgba(79,70,229,0.5)] border border-indigo-400/50 relative z-20 cursor-pointer">
-                                <div className="flex items-center justify-center gap-3 pointer-events-none">
-                                    {isLoadingAI ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <SparklesIcon className="w-6 h-6" />}
-                                    <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
-                                </div>
+                            <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mb-6 w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-not-allowed">
+                                {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
+                                <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
                             </button>
-                            <div className="bg-black/60 rounded-[1.5rem] p-6 flex-1 overflow-y-auto border border-white/10 relative min-h-[300px] custom-scrollbar shadow-inner">
+                            <div className="bg-white dark:bg-black/20 rounded-xl p-6 flex-1 overflow-y-auto border border-gray-100 dark:border-white/5 custom-scrollbar text-gray-700 dark:text-gray-200">
                                 {renderFormattedSummary(summary || '')}
                             </div>
                         </div>

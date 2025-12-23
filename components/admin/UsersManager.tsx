@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ClassRoom, UserProfile, Campaign } from '../../types';
-import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, EditIcon, CheckIcon, XIcon, SettingsIcon, UserIcon } from '../ui/Icons';
-import { DeleteButton } from '../ui/DeleteButton';
+import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, EditIcon, TrashIcon, CheckIcon, XIcon, SettingsIcon, UserIcon, PlusIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase, createTempClient } from '../../supabaseClient';
 import { isSuperUser } from '../../config';
@@ -42,6 +41,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
     const { showToast } = useToast();
     const { modalConfig, openConfirmation } = useConfirmation();
     const { getErrorMessage } = useErrorFormatter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const alphabeticalClasses = [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he'));
 
@@ -228,7 +228,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
             <ConfirmationModal
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}
@@ -238,113 +238,157 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 onCancel={modalConfig.onCancel}
             />
 
-            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
-                <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                            <UsersIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('team_mgmt_title_clean')}</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('team_mgmt_subtitle')}</p>
+                        </div>
+                    </div>
+
                     <div className="flex items-center gap-3">
-                        <UsersIcon className="w-6 h-6 text-blue-400" />
-                        <h3 className="text-xl font-bold text-white">{t('team_mgmt_title', { campaign: currentCampaign?.name || '' })}</h3>
+                        <button
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isBulkImporting}
+                            className="group relative flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-lg transition-all font-bold text-xs border border-blue-100 dark:border-blue-500/20 active:scale-95 disabled:opacity-50"
+                        >
+                            {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />}
+                            {t('import_from_excel')}
+                        </button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".xlsx, .xls, .csv"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    openConfirmation({
+                                        title: t('import_users_title'),
+                                        message: t('import_users_warning'),
+                                        isDanger: false,
+                                        onConfirm: () => processBulkImport(file)
+                                    });
+                                    e.target.value = ''; // Reset for same file re-import
+                                }
+                            }}
+                        />
                     </div>
                 </div>
 
-                <div className="mb-8">
-                    <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-                        <h4 className="text-sm font-bold text-white/70">{t('add_staff_member')}</h4>
-                        <div className="flex items-center gap-2">
-                            <label className="flex items-center gap-2 bg-green-600/10 hover:bg-green-600/20 text-green-400 px-3 py-1.5 rounded-xl border border-green-500/20 cursor-pointer transition-all active:scale-95">
-                                {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
-                                <span className="text-xs font-bold">{t('import_from_excel')}</span>
-                                <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        openConfirmation({
-                                            title: t('import_users_title'),
-                                            message: t('import_users_warning'),
-                                            isDanger: false,
-                                            onConfirm: () => processBulkImport(file)
-                                        });
-                                    }
-                                }} />
-                            </label>
+                <div className="mb-10">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-100 dark:border-white/5">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('full_name_label')}</label>
+                            <input
+                                required
+                                value={newUserFullName}
+                                onChange={e => setNewUserFullName(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                placeholder="e.g. John Doe"
+                            />
                         </div>
-                    </div>
-
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-black/20 p-4 rounded-2xl border border-white/5">
-                        <div className="md:col-span-3">
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('full_name_label')}</label>
-                            <input type="text" value={newUserFullName} onChange={e => setNewUserFullName(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required />
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('email_label')}</label>
+                            <input
+                                required
+                                type="email"
+                                value={newUserEmail}
+                                onChange={e => setNewUserEmail(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                placeholder="name@email.com"
+                            />
                         </div>
-                        <div className="md:col-span-3">
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('email_label')}</label>
-                            <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required />
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('password_label')}</label>
+                            <input
+                                required
+                                type="password"
+                                value={newUserPassword}
+                                onChange={e => setNewUserPassword(e.target.value)}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                placeholder="••••••••"
+                            />
                         </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('password_label')}</label>
-                            <input type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all" required minLength={6} />
-                        </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('role_label')}</label>
-                            <select value={newUserRole} onChange={e => setNewUserRole(e.target.value as 'admin' | 'teacher')} className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all">
-                                <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
-                                <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
-                            </select>
-                        </div>
-                        <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('group_assignment_label')}</label>
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('role_label')}</label>
                             <select
-                                value={newUserClassId}
-                                onChange={e => setNewUserClassId(e.target.value)}
-                                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white text-xs outline-none focus:border-blue-500 transition-all"
+                                value={newUserRole}
+                                onChange={e => setNewUserRole(e.target.value as any)}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
                             >
-                                <option value="" className="bg-slate-900">{t('no_assignment')}</option>
-                                {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
+                                <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
+                                <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
                             </select>
                         </div>
-                        <div className="md:col-span-12 mt-2">
-                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl font-black text-xs transition-all shadow-lg active:scale-95">
+                        <div className="flex items-end">
+                            <button
+                                type="submit"
+                                disabled={!!userCreationStatus}
+                                className="w-full h-[42px] bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {userCreationStatus ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <PlusIcon className="w-4 h-4" />}
                                 {t('add_join_user_button')}
                             </button>
                         </div>
                     </form>
-                    {userCreationStatus && <div className="mt-3 text-[10px] font-bold p-2 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 animate-in fade-in">{userCreationStatus}</div>}
+                    {userCreationStatus && (
+                        <div className="mt-3 text-[10px] font-bold text-blue-500 dark:text-blue-400 animate-pulse bg-blue-50 dark:bg-blue-500/10 py-2 px-4 rounded-lg inline-flex items-center gap-2">
+                            <RefreshIcon className="w-3 h-3 animate-spin" />
+                            {userCreationStatus}
+                        </div>
+                    )}
                 </div>
 
-                <div className="bg-black/20 rounded-2xl border border-white/5 overflow-hidden shadow-inner">
-                    <table className="w-full rtl:text-right ltr:text-left">
-                        <thead className="bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-wider">
-                            <tr>
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
+                    <table className="w-full border-collapse">
+                        <thead>
+                            <tr className="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-widest text-right">
                                 <th className="p-4">{t('name_email_header')}</th>
                                 <th className="p-4">{t('role_header')}</th>
                                 <th className="p-4">{t('group_header')}</th>
                                 <th className="p-4 text-center">{t('actions_header')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 text-xs text-slate-200">
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-xs text-gray-600 dark:text-gray-300">
                             {usersList.map(u => (
-                                <tr key={u.id} className={`hover:bg-white/5 transition-colors ${currentUser && u.id === currentUser.id ? 'bg-blue-500/5' : ''}`}>
+                                <tr key={u.id} className={`hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${currentUser && u.id === currentUser.id ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}>
                                     <td className="p-4">
                                         {editingUserId === u.id ? (
-                                            <input className="bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 w-full text-white outline-none focus:border-blue-500 transition-all" value={editFormData.full_name || ''} onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} />
+                                            <input 
+                                                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                                value={editFormData.full_name || ''} 
+                                                onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
+                                            />
                                         ) : (
                                             <div>
-                                                <div className="font-black flex items-center gap-2 text-white">
+                                                <div className="font-bold flex items-center gap-2 text-gray-900 dark:text-white text-sm">
                                                     {u.full_name}
-                                                    {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-400 animate-pulse" />}
-                                                    {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300 font-black">{t('me')}</span>}
+                                                    {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-500" />}
+                                                    {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold">{t('me')}</span>}
                                                 </div>
-                                                <div className="text-[10px] opacity-40 tabular-nums">{u.email}</div>
+                                                <div className="text-[11px] text-gray-400 tabular-nums font-mono mt-0.5">{u.email}</div>
                                             </div>
                                         )}
                                     </td>
                                     <td className="p-4">
                                         {editingUserId === u.id && u.role !== 'superuser' ? (
-                                            <select className="bg-slate-900 border border-white/10 rounded-lg px-2 py-1 text-white outline-none" value={editFormData.role} onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}>
-                                                <option value="admin" className="bg-slate-900">{t('role_admin_short')}</option>
-                                                <option value="teacher" className="bg-slate-900">{t('role_teacher_short')}</option>
+                                            <select 
+                                                className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                                value={editFormData.role} 
+                                                onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
+                                            >
+                                                <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
+                                                <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
                                             </select>
                                         ) : (
-                                            <span className={`px-2 py-1 rounded-lg text-[10px] font-black flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                                                u.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' :
-                                                    'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                            <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20' :
+                                                u.role === 'admin' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20' :
+                                                    'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
                                                 }`}>
                                                 {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
                                                 {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
@@ -355,27 +399,52 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                     </td>
                                     <td className="p-4">
                                         {editingUserId === u.id ? (
-                                            <select className="bg-slate-900 border border-white/10 rounded-lg px-2 py-1 w-full text-white outline-none" value={editFormData.class_id || ''} onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}>
-                                                <option value="" className="bg-slate-900">{t('no_assignment')}</option>
-                                                {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
+                                            <select 
+                                                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                                value={editFormData.class_id || ''} 
+                                                onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
+                                            >
+                                                <option value="" className="bg-white dark:bg-[#1e1e2e]">{t('no_assignment')}</option>
+                                                {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-white dark:bg-[#1e1e2e]">{c.name}</option>)}
                                             </select>
                                         ) : (
-                                            <span className="font-bold opacity-80">
+                                            <span className="font-bold text-gray-700 dark:text-gray-300">
                                                 {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
                                             </span>
                                         )}
                                     </td>
                                     <td className="p-4 text-center">
-                                        <div className="flex gap-2 justify-center">
+                                        <div className="flex gap-4 justify-center items-center">
                                             {editingUserId === u.id ? (
                                                 <>
-                                                    <button onClick={() => saveUserChanges(u.id)} className="p-3 min-w-[44px] min-h-[44px] bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white rounded-lg transition-all active:scale-95" title={t('save')}><CheckIcon className="w-5 h-5" /></button>
-                                                    <button onClick={() => setEditingUserId(null)} className="p-3 min-w-[44px] min-h-[44px] bg-slate-700/20 text-slate-400 hover:bg-slate-700 hover:text-white rounded-lg transition-all active:scale-95" title={t('cancel')}><XIcon className="w-5 h-5" /></button>
+                                                    <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
+                                                    <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
                                                 </>
                                             ) : (
                                                 <>
-                                                    {currentUser && u.id !== currentUser.id && !isSuperUser(u.role) && <DeleteButton onClick={() => handleDeleteUser(u.id)} />}
-                                                    <button onClick={() => { setEditingUserId(u.id); setEditFormData(u); }} className="p-3 min-w-[44px] min-h-[44px] bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white rounded-lg transition-colors border border-amber-500/30 active:scale-95" title={t('edit_action')}><EditIcon className="w-5 h-5" /></button>
+                                                    {currentUser && u.id !== currentUser.id && !isSuperUser(u.role) && (
+                                                        <button
+                                                            onClick={() => {
+                                                                openConfirmation({
+                                                                    title: t('confirm_deletion'),
+                                                                    message: t('confirm_delete_campaign'),
+                                                                    isDanger: true,
+                                                                    onConfirm: () => handleDeleteUser(u.id)
+                                                                });
+                                                            }}
+                                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                                                            title={t('delete')}
+                                                        >
+                                                            <TrashIcon className="w-4 h-4" />
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => { setEditingUserId(u.id); setEditFormData(u); }}
+                                                        className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all"
+                                                        title={t('edit_action')}
+                                                    >
+                                                        <EditIcon className="w-4 h-4" />
+                                                    </button>
                                                 </>
                                             )}
                                         </div>
@@ -385,7 +454,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };

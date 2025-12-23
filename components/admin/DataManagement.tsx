@@ -183,84 +183,115 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-6">
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
-            
-            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
-                <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                    <div className="flex items-center gap-3">
-                        <DatabaseIcon className="w-6 h-6 text-cyan-400" />
-                        <h3 className="text-xl font-bold text-white">{t('data_mgmt_title')}</h3>
+        <div className="max-w-6xl mx-auto space-y-6">
+            <ConfirmationModal
+                isOpen={modalConfig.isOpen}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                onConfirm={modalConfig.onConfirm}
+                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+            />
+
+            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+                {/* Header */}
+                <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
+                    <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                        <DatabaseIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('data_mgmt_title')}</h3>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('data_mgmt_subtitle')}</p>
                     </div>
                 </div>
 
                 {statusMsg && (
-                    <div className={`mb-6 p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${statusMsg.type === 'success' ? 'bg-green-500/20 border-green-500/50 text-green-200' : 'bg-red-500/20 border-red-500/50 text-red-200'}`}>
-                        <CheckIcon className="w-5 h-5" /> 
-                        <span className="font-bold">{statusMsg.text}</span> 
+                    <div className={`p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${statusMsg.type === 'success' ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400'}`}>
+                        <CheckIcon className="w-5 h-5" />
+                        <span className="font-bold text-sm">{statusMsg.text}</span>
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-6">
-                        <div className="bg-black/20 p-5 rounded-2xl border border-white/5 space-y-4 shadow-inner">
-                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                                <DownloadIcon className="w-4 h-4 text-green-400" /> {t('export_backup_title')}
-                            </h4>
-                            <div className="grid grid-cols-2 gap-3">
-                                <button onClick={() => handleExport('full')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
-                                    <DatabaseIcon className="w-5 h-5 text-blue-300" /> {t('full_backup')}
-                                </button>
-                                <button onClick={() => handleExport('structure')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
-                                    <UploadIcon className="w-5 h-5 text-purple-300" /> {t('structure_backup')}
-                                </button>
-                                <button onClick={() => handleExport('settings')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
-                                    <CheckIcon className="w-5 h-5 text-yellow-300" /> {t('settings_backup')}
-                                </button>
-                                <button onClick={() => handleExport('staff')} disabled={isExporting} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-white/10 rounded-xl text-white text-xs font-bold transition-all flex flex-col items-center gap-2 active:scale-95">
-                                    <UsersIcon className="w-5 h-5 text-pink-300" /> {t('staff_backup')}
-                                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Export Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg">
+                                <DownloadIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                             </div>
+                            <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{t('export_backup_title')}</h4>
                         </div>
-
-                        <div className="bg-black/20 p-5 rounded-2xl border border-white/5 space-y-4 shadow-inner">
-                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                                <UploadIcon className="w-4 h-4 text-orange-400" /> {t('data_restore_title')}
-                            </h4>
-                            <label className={`w-full flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/10 rounded-2xl cursor-pointer hover:bg-white/5 transition-all ${isImporting ? 'opacity-50' : ''}`}>
-                                {isImporting ? <RefreshIcon className="w-8 h-8 animate-spin text-orange-400 mb-2" /> : <UploadIcon className="w-8 h-8 text-orange-400 mb-2" />}
-                                <span className="text-xs text-slate-300 font-bold">{t('select_backup_file')}</span>
-                                <input type="file" accept=".json" className="hidden" onChange={handleImportTrigger} disabled={isImporting} />
-                            </label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button onClick={() => handleExport('full')} disabled={isExporting} className="group p-4 bg-gray-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-200 dark:border-white/10 hover:border-emerald-200 dark:hover:border-emerald-500/20 rounded-xl transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-900 dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{t('full_backup')}</div>
+                                <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">JSON + Media</div>
+                            </button>
+                            <button onClick={() => handleExport('structure')} disabled={isExporting} className="group p-4 bg-gray-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-200 dark:border-white/10 hover:border-emerald-200 dark:hover:border-emerald-500/20 rounded-xl transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-900 dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{t('structure_backup')}</div>
+                                <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">Classes & Students</div>
+                            </button>
+                            <button onClick={() => handleExport('settings')} disabled={isExporting} className="group p-4 bg-gray-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-200 dark:border-white/10 hover:border-emerald-200 dark:hover:border-emerald-500/20 rounded-xl transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-900 dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{t('settings_backup')}</div>
+                                <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">Campaign Settings</div>
+                            </button>
+                            <button onClick={() => handleExport('staff')} disabled={isExporting} className="group p-4 bg-gray-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-200 dark:border-white/10 hover:border-emerald-200 dark:hover:border-emerald-500/20 rounded-xl transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-900 dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{t('staff_backup')}</div>
+                                <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">Staff & Roles</div>
+                            </button>
                         </div>
                     </div>
 
-                    <div className="bg-red-950/10 p-5 rounded-2xl border border-red-500/20 space-y-4 shadow-inner">
-                        <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
-                            <AlertIcon className="w-4 h-4" /> {t('danger_zone_title')}
-                        </h4>
-                        <div className="space-y-3">
-                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
-                                <div className="min-w-0">
-                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_logs_label')}</h5>
-                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_logs_desc')}</p>
-                                </div>
-                                <button onClick={() => handleReset('logs')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_action')}</button>
+                    {/* Import Section */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
+                                <UploadIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
-                                <div className="min-w-0">
-                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_scores_label')}</h5>
-                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_scores_desc')}</p>
-                                </div>
-                                <button onClick={() => handleReset('scores')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_action')}</button>
+                            <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{t('data_restore_title')}</h4>
+                        </div>
+                        <label className={`w-full flex flex-col items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-400 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''}`}>
+                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-600 dark:text-blue-400">
+                                {isImporting ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <UploadIcon className="w-6 h-6" />}
                             </div>
-                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex justify-between items-center gap-4">
-                                <div className="min-w-0">
-                                    <h5 className="text-white text-sm font-bold truncate">{t('reset_full_label')}</h5>
-                                    <p className="text-[10px] text-slate-400 line-clamp-1">{t('reset_full_desc')}</p>
-                                </div>
-                                <button onClick={() => handleReset('full')} disabled={isResetting} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap active:scale-95">{t('execute_full_reset')}</button>
-                            </div>
+                            <span className="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>
+                            <input type="file" accept=".json" onChange={handleImportTrigger} className="hidden" disabled={isImporting} />
+                        </label>
+                    </div>
+                </div>
+
+                {/* Danger Zone */}
+                <div className="mt-10 pt-10 border-t border-gray-100 dark:border-white/5">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-1.5 bg-red-50 dark:bg-red-500/10 rounded-lg">
+                            <AlertIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        </div>
+                        <h4 className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest leading-none">{t('danger_zone_title')}</h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_logs_label')}</div>
+                            <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_logs_desc')}</div>
+                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_logs_warning'), isDanger: true, onConfirm: () => handleReset('logs') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                                <AlertIcon className="w-3.5 h-3.5" />
+                                {t('reset_logs_btn')}
+                            </button>
+                        </div>
+
+                        <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_scores_label')}</div>
+                            <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_scores_desc')}</div>
+                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_scores_warning'), isDanger: true, onConfirm: () => handleReset('scores') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                                <AlertIcon className="w-3.5 h-3.5" />
+                                {t('reset_scores_btn')}
+                            </button>
+                        </div>
+
+                        <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_full_label')}</div>
+                            <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_full_desc')}</div>
+                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_full_warning'), isDanger: true, onConfirm: () => handleReset('full') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-lg text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                                <AlertIcon className="w-3.5 h-3.5" />
+                                {t('reset_all_btn')}
+                            </button>
                         </div>
                     </div>
                 </div>

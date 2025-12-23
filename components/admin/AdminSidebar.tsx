@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import { UserProfile, AppSettings } from '../../types';
-import { TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, CheckIcon, AlertCircleIcon } from '../ui/Icons';
-import { Logo } from '../ui/Logo';
-import { isSuperUser } from '../../config';
+import { TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIcon, MoonIcon } from '../ui/Icons';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface AdminSidebarProps {
-  user: UserProfile;
-  settings: AppSettings;
-  userClassName?: string | null;
   visibleNavItems: any[];
   activeTab: string;
   onTabChange: (id: string) => void;
@@ -17,15 +12,11 @@ interface AdminSidebarProps {
   onManualRefresh: () => Promise<boolean>;
   isRefreshing: boolean;
   onLogout: () => void;
-  campaignRole?: string;
   isFrozen?: boolean;
   onToggleFreeze?: (val: boolean) => void;
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({
-  user,
-  settings,
-  userClassName,
   visibleNavItems,
   activeTab,
   onTabChange,
@@ -33,11 +24,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onViewDashboard,
   onManualRefresh,
   onLogout,
-  campaignRole,
   isFrozen,
   onToggleFreeze
 }) => {
   const { t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const [localRefreshStatus, setLocalRefreshStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleRefreshClick = async () => {
@@ -52,122 +43,84 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     }
   };
 
-  // Determine Role Label with clearer text
-  const getRoleLabel = () => {
-    if (isSuperUser(user.role) || isSuperUser(campaignRole)) return t('role_super_user');
-    if (campaignRole === 'admin' || user.role === 'admin') return t('role_admin');
-    return t('role_teacher');
-  };
-
-  const isAnySuperUser = isSuperUser(user.role) || isSuperUser(campaignRole);
 
   return (
-    <div className="hidden md:flex bg-[var(--bg-card)]/40 p-4 w-64 flex-col justify-between border-l border-[var(--border-main)] shrink-0 h-full overflow-y-auto custom-scrollbar max-h-screen">
-      <div>
-        <div className="mb-8 p-6 bg-black/5 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-inner">
-          <div className="flex items-center gap-3 mb-3">
-            <Logo
-              src={settings.logo_url}
-              className="w-12 h-12 shadow-lg"
-              fallbackIcon="school"
-              padding="p-1"
-            />
-            <div className="min-w-0">
-              <h2 className="text-[var(--text-main)] font-black text-sm truncate leading-tight">{settings.school_name}</h2>
-              <p className="text-blue-500 text-[11px] font-black truncate">{settings.competition_name}</p>
-            </div>
-          </div>
-          <div className="h-px bg-[var(--border-main)] mb-3" />
-          <div className="flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-white shadow-lg text-sm shrink-0 ring-2 ${isAnySuperUser ? 'bg-amber-500 ring-amber-400/40' : 'bg-pink-500 ring-pink-400/40'}`}>
-              {user.full_name?.charAt(0).toUpperCase() || 'U'}
-            </div>
-            <div className="min-w-0">
-              <p className="text-[var(--text-main)] font-black text-xs truncate">{user.full_name}</p>
-              <p className={`${isAnySuperUser ? 'text-amber-500' : 'text-pink-500'} text-[10px] uppercase font-black tracking-widest truncate`}>
-                {getRoleLabel()}
-                {userClassName && <span className="text-[var(--text-muted)]"> | {userClassName}</span>}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="space-y-1 mt-2" aria-label="תפריט ניהול">
-          {visibleNavItems.map((item, index) => 
+    <div className="hidden md:flex bg-white/50 dark:bg-[#0f0f13]/50 border-r border-gray-200 dark:border-white/10 p-4 w-72 flex-col justify-between shrink-0 h-full overflow-y-auto custom-scrollbar max-h-screen relative z-20 backdrop-blur-md">
+      <div className="space-y-6">
+        {/* Navigation Section */}
+        <nav className="space-y-1" aria-label="Admin Navigation">
+          {visibleNavItems.map((item, index) =>
             item.divider ? (
-              <div key={`divider-${index}`} className="my-4 border-t border-[var(--border-main)] opacity-50" />
+              <div key={`divider-${index}`} className="my-4 mx-2 h-px bg-gray-200 dark:bg-white/10" />
             ) : (
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
                 onMouseEnter={() => onTabHover?.(item.id)}
                 aria-current={activeTab === item.id ? 'page' : undefined}
-                className={`w-full text-right py-4 px-6 rounded-[var(--radius-main)] flex items-center gap-4 transition-all duration-200 outline-none focus:ring-2 focus:ring-white/20 text-base ${activeTab === item.id
-                  ? `bg-white/20 text-white font-black border-r-4 shadow-lg backdrop-blur-sm border-white/40`
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-black/5 border-r-4 border-transparent'
+                className={`w-full text-right py-2.5 px-3 rounded-lg flex items-center gap-3 transition-all duration-200 group relative ${activeTab === item.id
+                  ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 font-medium'
                   }`}
               >
-                <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'opacity-100' : 'opacity-70'}`} />
+                <item.icon className={`w-5 h-5 transition-colors ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}`} />
                 <div className="flex flex-col text-right leading-tight">
-                  <span className="text-sm font-bold">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
-                  {item.subtitle && <span className="text-[10px] font-bold opacity-70">{item.subtitle}</span>}
+                  <span className="text-sm">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
+                  {item.subtitle && <span className="text-[10px] opacity-60 font-normal">{item.subtitle}</span>}
                 </div>
+                {activeTab === item.id && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full" />
+                )}
               </button>
             )
           )}
         </nav>
       </div>
 
-      <div className="mt-6 pt-6 border-t border-[var(--border-main)]">
-        <div className="flex items-center justify-between gap-2">
-          <button onClick={onLogout} className="p-3 rounded-[var(--radius-main)] flex items-center justify-center text-red-500 hover:text-red-600 hover:bg-red-500/10 transition-all outline-none focus:ring-2 focus:ring-red-500/50" title={t('logout')}>
-            <LogoutIcon className="w-5 h-5 shrink-0" />
-          </button>
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10 space-y-1">
+        <button
+          onClick={toggleTheme}
+          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
+        >
+          {theme === 'dark' ? <SunIcon className="w-5 h-5 text-amber-500" /> : <MoonIcon className="w-5 h-5 text-indigo-500" />}
+          <span>{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
+        </button>
 
+        <button
+          onClick={onViewDashboard}
+          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
+        >
+          <TrophyIcon className="w-5 h-5 text-amber-500" />
+          <span>{t('view_leaderboard')}</span>
+        </button>
+
+        <button
+          onClick={onLogout}
+          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-red-500 font-medium text-sm"
+        >
+          <LogoutIcon className="w-5 h-5" />
+          <span>{t('logout')}</span>
+        </button>
+
+        <div className="mt-4 flex items-center justify-between px-2 pt-2 border-t border-gray-100 dark:border-white/5 opacity-60">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">WinWin v2.0</span>
           <div className="flex items-center gap-2">
-            <button onClick={onViewDashboard} className="p-3 rounded-[var(--radius-main)] flex items-center justify-center text-yellow-500 hover:text-yellow-600 hover:bg-yellow-500/10 transition-all outline-none focus:ring-2 focus:ring-yellow-500/50" title={t('view_leaderboard')}>
-              <TrophyIcon className="w-5 h-5 shrink-0" />
-            </button>
-
-            <button 
-              onClick={handleRefreshClick} 
-              className={`p-3 transition-all outline-none 
-                ${localRefreshStatus === 'loading' ? 'text-blue-400' : 
-                  localRefreshStatus === 'success' ? 'text-green-500' : 
-                  localRefreshStatus === 'error' ? 'text-red-500' : 
-                  'text-cyan-500 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-[var(--radius-main)]'
-                }`} 
-              title={t('refresh')}
-            >
-              {localRefreshStatus === 'success' ? (
-                <CheckIcon className="w-5 h-5 shrink-0" />
-              ) : localRefreshStatus === 'error' ? (
-                <AlertCircleIcon className="w-5 h-5 shrink-0" />
-              ) : (
-                <RefreshIcon className={`w-5 h-5 shrink-0 ${localRefreshStatus === 'loading' ? 'animate-spin' : ''}`} />
-              )}
-            </button>
-
             {onToggleFreeze && (
               <button
                 onClick={() => onToggleFreeze(!isFrozen)}
-                className={`p-3 rounded-[var(--radius-main)] flex items-center justify-center transition-all outline-none focus:ring-2 ${isFrozen
-                  ? 'text-green-500 hover:text-green-600 hover:bg-green-500/10 focus:ring-green-500/50'
-                  : 'text-red-500 hover:text-red-600 hover:bg-red-500/10 focus:ring-red-500/50'
-                  }`}
+                className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${isFrozen ? 'bg-emerald-500 text-white shadow-sm' : 'bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-rose-500 hover:text-white'}`}
                 title={isFrozen ? t('unfreeze_board') : t('freeze_board')}
               >
-                {isFrozen ? (
-                  <RefreshIcon className="w-5 h-5 shrink-0" />
-                ) : (
-                  <PauseIcon className="w-5 h-5 shrink-0" />
-                )}
+                {isFrozen ? <RefreshIcon className="w-3 h-3" /> : <PauseIcon className="w-3 h-3" />}
               </button>
             )}
+            <button onClick={handleRefreshClick} className={`w-5 h-5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-indigo-50 dark:hover:bg-indigo-500/20 text-gray-500 flex items-center justify-center transition-colors ${localRefreshStatus === 'loading' ? 'animate-spin' : ''}`}>
+              <RefreshIcon className="w-3 h-3" />
+            </button>
           </div>
         </div>
       </div>
 
-    </div>
+    </div >
   );
 };

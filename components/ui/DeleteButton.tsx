@@ -31,22 +31,22 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ onClick, className =
   };
 
   return (
-    <div className={`relative flex items-center justify-center min-w-[44px] h-10 ${className}`}>
+    <div className={`relative flex items-center justify-center min-w-[32px] h-full ${className}`}>
       <button
         onClick={handleClick}
-        className={`p-3 min-w-[44px] min-h-[44px] rounded-lg transition-all active:scale-95
+        className={`p-2 min-h-[40px] rounded-lg transition-all active:scale-95 border flex items-center justify-center
             ${stage === 'confirm'
-            ? 'bg-slate-700 text-white shadow-lg z-10'
-            : 'bg-slate-600/20 text-slate-400 hover:bg-slate-600/30 hover:text-slate-300'
+            ? 'bg-rose-600 text-white border-rose-500 shadow-lg z-10 px-3'
+            : 'bg-white/5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-500 dark:hover:text-rose-400 border-slate-200 dark:border-[var(--border-main)] hover:border-rose-500/20'
           }`}
         title={stage === 'idle' ? t('delete_action') : t('click_again_to_confirm')}
       >
         {stage === 'confirm' ? (
-          <span className="text-[10px] font-black whitespace-nowrap flex items-center gap-1 animate-in fade-in zoom-in duration-200">
-            <TrendDownIcon className="w-3 h-3" /> {t('confirm_deletion')}
+          <span className="text-[10px] font-black uppercase tracking-tight whitespace-nowrap flex items-center gap-1.5 animate-in fade-in zoom-in slide-in-from-right-1 duration-200">
+            <TrashIcon className="w-3.5 h-3.5" /> {t('confirm')}
           </span>
         ) : (
-          <TrashIcon className="w-5 h-5" />
+          <TrashIcon className="w-4 h-4" />
         )}
       </button>
     </div>

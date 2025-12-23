@@ -53,34 +53,42 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   }, [toast, triggerSave, onSave]);
 
   return (
-    <div className="max-w-5xl mx-auto h-full flex flex-col gap-6">
-      <div className="bg-white/5 p-4 rounded-[var(--radius-main)] border border-white/10 backdrop-blur-md">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1 md:w-48">
-            <select
-              value={selectedClassId || ''}
-              onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
-              className="w-full bg-slate-900/50 text-white font-black py-3 px-4 rtl:pr-9 ltr:pl-9 rounded-[var(--radius-main)] border border-white/10 outline-none focus:border-blue-500/50 shadow-inner appearance-none transition-all"
-            >
-              {!selectedClassId && <option value="">{t('select_group_placeholder')}</option>}
-              {teacherClasses.map(c => <option key={c.id} value={c.id} className="bg-slate-900">{c.name}</option>)}
-            </select>
-            <div className="absolute rtl:left-3 ltr:right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">▼</div>
+    <div className="max-w-6xl mx-auto h-full flex flex-col gap-6">
+      {/* Search and Filter Bar */}
+      <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="relative flex-1">
+            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('group_label')}</label>
+            <div className="relative">
+              <select
+                value={selectedClassId || ''}
+                onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm appearance-none font-medium"
+              >
+                {!selectedClassId && <option value="">{t('select_group_placeholder')}</option>}
+                {teacherClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+              <div className="absolute rtl:left-4 ltr:right-4 top-10 pointer-events-none text-gray-400 text-[10px]">▼</div>
+            </div>
           </div>
-          <div className="relative flex-1 md:w-64">
-            <input 
-                type="text" 
-                value={searchTerm} 
-                onChange={e => setSearchTerm(e.target.value)} 
-                placeholder={t('search_student_placeholder')} 
-                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] py-3 rtl:pr-10 ltr:pl-10 text-white font-bold focus:border-blue-500 outline-none transition-all shadow-inner" 
-            />
-            <SearchIcon className="absolute rtl:right-3 ltr:left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <div className="relative flex-1">
+            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder={t('search_student_placeholder')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-medium rtl:pr-11 ltr:pl-11"
+              />
+              <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-[38px] w-5 h-5 text-gray-400" />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-2xl flex-1 min-h-[400px] overflow-y-auto custom-scrollbar backdrop-blur-md">
+      {/* Grid Area */}
+      <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 flex-1 min-h-[400px] overflow-y-auto custom-scrollbar">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {!searchTerm && currentClass && (
             <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />
@@ -90,14 +98,17 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
           ))}
         </div>
         {filteredStudents.length === 0 && selectedClassId && (
-          <div className="text-center py-20 text-slate-500 font-black text-xl opacity-50 flex flex-col items-center gap-4">
-            <SearchIcon className="w-12 h-12" />
-            <span>{t('no_students_found')}</span>
+          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
+            <SearchIcon className="w-16 h-16" />
+            <span className="font-bold text-lg">{t('no_students_found')}</span>
           </div>
         )}
         {!selectedClassId && (
-          <div className="text-center py-20 text-slate-500 font-black text-xl opacity-50">
-            {t('select_group_to_start')}
+          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
+            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+              <span className="text-2xl">?</span>
+            </div>
+            <span className="font-bold text-lg">{t('select_group_to_start')}</span>
           </div>
         )}
       </div>
@@ -115,8 +126,8 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
 
       <AnimatePresence>
         {toast && (
-          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-12 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl font-black bg-slate-800 border border-white/20 text-white flex items-center gap-3 backdrop-blur-xl">
-            {toast.type === 'success' ? <CheckIcon className="w-6 h-6 text-green-400" /> : <AlertIcon className="w-6 h-6 text-red-400" />}
+          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl font-bold bg-white dark:bg-[#25262b] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white flex items-center gap-3 backdrop-blur-xl">
+            {toast.type === 'success' ? <CheckIcon className="w-5 h-5 text-green-500" /> : <AlertIcon className="w-5 h-5 text-red-500" />}
             {toast.msg}
           </MotionDiv>
         )}

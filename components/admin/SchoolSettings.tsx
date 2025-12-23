@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
-import { ClassRoom, AppSettings, ScorePreset } from '../../types';
-import { RefreshIcon, XIcon, UploadIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon, SparklesIcon } from '../ui/Icons';
+import { ClassRoom, AppSettings, ScorePreset, TickerMessage } from '../../types';
+import { RefreshIcon, XIcon, UploadIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon, SparklesIcon, PlusIcon } from '../ui/Icons';
 import { supabase } from '../../supabaseClient';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
@@ -24,12 +24,12 @@ interface SchoolSettingsProps {
     updateTickerMessage?: (id: string, updates: Partial<TickerMessage>) => Promise<void>;
 }
 
-export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefresh, tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage }) => {
+export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefresh }) => {
     const { t } = useLanguage();
     const { showToast } = useToast();
     const { triggerSave } = useSaveNotification();
     const { modalConfig, openConfirmation, closeConfirmation } = useConfirmation();
-    
+
     const [formData, setFormData] = useState<Partial<AppSettings>>({
         min_points: -100,
         max_points: 1000,
@@ -160,7 +160,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     const removePreset = (index: number) => {
         const currentPresets = formData.score_presets || [];
         const presetToRemove = currentPresets[index];
-        
+
         openConfirmation({
             title: 'Delete Score Preset',
             message: `Are you sure you want to delete the preset "${presetToRemove?.label || ''}"?`,
@@ -173,282 +173,334 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-6 pb-8">
-            <form onSubmit={handleSaveSettings} className="space-y-6">
-                {/* 1. פרטים ולוגו */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-3 shadow-xl backdrop-blur-md">
-                    <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                         <StarIcon className="w-5 h-5 text-blue-400" /> {t('details_logo')}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('institution_name')}</label>
-                            <input value={formData.school_name || ''} onChange={e => updateForm({ school_name: e.target.value })} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white focus:border-blue-500/50 outline-none transition-all" />
+        <div className="max-w-5xl mx-auto space-y-8">
+            <form onSubmit={handleSaveSettings} className="space-y-8">
+                {/* 1. Details & Logo */}
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400">
+                            <StarIcon className="w-6 h-6" />
                         </div>
                         <div>
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('competition_name_setting')}</label>
-                            <input value={formData.competition_name || ''} onChange={e => updateForm({ competition_name: e.target.value })} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white focus:border-blue-500/50 outline-none transition-all" />
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('details_logo')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Basic information about the competition</p>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('institution_name')}</label>
+                            <input 
+                                value={formData.school_name || ''} 
+                                onChange={e => updateForm({ school_name: e.target.value })} 
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                placeholder="Enter school name" 
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
+                            <input 
+                                value={formData.competition_name || ''} 
+                                onChange={e => updateForm({ competition_name: e.target.value })} 
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                placeholder="Enter competition name" 
+                            />
                         </div>
 
                         <div>
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('language_setting')}</label>
-                            <div className="flex bg-slate-900/50 p-1 rounded-[var(--radius-main)] border border-white/10">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('language_setting')}</label>
+                            <div className="flex gap-4 p-1">
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'he' })}
-                                    className={`flex-1 py-2 rounded-[var(--radius-main)] text-xs font-bold transition-all ${formData.language !== 'en' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
-                                    {t('hebrew')}
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language !== 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
+                                        {formData.language !== 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
+                                    </div>
+                                    <span className="text-sm font-bold">{t('hebrew')}</span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'en' })}
-                                    className={`flex-1 py-2 rounded-[var(--radius-main)] text-xs font-bold transition-all ${formData.language === 'en' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg border transition-all ${formData.language === 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
-                                    {t('english')}
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language === 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
+                                        {formData.language === 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
+                                    </div>
+                                    <span className="text-sm font-bold">{t('english')}</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div className="md:col-span-2">
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('logo_upload')}</label>
-                            <div className="flex gap-4 items-center">
-                                <div className="flex-1 flex gap-2">
-                                    <input value={formData.logo_url || ''} onChange={e => updateForm({ logo_url: e.target.value })} className="flex-1 bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 text-white dir-ltr text-xs focus:border-blue-500/50 outline-none transition-all" placeholder="https://..." />
-                                    <label className="bg-slate-700 hover:bg-slate-600 px-4 rounded-[var(--radius-main)] flex items-center justify-center cursor-pointer transition-colors">
-                                        {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin text-white" /> : <UploadIcon className="w-4 h-4 text-white" />}
-                                        <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
-                                    </label>
-                                </div>
+                        <div className="md:col-span-2 pt-6 border-t border-gray-100 dark:border-white/5">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('logo_upload')}</label>
+                            <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
-                                    <div className="w-14 h-14 bg-white/10 rounded-[var(--radius-main)] p-1 border border-white/20 shrink-0">
-                                        <img src={formData.logo_url} alt="Preview" className="w-full h-full object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
+                                    <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 rounded-xl p-2 border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                        <img src={formData.logo_url} alt="Preview" className="max-w-full max-h-full object-contain" />
                                     </div>
                                 )}
+                                <div className="flex-1 w-full space-y-4">
+                                    <input
+                                        value={formData.logo_url || ''}
+                                        onChange={e => updateForm({ logo_url: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono"
+                                        placeholder="https://image-url.com/logo.png"
+                                    />
+                                    <div className="flex gap-3">
+                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm">
+                                            {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
+                                            {isUploading ? t('saving') : 'Upload File'}
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            {uploadError && <p className="text-red-400 text-xs mt-1 font-bold">{uploadError}</p>}
+                            {uploadError && <p className="text-red-500 text-xs mt-2 font-bold">{uploadError}</p>}
                         </div>
                     </div>
                 </div>
 
-                {/* 2. מוזיקה ואווירה */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-6 shadow-xl backdrop-blur-md">
-                    <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                        <MusicIcon className="w-5 h-5 text-indigo-400" /> {t('music_atmosphere')}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-5">
-                            <div>
-                                <label className="block text-slate-400 text-xs font-bold mb-1">{t('youtube_link')}</label>
-                                <div className="relative">
+                {/* 2. Music & Atmosphere */}
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400">
+                            <MusicIcon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('music_atmosphere')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Background audio settings</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('youtube_link')}</label>
                                     <input
                                         value={formData.background_music_url || ''}
                                         onChange={e => updateForm({ background_music_url: e.target.value })}
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-3 pr-10 text-white dir-ltr text-sm focus:border-blue-500/50 outline-none transition-all"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm ltr:text-left"
                                         placeholder="https://www.youtube.com/watch?v=..."
                                     />
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
-                                        <MusicIcon className="w-4 h-4" />
+                                </div>
+                                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('playback_mode')}</span>
+                                    <div className="flex bg-gray-200 dark:bg-white/10 p-1 rounded-lg">
+                                        <button
+                                            type="button"
+                                            onClick={() => updateForm({ background_music_mode: 'loop' })}
+                                            className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+                                        >
+                                            {t('loop')}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => updateForm({ background_music_mode: 'once' })}
+                                            className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+                                        >
+                                            {t('once')}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-slate-400 text-xs font-bold mb-1">{t('playback_mode')}</label>
-                                <div className="flex bg-slate-900/50 p-1 rounded-[var(--radius-main)] border border-white/10">
-                                    <button
-                                        type="button"
-                                        onClick={() => updateForm({ background_music_mode: 'loop' })}
-                                        className={`flex-1 py-2 rounded-[var(--radius-main)] text-xs font-bold transition-all ${formData.background_music_mode === 'loop' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
-                                    >
-                                        {t('loop')}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => updateForm({ background_music_mode: 'once' })}
-                                        className={`flex-1 py-2 rounded-[var(--radius-main)] text-xs font-bold transition-all ${formData.background_music_mode === 'once' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
-                                    >
-                                        {t('once')}
-                                    </button>
+
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center px-1">
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('initial_volume')}</label>
+                                        <span className="text-xs font-bold text-indigo-600">{formData.background_music_volume || 50}%</span>
+                                    </div>
+                                    <div className="flex items-center gap-4 group bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                        <Volume2Icon className="w-5 h-5 text-gray-400" />
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={formData.background_music_volume || 50}
+                                            onChange={e => updateForm({ background_music_volume: Number(e.target.value) })}
+                                            className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-indigo-600"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl">
+                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
+                                        💡 <strong>Tip:</strong> Choose upbeat music to increase competition energy!
+                                    </p>
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center">
-                                    <label className="block text-slate-400 text-xs font-bold">{t('initial_volume')}</label>
-                                    <span className="text-xs font-mono text-indigo-400">{formData.background_music_volume || 50}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3. Visual Design */}
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl text-pink-600 dark:text-pink-400">
+                            <SparklesIcon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('visual_design')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Colors and theme customization</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-6">
+                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 space-y-4">
+                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Brand Palette</h4>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">Primary</label>
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                            <input type="color" value={formData.primary_color || '#1877F2'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.primary_color}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">Secondary</label>
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                            <input type="color" value={formData.secondary_color || '#050505'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.secondary_color}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <Volume2Icon className="w-4 h-4 text-slate-500" />
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center px-1">
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('lighting_effect')}</label>
+                                    <span className="text-xs font-bold text-indigo-600">{formData.background_brightness || 50}%</span>
+                                </div>
+                                <div className="flex items-center gap-4 bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                    <MoonIcon className="w-4 h-4 text-gray-400" />
                                     <input
                                         type="range"
                                         min="0"
                                         max="100"
-                                        value={formData.background_music_volume || 50}
-                                        onChange={e => updateForm({ background_music_volume: Number(e.target.value) })}
-                                        className="flex-1 h-1.5 bg-slate-700 rounded-[var(--radius-main)] appearance-none cursor-pointer accent-indigo-500"
+                                        value={formData.background_brightness || 50}
+                                        onChange={e => updateForm({ background_brightness: Number(e.target.value) })}
+                                        className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-indigo-600"
                                     />
+                                    <SunIcon className="w-4 h-4 text-amber-500" />
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-indigo-500/5 rounded-[var(--radius-main)] p-5 border border-indigo-500/10 flex flex-col justify-center">
-                            <h4 className="text-indigo-300 font-bold text-sm mb-2">{t('tip_atmosphere_title')}</h4>
-                            <ul className="text-slate-400 text-[11px] leading-relaxed space-y-2 list-disc pr-4">
-                                <li>{t('tip_lofi')}</li>
-                                <li>{t('tip_playlist')}</li>
-                                <li>{t('tip_mute')}</li>
-                            </ul>
+
+                        <div className="space-y-6">
+                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 space-y-4">
+                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Typography Colors</h4>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">Title 1</label>
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                            <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.header_text_color_1}</span>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">Title 2</label>
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                            <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.header_text_color_2}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-100 dark:border-pink-500/20 rounded-xl">
+                                <p className="text-xs text-pink-600 dark:text-pink-400 font-medium leading-relaxed italic">
+                                    Contrast test: Ensure text remains readable against your chosen background colors.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* 3. עיצוב חזותי */}
-                <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 shadow-xl backdrop-blur-md">
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <SparklesIcon className="w-5 h-5 text-pink-400" /> {t('visual_design')}
-                    </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-slate-400 text-xs font-bold mb-1">{t('primary_color_label')}</label>
-                                <div className="flex items-center gap-2 bg-slate-900/50 p-2 rounded-[var(--radius-main)] border border-white/10">
-                                    <input type="color" value={formData.primary_color || '#4c1d95'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-10 h-10 rounded cursor-pointer bg-transparent border-none" />
-                                    <span className="text-xs font-mono dir-ltr">{formData.primary_color}</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-slate-400 text-xs font-bold mb-1">{t('secondary_color_label')}</label>
-                                <div className="flex items-center gap-2 bg-slate-900/50 p-2 rounded-[var(--radius-main)] border border-white/10">
-                                    <input type="color" value={formData.secondary_color || '#0f172a'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-10 h-10 rounded cursor-pointer bg-transparent border-none" />
-                                    <span className="text-xs font-mono dir-ltr">{formData.secondary_color}</span>
-                                </div>
-                            </div>
+                {/* 4. Scoring Settings */}
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-xl text-orange-600 dark:text-orange-400">
+                            <StarIcon className="w-6 h-6" />
                         </div>
-
-                        <div className="bg-slate-900/50 rounded-[var(--radius-main)] p-4 border border-white/10 flex flex-col justify-center">
-                            <label className="block text-slate-300 text-sm font-bold mb-4 flex items-center justify-between">
-                                <span>{t('lighting_effect')}</span>
-                                <span className="text-xs bg-white/10 px-2 py-0.5 rounded-[var(--radius-main)]">{formData.background_brightness || 50}%</span>
-                            </label>
-
-                            <div className="flex items-center gap-3">
-                                <MoonIcon className="w-5 h-5 text-slate-500" />
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={formData.background_brightness || 50}
-                                    onChange={e => updateForm({ background_brightness: Number(e.target.value) })}
-                                    className="flex-1 h-2 bg-slate-700 rounded-[var(--radius-main)] appearance-none cursor-pointer accent-blue-500"
-                                />
-                                <SunIcon className="w-5 h-5 text-yellow-400" />
-                            </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('scoring_settings')}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Configure point values and limits</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                        <div>
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('header_color_1')}</label>
-                            <div className="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-[var(--radius-main)] border border-white/10">
-                                <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none" />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-slate-400 text-xs font-bold mb-1">{t('header_color_2')}</label>
-                            <div className="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-[var(--radius-main)] border border-white/10">
-                                <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none" />
-                            </div>
-                        </div>
-                 </div>
-            </div>
-
-            {/* Messages Management */}
-            <div className="border-t border-white/5 pt-4">
-                <h4 className="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
-                    <SparklesIcon className="w-4 h-4" /> {t('tab_messages')}
-                </h4>
-                {/* <MessagesManager 
-                    messages={tickerMessages} 
-                    onAdd={addTickerMessage} 
-                    onDelete={deleteTickerMessage} 
-                    onUpdate={updateTickerMessage} 
-                /> */}
-            </div>
-
-            {/* 4. הגדרות ניקוד */}
-            <div className="bg-white/5 p-6 rounded-[var(--radius-main)] border border-white/10 space-y-6 shadow-xl backdrop-blur-md">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <SparklesIcon className="w-5 h-5 text-pink-400" /> {t('visual_design')}
-                </h3>
-
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('min_points_label')}</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('min_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
-                                dir="ltr"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
-                        <div>
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('max_points_label')}</label>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('max_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
-                                dir="ltr"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
-                        <div>
-                            <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points_step_label')}</label>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('points_step_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] p-2 text-white text-center font-bold outline-none focus:border-blue-500/50 transition-all"
-                                dir="ltr"
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
                     </div>
 
-                    <div className="mb-2">
-                        <label className="block text-slate-400 text-xs font-bold mb-2">{t('existing_buttons')}</label>
-                        <div className="flex flex-wrap gap-2 mb-6">
+                    <div className="space-y-4 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
+                        <div className="flex flex-wrap gap-3">
                             {(formData.score_presets || []).map((preset, idx) => (
-                                <div key={idx} className="bg-slate-800 border border-white/10 rounded-[var(--radius-main)] px-3 py-1 flex items-center gap-2 shadow-sm">
-                                    <span className="text-sm font-bold text-white">{preset.label}</span>
-                                    <span className="text-xs bg-black/30 px-1.5 rounded-[var(--radius-main)] text-yellow-300 font-mono">
+                                <div key={idx} className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:border-indigo-500 transition-colors group">
+                                    <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{preset.label}</span>
+                                    <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
                                         <FormattedNumber value={preset.value} forceSign={true} />
                                     </span>
-                                    <button type="button" onClick={() => removePreset(idx)} className="text-slate-500 hover:text-red-400 transition-colors"><XIcon className="w-3 h-3" /></button>
+                                    <button type="button" onClick={() => removePreset(idx)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                        <XIcon className="w-3.5 h-3.5" />
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="border-t border-white/5 pt-4">
-                        <h4 className="text-sm font-bold text-slate-300 mb-3">{t('add_new_button')}</h4>
-                        <div className="flex gap-2 items-end bg-black/20 p-3 rounded-[var(--radius-main)] border border-white/5">
-                            <div className="flex-1">
-                                <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm outline-none focus:border-blue-500/50" placeholder="למשל: מבחן" />
+                    <div className="space-y-4 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                        <h4 className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
+                        <div className="flex flex-col sm:flex-row gap-4 p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                            <div className="flex-1 space-y-1">
+                                <label className="text-[10px] font-bold uppercase text-gray-400">{t('button_label')}</label>
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm" placeholder="e.g. Bonus" />
                             </div>
-                            <div className="w-24">
-                                <label className="block text-slate-400 text-[10px] font-bold mb-1">{t('points')}</label>
+                            <div className="sm:w-32 space-y-1">
+                                <label className="text-[10px] font-bold uppercase text-gray-400 text-center block">{t('points')}</label>
                                 <input
                                     type="text"
                                     value={formatNumberWithCommas(newPresetValue || '')}
                                     onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
-                                    className="w-full bg-slate-900/50 border border-white/10 rounded-[var(--radius-main)] px-3 py-2 text-white text-sm font-bold text-center outline-none focus:border-blue-500/50"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center"
                                     placeholder="10"
-                                    dir="ltr"
                                 />
                             </div>
-                            <button type="button" onClick={handleAddPreset} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-[var(--radius-main)] font-bold text-sm h-[38px] flex items-center transition-all active:scale-95 shadow-lg">
-                                {t('add')}
-                            </button>
+                            <div className="sm:pt-5 pt-2 flex items-end">
+                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center">
+                                    <PlusIcon className="w-4 h-4" />
+                                    {t('add')}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -456,36 +508,42 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
             </form>
 
             {hasChanges && (
-                <div className="fixed bottom-12 left-6 md:left-10 z-[200] w-auto pointer-events-none">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] max-w-md w-full px-4 animate-in slide-in-from-bottom-10">
                     <AnimatePresence>
                         <MotionDiv
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 20, opacity: 0 }}
-                            className="bg-slate-900/90 backdrop-blur-xl border border-white/20 p-2 rounded-[var(--radius-main)] shadow-2xl flex items-center gap-3 pointer-events-auto"
+                            className="bg-white dark:bg-[#25262b] text-gray-900 dark:text-white p-3 rounded-xl shadow-2xl flex items-center justify-between gap-4 border border-gray-200 dark:border-gray-700"
                         >
-                            <div className="flex-1 px-3 whitespace-nowrap">
-                                <span className="text-sm font-bold text-slate-300">{t('unsaved_changes')}</span>
+                            <span className="text-sm font-bold pl-2">{t('unsaved_changes')}</span>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setFormData(settings)}
+                                    className="px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-600 dark:text-gray-300"
+                                >
+                                    {t('cancel' as any)}
+                                </button>
+                                <button
+                                    onClick={handleSaveSettings}
+                                    disabled={isSaving}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 font-bold disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                                >
+                                    {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
+                                    {isSaving ? t('saving') : t('save')}
+                                </button>
                             </div>
-                            <button
-                                onClick={handleSaveSettings}
-                                disabled={isSaving}
-                                className="bg-green-600 hover:bg-green-600 text-white font-bold py-2.5 px-6 rounded-[var(--radius-main)] flex items-center gap-2 transition-all shadow-lg active:scale-95"
-                            >
-                                {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
-                                {isSaving ? t('saving') : t('save')}
-                            </button>
                         </MotionDiv>
                     </AnimatePresence>
                 </div>
             )}
 
-            <ConfirmationModal 
-                isOpen={modalConfig.isOpen} 
-                title={modalConfig.title} 
-                message={modalConfig.message} 
-                onConfirm={modalConfig.onConfirm} 
-                onCancel={() => closeConfirmation()} 
+            <ConfirmationModal
+                isOpen={modalConfig.isOpen}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                onConfirm={modalConfig.onConfirm}
+                onCancel={() => closeConfirmation()}
             />
 
         </div>
