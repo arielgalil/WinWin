@@ -5,7 +5,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 ## Phase 1: Infrastructure & Shared Components
 - [x] **Task: Audit Existing Admin Components.** Scan `components/admin` to identify all unique UI patterns and variations. (e126786)
 - [x] **Task: Define Shared Action Buttons.** Write tests and implement a standardized `AdminActionButton` with color variants (Edit, Delete, Secondary). (f0662fa)
-- [ ] **Task: Refactor ConfirmModal.** Write tests and implement focus trapping and standard RTL button ordering for `ConfirmationModal`.
+- [x] **Task: Refactor ConfirmModal.** Write tests and implement focus trapping and standard RTL button ordering for `ConfirmationModal`. (917fea0)
 - [ ] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
 
 ## Phase 2: Responsive Data Grids
