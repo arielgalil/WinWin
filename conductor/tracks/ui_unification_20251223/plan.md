@@ -10,7 +10,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 
 ## Phase 2: Responsive Data Grids
 - [x] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile. (02845d2)
-- [ ] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit.
+- [x] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit. (4b97018)
 - [ ] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
 
 ## Phase 3: Area-by-Area Unification
