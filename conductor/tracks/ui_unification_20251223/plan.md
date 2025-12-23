@@ -9,7 +9,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
 
 ## Phase 2: Responsive Data Grids
-- [ ] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile.
+- [x] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile. (02845d2)
 - [ ] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit.
 - [ ] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
 
