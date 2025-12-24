@@ -34,10 +34,10 @@ This plan outlines the steps to implement a robust smart tag replacement system 
 - [x] **Task: Update Admin MessagesManager UI.** (f29ff25)
     -   Update `MessagesManager.tsx` to include the full list of smart tags (Goals, Rankings, Random).
     -   Update the "Add Message" button label to `+ הוסף הודעה חדשה` (via translation key or direct text).
-- [~] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
 
 ## Phase 4: Final Quality Check
-- [ ] **Task: Regression Test.**
+- [~] **Task: Regression Test.**
     -   Ensure the ticker still handles long messages (chunking) correctly after tag replacement.
     -   Verify that empty states (no students/groups yet) don't crash the replacement logic.
 - [ ] **Task: Conductor - User Manual Verification 'Final Quality Check' (Protocol in workflow.md)**
