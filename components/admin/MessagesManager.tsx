@@ -51,7 +51,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
         { label: 'מקום 1', value: '[מקום ראשון]' },
         { label: 'מקום 2', value: '[מקום שני]' },
         { label: 'מקום 3', value: '[מקום שלישי]' },
-        { label: 'משתתף אקראי', value: '[מקום אקראי]' },
+        { label: 'משתתף אקראי', value: '[משתתף אקראי]' },
+        { label: 'קבוצה אקראית', value: '[קבוצה אקראית]' },
     ];
 
     const insertPlaceholder = (ph: string) => {
@@ -140,7 +141,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                             </div>
 
                             <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-[var(--radius-main)] shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95">
-                                <PlusIcon className="w-4 h-4" /> {t('add_new_button') || '+ הוסף הודעה חדשה'}
+                                <PlusIcon className="w-4 h-4" /> {t('add_new_button') || '+ הוספת הודעה חדשה'}
                             </button>
                         </form>
                     </div>

@@ -56,17 +56,22 @@ describe('replaceSmartTags', () => {
         expect(result).toBe('כל הכבוד לישראל ישראלי שמוביל את הטבלה, ואחריו דני דין ודינה ברזילי');
     });
 
-    it('replaces random place tag with a consistent result for a given seed', () => {
-        const text = 'פרגון מיוחד ל[מקום אקראי]!';
+    it('replaces random participant and random group tags', () => {
+        const text = 'פרגון ל[משתתף אקראי] מ[קבוצה אקראית]!';
         const result1 = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents, 1);
         const result2 = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents, 1);
+        
         expect(result1).toBe(result2);
-        expect(result1).toMatch(/כיתה|ישראל|דני|דינה/);
+        // Seed 1: 
+        // Students (3): 1 % 3 = 1 -> mockStudents[1] (דני דין)
+        // Classes (3): (1+1) % 3 = 2 -> mockClasses[2] (כיתה ג)
+        expect(result1).toContain('דני דין');
+        expect(result1).toContain('כיתה ג');
     });
 
     it('handles missing data gracefully', () => {
-        const text = '[קבוצה שלישית] ו[מקום שלישי]';
+        const text = '[קבוצה שלישית] ו[מקום שלישי] ו[משתתף אקראי]';
         const result = replaceSmartTags(text, mockSettings, 2000, [], []);
-        expect(result).toBe('--- ו---');
+        expect(result).toBe('--- ו--- ו---');
     });
 });

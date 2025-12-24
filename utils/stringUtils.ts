@@ -92,15 +92,24 @@ export const replaceSmartTags = (
         .replace(/\[מקום שני\]/g, getStudentName(2))
         .replace(/\[מקום שלישי\]/g, getStudentName(3));
 
-    // 5. Random Place
-    if (result.includes('[מקום אקראי]')) {
-        const pool = [...sortedClasses.map(c => c.name), ...topStudents.map(s => s.name)];
-        if (pool.length > 0) {
-            const seed = randomSeed ?? Math.floor(Date.now() / 1000);
-            const randomIndex = seed % pool.length;
-            result = result.replace(/\[מקום אקראי\]/g, pool[randomIndex]);
+    // 5. Random Content
+    const seed = randomSeed ?? Math.floor(Date.now() / 1000);
+    
+    if (result.includes('[משתתף אקראי]')) {
+        if (topStudents.length > 0) {
+            const randomIndex = seed % topStudents.length;
+            result = result.replace(/\[משתתף אקראי\]/g, topStudents[randomIndex].name);
         } else {
-            result = result.replace(/\[מקום אקראי\]/g, '---');
+            result = result.replace(/\[משתתף אקראי\]/g, '---');
+        }
+    }
+
+    if (result.includes('[קבוצה אקראית]')) {
+        if (sortedClasses.length > 0) {
+            const randomIndex = (seed + 1) % sortedClasses.length; // Offset seed slightly
+            result = result.replace(/\[קבוצה אקראית\]/g, sortedClasses[randomIndex].name);
+        } else {
+            result = result.replace(/\[קבוצה אקראית\]/g, '---');
         }
     }
 
