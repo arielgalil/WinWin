@@ -353,14 +353,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Brand Palette</h4>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Primary</label>
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">{t('primary_color')}</label>
                                         <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.primary_color || '#1877F2'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.primary_color}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-gray-500">Secondary</label>
+                                        <label className="text-[10px] font-bold uppercase text-gray-500">{t('secondary_color')}</label>
                                         <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.secondary_color || '#050505'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.secondary_color}</span>

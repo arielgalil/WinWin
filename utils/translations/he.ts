@@ -70,6 +70,8 @@ export const he = {
     competition_name_setting: "שם התחרות",
     logo_upload: "לוגו (URL או העלאה)",
     language_setting: "שפת הממשק",
+    dark_mode: "מצב כהה",
+    light_mode: "מצב בהיר",
     hebrew: "עברית",
     english: "אנגלית",
     music_atmosphere: "מוזיקת רקע ואווירה",
@@ -79,6 +81,8 @@ export const he = {
     once: "פעם אחת בלבד",
     initial_volume: "עוצמת שמע התחלתית",
     visual_design: "עיצוב חזותי",
+    primary_color: "צבע ראשי",
+    secondary_color: "צבע משני",
     primary_color_label: "פינה שמאלית-עליונה (ראשי)",
     secondary_color_label: "פינה ימנית-תחתונה (משני)",
     lighting_effect: "אפקט תאורה (בפינות הנגדיות)",
@@ -351,7 +355,9 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     
     // Classes Manager
     classes_management_title: "ניהול קבוצות ותלמידים",
-    classes_management_desc: "ניהול המבנה הארגוני של התחרות",
+    classes_management_desc: "ניהול קבוצות, תלמידים וצוות",
+    add_class_label: "הוסף קבוצה",
+    search_classes_placeholder: "חפש קבוצה...",
     smart_import: "ייבוא חכם",
     processing: "מעבד...",
     add_group_button: "הוסף קבוצה",
@@ -441,6 +447,8 @@ campaign_not_found: "התחרות לא נמצאה או שהקישור אינו �
     no_group_assigned: "לא נמצאה קבוצה משויכת",
     rank_label: "דירוג",
     student_name_label: "שם התלמיד",
+    target_score_header: "ניקוד יעד",
+    progress_label: "התקדמות",
     trend_label: "מגמה",
     no_students_found: "לא נמצאו תלמידים",
 
