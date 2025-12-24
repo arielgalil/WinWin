@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ClassRoom, UserProfile, Campaign } from '../../types';
-import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, EditIcon, TrashIcon, CheckIcon, XIcon, SettingsIcon, UserIcon, PlusIcon } from '../ui/Icons';
+import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, SettingsIcon, UserIcon, PlusIcon, CheckIcon, XIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminTable } from '../ui/AdminTable';
+import { AdminRowActions } from '../ui/AdminRowActions';
 import { supabase, createTempClient } from '../../supabaseClient';
 import { isSuperUser } from '../../config';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -344,116 +346,102 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     )}
                 </div>
 
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
-                    <table className="w-full border-collapse">
-                        <thead>
-                            <tr className="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-widest text-right">
-                                <th className="p-4">{t('name_email_header')}</th>
-                                <th className="p-4">{t('role_header')}</th>
-                                <th className="p-4">{t('group_header')}</th>
-                                <th className="p-4 text-center">{t('actions_header')}</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-xs text-gray-600 dark:text-gray-300">
-                            {usersList.map(u => (
-                                <tr key={u.id} className={`hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${currentUser && u.id === currentUser.id ? 'bg-indigo-50/50 dark:bg-indigo-500/5' : ''}`}>
-                                    <td className="p-4">
-                                        {editingUserId === u.id ? (
-                                            <input 
-                                                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
-                                                value={editFormData.full_name || ''} 
-                                                onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
-                                            />
-                                        ) : (
-                                            <div>
-                                                <div className="font-bold flex items-center gap-2 text-gray-900 dark:text-white text-sm">
-                                                    {u.full_name}
-                                                    {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-500" />}
-                                                    {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold">{t('me')}</span>}
-                                                </div>
-                                                <div className="text-[11px] text-gray-400 tabular-nums font-mono mt-0.5">{u.email}</div>
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td className="p-4">
-                                        {editingUserId === u.id && u.role !== 'superuser' ? (
-                                            <select 
-                                                className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
-                                                value={editFormData.role} 
-                                                onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
-                                            >
-                                                <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
-                                                <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
-                                            </select>
-                                        ) : (
-                                            <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20' :
-                                                u.role === 'admin' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20' :
-                                                    'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
-                                                }`}>
-                                                {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
-                                                {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
-                                                {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
-                                                {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="p-4">
-                                        {editingUserId === u.id ? (
-                                            <select 
-                                                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
-                                                value={editFormData.class_id || ''} 
-                                                onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
-                                            >
-                                                <option value="" className="bg-white dark:bg-[#1e1e2e]">{t('no_assignment')}</option>
-                                                {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-white dark:bg-[#1e1e2e]">{c.name}</option>)}
-                                            </select>
-                                        ) : (
-                                            <span className="font-bold text-gray-700 dark:text-gray-300">
-                                                {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="p-4 text-center">
-                                        <div className="flex gap-4 justify-center items-center">
-                                            {editingUserId === u.id ? (
-                                                <>
-                                                    <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
-                                                    <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {currentUser && u.id !== currentUser.id && !isSuperUser(u.role) && (
-                                                        <button
-                                                            onClick={() => {
-                                                                openConfirmation({
-                                                                    title: t('confirm_deletion'),
-                                                                    message: t('confirm_delete_campaign'),
-                                                                    isDanger: true,
-                                                                    onConfirm: () => handleDeleteUser(u.id)
-                                                                });
-                                                            }}
-                                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
-                                                            title={t('delete')}
-                                                        >
-                                                            <TrashIcon className="w-4 h-4" />
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => { setEditingUserId(u.id); setEditFormData(u); }}
-                                                        className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all"
-                                                        title={t('edit_action')}
-                                                    >
-                                                        <EditIcon className="w-4 h-4" />
-                                                    </button>
-                                                </>
-                                            )}
+                <AdminTable
+                    keyField="id"
+                    data={usersList}
+                    columns={[
+                        {
+                            key: 'full_name',
+                            header: t('name_email_header'),
+                            render: (u) => (
+                                editingUserId === u.id ? (
+                                    <input 
+                                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        value={editFormData.full_name || ''} 
+                                        onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
+                                    />
+                                ) : (
+                                    <div>
+                                        <div className="font-bold flex items-center gap-2 text-gray-900 dark:text-white text-sm">
+                                            {u.full_name}
+                                            {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-500" />}
+                                            {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold">{t('me')}</span>}
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                        <div className="text-[11px] text-gray-400 tabular-nums font-mono mt-0.5">{u.email}</div>
+                                    </div>
+                                )
+                            )
+                        },
+                        {
+                            key: 'role',
+                            header: t('role_header'),
+                            render: (u) => (
+                                editingUserId === u.id && u.role !== 'superuser' ? (
+                                    <select 
+                                        className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        value={editFormData.role} 
+                                        onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
+                                    >
+                                        <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
+                                        <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
+                                    </select>
+                                ) : (
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20' :
+                                        u.role === 'admin' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20' :
+                                            'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
+                                        }`}>
+                                        {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
+                                        {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
+                                        {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
+                                        {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
+                                    </span>
+                                )
+                            )
+                        },
+                        {
+                            key: 'class_id',
+                            header: t('group_header'),
+                            render: (u) => (
+                                editingUserId === u.id ? (
+                                    <select 
+                                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        value={editFormData.class_id || ''} 
+                                        onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
+                                    >
+                                        <option value="" className="bg-white dark:bg-[#1e1e2e]">{t('no_assignment')}</option>
+                                        {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-white dark:bg-[#1e1e2e]">{c.name}</option>)}
+                                    </select>
+                                ) : (
+                                    <span className="font-bold text-gray-700 dark:text-gray-300">
+                                        {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
+                                    </span>
+                                )
+                            )
+                        }
+                    ]}
+                    actions={(u) => (
+                        editingUserId === u.id ? (
+                            <div className="flex gap-2">
+                                <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
+                                <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
+                            </div>
+                        ) : (
+                            <AdminRowActions
+                                onEdit={() => { setEditingUserId(u.id); setEditFormData(u); }}
+                                onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
+                                    openConfirmation({
+                                        title: t('confirm_deletion'),
+                                        message: t('confirm_delete_campaign'),
+                                        isDanger: true,
+                                        onConfirm: () => handleDeleteUser(u.id)
+                                    });
+                                } : undefined}
+                                editTitle={t('edit_action')}
+                                deleteTitle={t('delete')}
+                            />
+                        )
+                    )}
+                />
             </div >
         </div >
     );

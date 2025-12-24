@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { ClassRoom, UserProfile } from '../../types';
-import { PlusIcon, TrashIcon, EditIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
+import { PlusIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminTable, Column } from '../ui/AdminTable';
+import { AdminRowActions } from '../ui/AdminRowActions';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -330,14 +332,14 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-6">
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
                             <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
                                 <h3 className="text-gray-900 dark:text-white font-bold text-base flex items-center gap-2 mb-2">
                                     {editingClass ? t('edit_group') : t('add_new_group')}
                                 </h3>
-                                <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('group_name_placeholder')}</label>
                                         <input 
@@ -358,63 +360,57 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex gap-3 mt-auto pt-2">
-                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg text-xs">{t('save')}</button>
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-4 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2 rounded-lg border border-gray-200 dark:border-white/10 text-xs">{t('cancel')}</button>
+                                <div className="flex gap-3 mt-auto pt-2 justify-end">
+                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2.5 rounded-lg border border-gray-200 dark:border-white/10 text-xs transition-all">{t('cancel')}</button>
+                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-xs shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
                                 </div>
                             </MotionDiv>
                         )}
                     </AnimatePresence>
 
-                    {visibleClasses.map(cls => (
-                        <div key={cls.id} className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group overflow-hidden">
-                            <div className="flex justify-between items-start p-6 pb-4">
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-12 h-12 rounded-xl ${cls.color} flex items-center justify-center text-white shadow-sm`}>
-                                        <UsersIcon className="w-6 h-6" />
+                    <AdminTable 
+                        keyField="id"
+                        data={visibleClasses}
+                        columns={[
+                            {
+                                key: 'name',
+                                header: t('group_header'),
+                                render: (cls) => (
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-lg ${cls.color} flex items-center justify-center text-white text-[10px] shadow-sm`}>
+                                            <UsersIcon className="w-4 h-4" />
+                                        </div>
+                                        <span className="font-bold text-gray-900 dark:text-white">{cls.name}</span>
                                     </div>
-                                    <div>
-                                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{cls.name}</h4>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{cls.students?.length || 0} {t('students_label')}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); setIsAddingClass(true); }}
-                                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-indigo-500 rounded-full transition-all"
-                                        title={t('edit_group')}
-                                    >
-                                        <EditIcon className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            openConfirmation({
-                                                title: t('confirm_deletion'),
-                                                message: t('confirm_delete_group_warning'),
-                                                isDanger: true,
-                                                onConfirm: () => handleDeleteClass(cls.id)
-                                            });
-                                        }}
-                                        className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 rounded-full transition-all"
-                                        title={t('confirm_deletion')}
-                                    >
-                                        <TrashIcon className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="px-6 pb-6 mt-auto">
-                                <button
-                                    onClick={() => { setSelectedClassId(cls.id); setView('students'); }}
-                                    className="w-full py-2.5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 font-bold text-xs flex items-center justify-center gap-2 transition-all"
-                                >
-                                    <PlusIcon className="w-4 h-4" />
-                                    {t('manage_students_button')}
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                                )
+                            },
+                            {
+                                key: 'students_count',
+                                header: t('students_label'),
+                                render: (cls) => (
+                                    <span className="text-gray-500 dark:text-gray-400 font-medium">
+                                        {cls.students?.length || 0} {t('students_label')}
+                                    </span>
+                                )
+                            }
+                        ]}
+                        actions={(cls) => (
+                            <AdminRowActions 
+                                onEdit={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); setIsAddingClass(true); }}
+                                onDelete={() => {
+                                    openConfirmation({
+                                        title: t('confirm_deletion'),
+                                        message: t('confirm_delete_group_warning'),
+                                        isDanger: true,
+                                        onConfirm: () => handleDeleteClass(cls.id)
+                                    });
+                                }}
+                                onSecondary={() => { setSelectedClassId(cls.id); setView('students'); }}
+                                secondaryIcon={<PlusIcon className="w-4 h-4" />}
+                                secondaryTitle={t('manage_students_button')}
+                            />
+                        )}
+                    />
                 </div>
             </div>
 
@@ -465,19 +461,23 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                                        {selectedClass.students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase())).map(student => (
-                                            <div key={student.id} className="p-3 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 flex justify-between items-center group hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all">
-                                                <span className="text-gray-700 dark:text-gray-200 font-semibold text-sm">{student.name}</span>
-                                                <button 
-                                                    onClick={() => handleDeleteStudent(student.id, student.name)} 
-                                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-all opacity-0 group-hover:opacity-100"
-                                                >
-                                                    <TrashIcon className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <AdminTable
+                                        keyField="id"
+                                        data={selectedClass.students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))}
+                                        columns={[
+                                            {
+                                                key: 'name',
+                                                header: t('student_name_label'),
+                                                render: (s) => <span className="text-gray-700 dark:text-gray-200 font-semibold">{s.name}</span>
+                                            }
+                                        ]}
+                                        actions={(s) => (
+                                            <AdminRowActions
+                                                onDelete={() => handleDeleteStudent(s.id, s.name)}
+                                                deleteTitle={t('delete')}
+                                            />
+                                        )}
+                                    />
                                 </div>
                             </div>
 

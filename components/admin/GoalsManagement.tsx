@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppSettings, ClassRoom, CompetitionGoal } from '../../types';
 import { SaveIcon, CheckIcon, RefreshIcon, AlertIcon, TrophyIcon, UsersIcon } from '../ui/Icons';
 import { GoalsManager as SharedGoalsManager } from './settings/GoalsManager';
+import { AdminTable } from '../ui/AdminTable';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { motion } from 'framer-motion';
@@ -76,32 +77,59 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedClasses.map(cls => (
-                        <ClassTargetCard
-                            key={cls.id}
-                            cls={cls}
-                            onSave={handleUpdateClassTarget}
-                        />
-                    ))}
-                </div>
+                <AdminTable
+                    keyField="id"
+                    data={sortedClasses}
+                    columns={[
+                        {
+                            key: 'name',
+                            header: t('group_header'),
+                            render: (cls) => (
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-3 h-3 rounded-full ${cls.color} shadow-sm ring-2 ring-white dark:ring-[#1e1e2e]`}></div>
+                                    <span className="font-bold text-gray-900 dark:text-white">{cls.name}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            key: 'progress',
+                            header: t('progress_label'),
+                            render: (cls) => {
+                                const currentScore = cls.score || 0;
+                                const targetNum = cls.target_score || 0;
+                                const hasTarget = targetNum > 0;
+                                const progress = hasTarget ? Math.min(100, (currentScore / targetNum) * 100) : 0;
+                                
+                                return (
+                                    <div className="flex flex-col gap-1.5 min-w-[120px]">
+                                        <div className="flex justify-between text-[10px] font-bold">
+                                            <span className="text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</span>
+                                            <span className="text-gray-400 font-normal"><FormattedNumber value={currentScore} /> / <FormattedNumber value={targetNum} /></span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                            <MotionDiv className="h-full bg-indigo-500" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        },
+                        {
+                            key: 'target_input',
+                            header: t('target_score_header'),
+                            render: (cls) => <ClassTargetInput cls={cls} onSave={handleUpdateClassTarget} />
+                        }
+                    ]}
+                />
             </section>
         </div>
     );
 };
 
-const ClassTargetCard = React.memo(({ cls, onSave }: { cls: ClassRoom, onSave: (id: string, val: number) => Promise<void> }) => {
+const ClassTargetInput = React.memo(({ cls, onSave }: { cls: ClassRoom, onSave: (id: string, val: number) => Promise<void> }) => {
     const { t } = useLanguage();
     const [target, setTarget] = useState<string>(cls.target_score ? String(cls.target_score) : '');
     const [isSaving, setIsSaving] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
-
-    const currentScore = cls.score || 0;
-    const targetNum = Number(target) || 0;
-    const hasTarget = targetNum > 0;
-    const progress = hasTarget ? Math.min(100, (currentScore / targetNum) * 100) : 0;
-    const isCompleted = hasTarget && currentScore >= targetNum;
-    const missingPoints = hasTarget ? Math.max(0, targetNum - currentScore) : 0;
 
     const handleSave = async () => {
         const val = parseInt(target);
@@ -114,47 +142,21 @@ const ClassTargetCard = React.memo(({ cls, onSave }: { cls: ClassRoom, onSave: (
     };
 
     return (
-        <div className={`relative p-6 rounded-xl border transition-all overflow-hidden flex flex-col gap-5 ${isCompleted ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-500/20 shadow-sm' : 'bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/10 hover:border-indigo-200 dark:hover:border-indigo-500/30'}`}>
-            <div className="flex justify-between items-start relative z-10">
-                <div>
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{cls.name}</h4>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1 block">{t('current_label')}: <FormattedNumber value={currentScore} /></span>
-                </div>
-                <div className={`w-3 h-3 rounded-full ${cls.color} shadow-sm ring-2 ring-white dark:ring-[#1e1e2e]`}></div>
-            </div>
-            <div className="relative z-10 flex-1 flex flex-col justify-center">
-                {!hasTarget ? (
-                    <div className="text-gray-400 dark:text-gray-500 text-xs font-bold bg-white dark:bg-white/5 py-3 rounded-lg border border-dashed border-gray-200 dark:border-white/10 text-center">{t('no_target_set')}</div>
-                ) : (
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-xs font-bold">
-                            <span className="text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</span>
-                            <span className="text-gray-500 dark:text-gray-400">{t('missing_points_label')}: <FormattedNumber value={missingPoints} /></span>
-                        </div>
-                        <div className="h-2 w-full bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
-                            <MotionDiv className="h-full bg-gradient-to-r from-indigo-500 to-purple-500" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
-                        </div>
-                    </div>
-                )}
-            </div>
-            <div className="mt-auto pt-4 border-t border-gray-200 dark:border-white/10">
-                <div className="flex items-center gap-3">
-                    <input 
-                        type="text" 
-                        value={formatNumberWithCommas(target)} 
-                        onChange={(e) => setTarget(parseFormattedNumber(e.target.value).toString())} 
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
-                        placeholder={t('enter_target_placeholder')} 
-                    />
-                    <button 
-                        onClick={handleSave} 
-                        disabled={isSaving} 
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-all active:scale-95 ${isSaved ? 'bg-green-600 hover:bg-green-500 text-white shadow-md' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20'}`}
-                    >
-                        {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : isSaved ? <CheckIcon className="w-4 h-4" /> : <SaveIcon className="w-4 h-4" />}
-                    </button>
-                </div>
-            </div>
+        <div className="flex items-center gap-2 max-w-[180px]">
+            <input 
+                type="text" 
+                value={formatNumberWithCommas(target)} 
+                onChange={(e) => setTarget(parseFormattedNumber(e.target.value).toString())} 
+                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-xs text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+                placeholder="0" 
+            />
+            <button 
+                onClick={handleSave} 
+                disabled={isSaving} 
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all active:scale-95 ${isSaved ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-indigo-500'}`}
+            >
+                {isSaving ? <RefreshIcon className="w-3 h-3 animate-spin" /> : isSaved ? <CheckIcon className="w-3 h-3" /> : <SaveIcon className="w-3 h-3" />}
+            </button>
         </div>
     );
 });

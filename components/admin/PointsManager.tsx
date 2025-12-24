@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile } from '../../types';
-import { SearchIcon, AlertIcon, CheckIcon } from '../ui/Icons';
+import { SearchIcon, AlertIcon, CheckIcon, XIcon } from '../ui/Icons';
+import { AdminActionButton } from '../ui/AdminActionButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LiteStudentCard } from '../lite/LiteStudentCard';
 import { LiteActionDock } from '../lite/LiteActionDock';
