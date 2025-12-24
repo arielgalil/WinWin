@@ -15,7 +15,7 @@
     - Update `utils/translations` with specific keys: `delete_student`, `delete_group`, `delete_message`, `delete_log`.
 - [x] **Task: Conductor - User Manual Verification 'Shared Component Enhancements' (Protocol in workflow.md)**
 
-## Phase 2: Table Safety Integration
+## Phase 2: Table Safety Integration [checkpoint: f2cade6]
 - [x] **Task: Standardize UsersManager Deletion.** (61c61e3)
     - Update `components/admin/UsersManager.tsx`:
         - Use `confirmText={t('delete_student')}`.
@@ -26,7 +26,7 @@
         - Enable `isDanger={true}`.
 - [x] **Task: Standardize ActionLog Deletion.** (f2cade6)
     - Update `components/admin/ActionLogPanel.tsx`.
-- [ ] **Task: Conductor - User Manual Verification 'Table Safety Integration' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Table Safety Integration' (Protocol in workflow.md)**
 
 ## Phase 3: Action Card Safety Integration
 - [ ] **Task: Standardize MessagesManager Deletion.**
