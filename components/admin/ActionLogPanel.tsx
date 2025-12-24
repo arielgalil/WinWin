@@ -231,13 +231,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
-                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors"><SaveIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"><XIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"><SaveIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"><XIcon className="w-4 h-4" /></button>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => startEditing(log)} className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-lg transition-all ${isCancelled ? 'text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10' : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
+                                                                    <button onClick={() => startEditing(log)} className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all min-h-[44px] min-w-[44px] flex items-center justify-center" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-lg transition-all min-h-[44px] min-w-[44px] flex items-center justify-center ${isCancelled ? 'text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10' : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
                                                                 </>
                                                             )}
                                                         </div>
@@ -261,7 +261,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                     <SparklesIcon className="w-5 h-5 text-indigo-500 animate-pulse" /> {t('summary_ai_title')}
                                 </h3>
                                 {summary && (
-                                    <button onClick={handleCopySummary} className={`p-2 rounded-lg transition-all flex items-center gap-2 text-xs font-bold ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
+                                    <button onClick={handleCopySummary} className={`p-2 rounded-lg transition-all flex items-center gap-2 text-xs font-bold min-h-[44px] ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
                                         {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
                                         {isCopied ? t('copied') : t('copy')}
                                     </button>

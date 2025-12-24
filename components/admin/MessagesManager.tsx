@@ -196,9 +196,9 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                     </p>
 
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-1 text-gray-400 hover:text-indigo-500 disabled:opacity-0"><ArrowUpIcon className="w-3.5 h-3.5" /></button>
+                                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-gray-400 hover:text-indigo-500 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowUpIcon className="w-4 h-4" /></button>
                                                         <span className="text-[10px] text-gray-400 font-bold min-w-[12px] text-center">{index + 1}</span>
-                                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-1 text-gray-400 hover:text-indigo-500 disabled:opacity-0"><ArrowDownIcon className="w-3.5 h-3.5" /></button>
+                                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-gray-400 hover:text-indigo-500 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowDownIcon className="w-4 h-4" /></button>
                                                     </div>
                                                 </div>
                                             )}
