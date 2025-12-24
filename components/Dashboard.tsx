@@ -101,7 +101,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             sortedClasses={sortedClasses}
                             topStudents={top10Students}
                         />
-                        />
                     </div>
 
                     <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:overflow-hidden pb-0 flex-1 lg:flex-grow">
