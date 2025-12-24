@@ -13,12 +13,12 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit. (4b97018)
 - [x] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
 
-## Phase 3: Area-by-Area Unification
+## Phase 3: Area-by-Area Unification [checkpoint: bcd9608]
 - [x] **Task: Fix Theme Toggle.** Write tests and fix the light/dark mode toggle button in the Admin Panel. (08921e4)
-- [x] **Task: Unify ClassesManager UI.** Refactor the Classes management area to use the new shared components. (b693052)
-- [x] **Task: Unify UsersManager UI.** Refactor the Users management area to use the new shared components. (b693052)
-- [x] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components. (b693052)
-- [~] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
+- [x] **Task: Unify ClassesManager UI.** Refactor the Classes management area to use the new shared components. (8a6f8a9)
+- [x] **Task: Unify UsersManager UI.** Refactor the Users management area to use the new shared components. (8a6f8a9)
+- [x] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components. (8a6f8a9)
+- [x] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
 
 ## Phase 4: Quality Assurance & Polishing
 - [ ] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively.
