@@ -36,6 +36,6 @@
 - [x] **Task: Conductor - User Manual Verification 'Action Card Safety Integration' (Protocol in workflow.md)**
 
 ## Phase 4: Final UI Audit
-- [~] **Task: Global destructive action audit.**
+- [x] **Task: Global destructive action audit.** (e2c59bd)
     - Manual pass to ensure "Anti-Nudge" design is effectively implemented and buttons look equal.
 - [ ] **Task: Conductor - User Manual Verification 'Final UI Audit' (Protocol in workflow.md)**
