@@ -31,6 +31,9 @@ This plan outlines the steps to implement a robust smart tag replacement system 
     -   Ensure `currentIndex` is used to provide a stable but cycling selection for `[מקום אקראי]`.
 - [x] **Task: Verify "Random" Cycling.** (6b9340d)
     -   Confirm that `[מקום אקראי]` selects a different participant when the message cycles back.
+- [x] **Task: Update Admin MessagesManager UI.** (f29ff25)
+    -   Update `MessagesManager.tsx` to include the full list of smart tags (Goals, Rankings, Random).
+    -   Update the "Add Message" button label to `+ הוסף הודעה חדשה` (via translation key or direct text).
 - [~] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
 
 ## Phase 4: Final Quality Check
