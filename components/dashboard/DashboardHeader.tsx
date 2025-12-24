@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AppSettings, TickerMessage } from '../../types';
+import { AppSettings, TickerMessage, ClassRoom, Student } from '../../types';
 import { SparklesIcon, SproutIcon } from '../ui/Icons';
 import { generateFillerMessages } from '../../services/geminiService';
 import { FormattedNumber } from '../ui/FormattedNumber';
@@ -16,10 +16,12 @@ interface DashboardHeaderProps {
     commentary: string;
     customMessages: TickerMessage[];
     totalInstitutionScore: number;
+    sortedClasses?: (ClassRoom & { rank: number })[];
+    topStudents?: (Student & { rank: number })[];
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-    settings, commentary, customMessages, totalInstitutionScore
+    settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = []
 }) => {
     const { t } = useLanguage();
     const [currentIndex, setCurrentIndex] = useState(0);

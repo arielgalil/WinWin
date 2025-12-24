@@ -98,6 +98,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             commentary={commentary}
                             customMessages={tickerMessages}
                             totalInstitutionScore={totalInstitutionScore}
+                            sortedClasses={sortedClasses}
+                            topStudents={top10Students}
+                        />
                         />
                     </div>
 
