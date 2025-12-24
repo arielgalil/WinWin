@@ -20,7 +20,7 @@
     - Update `components/admin/UsersManager.tsx`:
         - Use `confirmText={t('delete_student')}`.
         - Enable `isDanger={true}`.
-- [ ] **Task: Standardize ClassesManager Deletion.**
+- [x] **Task: Standardize ClassesManager Deletion.** (21dbad2)
     - Update `components/admin/ClassesManager.tsx`:
         - Use `confirmText={t('delete_group')}`.
         - Enable `isDanger={true}`.
