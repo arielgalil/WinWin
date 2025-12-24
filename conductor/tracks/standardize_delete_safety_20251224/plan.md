@@ -16,7 +16,7 @@
 - [x] **Task: Conductor - User Manual Verification 'Shared Component Enhancements' (Protocol in workflow.md)**
 
 ## Phase 2: Table Safety Integration
-- [ ] **Task: Standardize UsersManager Deletion.**
+- [x] **Task: Standardize UsersManager Deletion.** (61c61e3)
     - Update `components/admin/UsersManager.tsx`:
         - Use `confirmText={t('delete_student')}`.
         - Enable `isDanger={true}`.
