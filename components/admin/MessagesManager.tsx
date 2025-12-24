@@ -42,13 +42,16 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
         { label: t('placeholder_institution_name'), value: '[שם המוסד]' },
         { label: t('placeholder_campaign_name'), value: '[שם המבצע]' },
         { label: t('placeholder_institution_score'), value: '[ניקוד מוסדי]' },
-        { label: t('placeholder_target_name'), value: '[שם היעד]' },
-        { label: t('placeholder_target_score'), value: '[ניקוד היעד]' },
-        { label: t('placeholder_distance_from_target'), value: '[מרחק מהיעד]' },
-        { label: t('placeholder_group_1'), value: '[כיתה ראשונה]' },
-        { label: t('placeholder_group_2'), value: '[כיתה שניה]' },
-        { label: t('placeholder_group_3'), value: '[כיתה שלישית]' },
-        { label: t('placeholder_place_1'), value: '[מקום ראשון]' },
+        { label: 'שם היעד', value: '[שם היעד]' },
+        { label: 'ניקוד היעד', value: '[ניקוד היעד]' },
+        { label: 'מרחק מהיעד', value: '[מרחק מהיעד]' },
+        { label: 'קבוצה 1', value: '[קבוצה ראשונה]' },
+        { label: 'קבוצה 2', value: '[קבוצה שניה]' },
+        { label: 'קבוצה 3', value: '[קבוצה שלישית]' },
+        { label: 'מקום 1', value: '[מקום ראשון]' },
+        { label: 'מקום 2', value: '[מקום שני]' },
+        { label: 'מקום 3', value: '[מקום שלישי]' },
+        { label: 'משתתף אקראי', value: '[מקום אקראי]' },
     ];
 
     const insertPlaceholder = (ph: string) => {
@@ -97,9 +100,10 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     };
 
     return (
-                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">            <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">
-                    <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
+                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+                <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">
+                        <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm">{t('messages_mgmt_desc')}</p>
             </div>
@@ -136,7 +140,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                             </div>
 
                             <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-[var(--radius-main)] shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95">
-                                <PlusIcon className="w-4 h-4" /> {t('add_new_button')}
+                                <PlusIcon className="w-4 h-4" /> {t('add_new_button') || '+ הוסף הודעה חדשה'}
                             </button>
                         </form>
                     </div>
