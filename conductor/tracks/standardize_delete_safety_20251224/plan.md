@@ -11,7 +11,7 @@
 - [x] **Task: Update AdminRowActions with Separation Logic.** (d366896)
     - Write tests in `components/ui/__tests__/AdminRowActions.test.tsx` verifying the gap logic.
     - Update `components/ui/AdminRowActions.tsx` to add `mr-auto` (or explicit margin) to the delete button to push it away from others in RTL.
-- [ ] **Task: Add Specific Delete Translations.**
+- [x] **Task: Add Specific Delete Translations.** (7e3ba68)
     - Update `utils/translations` with specific keys: `delete_student`, `delete_group`, `delete_message`, `delete_log`.
 - [ ] **Task: Conductor - User Manual Verification 'Shared Component Enhancements' (Protocol in workflow.md)**
 
