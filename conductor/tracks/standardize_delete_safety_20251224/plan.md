@@ -24,7 +24,7 @@
     - Update `components/admin/ClassesManager.tsx`:
         - Use `confirmText={t('delete_group')}`.
         - Enable `isDanger={true}`.
-- [ ] **Task: Standardize ActionLog Deletion.**
+- [x] **Task: Standardize ActionLog Deletion.** (f2cade6)
     - Update `components/admin/ActionLogPanel.tsx`.
 - [ ] **Task: Conductor - User Manual Verification 'Table Safety Integration' (Protocol in workflow.md)**
 
