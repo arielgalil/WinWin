@@ -29,7 +29,7 @@
 - [x] **Task: Conductor - User Manual Verification 'Table Safety Integration' (Protocol in workflow.md)**
 
 ## Phase 3: Action Card Safety Integration
-- [ ] **Task: Standardize MessagesManager Deletion.**
+- [x] **Task: Standardize MessagesManager Deletion.** (d2156e8)
     - Update `components/admin/MessagesManager.tsx`:
         - Ensure it uses `AdminRowActions` with correct spacing.
         - Configure modal with `confirmText={t('delete_message')}` and `isDanger={true}`.
