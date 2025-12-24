@@ -18,7 +18,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Unify ClassesManager UI.** Refactor the Classes management area to use the new shared components. (b693052)
 - [x] **Task: Unify UsersManager UI.** Refactor the Users management area to use the new shared components. (b693052)
 - [x] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components. (b693052)
-- [ ] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
+- [~] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
 
 ## Phase 4: Quality Assurance & Polishing
 - [ ] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively.

@@ -98,7 +98,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not(.light-mode) {
+  :root:not(.light) {
     /* Facebook-Inspired Dark Mode for system preference */
     --bg-page: var(--fb-bg-dark);
     --bg-surface: var(--fb-surface-dark);
