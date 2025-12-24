@@ -57,4 +57,27 @@ describe('ConfirmationModal', () => {
     expect(buttons[0]).toHaveTextContent('confirm_action');
     expect(buttons[1]).toHaveTextContent('cancel');
   });
+
+  it('applies reddish border when isDanger is true', () => {
+    const { container } = render(<ConfirmationModal {...defaultProps} isDanger={true} />);
+    const modalContainer = container.querySelector('.relative.bg-white');
+    expect(modalContainer).toHaveClass('border-red-500');
+  });
+
+  it('renders visually equal buttons (anti-nudge) when isDanger is true', () => {
+    const { container } = render(<ConfirmationModal {...defaultProps} isDanger={true} />);
+    const buttons = container.querySelectorAll('button');
+    
+    const confirmBtn = buttons[0];
+    const cancelBtn = buttons[1];
+
+    // They should share the same background and text color base classes to be "equal"
+    // We expect them to NOT have bg-red-600 (prominent) or bg-indigo-600
+    expect(confirmBtn).not.toHaveClass('bg-red-600');
+    expect(confirmBtn).not.toHaveClass('bg-indigo-600');
+    
+    // Check if they have the same weight (e.g. flex-1)
+    expect(confirmBtn).toHaveClass('flex-1');
+    expect(cancelBtn).toHaveClass('flex-1');
+  });
 });
