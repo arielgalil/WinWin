@@ -130,6 +130,7 @@ export const he = {
     delete_group: "מחק קבוצה",
     delete_message: "מחק הודעה",
     delete_log: "מחק פעולה",
+    delete_user: "מחק משתמש",
     
     // Footer
     nav_home: "ראשי",

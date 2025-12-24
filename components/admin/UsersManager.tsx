@@ -430,8 +430,9 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 onEdit={() => { setEditingUserId(u.id); setEditFormData(u); }}
                                 onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
                                     openConfirmation({
-                                        title: t('confirm_deletion'),
+                                        title: t('delete_user'),
                                         message: t('confirm_delete_campaign'),
+                                        confirmText: t('delete_user'),
                                         isDanger: true,
                                         onConfirm: () => handleDeleteUser(u.id)
                                     });
