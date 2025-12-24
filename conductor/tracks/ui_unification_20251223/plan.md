@@ -22,7 +22,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 
 ## Phase 4: Quality Assurance & Polishing
 - [x] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively. (1f69f9d)
-- [~] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas.
+- [x] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas. (643a0de)
 - [ ] **Task: Refine Border Radius.** Apply subtle rounded corners to all cards, except for the bottom edges of charts/graphs.
 - [ ] **Task: Final UI/UX Consistency Pass.** Ensure spacing, typography, and animations are perfectly aligned across all areas.
 - [ ] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**
