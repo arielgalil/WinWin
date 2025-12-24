@@ -14,7 +14,7 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
 
 ## Phase 3: Area-by-Area Unification
-- [ ] **Task: Fix Theme Toggle.** Write tests and fix the light/dark mode toggle button in the Admin Panel.
+- [x] **Task: Fix Theme Toggle.** Write tests and fix the light/dark mode toggle button in the Admin Panel. (08921e4)
 - [ ] **Task: Unify ClassesManager UI.** Refactor the Classes management area to use the new shared components.
 - [ ] **Task: Unify UsersManager UI.** Refactor the Users management area to use the new shared components.
 - [ ] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components.
