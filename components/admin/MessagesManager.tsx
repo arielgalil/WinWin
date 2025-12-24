@@ -97,8 +97,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     };
 
     return (
-                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">            <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">            <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">
                     <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm">{t('messages_mgmt_desc')}</p>

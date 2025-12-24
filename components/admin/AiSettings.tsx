@@ -127,14 +127,14 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     return (
         <div className="max-w-6xl mx-auto space-y-8 pb-12" dir={isRTL ? 'rtl' : 'ltr'}>
             {/* API Configuration Card */}
-            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 dark:border-white/5 pb-6 gap-6">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20">
                             <KeyIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('ai_api_key_title')}</h3>
+                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_api_key_title')}</h3>
                             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_api_key_desc')}</p>
                         </div>
                     </div>
@@ -182,13 +182,13 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl border border-pink-100 dark:border-pink-500/20">
                         <SparklesIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('ai_prompt_title')}</h3>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_prompt_title')}</h3>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_prompt_desc')}</p>
                     </div>
                 </div>
@@ -214,13 +214,13 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
                         <ListIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('ai_keywords_title')}</h3>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_keywords_title')}</h3>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_keywords_desc')}</p>
                     </div>
                 </div>

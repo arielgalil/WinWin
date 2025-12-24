@@ -175,13 +175,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <form onSubmit={handleSaveSettings} className="space-y-8">
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] text-indigo-600 dark:text-indigo-400">
                             <StarIcon className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('details_logo')}</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('details_logo')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Basic information about the competition</p>
                         </div>
                     </div>
@@ -262,13 +262,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
 
                 {/* 2. Music & Atmosphere */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-[var(--radius-main)] text-purple-600 dark:text-purple-400">
                             <MusicIcon className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('music_atmosphere')}</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('music_atmosphere')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Background audio settings</p>
                         </div>
                     </div>
@@ -335,13 +335,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
 
                 {/* 3. Visual Design */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-[var(--radius-main)] text-pink-600 dark:text-pink-400">
                             <SparklesIcon className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('visual_design')}</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('visual_design')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Colors and theme customization</p>
                         </div>
                     </div>
@@ -419,13 +419,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
 
                 {/* 4. Scoring Settings */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-[var(--radius-main)] text-orange-600 dark:text-orange-400">
                             <StarIcon className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('scoring_settings')}</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('scoring_settings')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Configure point values and limits</p>
                         </div>
                     </div>

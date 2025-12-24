@@ -192,14 +192,14 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                 onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
             />
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
                         <DatabaseIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('data_mgmt_title')}</h3>
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('data_mgmt_title')}</h3>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('data_mgmt_subtitle')}</p>
                     </div>
                 </div>

@@ -48,7 +48,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
 
     return (
         <div className="max-w-6xl mx-auto space-y-6 pb-12">
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/20">
                         <SchoolIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />

@@ -206,7 +206,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}
                     </div>
                     <div>
-                      <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{headerConfig?.title}</h2>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{headerConfig?.title}</h2>
                       <p className="text-gray-500 dark:text-gray-400 font-medium text-base mt-1">{headerConfig?.desc}</p>
                     </div>
                   </div>
