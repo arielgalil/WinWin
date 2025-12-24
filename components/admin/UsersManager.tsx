@@ -240,15 +240,15 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 onCancel={modalConfig.onCancel}
             />
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
+            <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
                             <UsersIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('team_mgmt_title_clean')}</h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('team_mgmt_subtitle')}</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] leading-none">{t('team_mgmt_title_clean')}</h3>
+                            <p className="text-[var(--text-secondary)] text-sm mt-1">{t('team_mgmt_subtitle')}</p>
                         </div>
                     </div>
 
@@ -283,48 +283,48 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 </div>
 
                 <div className="mb-10">
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border border-[var(--border-subtle)]">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('full_name_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('full_name_label')}</label>
                             <input
                                 required
                                 value={newUserFullName}
                                 onChange={e => setNewUserFullName(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="e.g. John Doe"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('email_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('email_label')}</label>
                             <input
                                 required
                                 type="email"
                                 value={newUserEmail}
                                 onChange={e => setNewUserEmail(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="name@email.com"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('password_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('password_label')}</label>
                             <input
                                 required
                                 type="password"
                                 value={newUserPassword}
                                 onChange={e => setNewUserPassword(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="••••••••"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('role_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('role_label')}</label>
                             <select
                                 value={newUserRole}
                                 onChange={e => setNewUserRole(e.target.value as any)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
                             >
-                                <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
-                                <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
+                                <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
+                                <option value="teacher" className="bg-[var(--bg-card)]">{t('role_teacher_short')}</option>
                             </select>
                         </div>
                         <div className="flex items-end">

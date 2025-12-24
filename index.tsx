@@ -1,5 +1,6 @@
 
 import React from 'react';
+import './index.css';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as ReactRouterDOM from 'react-router-dom';

@@ -1,1 +1,139 @@
 @import "tailwindcss";
+
+@theme {
+  /* Semantic Tokens - These are the variables we will use in our components */
+  
+  /* Backgrounds */
+  --bg-page: var(--color-slate-50);
+  --bg-card: white;
+  --bg-surface: var(--color-slate-100);
+  --bg-hover: var(--color-slate-100);
+  --bg-active: var(--color-indigo-50);
+  --bg-input: white;
+  
+  /* Text */
+  --text-main: var(--color-slate-900);
+  --text-secondary: var(--color-slate-600);
+  --text-muted: var(--color-slate-400);
+  --text-on-primary: white;
+  --text-primary: var(--color-indigo-600);
+
+  /* Borders & Dividers */
+  --border-main: var(--color-slate-200);
+  --border-subtle: var(--color-slate-100);
+  --divide-main: var(--color-slate-100);
+  
+  /* Brand / Primary */
+  --primary-base: var(--color-indigo-600);
+  --primary-hover: var(--color-indigo-700);
+  --primary-light: var(--color-indigo-50); /* Background for active items */
+  
+  /* Status */
+  --status-success-bg: var(--color-emerald-50);
+  --status-success-text: var(--color-emerald-700);
+  --status-error-bg: var(--color-red-50);
+  --status-error-text: var(--color-red-700);
+  
+  /* Dimensions */
+  --radius-main: 0.75rem; /* 12px */
+  --radius-container: 1rem; /* 16px */
+}
+
+/* DARK MODE OVERRIDES */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    /* Backgrounds */
+    --bg-page: #020617; /* Slate 950 - Deepest background */
+    --bg-card: #0f172a; /* Slate 900 - Cards float above page */
+    --bg-surface: #1e293b; /* Slate 800 - Inputs, headers */
+    --bg-hover: #1e293b; /* Hover state on cards */
+    --bg-active: rgba(99, 102, 241, 0.1); /* Indigo 500 @ 10% */
+    --bg-input: #020617; /* Input background same as page */
+
+    /* Text */
+    --text-main: #f8fafc; /* Slate 50 */
+    --text-secondary: #94a3b8; /* Slate 400 */
+    --text-muted: #64748b; /* Slate 500 */
+    --text-primary: #818cf8; /* Indigo 400 - Lighter for dark mode */
+
+    /* Borders */
+    --border-main: #1e293b; /* Slate 800 */
+    --border-subtle: #0f172a; /* Slate 900 */
+    --divide-main: #1e293b;
+
+    /* Primary */
+    --primary-base: #6366f1; /* Indigo 500 */
+    --primary-hover: #818cf8; /* Indigo 400 */
+    --primary-light: rgba(99, 102, 241, 0.15); 
+    
+    /* Status */
+    --status-success-bg: rgba(16, 185, 129, 0.1); /* Emerald 500 @ 10% */
+    --status-success-text: #34d399; /* Emerald 400 */
+    --status-error-bg: rgba(239, 68, 68, 0.1); /* Red 500 @ 10% */
+    --status-error-text: #f87171; /* Red 400 */
+  }
+}
+
+/* Manual .dark class support */
+.dark {
+    /* Backgrounds */
+    --bg-page: #020617; 
+    --bg-card: #0f172a; 
+    --bg-surface: #1e293b; 
+    --bg-hover: #1e293b;
+    --bg-active: rgba(99, 102, 241, 0.1); 
+    --bg-input: #020617;
+
+    /* Text */
+    --text-main: #f8fafc; 
+    --text-secondary: #94a3b8; 
+    --text-muted: #64748b; 
+    --text-primary: #818cf8;
+
+    /* Borders */
+    --border-main: #1e293b; 
+    --border-subtle: #0f172a; 
+    --divide-main: #1e293b;
+
+    /* Primary */
+    --primary-base: #6366f1; 
+    --primary-hover: #818cf8; 
+    --primary-light: rgba(99, 102, 241, 0.15); 
+    
+    /* Status */
+    --status-success-bg: rgba(16, 185, 129, 0.1); 
+    --status-success-text: #34d399; 
+    --status-error-bg: rgba(239, 68, 68, 0.1); 
+    --status-error-text: #f87171; 
+}
+
+/* Global Reset */
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Admin Specific Utilities */
+.admin-view {
+    @apply font-sans;
+}
+
+/* Custom Scrollbar for Admin Area */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-main);
+  border-radius: 99px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}

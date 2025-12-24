@@ -25,6 +25,7 @@ const [theme, setThemeState] = useState<Theme>(() => {
     }, [theme]);
 
     const toggleTheme = () => {
+        console.log('[ThemeContext] Toggling theme. Current:', theme);
         setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
     };
 

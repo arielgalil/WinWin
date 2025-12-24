@@ -25,4 +25,4 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas. (643a0de)
 - [x] **Task: Refine Border Radius.** Apply subtle rounded corners to all cards, except for the bottom edges of charts/graphs. (36e0893)
 - [x] **Task: Final UI/UX Consistency Pass.** Ensure spacing, typography, and animations are perfectly aligned across all areas. (d5583e9)
-- [ ] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**
+- [~] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**

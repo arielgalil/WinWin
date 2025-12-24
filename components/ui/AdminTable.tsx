@@ -44,17 +44,17 @@ export const AdminTable = <T extends Record<string, any>>({
   return (
     <div className="w-full">
       {/* Desktop Table View (Hidden on mobile) */}
-      <div className="hidden md:block bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+      <div className="hidden md:block bg-[var(--bg-card)] rounded-[var(--radius-container)] border border-[var(--border-main)] overflow-hidden shadow-sm">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-widest text-right">
+            <tr className="bg-[var(--bg-surface)] text-[var(--text-muted)] text-[10px] uppercase font-bold tracking-widest text-right">
               {columns.map(col => (
                 <th key={col.key} className="p-4">{col.header}</th>
               ))}
               {actions && <th className="p-4 text-center w-[120px]">{t('actions_header')}</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm text-gray-600 dark:text-gray-300">
+          <tbody className="divide-y divide-[var(--divide-main)] text-sm text-[var(--text-secondary)]">
             <AnimatePresence>
               {data.map((item) => (
                 <MotionTr
@@ -62,7 +62,7 @@ export const AdminTable = <T extends Record<string, any>>({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={`hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
+                  className={`hover:bg-[var(--bg-hover)] transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
                   onClick={() => onRowClick?.(item)}
                 >
                   {columns.map(col => (
@@ -94,15 +94,15 @@ export const AdminTable = <T extends Record<string, any>>({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               layout
-              className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 p-4 shadow-sm"
+              className="bg-[var(--bg-card)] rounded-[var(--radius-container)] border border-[var(--border-main)] p-4 shadow-sm"
               onClick={() => onRowClick?.(item)}
               role="article" // For accessibility and testing
             >
               <div className="space-y-3">
                 {columns.map(col => (
-                  <div key={col.key} className="flex justify-between items-center border-b border-gray-50 dark:border-white/5 last:border-0 pb-2 last:pb-0">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{col.header}</span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white text-right">
+                  <div key={col.key} className="flex justify-between items-center border-b border-[var(--divide-main)] last:border-0 pb-2 last:pb-0">
+                    <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{col.header}</span>
+                    <span className="text-sm font-medium text-[var(--text-main)] text-right">
                       {col.render ? col.render(item) : item[col.key]}
                     </span>
                   </div>
@@ -110,7 +110,7 @@ export const AdminTable = <T extends Record<string, any>>({
               </div>
               
               {actions && (
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3" onClick={(e: any) => e.stopPropagation()}>
+                <div className="mt-4 pt-4 border-t border-[var(--divide-main)] flex justify-end gap-3" onClick={(e: any) => e.stopPropagation()}>
                   {actions(item)}
                 </div>
               )}

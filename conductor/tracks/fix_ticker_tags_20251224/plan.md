@@ -23,7 +23,7 @@ This plan outlines the steps to implement a robust smart tag replacement system 
     -   Implement logic to find the current active goal from `settings.goals_config`.
     -   Implement logic to pick the top 3 groups and students.
     -   Implement logic for `[מקום אקראי]` using an optional seed for stability during a single render cycle.
-- [~] **Task: Conductor - User Manual Verification 'Tag Replacement Logic (TDD)' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Tag Replacement Logic (TDD)' (Protocol in workflow.md)**
 
 ## Phase 3: UI Integration & Refinement
 - [x] **Task: Apply Tag Replacement in DashboardHeader.** (6b9340d)
@@ -31,13 +31,17 @@ This plan outlines the steps to implement a robust smart tag replacement system 
     -   Ensure `currentIndex` is used to provide a stable but cycling selection for `[מקום אקראי]`.
 - [x] **Task: Verify "Random" Cycling.** (6b9340d)
     -   Confirm that `[מקום אקראי]` selects a different participant when the message cycles back.
-- [x] **Task: Update Admin MessagesManager UI.** (f29ff25)
+- [x] **Task: Update Admin MessagesManager UI.** (617b846)
     -   Update `MessagesManager.tsx` to include the full list of smart tags (Goals, Rankings, Random).
-    -   Update the "Add Message" button label to `+ הוסף הודעה חדשה` (via translation key or direct text).
+    -   Update the "Add Message" button label to `+ הוספת הודעה חדשה`.
+- [x] **Task: Localize SchoolSettings area.** (f29ff25)
+    -   Ensure all strings in the Settings tab are translated into Hebrew and English.
+- [x] **Task: Standardize action buttons in MessagesManager.** (6d39b04)
+    -   Replace manual buttons with `AdminRowActions` for UI consistency.
 - [x] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
 
 ## Phase 4: Final Quality Check
-- [~] **Task: Regression Test.**
+- [x] **Task: Regression Test.** (033dcaa)
     -   Ensure the ticker still handles long messages (chunking) correctly after tag replacement.
     -   Verify that empty states (no students/groups yet) don't crash the replacement logic.
-- [ ] **Task: Conductor - User Manual Verification 'Final Quality Check' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Final Quality Check' (Protocol in workflow.md)**

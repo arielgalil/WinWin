@@ -76,12 +76,12 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   };
 
       return (
-          <div className="md:hidden sticky top-0 z-[100] bg-white dark:bg-[#1e1e2e] shadow-sm w-full border-b border-gray-200 dark:border-white/10 shrink-0">
+          <div className="md:hidden sticky top-0 z-[100] bg-[var(--bg-card)] shadow-sm w-full border-b border-[var(--border-subtle)] shrink-0">
               <div className="flex items-center justify-between p-4 relative z-[120]">
                   <div className="flex items-center gap-3">
                       <button
                           onClick={() => setIsOpen(!isOpen)}
-                          className="p-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 rounded-[var(--radius-main)] active:scale-95 transition-transform hover:bg-gray-200 dark:hover:bg-white/10"
+                          className="p-2 bg-[var(--bg-hover)] text-[var(--text-main)] rounded-[var(--radius-main)] active:scale-95 transition-transform hover:bg-[var(--bg-active)]"
                       >
                           {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                       </button>
@@ -89,13 +89,13 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   
                   <div className="flex items-center gap-3 dir-rtl">
                       <div className="text-left">
-                          <p className="text-gray-900 dark:text-white font-bold text-base leading-tight">{user.full_name}</p>
+                          <p className="text-[var(--text-main)] font-bold text-base leading-tight">{user.full_name}</p>
                           <p className="text-indigo-600 dark:text-indigo-400 text-[10px] uppercase font-bold tracking-wide">
                               {getRoleLabel()}
                               {userClassName && ` | ${userClassName}`}
                           </p>
                       </div>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md border border-white/10 text-sm ${isAnySuperUser ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}`}>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md border border-[var(--border-subtle)] text-sm ${isAnySuperUser ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}`}>
                           {user.full_name?.charAt(0).toUpperCase() || 'U'}
                       </div>
                   </div>
@@ -108,7 +108,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                           animate={{ opacity: 1, x: '0%' }}
                           exit={{ opacity: 0, x: isRTL ? '100%' : '-100%' }}
                           transition={{ duration: 0.2 }}
-                          className="fixed inset-0 bg-white dark:bg-[#1e1e2e] z-[110] flex flex-col overflow-hidden"
+                          className="fixed inset-0 bg-[var(--bg-page)] z-[110] flex flex-col overflow-hidden"
                           style={{ height: '100dvh', width: '100vw' }}
                       >
                           {/* Spacer for sticky header */}
@@ -116,24 +116,28 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   
                           <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col">
                               <div className="space-y-4 pb-12">
-                                  <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest mb-6 px-2">{t('app_name')}</p>
+                                  <p className="text-[var(--text-muted)] text-[11px] font-bold uppercase tracking-widest mb-6 px-2">{t('app_name')}</p>
   
-                                  {visibleNavItems.map(item => (
+                                  {visibleNavItems.map((item, index) => (
+                                      item.divider ? (
+                                        <div key={`divider-${index}`} className="h-px bg-[var(--border-subtle)] my-4" />
+                                      ) : (
                                       <button
                                           key={item.id}
                                           onClick={() => handleLinkClick(item.id)}
                                           className={`w-full text-right py-3 px-5 rounded-[var(--radius-main)] flex items-center gap-4 transition-all active:scale-[0.98] border border-transparent
                                               ${activeTab === item.id
                                                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm'
-                                                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 font-medium'
+                                                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-medium'
                                               }`}
                                       >
-                                          <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                                          <item.icon className={`w-6 h-6 shrink-0 ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)]'}`} />
                                           <span className="text-lg font-bold">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
                                       </button>
+                                      )
                                   ))}
   
-                                  <div className="h-px bg-gray-200 dark:bg-white/10 my-8" />
+                                  <div className="h-px bg-[var(--border-subtle)] my-8" />
   
                                   <div className={`grid ${onToggleFreeze ? 'grid-cols-2' : 'grid-cols-1'} gap-4 mb-4`}>
                                       <button
@@ -160,7 +164,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                   <div className="grid grid-cols-2 gap-4">
                                       <button
                                           onClick={() => { toggleTheme(); setIsOpen(false); }}
-                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-slate-50 dark:bg-slate-500/10 border border-slate-200 dark:border-slate-500/20 text-slate-600 dark:text-slate-400 gap-2 shadow-sm transition-all"
+                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] gap-2 shadow-sm transition-all"
                                       >
                                           {theme === 'dark' ? <SunIcon className="w-6 h-6 text-amber-500" /> : <MoonIcon className="w-6 h-6 text-indigo-500" />}
                                           <span className="text-xs font-bold">{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>

@@ -1,0 +1,33 @@
+# Track Plan: Fix Admin Settings Route Duplication
+
+This plan outlines the steps to consolidate duplicate admin routes and ensure full Hebrew localization.
+
+## Phase 1: Route Cleanup & Redirection
+- [~] **Task: Locate and Remove Old Route.**
+    -   Search `App.tsx` or router configuration for `/school`.
+    -   Remove the route definition.
+    -   If the component used by `/school` is different and unused, mark it for deletion.
+- [ ] **Task: Update Admin Sidebar.**
+    -   Locate `AdminSidebar.tsx` (or similar navigation component).
+    -   Update the "Settings" link to point to `/settings` instead of `/school`.
+- [ ] **Task: Global Link Search & Replace.**
+    -   Search the entire codebase for string literals or router pushes to `/school`.
+    -   Update confirmed instances (Super Admin, Leaderboard, Dashboard) to use `/settings`.
+- [ ] **Task: Verify Route Access.**
+    -   Manual verification: Navigate to Settings from all major entry points.
+- [ ] **Task: Conductor - User Manual Verification 'Route Cleanup & Redirection' (Protocol in workflow.md)**
+
+## Phase 2: Localization Audit
+- [ ] **Task: Audit Settings Page Strings.**
+    -   Scan the component rendered at `/settings` for hardcoded English strings.
+    -   Replace any found strings with keys from `utils/translations/he.ts` (or relevant locale files).
+- [ ] **Task: Update Translation Files.**
+    -   Add any missing Hebrew translations for the Settings area to the dictionary.
+- [ ] **Task: Conductor - User Manual Verification 'Localization Audit' (Protocol in workflow.md)**
+
+## Phase 3: Final Cleanup & Quality Check
+- [ ] **Task: Remove Dead Code.**
+    -   Delete any files or components that were exclusively used by the old `/school` route (if applicable).
+- [ ] **Task: Final Regression Test.**
+    -   Ensure the "School Settings" page loads correctly, saves data, and displays in Hebrew.
+- [ ] **Task: Conductor - User Manual Verification 'Final Cleanup & Quality Check' (Protocol in workflow.md)**

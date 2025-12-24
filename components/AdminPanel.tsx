@@ -5,8 +5,8 @@ import { SettingsIcon, UsersIcon, TargetIcon, RefreshIcon, CalculatorIcon, Clock
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './ui/Logo';
 import { AdminSidebar } from './admin/AdminSidebar';
+import { AdminMobileMenu } from './admin/AdminMobileMenu';
 import { useCompetitionData } from '../hooks/useCompetitionData';
-import { GradientBackground } from './ui/GradientBackground';
 import { FrozenOverlay } from './ui/FrozenOverlay';
 import { isAdmin as checkIsAdmin, isSuperUser as checkIsSuperUser } from '../config';
 import { VersionFooter } from './ui/VersionFooter';
@@ -18,17 +18,17 @@ import { useLanguage } from '../hooks/useLanguage';
 const { useParams, useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
 
-const PointsManager = React.lazy(() => import('./admin/PointsManager').then(m => ({ default: m.PointsManager })));
-const UsersManager = React.lazy(() => import('./admin/UsersManager').then(m => ({ default: m.UsersManager })));
-const SchoolSettings = React.lazy(() => import('./admin/SchoolSettings').then(m => ({ default: m.SchoolSettings })));
-const ClassesManager = React.lazy(() => import('./admin/ClassesManager').then(m => ({ default: m.ClassesManager })));
-const ActionLogPanel = React.lazy(() => import('./admin/ActionLogPanel').then(m => ({ default: m.ActionLogPanel })));
+const PointsManager = React.lazy(() => import('./admin/PointsManager').then(m => ({ default: m.PointsManager })).catch(err => { console.error('PointsManager load error:', err); return { default: () => <div>Error loading PointsManager</div> }; }));
+const UsersManager = React.lazy(() => import('./admin/UsersManager').then(m => ({ default: m.UsersManager })).catch(err => { console.error('UsersManager load error:', err); return { default: () => <div>Error loading UsersManager</div> }; }));
+const SchoolSettings = React.lazy(() => import('./admin/SchoolSettings').then(m => ({ default: m.SchoolSettings })).catch(err => { console.error('SchoolSettings load error:', err); return { default: () => <div>Error loading SchoolSettings</div> }; }));
+const ClassesManager = React.lazy(() => import('./admin/ClassesManager').then(m => ({ default: m.ClassesManager })).catch(err => { console.error('ClassesManager load error:', err); return { default: () => <div>Error loading ClassesManager</div> }; }));
+const ActionLogPanel = React.lazy(() => import('./admin/ActionLogPanel').then(m => ({ default: m.ActionLogPanel })).catch(err => { console.error('ActionLogPanel load error:', err); return { default: () => <div>Error loading ActionLogPanel</div> }; }));
 
-const MyClassStatus = React.lazy(() => import('./admin/MyClassStatus').then(m => ({ default: m.MyClassStatus })));
-const DataManagement = React.lazy(() => import('./admin/DataManagement').then(m => ({ default: m.DataManagement })));
-const GoalsManagement = React.lazy(() => import('./admin/GoalsManagement').then(m => ({ default: m.GoalsManagement })));
-const AiSettings = React.lazy(() => import('./admin/AiSettings').then(m => ({ default: m.AiSettings })));
-const MessagesManager = React.lazy(() => import('./admin/MessagesManager').then(m => ({ default: m.MessagesManager })));
+const MyClassStatus = React.lazy(() => import('./admin/MyClassStatus').then(m => ({ default: m.MyClassStatus })).catch(err => { console.error('MyClassStatus load error:', err); return { default: () => <div>Error loading MyClassStatus</div> }; }));
+const DataManagement = React.lazy(() => import('./admin/DataManagement').then(m => ({ default: m.DataManagement })).catch(err => { console.error('DataManagement load error:', err); return { default: () => <div>Error loading DataManagement</div> }; }));
+const GoalsManagement = React.lazy(() => import('./admin/GoalsManagement').then(m => ({ default: m.GoalsManagement })).catch(err => { console.error('GoalsManagement load error:', err); return { default: () => <div>Error loading GoalsManagement</div> }; }));
+const AiSettings = React.lazy(() => import('./admin/AiSettings').then(m => ({ default: m.AiSettings })).catch(err => { console.error('AiSettings load error:', err); return { default: () => <div>Error loading AiSettings</div> }; }));
+const MessagesManager = React.lazy(() => import('./admin/MessagesManager').then(m => ({ default: m.MessagesManager })).catch(err => { console.error('MessagesManager load error:', err); return { default: () => <div>Error loading MessagesManager</div> }; }));
 
 // Preload components
 const preloadComponent = (importFunc: () => Promise<any>) => {
@@ -67,6 +67,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const { slug, tab: activeTabFromUrl } = useParams();
   const navigate = useNavigate();
   const { notifications, dismiss } = useSaveNotification();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isAdmin = checkIsAdmin(user.role, campaignRole);
   const isSuper = checkIsSuperUser(user.role) || checkIsSuperUser(campaignRole);
@@ -143,17 +144,31 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   });
 
   return (
-    <GradientBackground primaryColor={settings.primary_color} secondaryColor={settings.secondary_color} brightness={settings.background_brightness}>
+    <div className="relative h-screen w-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 overflow-hidden">
       <FrozenOverlay isFrozen={!currentCampaign?.is_active && !isSuperAdmin} />
-      <div className="flex flex-col h-full w-full overflow-hidden relative z-10 admin-view">
-        <header className="h-16 bg-white/80 dark:bg-[#1e1e2e]/80 border-b border-gray-200 dark:border-white/10 flex items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md">
+      <div className="flex flex-col h-full w-full overflow-hidden relative z-10 admin-view bg-[var(--bg-page)]">
+        <AdminMobileMenu
+          isOpen={isMobileMenuOpen}
+          setIsOpen={setIsMobileMenuOpen}
+          user={user}
+          userClassName={isSuper ? 'Super Admin' : isAdmin ? 'Administrator' : 'Teacher'}
+          visibleNavItems={visibleNavItems}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          onViewDashboard={onViewDashboard}
+          onManualRefresh={handleRefresh}
+          isRefreshing={isRefreshing}
+          onLogout={onLogout}
+          campaignRole={campaignRole}
+        />
+        <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-300">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20 cursor-pointer hover:scale-105 transition-transform" onClick={onViewDashboard}>
               <Logo src={settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-none tracking-tight">{settings.school_name}</h1>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mt-1">Admin Console</p>
+              <h1 className="text-lg font-bold text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
+              <p className="text-[10px] text-[var(--text-muted)] font-medium tracking-widest uppercase mt-1">Admin Console</p>
             </div>
           </div>
 
@@ -162,30 +177,30 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-500 dark:text-gray-400"
+              className="p-2 rounded-full hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-secondary)]"
               title={t('refresh')}
             >
               <RefreshIcon className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
 
-            <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
+            <div className="w-px h-6 bg-[var(--border-main)]" />
 
             {/* Profile Section */}
             <div className="flex items-center gap-3 pl-2">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold text-gray-900 dark:text-white leading-none">{user.full_name}</p>
+                <p className="text-sm font-semibold text-[var(--text-main)] leading-none">{user.full_name}</p>
                 <p className="text-[10px] font-medium text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
                   {isSuper ? 'Super Admin' : isAdmin ? 'Administrator' : 'Teacher'}
                 </p>
               </div>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-white dark:ring-white/10 bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
                 {user.full_name?.charAt(0).toUpperCase() || 'U'}
               </div>
             </div>
           </div>
         </header>
 
-        <div className="flex-1 flex pt-16 overflow-hidden bg-gray-50/50 dark:bg-[#0f0f13]/50">
+        <div className="flex-1 flex md:pt-16 overflow-hidden bg-transparent">
           <AdminSidebar
             visibleNavItems={visibleNavItems}
             activeTab={activeTab}
@@ -200,14 +215,14 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
             <main className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10">
               <div className="max-w-6xl mx-auto space-y-8">
                 {/* Modern Content Header */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 border-b border-gray-200 dark:border-white/10">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 border-b border-[var(--border-main)]">
                   <div className="flex items-center gap-5">
-                    <div className={`p-3.5 rounded-2xl bg-white dark:bg-white/5 shadow-sm border border-gray-100 dark:border-white/5 text-${headerConfig?.color?.split('-')[1]}-500`}>
+                    <div className={`p-3.5 rounded-2xl bg-[var(--bg-surface)] shadow-sm border border-[var(--border-main)] text-${headerConfig?.color?.split('-')[1]}-500`}>
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}
                     </div>
                     <div>
-                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{headerConfig?.title}</h2>
-                      <p className="text-gray-500 dark:text-gray-400 font-medium text-base mt-1">{headerConfig?.desc}</p>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] tracking-tight">{headerConfig?.title}</h2>
+                      <p className="text-[var(--text-secondary)] font-medium text-base mt-1">{headerConfig?.desc}</p>
                     </div>
                   </div>
 
@@ -220,7 +235,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                     )}
 
                     {!activeNotification && headerConfig?.updatedAt && (
-                      <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 font-medium bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                      <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)]">
                         <ClockIcon className="w-3.5 h-3.5" />
                         <span>{(language === 'he' ? 'נשמר ' : 'Saved ')} {formatLastSaved(headerConfig.updatedAt, language)}</span>
                       </div>
@@ -276,7 +291,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         </div>
         <VersionFooter />
       </div>
-    </GradientBackground>
+    </div>
   );
 };
 
