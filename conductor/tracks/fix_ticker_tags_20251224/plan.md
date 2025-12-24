@@ -26,12 +26,12 @@ This plan outlines the steps to implement a robust smart tag replacement system 
 - [~] **Task: Conductor - User Manual Verification 'Tag Replacement Logic (TDD)' (Protocol in workflow.md)**
 
 ## Phase 3: UI Integration & Refinement
-- [ ] **Task: Apply Tag Replacement in DashboardHeader.**
+- [x] **Task: Apply Tag Replacement in DashboardHeader.** (6b9340d)
     -   Modify the `chunks` useMemo in `DashboardHeader.tsx` to call `replaceSmartTags` on the selected message from the playlist.
     -   Ensure `currentIndex` is used to provide a stable but cycling selection for `[מקום אקראי]`.
-- [ ] **Task: Verify "Random" Cycling.**
+- [x] **Task: Verify "Random" Cycling.** (6b9340d)
     -   Confirm that `[מקום אקראי]` selects a different participant when the message cycles back.
-- [ ] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
+- [~] **Task: Conductor - User Manual Verification 'UI Integration & Refinement' (Protocol in workflow.md)**
 
 ## Phase 4: Final Quality Check
 - [ ] **Task: Regression Test.**
