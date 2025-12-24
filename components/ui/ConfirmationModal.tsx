@@ -71,7 +71,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className={`relative bg-white dark:bg-[#1e1e2e] border p-8 rounded-[var(--radius-container)] shadow-2xl max-w-sm w-full overflow-hidden ${
-              isDanger ? 'border-red-500' : 'border-gray-200 dark:border-white/10'
+              isDanger ? 'border-red-500 border-2 ring-4 ring-red-500/20' : 'border-gray-200 dark:border-white/10'
             }`}
           >
             <div className={`w-14 h-14 rounded-[var(--radius-container)] flex items-center justify-center mb-6 mx-auto ${

@@ -42,7 +42,7 @@ export const AdminRowActions: React.FC<AdminRowActionsProps> = ({
           onClick={(e) => { e.stopPropagation(); onDelete(); }} 
           variant="delete" 
           title={deleteTitle}
-          className="mr-6"
+          className="ml-6"
         >
           <TrashIcon className="w-4 h-4" />
         </AdminActionButton>
