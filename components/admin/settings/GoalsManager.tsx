@@ -86,7 +86,9 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
     const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
-    const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; isDanger: boolean; onConfirm: () => void; }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
+    const [modalConfig, setModalConfig] = useState<{ 
+        isOpen: boolean; title: string; message: string; confirmText?: string; isDanger: boolean; onConfirm: () => void; 
+    }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
 
     const minScoreAllowed = useMemo(() => {
         if (editingId) {
@@ -156,10 +158,41 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
     return (
         <div className="space-y-8" dir="rtl">
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
+            <ConfirmationModal 
+                isOpen={modalConfig.isOpen} 
+                title={modalConfig.title} 
+                message={modalConfig.message} 
+                confirmText={modalConfig.confirmText}
+                isDanger={modalConfig.isDanger}
+                onConfirm={modalConfig.onConfirm} 
+                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} 
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {goals.map((goal, idx) => <GoalCard key={goal.id} goal={goal} idx={idx} totalScore={totalScore} prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} onEdit={() => { setEditingId(goal.id); setFormState(goal); }} onDelete={() => setModalConfig({ isOpen: true, title: t('delete_stage_title'), message: t('confirm_delete_stage'), isDanger: true, onConfirm: () => { const up = goals.filter(g => g.id !== goal.id); setGoals(up); onUpdateSettings(up, gridSize); setModalConfig(prev => ({ ...prev, isOpen: false })); } })} isEditing={editingId === goal.id} />)}
+                {goals.map((goal, idx) => (
+                    <GoalCard 
+                        key={goal.id} 
+                        goal={goal} 
+                        idx={idx} 
+                        totalScore={totalScore} 
+                        prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} 
+                        onEdit={() => { setEditingId(goal.id); setFormState(goal); }} 
+                        onDelete={() => setModalConfig({ 
+                            isOpen: true, 
+                            title: t('delete_stage'), 
+                            message: t('confirm_delete_stage'), 
+                            confirmText: t('delete_stage'),
+                            isDanger: true, 
+                            onConfirm: () => { 
+                                const up = goals.filter(g => g.id !== goal.id); 
+                                setGoals(up); 
+                                onUpdateSettings(up, gridSize); 
+                                setModalConfig(prev => ({ ...prev, isOpen: false })); 
+                            } 
+                        })} 
+                        isEditing={editingId === goal.id} 
+                    />
+                ))}
             </div>
 
             <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-200 dark:border-white/10">

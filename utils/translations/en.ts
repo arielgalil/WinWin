@@ -127,6 +127,7 @@ tab_data: "Data Management",
     delete_message: "Delete Message",
     delete_log: "Delete Action",
     delete_user: "Delete User",
+    delete_stage: "Delete Stage",
 
     // Footer
     nav_home: "Home",
