@@ -8,7 +8,7 @@
     - Update `components/ui/ConfirmationModal.tsx`:
         - Add logic to render "Anti-Nudge" buttons when `isDanger` is true (both buttons share the same base styling).
         - Apply red border to container.
-- [ ] **Task: Update AdminRowActions with Separation Logic.**
+- [x] **Task: Update AdminRowActions with Separation Logic.** (d366896)
     - Write tests in `components/ui/__tests__/AdminRowActions.test.tsx` verifying the gap logic.
     - Update `components/ui/AdminRowActions.tsx` to add `mr-auto` (or explicit margin) to the delete button to push it away from others in RTL.
 - [ ] **Task: Add Specific Delete Translations.**
