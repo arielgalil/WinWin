@@ -8,6 +8,7 @@ import { FormattedNumber } from '../ui/FormattedNumber';
 import { Logo } from '../ui/Logo';
 import { useLanguage } from '../../hooks/useLanguage';
 import { parseFormattedText } from '../../utils/whatsappUtils';
+import { replaceSmartTags } from '../../utils/stringUtils';
 
 const MotionDiv = motion.div as any;
 
@@ -51,7 +52,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }, [commentary, customMessages, aiFillers]);
 
     const chunks = useMemo(() => {
-        const msg = playlist[currentIndex % playlist.length] || "...";
+        const rawMsg = playlist[currentIndex % playlist.length] || "...";
+        const msg = replaceSmartTags(
+            rawMsg, 
+            settings, 
+            totalInstitutionScore, 
+            sortedClasses, 
+            topStudents, 
+            currentIndex
+        );
+        
         if (msg.length <= maxChars) return [msg];
 
         const res: string[] = [];
@@ -67,7 +77,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             rem = rem.slice(idx).trim();
         }
         return res;
-    }, [playlist, currentIndex, maxChars]);
+    }, [playlist, currentIndex, maxChars, settings, totalInstitutionScore, sortedClasses, topStudents]);
 
     const [chunkIdx, setChunkIdx] = useState(0);
     useEffect(() => {
