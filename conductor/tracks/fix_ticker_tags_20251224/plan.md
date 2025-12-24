@@ -10,7 +10,7 @@ This plan outlines the steps to implement a robust smart tag replacement system 
 - [x] **Task: Conductor - User Manual Verification 'Data Flow & Infrastructure' (Protocol in workflow.md)**
 
 ## Phase 2: Tag Replacement Logic (TDD)
-- [ ] **Task: Write Tests for replaceSmartTags.**
+- [x] **Task: Write Tests for replaceSmartTags.** (b787fbc)
     -   Create `utils/__tests__/stringUtils.test.ts` (or update existing).
     -   Define test cases for all tags:
         -   Static: `[שם המוסד]`, `[שם המבצע]`, `[ניקוד מוסדי]`.
@@ -18,12 +18,12 @@ This plan outlines the steps to implement a robust smart tag replacement system 
         -   Groups: `[קבוצה ראשונה]`, `[קבוצה שניה]`, `[קבוצה שלישית]`.
         -   Students: `[מקום ראשון]`, `[מקום שני]`, `[מקום שלישי]`.
         -   Dynamic: `[מקום אקראי]`.
-- [ ] **Task: Implement replaceSmartTags Utility.**
+- [x] **Task: Implement replaceSmartTags Utility.** (b787fbc)
     -   Add `replaceSmartTags` to `utils/stringUtils.ts`.
     -   Implement logic to find the current active goal from `settings.goals_config`.
     -   Implement logic to pick the top 3 groups and students.
     -   Implement logic for `[מקום אקראי]` using an optional seed for stability during a single render cycle.
-- [ ] **Task: Conductor - User Manual Verification 'Tag Replacement Logic (TDD)' (Protocol in workflow.md)**
+- [~] **Task: Conductor - User Manual Verification 'Tag Replacement Logic (TDD)' (Protocol in workflow.md)**
 
 ## Phase 3: UI Integration & Refinement
 - [ ] **Task: Apply Tag Replacement in DashboardHeader.**
