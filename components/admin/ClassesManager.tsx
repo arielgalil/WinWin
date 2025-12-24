@@ -172,8 +172,9 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
     const handleDeleteStudent = async (id: string, studentName: string) => {
         openConfirmation({
-            title: t('delete_student_title'),
+            title: t('delete_student'),
             message: t('confirm_delete_student', { studentName }),
+            confirmText: t('delete_student'),
             isDanger: true,
             onConfirm: async () => {
                 closeConfirmation();
@@ -399,8 +400,9 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 onEdit={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); setIsAddingClass(true); }}
                                 onDelete={() => {
                                     openConfirmation({
-                                        title: t('confirm_deletion'),
+                                        title: t('delete_group'),
                                         message: t('confirm_delete_group_warning'),
+                                        confirmText: t('delete_group'),
                                         isDanger: true,
                                         onConfirm: () => handleDeleteClass(cls.id)
                                     });
