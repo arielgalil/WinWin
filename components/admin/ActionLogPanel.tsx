@@ -44,7 +44,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     const [actionStatus, setActionStatus] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     const [modalConfig, setModalConfig] = useState<{
-        isOpen: boolean; title: string; message: string; isDanger: boolean; onConfirm: () => void;
+        isOpen: boolean; title: string; message: string; confirmText?: string; isDanger: boolean; onConfirm: () => void;
     }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
 
     const bottomRef = useRef<HTMLTableRowElement>(null);
@@ -115,10 +115,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
     const handleToggleCancel = async (log: ActionLog) => {
         const actionVerb = log.is_cancelled ? t('restore') : t('cancel_short');
+        const actionTitle = log.is_cancelled ? t('restore_action') : t('delete_log');
+        
         setModalConfig({
             isOpen: true,
-            title: t('modify_action_title', { action: actionVerb }),
+            title: actionTitle,
             message: t('modify_action_confirm', { action: actionVerb.toLowerCase() }),
+            confirmText: actionTitle,
             isDanger: !log.is_cancelled,
             onConfirm: async () => {
                 setModalConfig(prev => ({ ...prev, isOpen: false }));
@@ -166,7 +169,15 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
     return (
         <div className="max-w-6xl mx-auto space-y-8 flex flex-col pb-12 h-full relative" dir={isRTL ? 'rtl' : 'ltr'}>
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
+            <ConfirmationModal 
+                isOpen={modalConfig.isOpen} 
+                title={modalConfig.title} 
+                message={modalConfig.message} 
+                confirmText={modalConfig.confirmText}
+                isDanger={modalConfig.isDanger}
+                onConfirm={modalConfig.onConfirm} 
+                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} 
+            />
 
             <AnimatePresence>
                 {actionStatus && (
