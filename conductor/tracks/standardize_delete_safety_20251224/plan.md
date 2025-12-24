@@ -28,12 +28,12 @@
     - Update `components/admin/ActionLogPanel.tsx`.
 - [x] **Task: Conductor - User Manual Verification 'Table Safety Integration' (Protocol in workflow.md)**
 
-## Phase 3: Action Card Safety Integration
+## Phase 3: Action Card Safety Integration [checkpoint: d2156e8]
 - [x] **Task: Standardize MessagesManager Deletion.** (d2156e8)
     - Update `components/admin/MessagesManager.tsx`:
         - Ensure it uses `AdminRowActions` with correct spacing.
         - Configure modal with `confirmText={t('delete_message')}` and `isDanger={true}`.
-- [ ] **Task: Conductor - User Manual Verification 'Action Card Safety Integration' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Action Card Safety Integration' (Protocol in workflow.md)**
 
 ## Phase 4: Final UI Audit
 - [ ] **Task: Global destructive action audit.**
