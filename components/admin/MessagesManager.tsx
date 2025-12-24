@@ -210,7 +210,18 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
 
                                         <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'border-r pr-4' : 'border-l pl-4'} border-gray-100 dark:border-white/5`}>
                                             <AdminRowActions
-                                                onDelete={() => onDelete(msg.id)}
+                                                onDelete={() => {
+                                                    openConfirmation({
+                                                        title: t('delete_message'),
+                                                        message: t('confirm_deletion'),
+                                                        confirmText: t('delete_message'),
+                                                        isDanger: true,
+                                                        onConfirm: () => {
+                                                            onDelete(msg.id);
+                                                            closeConfirmation();
+                                                        }
+                                                    });
+                                                }}
                                                 onEdit={() => { setEditingId(msg.id); setEditText(msg.text); }}
                                                 onSecondary={() => onAdd(msg.text)}
                                                 secondaryIcon={<LayersIcon className="w-4 h-4" />}
