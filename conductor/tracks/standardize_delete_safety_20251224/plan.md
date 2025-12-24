@@ -1,6 +1,6 @@
 # Track Plan: Standardize Delete Actions and Safety UI
 
-## Phase 1: Shared Component Enhancements (TDD)
+## Phase 1: Shared Component Enhancements (TDD) [checkpoint: e72e02e]
 - [x] **Task: Update ConfirmationModal for Danger Mode & Anti-Nudge.** (d6ca932)
     - Write tests in `components/ui/__tests__/ConfirmationModal.test.tsx`:
         - Verify red border appears when `isDanger` is true.
@@ -13,7 +13,7 @@
     - Update `components/ui/AdminRowActions.tsx` to add `mr-auto` (or explicit margin) to the delete button to push it away from others in RTL.
 - [x] **Task: Add Specific Delete Translations.** (7e3ba68)
     - Update `utils/translations` with specific keys: `delete_student`, `delete_group`, `delete_message`, `delete_log`.
-- [ ] **Task: Conductor - User Manual Verification 'Shared Component Enhancements' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Shared Component Enhancements' (Protocol in workflow.md)**
 
 ## Phase 2: Table Safety Integration
 - [ ] **Task: Standardize UsersManager Deletion.**
