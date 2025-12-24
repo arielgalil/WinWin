@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { TickerMessage } from '../../types';
 import { PlusIcon, EditIcon, LayersIcon, CheckIcon, XIcon } from '../ui/Icons';
-import { DeleteButton } from '../ui/DeleteButton';
+import { AdminRowActions } from '../ui/AdminRowActions';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -42,17 +42,17 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
         { label: t('placeholder_institution_name'), value: '[שם המוסד]' },
         { label: t('placeholder_campaign_name'), value: '[שם המבצע]' },
         { label: t('placeholder_institution_score'), value: '[ניקוד מוסדי]' },
-        { label: 'שם היעד', value: '[שם היעד]' },
-        { label: 'ניקוד היעד', value: '[ניקוד היעד]' },
-        { label: 'מרחק מהיעד', value: '[מרחק מהיעד]' },
-        { label: 'קבוצה 1', value: '[קבוצה ראשונה]' },
-        { label: 'קבוצה 2', value: '[קבוצה שניה]' },
-        { label: 'קבוצה 3', value: '[קבוצה שלישית]' },
-        { label: 'מקום 1', value: '[מקום ראשון]' },
-        { label: 'מקום 2', value: '[מקום שני]' },
-        { label: 'מקום 3', value: '[מקום שלישי]' },
-        { label: 'משתתף אקראי', value: '[משתתף אקראי]' },
-        { label: 'קבוצה אקראית', value: '[קבוצה אקראית]' },
+        { label: t('placeholder_target_name'), value: '[שם היעד]' },
+        { label: t('placeholder_target_score'), value: '[ניקוד היעד]' },
+        { label: t('placeholder_distance_from_target'), value: '[מרחק מהיעד]' },
+        { label: t('placeholder_group_1'), value: '[קבוצה ראשונה]' },
+        { label: t('placeholder_group_2'), value: '[קבוצה שניה]' },
+        { label: t('placeholder_group_3'), value: '[קבוצה שלישית]' },
+        { label: t('placeholder_place_1'), value: '[מקום ראשון]' },
+        { label: t('placeholder_place_2'), value: '[מקום שני]' },
+        { label: t('placeholder_place_3'), value: '[מקום שלישי]' },
+        { label: t('placeholder_random_participant'), value: '[משתתף אקראי]' },
+        { label: t('placeholder_random_group'), value: '[קבוצה אקראית]' },
     ];
 
     const insertPlaceholder = (ph: string) => {
@@ -141,7 +141,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                             </div>
 
                             <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-[var(--radius-main)] shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95">
-                                <PlusIcon className="w-4 h-4" /> {t('add_new_button') || '+ הוספת הודעה חדשה'}
+                                <PlusIcon className="w-4 h-4" /> {t('add_new_message')}
                             </button>
                         </form>
                     </div>
@@ -209,29 +209,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                         </div>
 
                                         <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'border-r pr-4' : 'border-l pl-4'} border-gray-100 dark:border-white/5`}>
-                                            <DeleteButton
-                                                onClick={() => onDelete(msg.id)}
-                                                className="!h-10 !min-w-[44px] !bg-white dark:!bg-white/5"
+                                            <AdminRowActions
+                                                onDelete={() => onDelete(msg.id)}
+                                                onEdit={() => { setEditingId(msg.id); setEditText(msg.text); }}
+                                                onSecondary={() => onAdd(msg.text)}
+                                                secondaryIcon={<LayersIcon className="w-4 h-4" />}
+                                                secondaryTitle={t('duplicate_message')}
+                                                editTitle={t('edit_message')}
                                             />
-
-                                            <div className="w-px h-4 bg-gray-200 dark:bg-white/10 mx-1" />
-
-                                            <div className="flex items-center gap-1.5">
-                                                <button
-                                                    onClick={() => onAdd(msg.text)}
-                                                    title={t('duplicate_message')}
-                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-gray-400 hover:text-indigo-500 rounded-[var(--radius-main)] transition-all border border-gray-200 dark:border-white/10"
-                                                >
-                                                    <LayersIcon className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => { setEditingId(msg.id); setEditText(msg.text); }}
-                                                    title={t('edit_message')}
-                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-green-50 dark:hover:bg-green-500/10 text-gray-400 hover:text-green-500 rounded-[var(--radius-main)] transition-all border border-gray-200 dark:border-white/10"
-                                                >
-                                                    <EditIcon className="w-4 h-4" />
-                                                </button>
-                                            </div>
                                         </div>
                                     </MotionDiv>
                                 ))
