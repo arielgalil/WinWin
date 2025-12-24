@@ -42,7 +42,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            return document.documentElement.classList.contains('dark-mode') ||
+            return document.documentElement.classList.contains('dark') ||
                 (!document.documentElement.classList.contains('light-mode') &&
                     window.matchMedia('(prefers-color-scheme: dark)').matches);
         }
@@ -58,10 +58,10 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
 
     useEffect(() => {
         if (isDarkMode) {
-            document.documentElement.classList.add('dark-mode');
+            document.documentElement.classList.add('dark');
             document.documentElement.classList.remove('light-mode');
         } else {
-            document.documentElement.classList.remove('dark-mode');
+            document.documentElement.classList.remove('dark');
             document.documentElement.classList.add('light-mode');
         }
     }, [isDarkMode]);

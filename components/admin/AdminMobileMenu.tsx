@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { UserProfile } from '../../types';
-import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon } from '../ui/Icons';
+import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIcon, MoonIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useCompetitionData } from '../../hooks/useCompetitionData';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const MotionDiv = motion.div as any;
 
@@ -41,10 +42,12 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   isFrozen,
   onToggleFreeze
 }) => {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const { campaignRole: hookRole } = useCompetitionData();
   const campaignRole = propRole || hookRole;
   const isAnySuperUser = isSuperUser(user.role) || isSuperUser(campaignRole);
+  const isRTL = dir === 'rtl';
 
   const getRoleLabel = () => {
     if (isAnySuperUser) return t('role_super_user');
@@ -132,7 +135,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   
                                   <div className="h-px bg-gray-200 dark:bg-white/10 my-8" />
   
-                                  <div className={`grid ${onToggleFreeze ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}>
+                                  <div className={`grid ${onToggleFreeze ? 'grid-cols-2' : 'grid-cols-1'} gap-4 mb-4`}>
                                       <button
                                           onClick={() => { onViewDashboard(); setIsOpen(false); }}
                                           className="flex flex-col items-center justify-center p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 active:bg-amber-100 dark:active:bg-amber-500/20 gap-2 shadow-sm transition-all"
@@ -152,6 +155,16 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                               <span className="text-xs font-bold">{isFrozen ? t('unfreeze_board') : t('freeze_board')}</span>
                                           </button>
                                       )}
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-4">
+                                      <button
+                                          onClick={() => { toggleTheme(); setIsOpen(false); }}
+                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-500/10 border border-slate-200 dark:border-slate-500/20 text-slate-600 dark:text-slate-400 gap-2 shadow-sm transition-all"
+                                      >
+                                          {theme === 'dark' ? <SunIcon className="w-6 h-6 text-amber-500" /> : <MoonIcon className="w-6 h-6 text-indigo-500" />}
+                                          <span className="text-xs font-bold">{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
+                                      </button>
                                       <button
                                           onClick={() => { onManualRefresh(); setIsOpen(false); }}
                                           className="flex flex-col items-center justify-center p-4 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400 active:bg-cyan-100 dark:active:bg-cyan-500/20 gap-2 shadow-sm transition-all"

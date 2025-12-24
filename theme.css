@@ -73,7 +73,7 @@
   --shadow-elevated: var(--shadow-lg);
 }
 
-.dark-mode {
+.dark {
   /* Facebook-Inspired Dark Mode */
   --bg-page: var(--fb-bg-dark);
   --bg-surface: var(--fb-surface-dark);
@@ -259,7 +259,7 @@ body {
   width: 100%;
 }
 
-.dark-mode .admin-input {
+.dark .admin-input {
   box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
 }
 

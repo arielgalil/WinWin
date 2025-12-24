@@ -19,8 +19,8 @@ const [theme, setThemeState] = useState<Theme>(() => {
 
     useEffect(() => {
         const root = window.document.documentElement;
-        root.classList.remove('light-mode', 'dark-mode');
-        root.classList.add(`${theme}-mode`);
+        root.classList.remove('light', 'dark', 'light-mode', 'dark-mode');
+        root.classList.add(theme);
         localStorage.setItem('app-theme', theme);
     }, [theme]);
 
