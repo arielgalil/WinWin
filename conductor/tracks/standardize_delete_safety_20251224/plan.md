@@ -38,4 +38,8 @@
 ## Phase 4: Final UI Audit [checkpoint: 2120732]
 - [x] **Task: Global destructive action audit.** (e2c59bd)
     - Manual pass to ensure "Anti-Nudge" design is effectively implemented and buttons look equal.
+- [x] **Task: Fix visual issues (Refinement).** (77a623c)
+    - Fix missing red border by using !important/shadow.
+    - Fix gap by using ml-6.
+    - Fix logic in parent components to pass `isDanger`.
 - [x] **Task: Conductor - User Manual Verification 'Final UI Audit' (Protocol in workflow.md)**
