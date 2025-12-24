@@ -38,7 +38,12 @@ export const AdminRowActions: React.FC<AdminRowActionsProps> = ({
       */}
       
       {onDelete && (
-        <AdminActionButton onClick={(e) => { e.stopPropagation(); onDelete(); }} variant="delete" title={deleteTitle}>
+        <AdminActionButton 
+          onClick={(e) => { e.stopPropagation(); onDelete(); }} 
+          variant="delete" 
+          title={deleteTitle}
+          className="mr-6"
+        >
           <TrashIcon className="w-4 h-4" />
         </AdminActionButton>
       )}

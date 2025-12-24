@@ -39,6 +39,20 @@ describe('AdminRowActions', () => {
     expect(buttons[2].className).toContain('bg-green-50');
   });
 
+  it('applies a gap between the delete button and other actions', () => {
+    const { container } = render(
+      <AdminRowActions 
+        onEdit={onEdit} 
+        onDelete={onDelete} 
+      />
+    );
+    const buttons = container.querySelectorAll('button');
+    const deleteBtn = buttons[0];
+    
+    // We expect a class that creates separation, e.g., mr-auto to push others away in RTL flex
+    expect(deleteBtn.className).toContain('mr-6');
+  });
+
   it('renders only provided actions', () => {
     const { container } = render(
       <AdminRowActions onEdit={onEdit} />
