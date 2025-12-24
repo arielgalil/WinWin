@@ -8,10 +8,10 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Refactor ConfirmModal.** Write tests and implement focus trapping and standard RTL button ordering for `ConfirmationModal`. (917fea0)
 - [x] **Task: Conductor - User Manual Verification 'Infrastructure & Shared Components' (Protocol in workflow.md)**
 
-## Phase 2: Responsive Data Grids
+## Phase 2: Responsive Data Grids [checkpoint: 99f8ee8]
 - [x] **Task: Create Shared AdminTable Component.** Write tests and implement a responsive table that switches to "Card" layout on mobile. (02845d2)
 - [x] **Task: Standardize Table Action Column.** Implement the RTL button layout: [Right] Delete -> [Middle] Secondary -> [Left] Edit. (4b97018)
-- [~] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Responsive Data Grids' (Protocol in workflow.md)**
 
 ## Phase 3: Area-by-Area Unification
 - [ ] **Task: Fix Theme Toggle.** Write tests and fix the light/dark mode toggle button in the Admin Panel.
