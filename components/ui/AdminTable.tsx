@@ -44,7 +44,7 @@ export const AdminTable = <T extends Record<string, any>>({
   return (
     <div className="w-full">
       {/* Desktop Table View (Hidden on mobile) */}
-      <div className="hidden md:block bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+      <div className="hidden md:block bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] uppercase font-bold tracking-widest text-right">
@@ -94,7 +94,7 @@ export const AdminTable = <T extends Record<string, any>>({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               layout
-              className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm"
+              className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 p-4 shadow-sm"
               onClick={() => onRowClick?.(item)}
               role="article" // For accessibility and testing
             >

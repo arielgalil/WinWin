@@ -127,7 +127,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     return (
         <div className="max-w-6xl mx-auto space-y-8 pb-12" dir={isRTL ? 'rtl' : 'ltr'}>
             {/* API Configuration Card */}
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 dark:border-white/5 pb-6 gap-6">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20">
@@ -140,7 +140,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                     </div>
                     <div className="flex items-center gap-3">
                         {testResult && (
-                            <div className={`text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-2 animate-in fade-in ${testResult.success ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400'}`}>
+                            <div className={`text-xs px-3 py-1.5 rounded-[var(--radius-main)] font-bold flex items-center gap-2 animate-in fade-in ${testResult.success ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400'}`}>
                                 {testResult.success ? <CheckIcon className="w-4 h-4" /> : <AlertIcon className="w-4 h-4" />}
                                 {testResult.message}
                             </div>
@@ -148,7 +148,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <button
                             onClick={handleTestConnection}
                             disabled={isTesting}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold rounded-lg border border-blue-100 dark:border-blue-500/20 transition-all text-sm disabled:opacity-50 active:scale-95"
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold rounded-[var(--radius-main)] border border-blue-100 dark:border-blue-500/20 transition-all text-sm disabled:opacity-50 active:scale-95"
                         >
                             <RefreshIcon className={`w-4 h-4 ${isTesting ? 'animate-spin' : ''}`} />
                             <span>{t('ai_test_connection_button')}</span>
@@ -156,7 +156,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
-                            className="flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 text-sm disabled:opacity-30 active:scale-95"
+                            className="flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-sm disabled:opacity-30 active:scale-95"
                         >
                             {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
                             <span>{t('save')}</span>
@@ -173,7 +173,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                                 value={geminiApiKey}
                                 onChange={e => setGeminiApiKey(e.target.value)}
                                 placeholder={t('ai_api_key_placeholder')}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12"
                             />
                             <KeyIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                         </div>
@@ -182,7 +182,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl border border-pink-100 dark:border-pink-500/20">
                         <SparklesIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
@@ -199,7 +199,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <textarea
                             value={DEFAULT_PROMPT}
                             disabled
-                            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-xs leading-relaxed resize-none font-medium h-64 text-gray-400 dark:text-gray-500"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-xs leading-relaxed resize-none font-medium h-64 text-gray-400 dark:text-gray-500"
                         />
                     </div>
                     <div className="space-y-3">
@@ -208,13 +208,13 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             value={customPrompt}
                             onChange={e => setCustomPrompt(e.target.value)}
                             placeholder={t('ai_custom_prompt_placeholder')}
-                            className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm"
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
                         <ListIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -231,9 +231,9 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             value={newKeyword}
                             onChange={e => setNewKeyword(e.target.value)}
                             placeholder={t('ai_keywords_placeholder')}
-                            className="flex-1 px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm"
+                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm"
                         />
-                        <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 active:scale-95">
+                        <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95">
                             <PlusIcon className="w-5 h-5" />
                         </button>
                     </form>
@@ -279,7 +279,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                                 <button
                                     onClick={handleSave}
                                     disabled={isSaving}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20 active:scale-95 disabled:opacity-50"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-[var(--radius-main)] flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20 active:scale-95 disabled:opacity-50"
                                 >
                                     {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
                                     {isSaving ? t('saving') : t('save')}

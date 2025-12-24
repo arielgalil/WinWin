@@ -56,7 +56,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   return (
     <div className="max-w-6xl mx-auto h-full flex flex-col gap-6">
       {/* Search and Filter Bar */}
-      <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6">
+      <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1">
             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('group_label')}</label>
@@ -64,7 +64,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
               <select
                 value={selectedClassId || ''}
                 onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm appearance-none font-medium"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm appearance-none font-medium"
               >
                 {!selectedClassId && <option value="">{t('select_group_placeholder')}</option>}
                 {teacherClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -80,7 +80,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder={t('search_student_placeholder')}
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-medium rtl:pr-11 ltr:pl-11"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-medium rtl:pr-11 ltr:pl-11"
               />
               <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-[38px] w-5 h-5 text-gray-400" />
             </div>
@@ -89,7 +89,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
       </div>
 
       {/* Grid Area */}
-      <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-6 flex-1 min-h-[400px] overflow-y-auto custom-scrollbar">
+      <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-6 flex-1 min-h-[400px] overflow-y-auto custom-scrollbar">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {!searchTerm && currentClass && (
             <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />

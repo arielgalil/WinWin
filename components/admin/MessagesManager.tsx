@@ -97,8 +97,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     };
 
     return (
-        <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-            <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
+                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">            <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
                 </h3>
@@ -107,7 +106,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 shadow-sm">
                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">{t('add_message_card')}</label>
                         <form onSubmit={handleAdd} className="space-y-4">
                             <div className="relative">
@@ -116,14 +115,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                     onChange={e => setNewMessage(e.target.value)}
                                     maxLength={150}
                                     placeholder={t('write_encouraging_msg')}
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none"
+                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none"
                                 />
                                 <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[9px] font-bold ${newMessage.length >= 140 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500 opacity-80'}`}>
                                     {newMessage.length}/150
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-x-1.5 gap-y-2 bg-indigo-50 dark:bg-indigo-500/10 p-2 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                            <div className="flex flex-wrap gap-x-1.5 gap-y-2 bg-indigo-50 dark:bg-indigo-500/10 p-2 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
                                 {placeholders.map(ph => (
                                     <button
                                         key={ph.value}
@@ -136,7 +135,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                 ))}
                             </div>
 
-                            <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95">
+                            <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-[var(--radius-main)] shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95">
                                 <PlusIcon className="w-4 h-4" /> {t('add_new_button')}
                             </button>
                         </form>
@@ -148,7 +147,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                         <span>{t('active_messages_list', { count: messages.length })}</span>
                     </h4>
 
-                    <div className="bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
+                    <div className="bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
                         <AnimatePresence initial={false}>
                             {messages.length === 0 ? (
                                 <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm italic">
@@ -162,7 +161,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                         initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className={`group p-4 rounded-xl border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/40' : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-500/30'}`}
+                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/40' : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-500/30'}`}
                                     >
                                         {/* Message Text Area */}
                                         <div className="flex-1 min-w-0">
@@ -173,7 +172,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                             value={editText}
                                                             onChange={e => setEditText(e.target.value)}
                                                             maxLength={150}
-                                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none"
+                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none"
                                                             autoFocus
                                                         />
                                                         <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[9px] font-bold ${editText.length >= 140 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -181,10 +180,10 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-1 shrink-0">
-                                                        <button onClick={saveEdit} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20 rounded-lg transition-all active:scale-95 shadow-sm hover:bg-green-100 dark:hover:bg-green-500/20">
+                                                        <button onClick={saveEdit} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-green-100 dark:hover:bg-green-500/20">
                                                             <CheckIcon className="w-4 h-4" />
                                                         </button>
-                                                        <button onClick={() => setEditingId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded-lg transition-all active:scale-95 shadow-sm hover:bg-gray-200 dark:hover:bg-white/10">
+                                                        <button onClick={() => setEditingId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-gray-200 dark:hover:bg-white/10">
                                                             <XIcon className="w-4 h-4" />
                                                         </button>
                                                     </div>
@@ -216,14 +215,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                 <button
                                                     onClick={() => onAdd(msg.text)}
                                                     title={t('duplicate_message')}
-                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-gray-400 hover:text-indigo-500 rounded-lg transition-all border border-gray-200 dark:border-white/10"
+                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-gray-400 hover:text-indigo-500 rounded-[var(--radius-main)] transition-all border border-gray-200 dark:border-white/10"
                                                 >
                                                     <LayersIcon className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => { setEditingId(msg.id); setEditText(msg.text); }}
                                                     title={t('edit_message')}
-                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-green-50 dark:hover:bg-green-500/10 text-gray-400 hover:text-green-500 rounded-lg transition-all border border-gray-200 dark:border-white/10"
+                                                    className="p-2 bg-white dark:bg-white/5 hover:bg-green-50 dark:hover:bg-green-500/10 text-gray-400 hover:text-green-500 rounded-[var(--radius-main)] transition-all border border-gray-200 dark:border-white/10"
                                                 >
                                                     <EditIcon className="w-4 h-4" />
                                                 </button>

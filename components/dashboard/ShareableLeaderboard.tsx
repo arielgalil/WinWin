@@ -153,7 +153,7 @@ export const ShareableLeaderboard: React.FC<ShareableLeaderboardProps> = ({
                                     </div>
 
                                     {/* The Bar */}
-                                    <div className={`w-full rounded-t-2xl flex flex-col items-center justify-end relative backdrop-blur-sm ${barStyle}`} style={{ height }}>
+                                    <div className={`w-full rounded-t-[var(--radius-main)] rounded-b-none flex flex-col items-center justify-end relative backdrop-blur-sm ${barStyle}`} style={{ height }}>
                                         {rankBadge}
                                     </div>
                                 </div>

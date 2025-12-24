@@ -81,7 +81,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                   <div className="flex items-center gap-3">
                       <button
                           onClick={() => setIsOpen(!isOpen)}
-                          className="p-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 rounded-lg active:scale-95 transition-transform hover:bg-gray-200 dark:hover:bg-white/10"
+                          className="p-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 rounded-[var(--radius-main)] active:scale-95 transition-transform hover:bg-gray-200 dark:hover:bg-white/10"
                       >
                           {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                       </button>
@@ -122,7 +122,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                       <button
                                           key={item.id}
                                           onClick={() => handleLinkClick(item.id)}
-                                          className={`w-full text-right py-3 px-5 rounded-lg flex items-center gap-4 transition-all active:scale-[0.98] border border-transparent
+                                          className={`w-full text-right py-3 px-5 rounded-[var(--radius-main)] flex items-center gap-4 transition-all active:scale-[0.98] border border-transparent
                                               ${activeTab === item.id
                                                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm'
                                                   : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 font-medium'
@@ -138,7 +138,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                   <div className={`grid ${onToggleFreeze ? 'grid-cols-2' : 'grid-cols-1'} gap-4 mb-4`}>
                                       <button
                                           onClick={() => { onViewDashboard(); setIsOpen(false); }}
-                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 active:bg-amber-100 dark:active:bg-amber-500/20 gap-2 shadow-sm transition-all"
+                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 active:bg-amber-100 dark:active:bg-amber-500/20 gap-2 shadow-sm transition-all"
                                       >
                                           <TrophyIcon className="w-6 h-6" />
                                           <span className="text-xs font-bold">{t('view_leaderboard')}</span>
@@ -146,7 +146,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                       {onToggleFreeze && (
                                           <button
                                               onClick={() => { onToggleFreeze(!isFrozen); setIsOpen(false); }}
-                                              className={`flex flex-col items-center justify-center p-4 rounded-xl border gap-2 shadow-sm transition-all ${isFrozen
+                                              className={`flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] border gap-2 shadow-sm transition-all ${isFrozen
                                                   ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-600 dark:text-green-400 active:bg-green-100 dark:active:bg-green-500/20'
                                                   : 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 active:bg-red-100 dark:active:bg-red-500/20'
                                                   }`}
@@ -160,14 +160,14 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                   <div className="grid grid-cols-2 gap-4">
                                       <button
                                           onClick={() => { toggleTheme(); setIsOpen(false); }}
-                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-500/10 border border-slate-200 dark:border-slate-500/20 text-slate-600 dark:text-slate-400 gap-2 shadow-sm transition-all"
+                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-slate-50 dark:bg-slate-500/10 border border-slate-200 dark:border-slate-500/20 text-slate-600 dark:text-slate-400 gap-2 shadow-sm transition-all"
                                       >
                                           {theme === 'dark' ? <SunIcon className="w-6 h-6 text-amber-500" /> : <MoonIcon className="w-6 h-6 text-indigo-500" />}
                                           <span className="text-xs font-bold">{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
                                       </button>
                                       <button
                                           onClick={() => { onManualRefresh(); setIsOpen(false); }}
-                                          className="flex flex-col items-center justify-center p-4 rounded-xl bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400 active:bg-cyan-100 dark:active:bg-cyan-500/20 gap-2 shadow-sm transition-all"
+                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400 active:bg-cyan-100 dark:active:bg-cyan-500/20 gap-2 shadow-sm transition-all"
                                       >
                                           <RefreshIcon className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
                                           <span className="text-xs font-bold">{t('refresh')}</span>
@@ -176,7 +176,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   
                                   <button
                                       onClick={onLogout}
-                                      className="w-full mt-8 py-4 rounded-lg flex items-center justify-center gap-4 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 font-bold text-lg shadow-sm transition-all active:scale-95 hover:bg-red-100 dark:hover:bg-red-500/20"
+                                      className="w-full mt-8 py-4 rounded-[var(--radius-main)] flex items-center justify-center gap-4 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 font-bold text-lg shadow-sm transition-all active:scale-95 hover:bg-red-100 dark:hover:bg-red-500/20"
                                   >
                                       <LogoutIcon className="w-6 h-6" />
                                       <span>{t('logout')}</span>

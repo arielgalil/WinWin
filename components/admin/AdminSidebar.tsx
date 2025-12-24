@@ -58,7 +58,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 onClick={() => onTabChange(item.id)}
                 onMouseEnter={() => onTabHover?.(item.id)}
                 aria-current={activeTab === item.id ? 'page' : undefined}
-                className={`w-full text-right py-2.5 px-3 rounded-lg flex items-center gap-3 transition-all duration-200 group relative ${activeTab === item.id
+                className={`w-full text-right py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative ${activeTab === item.id
                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold'
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 font-medium'
                   }`}
@@ -80,7 +80,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10 space-y-1">
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
         >
           {theme === 'dark' ? <SunIcon className="w-5 h-5 text-amber-500" /> : <MoonIcon className="w-5 h-5 text-indigo-500" />}
           <span>{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
@@ -88,7 +88,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         <button
           onClick={onViewDashboard}
-          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-600 dark:text-gray-400 font-medium text-sm"
         >
           <TrophyIcon className="w-5 h-5 text-amber-500" />
           <span>{t('view_leaderboard')}</span>
@@ -96,7 +96,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-red-500 font-medium text-sm"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-red-500 font-medium text-sm"
         >
           <LogoutIcon className="w-5 h-5" />
           <span>{t('logout')}</span>

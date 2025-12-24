@@ -175,10 +175,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <form onSubmit={handleSaveSettings} className="space-y-8">
-                {/* 1. Details & Logo */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] text-indigo-600 dark:text-indigo-400">
                             <StarIcon className="w-6 h-6" />
                         </div>
                         <div>
@@ -193,7 +192,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <input 
                                 value={formData.school_name || ''} 
                                 onChange={e => updateForm({ school_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
                                 placeholder="Enter school name" 
                             />
                         </div>
@@ -202,7 +201,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <input 
                                 value={formData.competition_name || ''} 
                                 onChange={e => updateForm({ competition_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
                                 placeholder="Enter competition name" 
                             />
                         </div>
@@ -213,7 +212,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'he' })}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language !== 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
                                         {formData.language !== 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
@@ -223,7 +222,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'en' })}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg border transition-all ${formData.language === 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language === 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language === 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
                                         {formData.language === 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
@@ -237,7 +236,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('logo_upload')}</label>
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
-                                    <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 rounded-xl p-2 border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                    <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] p-2 border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
                                         <img src={formData.logo_url} alt="Preview" className="max-w-full max-h-full object-contain" />
                                     </div>
                                 )}
@@ -245,11 +244,11 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.logo_url || ''}
                                         onChange={e => updateForm({ logo_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono"
                                         placeholder="https://image-url.com/logo.png"
                                     />
                                     <div className="flex gap-3">
-                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm">
+                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm">
                                             {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                                             {isUploading ? t('saving') : 'Upload File'}
                                             <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
@@ -263,9 +262,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
 
                 {/* 2. Music & Atmosphere */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400">
+                        <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-[var(--radius-main)] text-purple-600 dark:text-purple-400">
                             <MusicIcon className="w-6 h-6" />
                         </div>
                         <div>
@@ -282,13 +281,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.background_music_url || ''}
                                         onChange={e => updateForm({ background_music_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm ltr:text-left"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm ltr:text-left"
                                         placeholder="https://www.youtube.com/watch?v=..."
                                     />
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                                     <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('playback_mode')}</span>
-                                    <div className="flex bg-gray-200 dark:bg-white/10 p-1 rounded-lg">
+                                    <div className="flex bg-gray-200 dark:bg-white/10 p-1 rounded-[var(--radius-main)]">
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'loop' })}
@@ -313,7 +312,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('initial_volume')}</label>
                                         <span className="text-xs font-bold text-indigo-600">{formData.background_music_volume || 50}%</span>
                                     </div>
-                                    <div className="flex items-center gap-4 group bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                    <div className="flex items-center gap-4 group bg-gray-50 dark:bg-black/20 p-4 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                                         <Volume2Icon className="w-5 h-5 text-gray-400" />
                                         <input
                                             type="range"
@@ -325,7 +324,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         />
                                     </div>
                                 </div>
-                                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl">
+                                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-[var(--radius-main)]">
                                     <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
                                         💡 <strong>Tip:</strong> Choose upbeat music to increase competition energy!
                                     </p>
@@ -336,9 +335,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
 
                 {/* 3. Visual Design */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl text-pink-600 dark:text-pink-400">
+                        <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-[var(--radius-main)] text-pink-600 dark:text-pink-400">
                             <SparklesIcon className="w-6 h-6" />
                         </div>
                         <div>
@@ -349,19 +348,19 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-6">
-                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 space-y-4">
+                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 space-y-4">
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Brand Palette</h4>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">{t('primary_color')}</label>
-                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.primary_color || '#1877F2'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.primary_color}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">{t('secondary_color')}</label>
-                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.secondary_color || '#050505'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.secondary_color}</span>
                                         </div>
@@ -374,7 +373,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('lighting_effect')}</label>
                                     <span className="text-xs font-bold text-indigo-600">{formData.background_brightness || 50}%</span>
                                 </div>
-                                <div className="flex items-center gap-4 bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                <div className="flex items-center gap-4 bg-gray-50 dark:bg-black/20 p-4 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                                     <MoonIcon className="w-4 h-4 text-gray-400" />
                                     <input
                                         type="range"
@@ -390,26 +389,26 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         </div>
 
                         <div className="space-y-6">
-                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 space-y-4">
+                            <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 space-y-4">
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Typography Colors</h4>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">Title 1</label>
-                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.header_text_color_1}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase text-gray-500">Title 2</label>
-                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-lg border border-gray-200 dark:border-white/10 shadow-sm">
+                                        <div className="flex items-center gap-3 bg-white dark:bg-white/5 p-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 shadow-sm">
                                             <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[10px] font-mono font-bold uppercase text-gray-600 dark:text-gray-300">{formData.header_text_color_2}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-100 dark:border-pink-500/20 rounded-xl">
+                            <div className="p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-100 dark:border-pink-500/20 rounded-[var(--radius-main)]">
                                 <p className="text-xs text-pink-600 dark:text-pink-400 font-medium leading-relaxed italic">
                                     Contrast test: Ensure text remains readable against your chosen background colors.
                                 </p>
@@ -420,9 +419,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
 
                 {/* 4. Scoring Settings */}
-                <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+                <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-xl text-orange-600 dark:text-orange-400">
+                        <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-[var(--radius-main)] text-orange-600 dark:text-orange-400">
                             <StarIcon className="w-6 h-6" />
                         </div>
                         <div>
@@ -438,7 +437,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 type="text"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
                         <div className="space-y-1">
@@ -447,7 +446,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 type="text"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
                         <div className="space-y-1">
@@ -456,7 +455,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 type="text"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
                             />
                         </div>
                     </div>
@@ -465,7 +464,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
                         <div className="flex flex-wrap gap-3">
                             {(formData.score_presets || []).map((preset, idx) => (
-                                <div key={idx} className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm hover:border-indigo-500 transition-colors group">
+                                <div key={idx} className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] px-4 py-2 flex items-center gap-3 shadow-sm hover:border-indigo-500 transition-colors group">
                                     <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{preset.label}</span>
                                     <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
                                         <FormattedNumber value={preset.value} forceSign={true} />
@@ -480,10 +479,10 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
                     <div className="space-y-4 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
                         <h4 className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
-                        <div className="flex flex-col sm:flex-row gap-4 p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5">
+                        <div className="flex flex-col sm:flex-row gap-4 p-6 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                             <div className="flex-1 space-y-1">
                                 <label className="text-[10px] font-bold uppercase text-gray-400">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm" placeholder="e.g. Bonus" />
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm" placeholder="e.g. Bonus" />
                             </div>
                             <div className="sm:w-32 space-y-1">
                                 <label className="text-[10px] font-bold uppercase text-gray-400 text-center block">{t('points')}</label>
@@ -491,12 +490,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     type="text"
                                     value={formatNumberWithCommas(newPresetValue || '')}
                                     onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center"
                                     placeholder="10"
                                 />
                             </div>
                             <div className="sm:pt-5 pt-2 flex items-end">
-                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center">
+                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center">
                                     <PlusIcon className="w-4 h-4" />
                                     {t('add')}
                                 </button>
@@ -514,20 +513,20 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: 20, opacity: 0 }}
-                            className="bg-white dark:bg-[#25262b] text-gray-900 dark:text-white p-3 rounded-xl shadow-2xl flex items-center justify-between gap-4 border border-gray-200 dark:border-gray-700"
+                            className="bg-white dark:bg-[#25262b] text-gray-900 dark:text-white p-3 rounded-[var(--radius-main)] shadow-2xl flex items-center justify-between gap-4 border border-gray-200 dark:border-gray-700"
                         >
                             <span className="text-sm font-bold pl-2">{t('unsaved_changes')}</span>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setFormData(settings)}
-                                    className="px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-600 dark:text-gray-300"
+                                    className="px-4 py-2 rounded-[var(--radius-main)] text-sm font-bold hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-gray-600 dark:text-gray-300"
                                 >
                                     {t('cancel' as any)}
                                 </button>
                                 <button
                                     onClick={handleSaveSettings}
                                     disabled={isSaving}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 font-bold disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-[var(--radius-main)] flex items-center gap-2 font-bold disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
                                 >
                                     {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
                                     {isSaving ? t('saving') : t('save')}

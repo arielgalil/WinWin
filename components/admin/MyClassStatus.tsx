@@ -48,7 +48,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
 
     return (
         <div className="max-w-6xl mx-auto space-y-6 pb-12">
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/20">
                         <SchoolIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
@@ -59,7 +59,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                                 <select
                                     value={selectedClassId}
                                     onChange={(e) => setSelectedClassId(e.target.value)}
-                                    className="block w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-lg font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5"
+                                    className="block w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-lg font-bold text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5"
                                 >
                                     {[...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')).map(c => (
                                         <option key={c.id} value={c.id} className="bg-white dark:bg-[#1e1e2e]">{c.name}</option>
@@ -76,7 +76,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center bg-gray-50 dark:bg-black/20 px-8 py-3 rounded-xl border border-gray-100 dark:border-white/5 shadow-inner">
+                <div className="flex flex-col items-center bg-gray-50 dark:bg-black/20 px-8 py-3 rounded-[var(--radius-container)] border border-gray-100 dark:border-white/5 shadow-inner">
                     <span className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t('points_label')}</span>
                     <span className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">
                         <AnimatedCounter value={classData.score} />
@@ -90,14 +90,14 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                     placeholder={t('search_student_placeholder')}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm rtl:pr-10 ltr:pl-10 text-sm"
+                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm rtl:pr-10 ltr:pl-10 text-sm"
                 />
                 <div className="absolute top-1/2 -translate-y-1/2 rtl:right-3 ltr:left-3 text-gray-400 pointer-events-none">
                     <SearchIcon className="w-5 h-5" />
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
                 <div className="grid grid-cols-12 bg-gray-50 dark:bg-black/20 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase p-4 border-b border-gray-100 dark:border-white/5 tracking-widest">
                     <div className="col-span-2 md:col-span-1 text-center">{t('rank_label')}</div>
                     <div className="col-span-6 md:col-span-7 rtl:pr-2 ltr:pl-2">{t('student_name_label')}</div>

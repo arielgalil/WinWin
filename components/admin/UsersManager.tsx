@@ -240,10 +240,10 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 onCancel={modalConfig.onCancel}
             />
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <div className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
                             <UsersIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
@@ -256,7 +256,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                         <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={isBulkImporting}
-                            className="group relative flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-lg transition-all font-bold text-xs border border-blue-100 dark:border-blue-500/20 active:scale-95 disabled:opacity-50"
+                            className="group relative flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-[var(--radius-main)] transition-all font-bold text-xs border border-blue-100 dark:border-blue-500/20 active:scale-95 disabled:opacity-50"
                         >
                             {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />}
                             {t('import_from_excel')}
@@ -283,14 +283,14 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 </div>
 
                 <div className="mb-10">
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-100 dark:border-white/5">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-gray-50 dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('full_name_label')}</label>
                             <input
                                 required
                                 value={newUserFullName}
                                 onChange={e => setNewUserFullName(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="e.g. John Doe"
                             />
                         </div>
@@ -301,7 +301,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 type="email"
                                 value={newUserEmail}
                                 onChange={e => setNewUserEmail(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="name@email.com"
                             />
                         </div>
@@ -312,7 +312,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 type="password"
                                 value={newUserPassword}
                                 onChange={e => setNewUserPassword(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -321,7 +321,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             <select
                                 value={newUserRole}
                                 onChange={e => setNewUserRole(e.target.value as any)}
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
                             >
                                 <option value="admin" className="bg-white dark:bg-[#1e1e2e]">{t('role_admin_short')}</option>
                                 <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
@@ -331,7 +331,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             <button
                                 type="submit"
                                 disabled={!!userCreationStatus}
-                                className="w-full h-[42px] bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="w-full h-[42px] bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {userCreationStatus ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <PlusIcon className="w-4 h-4" />}
                                 {t('add_join_user_button')}
@@ -339,7 +339,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                         </div>
                     </form>
                     {userCreationStatus && (
-                        <div className="mt-3 text-[10px] font-bold text-blue-500 dark:text-blue-400 animate-pulse bg-blue-50 dark:bg-blue-500/10 py-2 px-4 rounded-lg inline-flex items-center gap-2">
+                        <div className="mt-3 text-[10px] font-bold text-blue-500 dark:text-blue-400 animate-pulse bg-blue-50 dark:bg-blue-500/10 py-2 px-4 rounded-[var(--radius-main)] inline-flex items-center gap-2">
                             <RefreshIcon className="w-3 h-3 animate-spin" />
                             {userCreationStatus}
                         </div>
@@ -356,7 +356,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id ? (
                                     <input 
-                                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
                                         value={editFormData.full_name || ''} 
                                         onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
                                     />
@@ -378,7 +378,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id && u.role !== 'superuser' ? (
                                     <select 
-                                        className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
                                         value={editFormData.role} 
                                         onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
                                     >
@@ -404,7 +404,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id ? (
                                     <select 
-                                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
                                         value={editFormData.class_id || ''} 
                                         onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
                                     >
@@ -422,8 +422,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     actions={(u) => (
                         editingUserId === u.id ? (
                             <div className="flex gap-2">
-                                <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-lg transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
-                                <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
+                                <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-[var(--radius-main)] transition-colors" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
+                                <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-[var(--radius-main)] transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
                             </div>
                         ) : (
                             <AdminRowActions

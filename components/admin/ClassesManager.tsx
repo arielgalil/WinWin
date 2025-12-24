@@ -287,10 +287,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 showCancel={modalConfig.showCancel}
             />
 
-            <div className="bg-white dark:bg-[#1e1e2e] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm p-8">
+            <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm p-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 dark:border-white/5 pb-6 mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
+                        <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-[var(--radius-main)] text-blue-600 dark:text-blue-400">
                             <UsersIcon className="w-6 h-6" />
                         </div>
                         <div>
@@ -309,7 +309,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 input.click();
                             }}
                             disabled={isImporting}
-                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 font-bold rounded-[var(--radius-main)] hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
                         >
                             {isImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                             {t('smart_import')}
@@ -317,7 +317,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
                         <button
                             onClick={() => setIsAddingClass(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-all shadow-md shadow-indigo-500/20 text-sm"
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-sm"
                         >
                             <PlusIcon className="w-4 h-4" />
                             {t('add_new_group')}
@@ -326,7 +326,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 </div>
 
                 {importStatus && (
-                    <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-xl flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold animate-pulse mb-6 text-sm">
+                    <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-[var(--radius-main)] flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold animate-pulse mb-6 text-sm">
                         <RefreshIcon className="w-4 h-4 animate-spin" />
                         {importStatus}
                     </div>
@@ -335,7 +335,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 <div className="space-y-6">
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
-                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-gray-50 dark:bg-white/5 p-6 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
+                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-gray-50 dark:bg-white/5 p-6 rounded-[var(--radius-main)] border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
                                 <h3 className="text-gray-900 dark:text-white font-bold text-base flex items-center gap-2 mb-2">
                                     {editingClass ? t('edit_group') : t('add_new_group')}
                                 </h3>
@@ -346,14 +346,14 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                             value={newClassName} 
                                             onChange={e => setNewClassName(e.target.value)} 
                                             placeholder={t('group_name_placeholder')} 
-                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
                                             autoFocus 
                                         />
                                     </div>
 
                                     <div className="space-y-1">
                                         <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Group Color</label>
-                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-lg border border-gray-200 dark:border-white/10">
+                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10">
                                             {AVAILABLE_COLORS.map(c => (
                                                 <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#1e1e2e] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
                                             ))}
@@ -361,8 +361,8 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-auto pt-2 justify-end">
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2.5 rounded-lg border border-gray-200 dark:border-white/10 text-xs transition-all">{t('cancel')}</button>
-                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-xs shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
+                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 text-xs transition-all">{t('cancel')}</button>
+                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-[var(--radius-main)] text-xs shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
                                 </div>
                             </MotionDiv>
                         )}
@@ -377,7 +377,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 header: t('group_header'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-8 h-8 rounded-lg ${cls.color} flex items-center justify-center text-white text-[10px] shadow-sm`}>
+                                        <div className={`w-8 h-8 rounded-[var(--radius-main)] ${cls.color} flex items-center justify-center text-white text-[10px] shadow-sm`}>
                                             <UsersIcon className="w-4 h-4" />
                                         </div>
                                         <span className="font-bold text-gray-900 dark:text-white">{cls.name}</span>
@@ -418,10 +418,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 {view === 'students' && selectedClass && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
                         <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-                        <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+                        <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
                             <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center shrink-0 bg-gray-50/50 dark:bg-white/5">
                                 <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm ${selectedClass.color}`}>
+                                    <div className={`w-10 h-10 rounded-[var(--radius-main)] flex items-center justify-center text-white shadow-sm ${selectedClass.color}`}>
                                         <UsersIcon className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -442,7 +442,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                                 value={searchTerm} 
                                                 onChange={e => setSearchTerm(e.target.value)} 
                                                 placeholder={t('search_student_placeholder')} 
-                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10" 
+                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10" 
                                             />
                                         </div>
                                     </div>
@@ -453,9 +453,9 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                                 value={newStudentName} 
                                                 onChange={e => setNewStudentName(e.target.value)} 
                                                 placeholder={t('new_student_placeholder')} 
-                                                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
                                             />
-                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg shadow-md transition-all text-sm">{t('add')}</button>
+                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-sm">{t('add')}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -484,7 +484,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             <div className="p-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end shrink-0">
                                 <button 
                                     onClick={() => setView('list')} 
-                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-[var(--radius-main)] hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
                                 >
                                     {t('close_window')}
                                 </button>

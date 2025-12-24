@@ -70,9 +70,9 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 p-8 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
+            className="relative bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 p-8 rounded-[var(--radius-container)] shadow-2xl max-w-sm w-full overflow-hidden"
           >
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 mx-auto ${
+            <div className={`w-14 h-14 rounded-[var(--radius-container)] flex items-center justify-center mb-6 mx-auto ${
               isDanger 
                 ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' 
                 : 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
@@ -90,7 +90,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               <button
                 ref={confirmButtonRef}
                 onClick={onConfirm}
-                className={`flex-[2] py-3 rounded-xl font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
+                className={`flex-[2] py-3 rounded-[var(--radius-main)] font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
                   isDanger
                     ? 'bg-red-600 hover:bg-red-700 text-white shadow-red-500/20'
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20'
@@ -102,7 +102,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               {showCancel && (
                 <button
                   onClick={onCancel}
-                  className="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
+                  className="flex-1 py-3 rounded-[var(--radius-main)] bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
                 >
                   {finalCancelText}
                 </button>

@@ -43,7 +43,7 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
 
     return (
         <div className="max-w-6xl mx-auto space-y-8 pb-12">
-            <section className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <section className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-xl border border-orange-100 dark:border-orange-500/20">
                         <TrophyIcon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
@@ -61,7 +61,7 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
                 />
             </section>
 
-            <section className="bg-white dark:bg-[#1e1e2e] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+            <section className="bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
