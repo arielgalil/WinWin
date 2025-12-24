@@ -134,7 +134,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             <KeyIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
-                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_api_key_title')}</h3>
+                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_api_key_title')}</h2>
                             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_api_key_desc')}</p>
                         </div>
                     </div>
@@ -188,7 +188,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <SparklesIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                     </div>
                     <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_prompt_title')}</h3>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_prompt_title')}</h2>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_prompt_desc')}</p>
                     </div>
                 </div>
@@ -220,7 +220,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <ListIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_keywords_title')}</h3>
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_keywords_title')}</h2>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_keywords_desc')}</p>
                     </div>
                 </div>
