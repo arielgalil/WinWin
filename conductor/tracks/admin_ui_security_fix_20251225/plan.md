@@ -13,18 +13,18 @@ Focus: Localization, dynamic titles, and logo interactions in the main Admin Hea
     - [x] Sub-task: Refactor and verify.
 - [x] Task: Conductor - User Manual Verification 'Header & Branding Improvements' (Protocol in workflow.md)
 
-## Phase 2: Groups & Settings UI
+## Phase 2: Groups & Settings UI [checkpoint: 4279b85]
 Focus: Visual tweaks in Settings and the Groups Management table.
 
 - [x] Task: Settings - Circular Logo Preview [25266e5]
     - [x] Sub-task: Create/Update test to verify the logo image container has rounded styling classes.
     - [x] Sub-task: Apply CSS/Tailwind classes to enforce circular shape on the logo preview.
     - [x] Sub-task: Refactor and verify.
-- [ ] Task: Groups Table - Button Icon & Positioning
-    - [ ] Sub-task: Create/Update test to verify "Manage Students" button icon and DOM order.
-    - [ ] Sub-task: Move button to follow "Student Count" and replace '+' icon with 'Users/Group' icon.
-    - [ ] Sub-task: Refactor and verify.
-- [ ] Task: Conductor - User Manual Verification 'Groups & Settings UI' (Protocol in workflow.md)
+- [x] Task: Groups Table - Button Icon & Positioning [3307a1f]
+    - [x] Sub-task: Create/Update test to verify "Manage Students" button icon and DOM order.
+    - [x] Sub-task: Move button to follow "Student Count" and replace '+' icon with 'Users/Group' icon.
+    - [x] Sub-task: Refactor and verify.
+- [x] Task: Conductor - User Manual Verification 'Groups & Settings UI' (Protocol in workflow.md)
 
 ## Phase 3: Staff Security & Layout
 Focus: Permission-based UI hiding and button alignment in the Users/Staff Manager.
