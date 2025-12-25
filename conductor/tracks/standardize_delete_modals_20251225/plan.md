@@ -17,10 +17,10 @@
     - [x] Subtask: Refactor the `ConfirmationModal` component (if necessary).
     - [x] Subtask: Verify test coverage for `ConfirmationModal`.
     - [x] Subtask: Commit changes for `ConfirmationModal` component.
-- [ ] Task: Integrate the standardized `ConfirmationModal` into each identified delete flow.
-    - [ ] Subtask: For each delete flow, replace the existing modal implementation with the new `ConfirmationModal` component.
-    - [ ] Subtask: Update `i18n` keys for modal titles, messages, and button labels as needed in `he.ts` and `en.ts`.
-    - [ ] Subtask: Ensure dynamic content (e.g., entity name) is correctly passed to the `ConfirmationModal`.
+- [x] Task: Integrate the standardized `ConfirmationModal` into each identified delete flow. [3056a12]
+    - [x] Subtask: For each delete flow, replace the existing modal implementation with the new `ConfirmationModal` component.
+    - [x] Subtask: Update `i18n` keys for modal titles, messages, and button labels as needed in `he.ts` and `en.ts`.
+    - [x] Subtask: Ensure dynamic content (e.g., entity name) is correctly passed to the `ConfirmationModal`.
 - [ ] Task: Conductor - User Manual Verification 'Implementation - Standardization' (Protocol in workflow.md)
 
 ## Phase 3: Testing and Verification
