@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">17.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/120</span>
+                <span class='fraction'>20/116</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.12% </span>
+                <span class="strong">5.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/39</span>
+                <span class='fraction'>2/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.05% </span>
+                <span class="strong">21.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/95</span>
+                <span class='fraction'>20/93</span>
             </div>
         
             
@@ -506,10 +506,8 @@
 <a name='L441'></a><a href='#L441'>441</a>
 <a name='L442'></a><a href='#L442'>442</a>
 <a name='L443'></a><a href='#L443'>443</a>
-<a name='L444'></a><a href='#L444'>444</a>
-<a name='L445'></a><a href='#L445'>445</a>
-<a name='L446'></a><a href='#L446'>446</a>
-<a name='L447'></a><a href='#L447'>447</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L444'></a><a href='#L444'>444</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -599,8 +597,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -676,26 +672,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -963,6 +957,7 @@ import { supabase } from '../../../supabaseClient';
 import { FormattedNumber } from '../../ui/FormattedNumber';
 import { ConfirmationModal } from '../../ui/ConfirmationModal';
 import { useLanguage } from '../../../hooks/useLanguage';
+import { useConfirmation } from '../../../hooks/useConfirmation';
 &nbsp;
 interface GoalsManagerProps {
     settings: AppSettings;
@@ -1043,9 +1038,7 @@ export const GoalsManager: React.FC&lt;GoalsManagerProps&gt; = ({ settings, onUp
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState&lt;string | null&gt;(null);
     const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
-    const [modalConfig, setModalConfig] = useState&lt;{ 
-        isOpen: boolean; title: string; message: string; confirmText?: string; isDanger: boolean; onConfirm: () =&gt; void; 
-    }&gt;({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: <span class="fstat-no" title="function not covered" >() =&gt; {</span> } });
+    const { modalConfig, openConfirmation } = useConfirmation();
 &nbsp;
     const minScoreAllowed = useMemo(() =&gt; {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (editingId) {
@@ -1122,7 +1115,7 @@ export const GoalsManager: React.FC&lt;GoalsManagerProps&gt; = ({ settings, onUp
                 confirmText={modalConfig.confirmText}
                 isDanger={modalConfig.isDanger}
                 onConfirm={modalConfig.onConfirm} 
-                onCancel={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etModalConfig(<span class="fstat-no" title="function not covered" >prev =&gt; (<span class="cstat-no" title="statement not covered" >{</span> ...prev, isOpen: false }))</span>} </span>
+                onCancel={modalConfig.onCancel} 
             /&gt;
 &nbsp;
             &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;
@@ -1134,8 +1127,7 @@ export const GoalsManager: React.FC&lt;GoalsManagerProps&gt; = ({ settings, onUp
                         totalScore={totalScore} 
                         prevTarget={idx &gt; 0 ? goals[idx - 1].target_score : 0} 
                         onEdit={<span class="fstat-no" title="function not covered" >() =&gt; {</span> <span class="cstat-no" title="statement not covered" >setEditingId(goal.id); <span class="cstat-no" title="statement not covered" >s</span>etFormState(goal); }</span>} 
-                        onDelete={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etModalConfig({ </span>
-                            isOpen: true, 
+                        onDelete={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >o</span>penConfirmation({ </span>
                             title: t('delete_stage'), 
                             message: t('confirm_delete_stage'), 
                             confirmText: t('delete_stage'),
@@ -1143,8 +1135,7 @@ export const GoalsManager: React.FC&lt;GoalsManagerProps&gt; = ({ settings, onUp
                             onConfirm: <span class="fstat-no" title="function not covered" >() =&gt; { </span>
                                 const up = <span class="cstat-no" title="statement not covered" >goals.filter(<span class="fstat-no" title="function not covered" >g =&gt; <span class="cstat-no" title="statement not covered" >g</span>.id !== goal.id)</span>; </span>
 <span class="cstat-no" title="statement not covered" >                                setGoals(up); </span>
-<span class="cstat-no" title="statement not covered" >                                onUpdateSettings(up, gridSize); </span>
-<span class="cstat-no" title="statement not covered" >                                setModalConfig(<span class="fstat-no" title="function not covered" >prev =&gt; (<span class="cstat-no" title="statement not covered" >{</span> ...prev, isOpen: false }))</span>; </span>
+<span class="cstat-no" title="statement not covered" >                                onUpdateSettings(up, gridSize);</span>
                             } 
                         })} 
                         isEditing={editingId === goal.id} 
@@ -1408,7 +1399,7 @@ export const GoalsManager: React.FC&lt;GoalsManagerProps&gt; = ({ settings, onUp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-25T15:08:26.512Z
+                at 2025-12-25T15:56:56.332Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.04% </span>
+                <span class="strong">90.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/21</span>
+                <span class='fraction'>19/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">93.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/16</span>
+                <span class='fraction'>15/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -118,26 +118,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,15 +137,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { AnimatePresence } from 'framer-motion';
@@ -170,11 +170,11 @@ const ToastContext = createContext&lt;ToastContextType | undefined&gt;(undefined
 export const ToastProvider: React.FC&lt;{ children: ReactNode }&gt; = ({ children }) =&gt; {
     const [toasts, setToasts] = useState&lt;{ id: string; message: string; type: ToastType }[]&gt;([]);
 &nbsp;
-    const showToast = useCallback(<span class="fstat-no" title="function not covered" >(m</span>essage: string, type: ToastType = <span class="branch-0 cbranch-no" title="branch not covered" >'info') =&gt; {</span>
-        const id = <span class="cstat-no" title="statement not covered" >Math.random().toString(36).substr(2, 9);</span>
-<span class="cstat-no" title="statement not covered" >        setToasts(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >[...prev, { id, message, type }])</span>;</span>
-<span class="cstat-no" title="statement not covered" >        setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >            setToasts(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >prev.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id !== id)</span>)</span>;</span>
+    const showToast = useCallback((message: string, type: ToastType = 'info') =&gt; {
+        const id = Math.random().toString(36).substr(2, 9);
+        setToasts((prev) =&gt; [...prev, { id, message, type }]);
+        setTimeout(() =&gt; {
+            setToasts((prev) =&gt; prev.filter((t) =&gt; t.id !== id));
         }, 4000);
     }, []);
 &nbsp;
@@ -183,12 +183,12 @@ export const ToastProvider: React.FC&lt;{ children: ReactNode }&gt; = ({ childre
             {children}
             &lt;div className="fixed top-8 left-1/2 -translate-x-1/2 z-[500] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4"&gt;
                 &lt;AnimatePresence mode="popLayout"&gt;
-                    {toasts.map(<span class="fstat-no" title="function not covered" >(t</span>oast) =&gt; (
-<span class="cstat-no" title="statement not covered" >                        &lt;Toast</span>
+                    {toasts.map((toast) =&gt; (
+                        &lt;Toast
                             key={toast.id}
                             message={toast.message}
                             type={toast.type}
-                            onClose={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etToasts(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >prev.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id !== toast.id)</span>)</span>}</span>
+                            onClose={() =&gt; setToasts((prev) =&gt; prev.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id !== toast.id)</span>)}
                         /&gt;
                     ))}
                 &lt;/AnimatePresence&gt;
@@ -197,12 +197,12 @@ export const ToastProvider: React.FC&lt;{ children: ReactNode }&gt; = ({ childre
     );
 };
 &nbsp;
-export const useToast = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-    const <span class="cstat-no" title="statement not covered" >context = useContext(ToastContext);</span>
-<span class="cstat-no" title="statement not covered" >    if (!context) {</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error('useToast must be used within a ToastProvider');</span>
+export const useToast = () =&gt; {
+    const context = useContext(ToastContext);
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!context) {
+        throw new Error('useToast must be used within a ToastProvider');
     }
-<span class="cstat-no" title="statement not covered" >    return context;</span>
+    return context;
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -211,7 +211,7 @@ export const useToast = <span class="cstat-no" title="statement not covered" ><s
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-25T15:08:26.512Z
+                at 2025-12-25T15:56:56.332Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

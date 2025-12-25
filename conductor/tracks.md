@@ -2,14 +2,12 @@
 
 This file tracks all major tracks for the project. Each track has its own detailed plan in its respective folder.
 
----
-
-## [~] Track: Standardize Delete Modals
-*Link: [./conductor/tracks/standardize_delete_modals_20251225/](./conductor/tracks/standardize_delete_modals_20251225/)*
-
----
-
 # Archived Tracks
+
+---
+
+## [x] Track: Standardize Delete Modals
+*Link: [./conductor/archive/standardize_delete_modals_20251225/](./conductor/archive/standardize_delete_modals_20251225/)*
 
 ---
 

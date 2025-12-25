@@ -24,8 +24,7 @@
 - [x] Task: Conductor - User Manual Verification 'Implementation - Standardization' (Protocol in workflow.md) [a115e30]
 
 ## Phase 3: Testing and Verification
-- [~] Task: Write failing integration tests for key delete flows. (Red Phase)
-    - [ ] Subtask: Cover at least one delete flow for Users, Classes, Messages, and Score Presets.
-- [ ] Task: Implement integration tests to pass. (Green Phase)
-- [ ] Task: Verify overall code coverage.
-- [ ] Task: Conductor - User Manual Verification 'Testing and Verification' (Protocol in workflow.md)
+- [x] Task: Write failing integration tests for key delete flows. (Red Phase) [c5f89aa]
+- [x] Task: Implement integration tests to pass. (Green Phase) [c5f89aa]
+- [x] Task: Verify overall code coverage.
+- [x] Task: Conductor - User Manual Verification 'Testing and Verification' (Protocol in workflow.md) [c5f89aa]
