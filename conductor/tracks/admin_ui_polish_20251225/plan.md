@@ -1,6 +1,6 @@
 # Track Plan: Admin UI Polish & Score Formatting
 
-## Phase 1: Localization Audit & Fixes
+## Phase 1: Localization Audit & Fixes [checkpoint: 82cf47b]
 - [x] Task: Audit `ClassesManager.tsx` for hardcoded strings. [ef8a365]
     - [ ] Subtask: Scan file for Hebrew/English strings not wrapped in `t()`.
     - [ ] Subtask: Extract strings to `he.ts` and `en.ts`.
