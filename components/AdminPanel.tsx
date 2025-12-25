@@ -151,7 +151,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
           isOpen={isMobileMenuOpen}
           setIsOpen={setIsMobileMenuOpen}
           user={user}
-          userClassName={isSuper ? 'Super Admin' : isAdmin ? 'Administrator' : 'Teacher'}
+          userClassName={isSuper ? t('role_super_user' as any) : isAdmin ? t('role_admin' as any) : t('role_teacher' as any)}
           visibleNavItems={visibleNavItems}
           activeTab={activeTab}
           onTabChange={handleTabChange}
@@ -163,12 +163,12 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         />
         <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-300">
           <div className="flex items-center gap-4">
-            <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20 cursor-pointer hover:scale-105 transition-transform" onClick={onViewDashboard}>
+            <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20">
               <Logo src={settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
-              <p className="text-[10px] text-[var(--text-muted)] font-medium tracking-widest uppercase mt-1">Admin Console</p>
+              <p className="text-[10px] text-[var(--text-muted)] font-medium tracking-widest uppercase mt-1">{currentCampaign?.name || 'Admin Console'}</p>
             </div>
           </div>
 
@@ -190,7 +190,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-[var(--text-main)] leading-none">{user.full_name}</p>
                 <p className="text-[10px] font-medium text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
-                  {isSuper ? 'Super Admin' : isAdmin ? 'Administrator' : 'Teacher'}
+                  {isSuper ? t('role_super_user' as any) : isAdmin ? t('role_admin' as any) : t('role_teacher' as any)}
                 </p>
               </div>
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
