@@ -17,7 +17,7 @@ This plan outlines the steps to consolidate duplicate admin routes and ensure fu
     -   Manual verification: Navigate to Settings from all major entry points.
 - [ ] **Task: Conductor - User Manual Verification 'Route Cleanup & Redirection' (Protocol in workflow.md)**
 
-## Phase 2: Localization Audit
+## Phase 2: Localization Audit [checkpoint: 0b5f4e1]
 - [x] **Task: Audit Settings Page Strings and Update Translation Files.**
     -   Scan components within the `/settings` route (e.g., `SchoolSettings.tsx`, `AiSettings.tsx`, `GoalsManager.tsx`) for hardcoded strings.
     -   Replace any found strings with keys from `utils/translations/he.ts` and `utils/translations/en.ts` (or relevant locale files).
