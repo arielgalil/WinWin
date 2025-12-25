@@ -3,7 +3,7 @@
 This plan outlines the steps to consolidate duplicate admin routes and ensure full Hebrew localization.
 
 ## Phase 1: Route Cleanup & Redirection
-- [~] **Task: Locate and Remove Old Route.**
+- [x] **Task: Locate and Remove Old Route.** (3185468)
     -   Search `App.tsx` or router configuration for `/school`.
     -   Remove the route definition.
     -   If the component used by `/school` is different and unused, mark it for deletion.
