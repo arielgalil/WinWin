@@ -236,7 +236,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">{t('logo_upload')}</label>
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
-                                    <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] p-2 border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                    <div className="w-24 h-24 bg-gray-50 dark:bg-black/20 rounded-full p-2 border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
                                         <img src={formData.logo_url} alt="Preview" className="max-w-full max-h-full object-contain" />
                                     </div>
                                 )}
