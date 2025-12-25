@@ -12,7 +12,7 @@ This plan addresses the critical syntax error preventing the Admin Panel from lo
 - [x] **Task: Conductor - User Manual Verification 'Restore Admin Functionality' (Protocol in workflow.md)**
 
 ## Phase 2: Resolve YouTube Console Warnings
-- [ ] **Task: Update YouTube IFrame Origin.**
+- [x] **Task: Update YouTube IFrame Origin.** (28493be)
     -   Inspect `components/dashboard/BackgroundMusic.tsx`.
     -   Identify the `initPlayer` function or YouTube player configuration.
     -   Ensure the `origin` parameter is set to `window.location.origin` or the correct local/production host.
