@@ -389,9 +389,18 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 key: 'students_count',
                                 header: t('students_label'),
                                 render: (cls) => (
-                                    <span className="text-gray-500 dark:text-gray-400 font-medium">
-                                        {cls.students?.length || 0} {t('students_label')}
-                                    </span>
+                                    <div className="flex items-center justify-between gap-4">
+                                        <span className="text-gray-500 dark:text-gray-400 font-medium">
+                                            {cls.students?.length || 0} {t('students_label')}
+                                        </span>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
+                                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full text-indigo-600 dark:text-indigo-400 transition-colors"
+                                            title={t('manage_students_button')}
+                                        >
+                                            <UsersIcon className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 )
                             }
                         ]}
@@ -407,9 +416,6 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         onConfirm: () => handleDeleteClass(cls.id)
                                     });
                                 }}
-                                onSecondary={() => { setSelectedClassId(cls.id); setView('students'); }}
-                                secondaryIcon={<PlusIcon className="w-4 h-4" />}
-                                secondaryTitle={t('manage_students_button')}
                             />
                         )}
                     />
