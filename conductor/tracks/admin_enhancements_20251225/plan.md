@@ -9,9 +9,9 @@ This plan outlines the steps to improve the Admin Panel UX, restore AI functiona
 - [x] Task: Conductor - User Manual Verification 'Phase 1: UI Consistency' (Protocol in workflow.md)
 
 ## Phase 2: Light Mode Accessibility Audit & Fix (Admin Panel)
-- [ ] Task: TDD - Audit and update typography contrast (true black #000000) for Light Mode in Admin components.
-- [ ] Task: TDD - Enhance form input visibility (borders/shadows) in Light Mode.
-- [ ] Task: TDD - Improve visual hierarchy and card outlines for better contrast.
+- [x] Task: TDD - Audit and update typography contrast (true black #000000) for Light Mode in Admin components. [5d65786]
+- [x] Task: TDD - Enhance form input visibility (borders/shadows) in Light Mode. [5d65786]
+- [x] Task: TDD - Improve visual hierarchy and card outlines for better contrast. [5d65786]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Light Mode Accessibility' (Protocol in workflow.md)
 
 ## Phase 3: AI Service Restoration
