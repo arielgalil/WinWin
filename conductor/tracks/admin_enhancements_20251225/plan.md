@@ -5,7 +5,7 @@ This plan outlines the steps to improve the Admin Panel UX, restore AI functiona
 ## Phase 1: UI Consistency & UX Improvements (Goals & Tabs)
 - [x] Task: TDD - Update Goal Edit button color and style in `GoalsManagement.tsx`. [143be48]
 - [x] Task: TDD - Implement smooth scroll logic in `GoalsManagement.tsx` when "Edit" is clicked. [143be48]
-- [ ] Task: TDD - Unify tab widths in the Settings view (AdminPanel/Settings components).
+- [x] Task: TDD - Unify tab widths in the Settings view (AdminPanel/Settings components). [8709ab4]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: UI Consistency' (Protocol in workflow.md)
 
 ## Phase 2: Light Mode Accessibility Audit & Fix (Admin Panel)
