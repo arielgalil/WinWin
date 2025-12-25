@@ -93,7 +93,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {/* Management */}
                 {user && fallbackSlug && isAdmin && (
                     <button
-                        onClick={() => navigate(`/admin/${fallbackSlug}/school`)}
+                        onClick={() => navigate(`/admin/${fallbackSlug}/settings`)}
                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">⚙️</span>

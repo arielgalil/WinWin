@@ -155,7 +155,7 @@ export const RefactoredVersionFooter: React.FC<VersionFooterProps> = ({
 
                             {user && fallbackSlug && isAdmin && (
                                 <SettingsButton 
-                                    onClick={() => navigate(`/admin/${fallbackSlug}/school`)}
+                                    onClick={() => navigate(`/admin/${fallbackSlug}/settings`)}
                                     title={t('manage')}
                                     isActive={isManageActive}
                                 />

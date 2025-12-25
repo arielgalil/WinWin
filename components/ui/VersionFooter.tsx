@@ -181,7 +181,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
 
                             {user && fallbackSlug && isAdmin && (
                                 <button 
-                                    onClick={() => navigate(`/admin/${fallbackSlug}/school`)} 
+                                    onClick={() => navigate(`/admin/${fallbackSlug}/settings`)} 
                                     title={t('manage')} 
                                     className={`w-7 h-7 flex items-center justify-center ${isManageActive ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
@@ -331,7 +331,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {/* Management */}
                                                 {user && fallbackSlug && isAdmin && (
                                                     <button
-                                                        onClick={() => navigate(`/admin/${fallbackSlug}/school`)}
+                                                        onClick={() => navigate(`/admin/${fallbackSlug}/settings`)}
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                                                     >
                                                         <SettingsIcon className="w-3 h-3" />
