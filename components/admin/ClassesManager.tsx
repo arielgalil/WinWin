@@ -389,13 +389,13 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 key: 'students_count',
                                 header: t('students_label'),
                                 render: (cls) => (
-                                    <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
                                         <span className="text-gray-500 dark:text-gray-400 font-medium">
                                             {cls.students?.length || 0} {t('students_label')}
                                         </span>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
-                                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full text-indigo-600 dark:text-indigo-400 transition-colors"
+                                            className="p-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-500/20 rounded-full text-indigo-600 dark:text-indigo-400 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30"
                                             title={t('manage_students_button')}
                                         >
                                             <UsersIcon className="w-4 h-4" />
