@@ -2,7 +2,7 @@
 
 This plan addresses the critical syntax error preventing the Admin Panel from loading and resolves the origin mismatch warnings from the YouTube integration.
 
-## Phase 1: Restore Admin Functionality
+## Phase 1: Restore Admin Functionality [checkpoint: 5a41cbf]
 - [x] **Task: Fix JSX Syntax in AiSettings.tsx.** (7aeb54a)
     -   Locate line 137 in `components/admin/AiSettings.tsx`.
     -   Change the incorrect `</h3>` closing tag to `</h2>`.
