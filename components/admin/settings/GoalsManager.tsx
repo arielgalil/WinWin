@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { CompetitionGoal, AppSettings } from '../../../types';
 import { RefreshIcon, EditIcon, CheckIcon, UploadIcon, TrashIcon, TargetIcon, SparklesIcon } from '../../ui/Icons';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../../utils/stringUtils';
@@ -40,7 +40,7 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
                     <button
                         type="button"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(e); }}
-                        className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
+                        className="w-7 h-7 flex items-center justify-center bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-md transition-all border border-green-200 dark:border-green-500/20 shadow-sm"
                         title={t('edit_stage_title')}
                     >
                         <EditIcon className="w-3.5 h-3.5" />
@@ -80,6 +80,7 @@ const quickEmojis = ['🏆', '🥇', '🥈', '🥉', '🎁', '💎', '🌟', '�
 
 export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSettings, totalScore }) => {
     const { t } = useLanguage();
+    const formRef = useRef<HTMLDivElement>(null);
     const [goals, setGoals] = useState<CompetitionGoal[]>(settings.goals_config || []);
     const [gridSize] = useState(settings.hex_grid_size || 30);
     const [formState, setFormState] = useState<Partial<CompetitionGoal>>({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
@@ -175,7 +176,11 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         idx={idx} 
                         totalScore={totalScore} 
                         prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} 
-                        onEdit={() => { setEditingId(goal.id); setFormState(goal); }} 
+                        onEdit={() => { 
+                            setEditingId(goal.id); 
+                            setFormState(goal);
+                            setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                        }} 
                         onDelete={() => openConfirmation({ 
                             title: t('delete_stage'), 
                             message: t('confirm_delete_stage'), 
@@ -192,7 +197,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 ))}
             </div>
 
-            <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-200 dark:border-white/10">
+            <div ref={formRef} className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-200 dark:border-white/10">
                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 text-indigo-500">
