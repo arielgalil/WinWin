@@ -1,6 +1,6 @@
 # Implementation Plan - Admin Panel UI/UX & Security Improvements
 
-## Phase 1: Header & Branding Improvements
+## Phase 1: Header & Branding Improvements [checkpoint: ee58b59]
 Focus: Localization, dynamic titles, and logo interactions in the main Admin Header.
 
 - [x] Task: Update Header Labels & Title [3bde272]
@@ -11,7 +11,7 @@ Focus: Localization, dynamic titles, and logo interactions in the main Admin Hea
     - [x] Sub-task: Create/Update test to verify logo renders without a link/button wrapper.
     - [x] Sub-task: Remove navigation logic from the logo and ensure it displays the competition logo.
     - [x] Sub-task: Refactor and verify.
-- [ ] Task: Conductor - User Manual Verification 'Header & Branding Improvements' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Header & Branding Improvements' (Protocol in workflow.md)
 
 ## Phase 2: Groups & Settings UI
 Focus: Visual tweaks in Settings and the Groups Management table.
