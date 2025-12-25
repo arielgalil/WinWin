@@ -73,9 +73,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const isSuper = checkIsSuperUser(user.role) || checkIsSuperUser(campaignRole);
 
   const activeTab = useMemo(() => {
-    if (activeTabFromUrl === 'school') return 'settings';
     if (activeTabFromUrl) return activeTabFromUrl as TabType;
-    if (initialTab === 'school') return 'settings';
     if (initialTab) return initialTab as TabType;
     return isSuper || isAdmin ? 'settings' : 'points';
   }, [activeTabFromUrl, initialTab, isSuper, isAdmin]);
