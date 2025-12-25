@@ -1,0 +1,8 @@
+{
+  "track_id": "standardize_delete_modals_20251225",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2025-12-25T14:28:00Z",
+  "updated_at": "2025-12-25T14:28:00Z",
+  "description": "Fix inconsistent delete modal designs and behavior. Not all Delete modal window have the same design; the correct one is on the 'ניהול יעדים' tab. Copy or reuse that modal for other delete modals, also ensure that all Delete buttons have the same behavior – open confirmation delete modal."
+}

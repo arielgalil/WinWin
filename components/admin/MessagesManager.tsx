@@ -105,7 +105,16 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
 
     return (
         <>
-            <ConfirmationModal {...modalConfig} />
+            <ConfirmationModal 
+                isOpen={modalConfig.isOpen}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                isDanger={modalConfig.isDanger}
+                confirmText={modalConfig.confirmText}
+                onConfirm={modalConfig.onConfirm}
+                onCancel={modalConfig.onCancel}
+                showCancel={modalConfig.showCancel}
+            />
             <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">

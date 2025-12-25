@@ -236,6 +236,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 title={modalConfig.title}
                 message={modalConfig.message}
                 showCancel={modalConfig.showCancel}
+                isDanger={modalConfig.isDanger}
+                confirmText={modalConfig.confirmText}
                 onConfirm={modalConfig.onConfirm}
                 onCancel={modalConfig.onCancel}
             />

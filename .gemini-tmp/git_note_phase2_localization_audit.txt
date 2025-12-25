@@ -1,0 +1,15 @@
+Phase 2: Localization Audit Verification Report
+
+Automated Test Command: (No new automated tests were specifically created for this localization audit; existing UI tests should cover rendering.)
+
+Manual Verification Steps:
+1.  Start the development server with the command: `npm run dev`
+2.  Open your browser to the Admin Panel: `http://localhost:5173/settings`
+3.  Navigate to the "AI" tab and the "Goals" tab.
+4.  Change the UI Language: Use the language selector (if available on the page) or browser settings to switch the application's language between Hebrew and English.
+5.  Confirm Localization:
+    *   For `AiSettings` (AI tab): Verify that all titles, descriptions, placeholders, button texts, and confirmation messages (e.g., for deleting keywords) are correctly translated into the selected language. Ensure no hardcoded English or Hebrew strings remain.
+    *   For `GoalsManager` (Goals tab): Verify that all labels, placeholders, error messages, button texts (including "Add Stage/Goal", "Update Stage/Goal", "Cancel Edit"), and modal texts are correctly translated into the selected language. Ensure no hardcoded English or Hebrew strings remain.
+    *   Specifically check the new keys added: `delete_keyword_title`, `delete_keyword_confirm`, `goal_score_error`, `start_label`, `end_score_label`, `end_prize_label`, `required_field`, `score_too_low`, `emoji`, `image`, `insert_emoji`, `update_stage_button`, `add_stage_button`, `enter_emoji_manual`, `choose_quick_emoji`, `confirm_selection`, `stage_index_label`, `uploading`.
+
+User Confirmation: Yes
