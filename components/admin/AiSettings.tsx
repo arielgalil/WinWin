@@ -9,6 +9,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 
 const MotionDiv = motion.div as any;
 
@@ -127,17 +128,11 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     return (
         <div className="max-w-6xl mx-auto space-y-8 pb-12" dir={isRTL ? 'rtl' : 'ltr'}>
             {/* API Configuration Card */}
-            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 dark:border-white/5 pb-6 gap-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl border border-emerald-100 dark:border-emerald-500/20">
-                            <KeyIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                        </div>
-                        <div>
-                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_api_key_title')}</h2>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_api_key_desc')}</p>
-                        </div>
-                    </div>
+            <AdminSectionCard
+                title={t('ai_api_key_title')}
+                description={t('ai_api_key_desc')}
+                icon={<KeyIcon className="w-6 h-6" />}
+                rightAction={
                     <div className="flex items-center gap-3">
                         {testResult && (
                             <div className={`text-xs px-3 py-1.5 rounded-[var(--radius-main)] font-bold flex items-center gap-2 animate-in fade-in ${testResult.success ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400'}`}>
@@ -162,8 +157,8 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             <span>{t('save')}</span>
                         </button>
                     </div>
-                </div>
-
+                }
+            >
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
@@ -180,19 +175,13 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         <p className="text-[11px] text-gray-400 dark:text-gray-500 italic mt-2">{t('ai_test_connection_desc')}</p>
                     </div>
                 </div>
-            </div>
+            </AdminSectionCard>
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-                <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
-                    <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl border border-pink-100 dark:border-pink-500/20">
-                        <SparklesIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
-                    </div>
-                    <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_prompt_title')}</h2>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_prompt_desc')}</p>
-                    </div>
-                </div>
-
+            <AdminSectionCard
+                title={t('ai_prompt_title')}
+                description={t('ai_prompt_desc')}
+                icon={<SparklesIcon className="w-6 h-6" />}
+            >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
@@ -212,19 +201,13 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         />
                     </div>
                 </div>
-            </div>
+            </AdminSectionCard>
 
-            <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-                <div className="flex items-center gap-4 border-b border-gray-100 dark:border-white/5 pb-6">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20">
-                        <ListIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{t('ai_keywords_title')}</h2>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('ai_keywords_desc')}</p>
-                    </div>
-                </div>
-
+            <AdminSectionCard
+                title={t('ai_keywords_title')}
+                description={t('ai_keywords_desc')}
+                icon={<ListIcon className="w-6 h-6" />}
+            >
                 <div className="space-y-6">
                     <form onSubmit={handleAddKeyword} className="flex gap-3">
                         <input
@@ -255,7 +238,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         )}
                     </div>
                 </div>
-            </div>
+            </AdminSectionCard>
 
             {createPortal(
                 <AnimatePresence>

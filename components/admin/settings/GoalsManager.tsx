@@ -28,11 +28,11 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
         <div className={`relative flex flex-col gap-3 p-4 rounded-xl border transition-all duration-300 group ${isEditing ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-400 ring-2 ring-indigo-400/30' : 'bg-white dark:bg-[#1e1e2e] border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md'}`}>
             <div className="flex justify-between items-center bg-gray-50 dark:bg-black/20 p-2 rounded-lg border border-gray-100 dark:border-white/5">
                 <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('stage_label', { index: idx + 1 })}</span>
-                <div className="flex gap-2">
+                <div className="flex gap-4">
                     <button
                         type="button"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(e); }}
-                        className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
+                        className="w-7 h-7 flex items-center justify-center bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 rounded-md transition-all border border-red-200 dark:border-red-500/20 shadow-sm"
                         title={t('delete_stage')}
                     >
                         <TrashIcon className="w-3.5 h-3.5" />

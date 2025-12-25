@@ -4,6 +4,7 @@ import { UsersIcon, UploadIcon, RefreshIcon, CrownIcon, SettingsIcon, UserIcon, 
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { supabase, createTempClient } from '../../supabaseClient';
 import { isSuperUser } from '../../config';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -242,47 +243,39 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 onCancel={modalConfig.onCancel}
             />
 
-            <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
-                            <UsersIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] leading-none">{t('team_mgmt_title_clean')}</h3>
-                            <p className="text-[var(--text-secondary)] text-sm mt-1">{t('team_mgmt_subtitle')}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={isBulkImporting}
-                            className="group relative flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-[var(--radius-main)] transition-all font-bold text-xs border border-blue-100 dark:border-blue-500/20 active:scale-95 disabled:opacity-50"
-                        >
-                            {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />}
-                            {t('import_from_excel')}
-                        </button>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept=".xlsx, .xls, .csv"
-                            className="hidden"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    openConfirmation({
-                                        title: t('import_users_title'),
-                                        message: t('import_users_warning'),
-                                        isDanger: false,
-                                        onConfirm: () => processBulkImport(file)
-                                    });
-                                    e.target.value = ''; // Reset for same file re-import
-                                }
-                            }}
-                        />
-                    </div>
-                </div>
+            <AdminSectionCard
+                title={t('team_mgmt_title_clean')}
+                description={t('team_mgmt_subtitle')}
+                icon={<UsersIcon className="w-6 h-6" />}
+                rightAction={
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isBulkImporting}
+                        className="group relative flex items-center gap-2 px-5 py-2.5 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-[var(--radius-main)] transition-all font-bold text-xs border border-blue-100 dark:border-blue-500/20 active:scale-95 disabled:opacity-50"
+                    >
+                        {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />}
+                        {t('import_from_excel')}
+                    </button>
+                }
+            >
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".xlsx, .xls, .csv"
+                    className="hidden"
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            openConfirmation({
+                                title: t('import_users_title'),
+                                message: t('import_users_warning'),
+                                isDanger: false,
+                                onConfirm: () => processBulkImport(file)
+                            });
+                            e.target.value = ''; // Reset for same file re-import
+                        }
+                    }}
+                />
 
                 <div className="mb-10">
                     <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border border-[var(--border-subtle)]">
@@ -352,6 +345,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     keyField="id"
                     data={usersList}
                     columns={[
+                        // ...
+
                         {
                             key: 'full_name',
                             header: t('name_email_header'),
@@ -449,7 +444,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                         )
                     )}
                 />
-            </div >
+            </AdminSectionCard>
         </div >
     );
 };

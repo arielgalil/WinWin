@@ -4,6 +4,7 @@ import { PlusIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from 
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable, Column } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -282,25 +283,18 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}
                 message={modalConfig.message}
-                isDanger={modalConfig.isDanger}
-                confirmText={modalConfig.confirmText}
                 onConfirm={modalConfig.onConfirm}
                 onCancel={modalConfig.onCancel}
                 showCancel={modalConfig.showCancel}
+                isDanger={modalConfig.isDanger}
+                confirmText={modalConfig.confirmText}
             />
 
-            <div className="p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 dark:border-white/5 pb-6 mb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-[var(--radius-main)] text-blue-600 dark:text-blue-400">
-                            <UsersIcon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">{t('classes_management_title')}</h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('classes_management_desc')}</p>
-                        </div>
-                    </div>
-
+            <AdminSectionCard
+                title={t('classes_management_title')}
+                description={t('classes_management_desc')}
+                icon={<UsersIcon className="w-6 h-6" />}
+                rightAction={
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => {
@@ -325,8 +319,8 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             {t('add_new_group')}
                         </button>
                     </div>
-                </div>
-
+                }
+            >
                 {importStatus && (
                     <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-[var(--radius-main)] flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold animate-pulse mb-6 text-sm">
                         <RefreshIcon className="w-4 h-4 animate-spin" />
@@ -421,7 +415,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                         )}
                     />
                 </div>
-            </div>
+            </AdminSectionCard>
 
             <AnimatePresence>
                 {view === 'students' && selectedClass && (

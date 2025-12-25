@@ -11,6 +11,7 @@ import { formatForWhatsApp, parseFormattedText } from '../../utils/whatsappUtils
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
 import { useConfirmation } from '../../hooks/useConfirmation';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 
 const MotionDiv = motion.div as any;
 
@@ -180,8 +181,12 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 min-h-0">
                 <div className="lg:col-span-2 flex flex-col gap-6 min-h-0">
-                    <div className="bg-white dark:bg-[#1e1e2e] rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 flex flex-col flex-1 min-h-0 shadow-sm overflow-hidden">
-                        <div className="custom-scrollbar overflow-x-auto flex-1">
+                    <AdminSectionCard
+                        title={t('activity_history_title')}
+                        icon={<RefreshIcon className="w-6 h-6" />}
+                        className="flex-1 flex flex-col min-h-0 !p-0 overflow-hidden"
+                    >
+                        <div className="custom-scrollbar overflow-x-auto flex-1 h-full">
                             <table className="w-full text-right border-collapse">
                                 <thead className="sticky top-0 bg-gray-50 dark:bg-white/5 z-10 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">
                                     <tr>
@@ -251,23 +256,22 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </AdminSectionCard>
                 </div>
 
                 {isAdmin && (
                     <div className="md:col-span-1 flex flex-col gap-6 md:sticky md:top-4 order-1 md:order-2">
-                        <div className="bg-indigo-50 dark:bg-[#1e1e2e] p-6 rounded-[var(--radius-container)] border border-indigo-100 dark:border-white/10 flex flex-col h-[600px] shadow-sm">
-                            <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                    <SparklesIcon className="w-5 h-5 text-indigo-500 animate-pulse" /> {t('summary_ai_title')}
-                                </h3>
-                                {summary && (
-                                    <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)]-all flex items-center gap-2 text-xs font-bold min-h-[44px] ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
-                                        {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
-                                        {isCopied ? t('copied') : t('copy')}
-                                    </button>
-                                )}
-                            </div>
+                        <AdminSectionCard
+                            title={t('summary_ai_title')}
+                            icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
+                            className="flex flex-col h-[600px]"
+                            rightAction={summary && (
+                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)]-all flex items-center gap-2 text-xs font-bold min-h-[44px] ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
+                                    {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
+                                    {isCopied ? t('copied') : t('copy')}
+                                </button>
+                            )}
+                        >
                             <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mb-6 w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold py-3 rounded-[var(--radius-main)] items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-not-allowed">
                                 {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
                                 <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
@@ -275,7 +279,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             <div className="bg-white dark:bg-black/20 rounded-xl p-6 flex-1 overflow-y-auto border border-gray-100 dark:border-white/5 custom-scrollbar text-gray-700 dark:text-gray-200">
                                 {renderFormattedSummary(summary || '')}
                             </div>
-                        </div>
+                        </AdminSectionCard>
                     </div>
                 )}
             </div>

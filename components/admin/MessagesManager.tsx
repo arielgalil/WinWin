@@ -12,6 +12,7 @@ import { normalizeString } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 
 // Fix for framer-motion type mismatch
 const MotionDiv = motion.div as any;
@@ -104,7 +105,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     };
 
     return (
-        <>
+        <div className="max-w-6xl mx-auto space-y-6">
             <ConfirmationModal 
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}
@@ -115,15 +116,12 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 onCancel={modalConfig.onCancel}
                 showCancel={modalConfig.showCancel}
             />
-            <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
-                <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">
-                        <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">{t('messages_mgmt_desc')}</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <AdminSectionCard
+                title={t('messages_mgmt_title')}
+                description={t('messages_mgmt_desc')}
+                icon={<LayersIcon className="w-5 h-5" />}
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1 space-y-6">
                     <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 shadow-sm">
                         <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">{t('add_message_card')}</label>
@@ -247,7 +245,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                     </div>
                 </div>
             </div>
-        </div>
-    </>
+        </AdminSectionCard>
+    </div>
     );
 };

@@ -10,10 +10,10 @@
 - [x] Task: Conductor - User Manual Verification 'Localization Audit & Fixes' (Protocol in workflow.md) [ef8a365]
 
 ## Phase 2: Visual Polish & Unification
-- [ ] Task: Standardize Goals Management buttons.
+- [x] Task: Standardize Goals Management buttons. [82cf47b]
     - [ ] Subtask: Increase margin/gap between Edit and Delete buttons in `GoalsManager` (Desktop & Mobile).
     - [ ] Subtask: Ensure Delete button styling matches the standardized red design.
-- [ ] Task: Unify Admin Tab Cards.
+- [x] Task: Unify Admin Tab Cards. [82cf47b]
     - [ ] Subtask: Create/Refactor a reusable `AdminSectionCard` component (or similar) with props for Title, Icon, Description, and Content.
     - [ ] Subtask: Refactor `Settings`, `Goals`, `Users`, `Classes`, `Messages`, `Points`, and `Logs` managers to use this standard container.
 - [ ] Task: Conductor - User Manual Verification 'Visual Polish & Unification' (Protocol in workflow.md)

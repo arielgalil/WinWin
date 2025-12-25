@@ -10,6 +10,7 @@ import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/string
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminSectionCard } from '../ui/AdminSectionCard';
 
 const MotionDiv = motion.div as any;
 
@@ -175,17 +176,11 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     return (
         <div className="max-w-5xl mx-auto space-y-8">
             <form onSubmit={handleSaveSettings} className="space-y-8">
-                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] text-indigo-600 dark:text-indigo-400">
-                            <StarIcon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('details_logo')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{t('basic_info_desc')}</p>
-                        </div>
-                    </div>
-                    
+                <AdminSectionCard
+                    title={t('details_logo')}
+                    description={t('basic_info_desc')}
+                    icon={<StarIcon className="w-6 h-6" />}
+                >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-1">
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('institution_name')}</label>
@@ -259,20 +254,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             {uploadError && <p className="text-red-500 text-xs mt-2 font-bold">{uploadError}</p>}
                         </div>
                     </div>
-                </div>
+                </AdminSectionCard>
 
                 {/* 2. Music & Atmosphere */}
-                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-[var(--radius-main)] text-purple-600 dark:text-purple-400">
-                            <MusicIcon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('music_atmosphere')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{t('music_settings_desc')}</p>
-                        </div>
-                    </div>
-
+                <AdminSectionCard
+                    title={t('music_atmosphere')}
+                    description={t('music_settings_desc')}
+                    icon={<MusicIcon className="w-6 h-6" />}
+                >
                     <div className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
@@ -332,20 +321,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             </div>
                         </div>
                     </div>
-                </div>
+                </AdminSectionCard>
 
                 {/* 3. Visual Design */}
-                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-pink-50 dark:bg-pink-500/10 rounded-[var(--radius-main)] text-pink-600 dark:text-pink-400">
-                            <SparklesIcon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('visual_design')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{t('visual_design_desc')}</p>
-                        </div>
-                    </div>
-
+                <AdminSectionCard
+                    title={t('visual_design')}
+                    description={t('visual_design_desc')}
+                    icon={<SparklesIcon className="w-6 h-6" />}
+                >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 space-y-4">
@@ -415,21 +398,15 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             </div>
                         </div>
                     </div>
-                </div>
+                </AdminSectionCard>
 
 
                 {/* 4. Scoring Settings */}
-                <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-[var(--radius-main)] text-orange-600 dark:text-orange-400">
-                            <StarIcon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('scoring_settings')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{t('scoring_settings_desc')}</p>
-                        </div>
-                    </div>
-
+                <AdminSectionCard
+                    title={t('scoring_settings')}
+                    description={t('scoring_settings_desc')}
+                    icon={<StarIcon className="w-6 h-6" />}
+                >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         <div className="space-y-1">
                             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('min_points_label')}</label>
@@ -502,7 +479,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             </div>
                         </div>
                     </div>
-                </div>
+                </AdminSectionCard>
 
             </form>
 
