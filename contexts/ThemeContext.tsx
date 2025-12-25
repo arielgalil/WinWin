@@ -18,9 +18,22 @@ const [theme, setThemeState] = useState<Theme>(() => {
     });
 
     useEffect(() => {
+        console.log('[ThemeContext] Applying theme:', theme);
         const root = window.document.documentElement;
-        root.classList.remove('light', 'dark', 'light-mode', 'dark-mode');
+        const body = window.document.body;
+        
+        // Remove all possible theme indicators
+        const classesToRemove = ['light', 'dark', 'light-mode', 'dark-mode'];
+        root.classList.remove(...classesToRemove);
+        body.classList.remove(...classesToRemove);
+        
+        // Add current theme class
         root.classList.add(theme);
+        body.classList.add(theme);
+        
+        // Force update for Tailwind v4 manual dark mode if needed
+        // (Tailwind v4 usually just needs the class on any parent)
+        
         localStorage.setItem('app-theme', theme);
     }, [theme]);
 

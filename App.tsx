@@ -301,7 +301,7 @@ const AppInner: React.FC = () => {
     return (
         <ToastProvider>
             <RouteErrorBoundary>
-                <div className={`flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-[#020617]' : 'bg-[#F1F5F9]'}`}>
+                <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]">
                     {authLoading ? (
                         <LoadingScreen message={t('loading_system')} />
                     ) : (

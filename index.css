@@ -75,7 +75,9 @@
 }
 
 /* Manual .dark class support */
-.dark {
+:root.dark,
+html.dark,
+body.dark {
     /* Backgrounds */
     --bg-page: #020617; 
     --bg-card: #0f172a; 

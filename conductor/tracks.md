@@ -4,11 +4,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Fix Admin Syntax Error and YouTube Origin Mismatch
-*Link: [./conductor/tracks/admin_syntax_origin_fix_20251224/](./conductor/tracks/admin_syntax_origin_fix_20251224/)*
-
----
-
 ## [~] Track: Fix Broken Theme Toggle in Admin Panel
 *Link: [./conductor/tracks/admin_theme_toggle_fix_20251224/](./conductor/tracks/admin_theme_toggle_fix_20251224/)*
 
