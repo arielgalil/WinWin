@@ -197,36 +197,36 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 ))}
             </div>
 
-            <div ref={formRef} className="bg-gray-50 dark:bg-black/20 p-6 rounded-xl border border-gray-200 dark:border-white/10">
+            <div ref={formRef} className="bg-white dark:bg-black/20 p-6 rounded-xl border border-gray-300 dark:border-white/10 shadow-sm">
                 <div className="flex items-center justify-between mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 text-indigo-500">
+                        <div className="p-2 bg-white dark:bg-white/5 rounded-lg border border-gray-300 dark:border-white/10 text-indigo-500">
                             <TargetIcon className="w-5 h-5" />
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                 {editingId ? t('edit_goal_title') : t('add_goal_title')}
                             </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">{t('define_stages_desc')}</p>
+                            <p className="text-gray-600 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">{t('define_stages_desc')}</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-[0.85fr_0.68fr_0.68fr_2.04fr] gap-x-4 gap-y-2 items-start">
 
-                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1">
+                    <label className="text-gray-700 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1">
                         {t('stage_name_label_with_index', { index: editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1) })}<span className="text-red-500 mr-0.5">*</span>:
                     </label>
 
-                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
+                    <label className="text-gray-700 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
                         {t('start_label')}:
                     </label>
 
-                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
+                    <label className="text-gray-700 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
                         {t('end_score_label')}<span className="text-red-500 mr-0.5">*</span>:
                     </label>
 
-                    <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
+                    <label className="text-gray-700 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
                         {t('end_prize_label')}:
                     </label>
 
@@ -238,30 +238,30 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             maxLength={30}
                             placeholder={t('stage_name_placeholder')}
                             onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
-                            className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-gray-200 dark:border-white/10'}`}
+                            className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-gray-300 dark:border-white/10'}`}
                         />
                         <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
                             {!formState.name && (
-                                <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
+                                <span className="text-[9px] font-bold text-red-500 flex items-center gap-1">
                                     <span>⚠️</span>
                                     <span>{t('required_field')}</span>
                                 </span>
                             )}
-                            <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-400' : 'text-gray-400'}`}>
+                            <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-500' : 'text-gray-500'}`}>
                                 {formState.name?.length || 0}/30
                             </span>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-2 h-[38px]">
-                        <div className="flex-1 flex items-center justify-center bg-white/50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 h-full overflow-hidden">
-                            <span className="text-gray-600 dark:text-gray-300 font-mono font-bold text-sm truncate px-1">{formatNumberWithCommas(minScoreAllowed)}</span>
+                        <div className="flex-1 flex items-center justify-center bg-white dark:bg-white/5 rounded-lg border border-gray-300 dark:border-white/10 h-full overflow-hidden">
+                            <span className="text-gray-800 dark:text-gray-300 font-mono font-bold text-sm truncate px-1">{formatNumberWithCommas(minScoreAllowed)}</span>
                         </div>
                         <span className="text-gray-400 font-black text-xl pb-0.5">←</span>
                     </div>
 
                     <div className="relative">
-                        <div className={`flex items-center rounded-lg border transition-all h-[38px] bg-white dark:bg-white/5 ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-gray-200 dark:border-white/10 focus-within:ring-2 focus-within:ring-indigo-500'}`}>
+                        <div className={`flex items-center rounded-lg border transition-all h-[38px] bg-white dark:bg-white/5 shadow-sm ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-gray-300 dark:border-white/10 focus-within:ring-2 focus-within:ring-indigo-500'}`}>
                             <input
                                 type="text"
                                 value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
@@ -289,8 +289,8 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         </div>
                     </div>
 
-                    <div className="flex gap-4 bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-200 dark:border-white/10 min-h-[105px] items-stretch">
-                        <div className="w-[80px] h-[80px] bg-gray-100 dark:bg-black/40 rounded-lg border border-gray-200 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group self-center">
+                    <div className="flex gap-4 bg-white dark:bg-white/5 rounded-xl p-3 border border-gray-300 dark:border-white/10 min-h-[105px] items-stretch shadow-sm">
+                        <div className="w-[80px] h-[80px] bg-white dark:bg-black/40 rounded-lg border border-gray-300 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group self-center">
                             {formState.image_type === 'upload' && formState.image_value ? (
                                 <img src={formState.image_value} className="w-full h-full object-cover" />
                             ) : (
@@ -309,10 +309,10 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     }}
                                     className="flex items-center gap-2 group cursor-pointer"
                                 >
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-500'}`}>
                                         {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{t('emoji')}</span>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-300'}`}>{t('emoji')}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -323,10 +323,10 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     }}
                                     className="flex items-center gap-2 group cursor-pointer"
                                 >
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-500'}`}>
                                         {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{t('image')}</span>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-300'}`}>{t('image')}</span>
                                 </button>
                             </div>
 

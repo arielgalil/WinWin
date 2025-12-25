@@ -183,20 +183,20 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('institution_name')}</label>
+                            <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('institution_name')}</label>
                             <input 
                                 value={formData.school_name || ''} 
                                 onChange={e => updateForm({ school_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium shadow-sm" 
                                 placeholder={t('school_name_placeholder')} 
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
+                            <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
                             <input 
                                 value={formData.competition_name || ''} 
                                 onChange={e => updateForm({ competition_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-medium shadow-sm" 
                                 placeholder={t('competition_name_placeholder')} 
                             />
                         </div>
@@ -239,7 +239,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.logo_url || ''}
                                         onChange={e => updateForm({ logo_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono shadow-sm"
                                         placeholder="https://image-url.com/logo.png"
                                     />
                                     <div className="flex gap-3">
@@ -409,30 +409,30 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('min_points_label')}</label>
+                            <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('min_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('max_points_label')}</label>
+                            <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('max_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('points_step_label')}</label>
+                            <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('points_step_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
                             />
                         </div>
                     </div>
@@ -458,16 +458,16 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <h4 className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
                         <div className="flex flex-col sm:flex-row gap-4 p-6 bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5">
                             <div className="flex-1 space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-gray-400">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm" placeholder={t('button_label_placeholder')} />
+                                <label className="text-[10px] font-bold uppercase text-gray-500">{t('button_label')}</label>
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm shadow-sm" placeholder={t('button_label_placeholder')} />
                             </div>
                             <div className="sm:w-32 space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-gray-400 text-center block">{t('points')}</label>
+                                <label className="text-[10px] font-bold uppercase text-gray-500 text-center block">{t('points')}</label>
                                 <input
                                     type="text"
                                     value={formatNumberWithCommas(newPresetValue || '')}
                                     onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
-                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center"
+                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
                                     placeholder="10"
                                 />
                             </div>

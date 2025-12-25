@@ -278,45 +278,45 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 />
 
                 <div className="mb-10">
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border border-[var(--border-subtle)]">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-subtle)] shadow-sm">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('full_name_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t('full_name_label')}</label>
                             <input
                                 required
                                 value={newUserFullName}
                                 onChange={e => setNewUserFullName(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder={t('full_name_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('email_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t('email_label')}</label>
                             <input
                                 required
                                 type="email"
                                 value={newUserEmail}
                                 onChange={e => setNewUserEmail(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder={t('email_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('password_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t('password_label')}</label>
                             <input
                                 required
                                 type="password"
                                 value={newUserPassword}
                                 onChange={e => setNewUserPassword(e.target.value)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
                                 placeholder={t('password_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('role_label')}</label>
+                            <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t('role_label')}</label>
                             <select
                                 value={newUserRole}
                                 onChange={e => setNewUserRole(e.target.value as any)}
-                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
+                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
                             >
                                 <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
                                 <option value="teacher" className="bg-[var(--bg-card)]">{t('role_teacher_short')}</option>
@@ -353,18 +353,18 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id ? (
                                     <input 
-                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                         value={editFormData.full_name || ''} 
                                         onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
                                     />
                                 ) : (
                                     <div>
-                                        <div className="font-bold flex items-center gap-2 text-gray-900 dark:text-white text-sm">
+                                        <div className="font-bold flex items-center gap-2 text-[var(--text-main)] text-sm">
                                             {u.full_name}
                                             {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-500" />}
                                             {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold">{t('me')}</span>}
                                         </div>
-                                        <div className="text-[11px] text-gray-400 tabular-nums font-mono mt-0.5">{u.email}</div>
+                                        <div className="text-[11px] text-[var(--text-muted)] tabular-nums font-mono mt-0.5">{u.email}</div>
                                     </div>
                                 )
                             )
@@ -375,7 +375,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id && u.role !== 'superuser' ? (
                                     <select 
-                                        className="px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                         value={editFormData.role} 
                                         onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
                                     >
@@ -383,9 +383,9 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                         <option value="teacher" className="bg-white dark:bg-[#1e1e2e]">{t('role_teacher_short')}</option>
                                     </select>
                                 ) : (
-                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20' :
-                                        u.role === 'admin' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20' :
-                                            'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20'
+                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 ${u.role === 'superuser' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 shadow-sm' :
+                                        u.role === 'admin' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20 shadow-sm' :
+                                            'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 shadow-sm'
                                         }`}>
                                         {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
                                         {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
@@ -401,7 +401,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             render: (u) => (
                                 editingUserId === u.id ? (
                                     <select 
-                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                         value={editFormData.class_id || ''} 
                                         onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
                                     >
@@ -409,7 +409,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                         {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-white dark:bg-[#1e1e2e]">{c.name}</option>)}
                                     </select>
                                 ) : (
-                                    <span className="font-bold text-gray-700 dark:text-gray-300">
+                                    <span className="font-bold text-[var(--text-secondary)]">
                                         {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
                                     </span>
                                 )

@@ -161,18 +161,18 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
             >
                 <div className="space-y-6">
                     <div className="space-y-2">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
+                        <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
                         <div className="relative max-w-2xl">
                             <input
                                 type="password"
                                 value={geminiApiKey}
                                 onChange={e => setGeminiApiKey(e.target.value)}
                                 placeholder={t('ai_api_key_placeholder')}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12 shadow-sm"
                             />
                             <KeyIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                         </div>
-                        <p className="text-[11px] text-gray-400 dark:text-gray-500 italic mt-2">{t('ai_test_connection_desc')}</p>
+                        <p className="text-[11px] text-gray-500 dark:text-gray-500 italic mt-2">{t('ai_test_connection_desc')}</p>
                     </div>
                 </div>
             </AdminSectionCard>
@@ -184,20 +184,20 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
+                        <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
                         <textarea
                             value={DEFAULT_PROMPT}
                             disabled
-                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-xs leading-relaxed resize-none font-medium h-64 text-gray-400 dark:text-gray-500"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-gray-100 dark:bg-black/20 text-xs leading-relaxed resize-none font-medium h-64 text-gray-500 dark:text-gray-500"
                         />
                     </div>
                     <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('ai_custom_prompt_label')}</label>
+                        <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('ai_custom_prompt_label')}</label>
                         <textarea
                             value={customPrompt}
                             onChange={e => setCustomPrompt(e.target.value)}
                             placeholder={t('ai_custom_prompt_placeholder')}
-                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm"
                         />
                     </div>
                 </div>
@@ -214,23 +214,23 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             value={newKeyword}
                             onChange={e => setNewKeyword(e.target.value)}
                             placeholder={t('ai_keywords_placeholder')}
-                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm"
+                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm shadow-sm"
                         />
                         <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95">
                             <PlusIcon className="w-5 h-5" />
                         </button>
                     </form>
 
-                    <div className="flex flex-wrap gap-2.5 p-6 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 min-h-[80px]">
+                    <div className="flex flex-wrap gap-2.5 p-6 bg-white dark:bg-black/20 rounded-xl border border-gray-300 dark:border-white/5 min-h-[80px] shadow-sm">
                         {keywords.length === 0 ? (
-                            <div className="w-full flex items-center justify-center text-gray-400 text-sm italic py-2">
+                            <div className="w-full flex items-center justify-center text-gray-500 text-sm italic py-2 font-medium">
                                 {t('ai_no_tags')}
                             </div>
                         ) : (
                             keywords.map((kw, idx) => (
-                                <div key={idx} className="bg-white dark:bg-white/10 text-gray-700 dark:text-gray-200 px-4 py-1.5 rounded-full flex items-center gap-3 text-xs font-bold border border-gray-200 dark:border-white/10 shadow-sm animate-in zoom-in-95">
+                                <div key={idx} className="bg-slate-50 dark:bg-white/10 text-gray-800 dark:text-gray-200 px-4 py-1.5 rounded-full flex items-center gap-3 text-xs font-bold border border-gray-300 dark:border-white/10 shadow-sm animate-in zoom-in-95">
                                     <span>{kw}</span>
-                                    <button onClick={() => removeKeyword(kw)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                    <button onClick={() => removeKeyword(kw)} className="text-gray-500 hover:text-red-500 transition-colors">
                                         <XIcon className="w-3.5 h-3.5" />
                                     </button>
                                 </div>

@@ -12,16 +12,16 @@
   --bg-input: white;
   
   /* Text */
-  --text-main: var(--color-slate-900);
-  --text-secondary: var(--color-slate-600);
-  --text-muted: var(--color-slate-400);
+  --text-main: #000000;
+  --text-secondary: #1e293b; /* Slate 800 */
+  --text-muted: #475569; /* Slate 600 */
   --text-on-primary: white;
   --text-primary: var(--color-indigo-600);
 
   /* Borders & Dividers */
-  --border-main: var(--color-slate-200);
-  --border-subtle: var(--color-slate-100);
-  --divide-main: var(--color-slate-100);
+  --border-main: #cbd5e1; /* Slate 300 */
+  --border-subtle: #e2e8f0; /* Slate 200 */
+  --divide-main: #e2e8f0; /* Slate 200 */
   
   /* Brand / Primary */
   --primary-base: var(--color-indigo-600);
@@ -33,6 +33,10 @@
   --status-success-text: var(--color-emerald-700);
   --status-error-bg: var(--color-red-50);
   --status-error-text: var(--color-red-700);
+  
+  /* Effects */
+  --input-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   
   /* Dimensions */
   --radius-main: 0.75rem; /* 12px */

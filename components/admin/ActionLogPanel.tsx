@@ -188,46 +188,46 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                     >
                         <div className="custom-scrollbar overflow-x-auto flex-1 h-full">
                             <table className="w-full text-right border-collapse">
-                                <thead className="sticky top-0 bg-gray-50 dark:bg-white/5 z-10 text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">
+                                <thead className="sticky top-0 bg-slate-50 dark:bg-white/5 z-10 text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-wider shadow-sm">
                                     <tr>
-                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('time')}</th>
-                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('performer')}</th>
-                                        <th className="p-4 border-b border-gray-200 dark:border-white/10">{t('description')}</th>
-                                        <th className="p-4 border-b border-gray-200 dark:border-white/10 text-center">{t('points')}</th>
-                                        {isAdmin && <th className="p-4 border-b border-gray-200 dark:border-white/10 text-center">{t('actions')}</th>}
+                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('time')}</th>
+                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('performer')}</th>
+                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('description')}</th>
+                                        <th className="p-4 border-b border-gray-300 dark:border-white/10 text-center">{t('points')}</th>
+                                        {isAdmin && <th className="p-4 border-b border-gray-300 dark:border-white/10 text-center">{t('actions')}</th>}
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                <tbody className="divide-y divide-gray-200 dark:divide-white/5">
                                     {logs.map((log) => {
                                         const isMine = log.user_id === currentUser?.id;
                                         const isCancelled = log.is_cancelled;
                                         const isEditing = editingLogId === log.id;
 
                                         return (
-                                            <tr key={log.id} className={`group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                                                <td className="p-4 text-xs text-gray-400 font-mono">
+                                            <tr key={log.id} className={`group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                                                <td className="p-4 text-xs text-gray-500 dark:text-gray-400 font-mono font-bold">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-xs font-semibold whitespace-nowrap ${isMine ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-900 dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)] dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className="text-sm text-gray-600 dark:text-gray-300 font-medium line-clamp-1">{log.description}</span>
+                                                        <span className="text-sm text-gray-700 dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
-                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className={`text-sm font-bold tabular-nums ${log.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
                                                         </span>
                                                     )}
@@ -276,7 +276,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                 {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
                                 <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
                             </button>
-                            <div className="bg-white dark:bg-black/20 rounded-xl p-6 flex-1 overflow-y-auto border border-gray-100 dark:border-white/5 custom-scrollbar text-gray-700 dark:text-gray-200">
+                            <div className="bg-slate-50 dark:bg-black/20 rounded-xl p-6 flex-1 overflow-y-auto border border-gray-300 dark:border-white/5 custom-scrollbar text-gray-800 dark:text-gray-200 shadow-inner">
                                 {renderFormattedSummary(summary || '')}
                             </div>
                         </AdminSectionCard>

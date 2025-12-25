@@ -337,19 +337,19 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('group_name_placeholder')}</label>
+                                        <label className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('group_name_placeholder')}</label>
                                         <input 
                                             value={newClassName} 
                                             onChange={e => setNewClassName(e.target.value)} 
                                             placeholder={t('group_name_placeholder')} 
-                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                             autoFocus 
                                         />
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('group_color_label')}</label>
-                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10">
+                                        <label className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('group_color_label')}</label>
+                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 shadow-sm">
                                             {AVAILABLE_COLORS.map(c => (
                                                 <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#1e1e2e] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
                                             ))}
@@ -376,7 +376,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         <div className={`w-8 h-8 rounded-[var(--radius-main)] ${cls.color} flex items-center justify-center text-white text-[10px] shadow-sm`}>
                                             <UsersIcon className="w-4 h-4" />
                                         </div>
-                                        <span className="font-bold text-gray-900 dark:text-white">{cls.name}</span>
+                                        <span className="font-bold text-[var(--text-main)]">{cls.name}</span>
                                     </div>
                                 )
                             },

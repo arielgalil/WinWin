@@ -123,8 +123,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
             >
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-gray-50 dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 shadow-sm">
-                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">{t('add_message_card')}</label>
+                    <div className="bg-white dark:bg-black/20 p-6 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/5 shadow-sm">
+                        <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-4">{t('add_message_card')}</label>
                         <form onSubmit={handleAdd} className="space-y-4">
                             <div className="relative">
                                 <textarea
@@ -132,9 +132,9 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                     onChange={e => setNewMessage(e.target.value)}
                                     maxLength={150}
                                     placeholder={t('write_encouraging_msg')}
-                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none"
+                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none"
                                 />
-                                <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[9px] font-bold ${newMessage.length >= 140 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500 opacity-80'}`}>
+                                <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[9px] font-bold ${newMessage.length >= 140 ? 'text-red-500' : 'text-gray-500 dark:text-gray-500 opacity-80'}`}>
                                     {newMessage.length}/150
                                 </div>
                             </div>
@@ -160,14 +160,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 </div>
 
                 <div className="lg:col-span-2 space-y-4">
-                    <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <h4 className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider flex justify-between items-center">
                         <span>{t('active_messages_list', { count: messages.length })}</span>
                     </h4>
 
-                    <div className="bg-gray-50 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-100 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
+                    <div className="bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
                         <AnimatePresence initial={false}>
                             {messages.length === 0 ? (
-                                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm italic">
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm italic font-medium">
                                     {t('no_data')}
                                 </div>
                             ) : (
@@ -178,7 +178,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                         initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/40' : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-500/30'}`}
+                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 shadow-md' : 'bg-slate-50 dark:bg-white/5 border-gray-200 dark:border-white/10 shadow-sm hover:border-gray-300 hover:bg-white dark:hover:border-indigo-500/30'}`}
                                     >
                                         {/* Message Text Area */}
                                         <div className="flex-1 min-w-0">
