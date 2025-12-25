@@ -20,9 +20,9 @@ This plan outlines the steps to unify the Admin Panel UI, ensuring consistency a
 - [x] **Task: Unify Points/Goals Management UI.** Refactor the Points and Goals areas to use the new shared components. (8a6f8a9)
 - [x] **Task: Conductor - User Manual Verification 'Area-by-Area Unification' (Protocol in workflow.md)**
 
-## Phase 4: Quality Assurance & Polishing
+## Phase 4: Quality Assurance & Polishing [checkpoint: b02e956]
 - [x] **Task: Audit i18n Coverage.** Ensure all admin screens use the translation system exclusively. (1f69f9d)
 - [x] **Task: Verify Mobile Touch Targets.** Perform a pass over all admin screens to ensure min 44px hit areas. (643a0de)
 - [x] **Task: Refine Border Radius.** Apply subtle rounded corners to all cards, except for the bottom edges of charts/graphs. (36e0893)
 - [x] **Task: Final UI/UX Consistency Pass.** Ensure spacing, typography, and animations are perfectly aligned across all areas. (d5583e9)
-- [~] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Quality Assurance & Polishing' (Protocol in workflow.md)**
