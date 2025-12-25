@@ -207,7 +207,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'he' })}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                    className={`flex-1 justify-center flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language !== 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
                                         {formData.language !== 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
@@ -217,7 +217,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'en' })}
-                                    className={`flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language === 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                    className={`flex-1 justify-center flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language === 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}
                                 >
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language === 'en' ? 'border-indigo-500' : 'border-gray-400'}`}>
                                         {formData.language === 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
@@ -280,14 +280,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'loop' })}
-                                            className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
                                         >
                                             {t('loop')}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'once' })}
-                                            className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-white dark:bg-[#3A3B3C] text-indigo-600 shadow-sm' : 'text-gray-500 dark:text-gray-400'}`}
                                         >
                                             {t('once')}
                                         </button>
