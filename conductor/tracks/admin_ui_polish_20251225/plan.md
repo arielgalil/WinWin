@@ -17,10 +17,8 @@
 - [x] Task: Conductor - User Manual Verification 'Visual Polish & Unification' (Protocol in workflow.md) [668586d]
 
 ## Phase 3: Score Formatting & Theme Logic
-- [x] Task: Implement RTL Score Formatting. [a443399]
-    - [ ] Subtask: Locate score display components (Ticker, Leaderboard, Toasts).
-    - [ ] Subtask: Create or update a formatting utility to ensure format is `100+` (number then sign) for positive numbers.
-- [x] Task: Enforce Theme Preference. [a443399]
+- [x] Task: Implement RTL Score Formatting. [9e9ebd2]
+- [x] Task: Enforce Theme Preference. [9e9ebd2]
     - [ ] Subtask: Modify `ThemeContext` (or equivalent) to ignore `window.matchMedia`.
     - [ ] Subtask: Ensure initialization logic only reads from `localStorage` or defaults to a hardcoded value (e.g., 'light'), ignoring the system preference.
-- [ ] Task: Conductor - User Manual Verification 'Score Formatting & Theme Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Score Formatting & Theme Logic' (Protocol in workflow.md) [9e9ebd2]
