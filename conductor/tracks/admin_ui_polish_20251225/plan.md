@@ -16,7 +16,7 @@
     - [ ] Subtask: Refactor `Settings`, `Goals`, `Users`, `Classes`, `Messages`, `Points`, and `Logs` managers to use this standard container.
 - [x] Task: Conductor - User Manual Verification 'Visual Polish & Unification' (Protocol in workflow.md) [668586d]
 
-## Phase 3: Score Formatting & Theme Logic
+## Phase 3: Score Formatting & Theme Logic [checkpoint: 96acaae]
 - [x] Task: Implement RTL Score Formatting. [9e9ebd2]
 - [x] Task: Enforce Theme Preference. [9e9ebd2]
     - [ ] Subtask: Modify `ThemeContext` (or equivalent) to ignore `window.matchMedia`.
