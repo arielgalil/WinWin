@@ -60,6 +60,7 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
             fs: 0,
             rel: 0,
             mute: 0,
+            enablejsapi: 1,
             origin: window.location.origin
         };
 
