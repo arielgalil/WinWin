@@ -10,7 +10,7 @@
     - [x] Subtask: Determine if the existing component can be adapted or if a new common component is required.
 - [x] Task: Conductor - User Manual Verification 'Analysis and Component Identification' (Protocol in workflow.md)
 
-## Phase 2: Implementation - Standardization
+## Phase 2: Implementation - Standardization [checkpoint: 6bc00d1]
 - [x] Task: Develop or Refactor a common `ConfirmationModal` component. [fdab77b]
     - [x] Subtask: Write failing tests for the `ConfirmationModal` component covering visual, behavioral, and accessibility requirements. (Red Phase)
     - [x] Subtask: Implement the `ConfirmationModal` component to pass tests, replicating the design and behavior of the reference modal. (Green Phase)
