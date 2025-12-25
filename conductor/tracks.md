@@ -21,5 +21,10 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Admin UI Polish & Score Formatting
+## [x] Track: Admin UI Polish & Score Formatting
 *Link: [./conductor/tracks/admin_ui_polish_20251225/](./conductor/tracks/admin_ui_polish_20251225/)*
+
+---
+
+## [~] Track: Admin Panel Enhancements & Fixes
+*Link: [./conductor/tracks/admin_enhancements_20251225/](./conductor/tracks/admin_enhancements_20251225/)*
