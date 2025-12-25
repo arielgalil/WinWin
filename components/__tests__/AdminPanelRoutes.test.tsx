@@ -67,7 +67,7 @@ describe('AdminPanel Route Mapping', () => {
     onViewDashboard: vi.fn(),
   };
 
-  it('does NOT map "school" tab to "settings" anymore', () => {
+  it('maps legacy "school" tab to "settings"', () => {
     vi.mocked(ReactRouterDOM.useParams).mockReturnValue({ slug: 'test-slug', tab: 'school' });
     
     render(
@@ -79,8 +79,7 @@ describe('AdminPanel Route Mapping', () => {
     );
     
     const sidebar = screen.getByTestId('sidebar');
-    expect(sidebar.getAttribute('data-active-tab')).not.toBe('settings');
-    expect(sidebar.getAttribute('data-active-tab')).toBe('school');
+    expect(sidebar.getAttribute('data-active-tab')).toBe('settings');
   });
 
   it('uses "settings" directly', () => {

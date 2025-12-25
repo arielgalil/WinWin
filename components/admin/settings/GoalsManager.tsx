@@ -32,7 +32,7 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
                         type="button"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(e); }}
                         className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
-                        title="מחיקה"
+                        title={t('delete_stage')}
                     >
                         <TrashIcon className="w-3.5 h-3.5" />
                     </button>
@@ -40,7 +40,7 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
                         type="button"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEdit(e); }}
                         className="w-7 h-7 flex items-center justify-center bg-white dark:bg-white/5 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-md transition-all border border-gray-200 dark:border-white/10"
-                        title="עריכה"
+                        title={t('edit_stage_title')}
                     >
                         <EditIcon className="w-3.5 h-3.5" />
                     </button>
@@ -128,7 +128,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
         }
 
         if (formState.target_score <= minScoreAllowed) {
-            setFormError(`היעד חייב להיות גבוה מהניקוד ההתחלתי (${formatNumberWithCommas(minScoreAllowed)})`);
+            setFormError(t('goal_score_error', { minScore: formatNumberWithCommas(minScoreAllowed) }));
             return;
         }
         let updated = [...goals];
@@ -234,7 +234,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             type="text"
                             value={formState.name}
                             maxLength={30}
-                            placeholder="למשל: המשימה הראשונה"
+                            placeholder={t('stage_name_placeholder')}
                             onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
                             className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-gray-200 dark:border-white/10'}`}
                         />
@@ -242,7 +242,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             {!formState.name && (
                                 <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
                                     <span>⚠️</span>
-                                    <span>שדה חובה</span>
+                                    <span>{t('required_field')}</span>
                                 </span>
                             )}
                             <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-400' : 'text-gray-400'}`}>
@@ -275,7 +275,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
                                 <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
                                     <span>⚠️</span>
-                                    <span>ניקוד נמוך מדי</span>
+                                    <span>{t('score_too_low')}</span>
                                 </span>
                             )}
                             {pointsNeeded > 0 && (
@@ -310,7 +310,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
                                         {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>אמוג'י</span>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{t('emoji')}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -324,7 +324,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-gray-400'}`}>
                                         {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>תמונה</span>
+                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300'}`}>{t('image')}</span>
                                 </button>
                             </div>
 
@@ -338,13 +338,13 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     }}
                                     className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
                                 >
-                                    <span>הכנס אמוג'י</span>
+                                    <span>{t('insert_emoji')}</span>
                                     <span className="text-sm">🍦</span>
                                 </button>
                             ) : (
                                 <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
                                     {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
-                                    <span>{isGoalUploading ? 'מעלה...' : 'העלה תמונה'}</span>
+                                    <span>{isGoalUploading ? t('uploading') : t('upload_file')}</span>
                                     <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
                                 </label>
                             )}
@@ -361,11 +361,11 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20'
                                 }`}
                         >
-                            {editingId ? 'עדכן שלב/יעד' : '+ הוסף שלב/יעד'}
+                            {editingId ? t('update_stage_button') : t('add_stage_button')}
                         </button>
                         {editingId && (
                             <button type="button" onClick={() => resetForm()} className="w-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-bold text-[10px] py-1 text-center">
-                                ביטול עריכה
+                                {t('cancel_edit')}
                             </button>
                         )}
                     </div>
@@ -395,18 +395,18 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">הכנס אמוג'י בעצמך:</label>
+                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">{t('enter_emoji_manual')}:</label>
                                 <input
                                     type="text"
                                     value={formState.image_value}
                                     onChange={e => setFormState(prev => ({ ...prev, image_value: e.target.value }))}
                                     className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-3xl text-center outline-none focus:ring-2 focus:ring-indigo-500"
-                                    placeholder="הכנס אמוג'י..."
+                                    placeholder={t('insert_emoji')}
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">או בחר מהמהירים:</label>
+                                <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">{t('choose_quick_emoji')}:</label>
                                 <div className="grid grid-cols-5 gap-2">
                                     {quickEmojis.map(emoji => (
                                         <button
@@ -435,7 +435,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 }}
                                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
                             >
-                                <span>אישור ובחירה</span>
+                                <span>{t('confirm_selection')}</span>
                                 <CheckIcon className="w-5 h-5" />
                             </button>
                         </div>

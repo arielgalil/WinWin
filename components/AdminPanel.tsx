@@ -44,7 +44,7 @@ interface AdminPanelProps {
   onRefreshData: () => void;
   onViewDashboard: () => void;
   isSuperAdmin?: boolean;
-  initialTab?: 'points' | 'school';
+  initialTab?: 'points' | 'settings';
   campaignRole?: 'admin' | 'teacher' | 'superuser' | null;
 }
 
@@ -73,6 +73,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const isSuper = checkIsSuperUser(user.role) || checkIsSuperUser(campaignRole);
 
   const activeTab = useMemo(() => {
+    if (activeTabFromUrl === 'school') return 'settings';
     if (activeTabFromUrl) return activeTabFromUrl as TabType;
     if (initialTab) return initialTab as TabType;
     return isSuper || isAdmin ? 'settings' : 'points';

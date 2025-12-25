@@ -80,8 +80,8 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
 
     const removeKeyword = (kw: string) => {
         openConfirmation({
-            title: 'Delete Keyword',
-            message: `Are you sure you want to delete the keyword "${kw}"?`,
+            title: t('delete_keyword_title'),
+            message: t('delete_keyword_confirm', { kw: kw }),
             onConfirm: () => {
                 closeConfirmation();
                 setKeywords(keywords.filter(k => k !== kw));
