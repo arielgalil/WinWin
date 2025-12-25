@@ -59,6 +59,7 @@ export const AdminTable = <T extends Record<string, any>>({
               {data.map((item) => (
                 <MotionTr
                   key={String(item[keyField])}
+                  data-testid={`row-${String(item[keyField])}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -72,7 +73,7 @@ export const AdminTable = <T extends Record<string, any>>({
                   ))}
                   {actions && (
                     <td className="p-4">
-                      <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                         {actions(item)}
                       </div>
                     </td>
@@ -110,7 +111,7 @@ export const AdminTable = <T extends Record<string, any>>({
               </div>
               
               {actions && (
-                <div className="mt-4 pt-4 border-t border-[var(--divide-main)] flex justify-end gap-3" onClick={(e: any) => e.stopPropagation()}>
+                <div className="mt-4 pt-4 border-t border-[var(--divide-main)] flex justify-end gap-2" onClick={(e: any) => e.stopPropagation()}>
                   {actions(item)}
                 </div>
               )}

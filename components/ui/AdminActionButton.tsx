@@ -28,6 +28,7 @@ export const AdminActionButton: React.FC<AdminActionButtonProps> = ({
   return (
     <button
       onClick={onClick}
+      data-testid={`action-button-${variant}`}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
       title={title}
       disabled={disabled}

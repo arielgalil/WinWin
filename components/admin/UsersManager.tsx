@@ -426,20 +426,24 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 <button onClick={() => setEditingUserId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-[var(--radius-main)] transition-colors" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
                             </div>
                         ) : (
-                            <AdminRowActions
-                                onEdit={() => { setEditingUserId(u.id); setEditFormData(u); }}
-                                onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
-                                    openConfirmation({
-                                        title: t('delete_user'),
-                                        message: t('confirm_delete_campaign'),
-                                        confirmText: t('delete_user'),
-                                        isDanger: true,
-                                        onConfirm: () => handleDeleteUser(u.id)
-                                    });
-                                } : undefined}
-                                editTitle={t('edit_action')}
-                                deleteTitle={t('delete')}
-                            />
+                            // Security Rule: Competition Manager (admin) cannot edit or delete a Super Admin.
+                            // Only Super Admins can edit other Super Admins.
+                            (!isSuperUser(u.role) || isSuperUser(currentUser?.role)) ? (
+                                <AdminRowActions
+                                    onEdit={() => { setEditingUserId(u.id); setEditFormData(u); }}
+                                    onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
+                                        openConfirmation({
+                                            title: t('delete_user'),
+                                            message: t('confirm_delete_campaign'),
+                                            confirmText: t('delete_user'),
+                                            isDanger: true,
+                                            onConfirm: () => handleDeleteUser(u.id)
+                                        });
+                                    } : undefined}
+                                    editTitle={t('edit_action')}
+                                    deleteTitle={t('delete')}
+                                />
+                            ) : null
                         )
                     )}
                 />

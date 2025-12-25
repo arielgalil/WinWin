@@ -22,7 +22,7 @@ export const AdminRowActions: React.FC<AdminRowActionsProps> = ({
   deleteTitle = 'delete',
 }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-end gap-2 w-full">
       {/* 
         RTL Layout Strategy:
         In standard LTR DOM order (flex-row), the first element is on the left.
