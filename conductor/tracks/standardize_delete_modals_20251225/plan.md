@@ -21,7 +21,7 @@
     - [x] Subtask: For each delete flow, replace the existing modal implementation with the new `ConfirmationModal` component.
     - [x] Subtask: Update `i18n` keys for modal titles, messages, and button labels as needed in `he.ts` and `en.ts`.
     - [x] Subtask: Ensure dynamic content (e.g., entity name) is correctly passed to the `ConfirmationModal`.
-- [ ] Task: Conductor - User Manual Verification 'Implementation - Standardization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Implementation - Standardization' (Protocol in workflow.md) [a115e30]
 
 ## Phase 3: Testing and Verification
 - [ ] Task: Write failing integration tests for key delete flows. (Red Phase)
