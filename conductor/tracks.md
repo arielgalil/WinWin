@@ -4,7 +4,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-
+## [ ] Track: Standardize Delete Modals
+*Link: [./conductor/tracks/standardize_delete_modals_20251225/](./conductor/tracks/standardize_delete_modals_20251225/)*
 
 ---
 
