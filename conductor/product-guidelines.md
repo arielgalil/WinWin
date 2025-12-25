@@ -16,6 +16,7 @@
 ## 4. Modals
 - **Modals:**
     - Required for **critical actions** (Deletion, Resetting data, etc.).
+    - **Destructive Actions:** Must feature a red container border and "Anti-Nudge" buttons (Delete and Cancel must be visually equal in weight/color to force conscious decision-making).
     - **Labels:** Buttons must be explicit and descriptive: "Delete [Student Name]" (Red) vs. "Cancel" (Gray).
     - **Focus Management:** Implement focus trapping within modals to ensure keyboard navigation remains logical.
 
@@ -35,7 +36,7 @@
 
 ## 7. Button Layout Strategy (RTL Table/List Rows)
 *Arrange action buttons from Right to Left to match reading order:*
-1.  **Right-most:** **Delete** (Icon: Trash). *Must have a distinct visible margin separating it from other actions.*
+1.  **Right-most:** **Delete** (Icon: Trash). *Must have a distinct visible margin (ml-6) separating it from other actions.*
 2.  **Middle:** **Secondary Actions** (e.g., View History, Duplicate).
 3.  **Left-most:** **Edit** (Icon: Pencil).
-*Note: Action buttons must remain visible by default. Avoid hiding primary actions in overflow menus ("...") unless the interface is critically crowded.*
+*Note: Action buttons must remain visible by default and must be vertically aligned across table rows (using justify-end in RTL) to ensure UI consistency. Avoid hiding primary actions in overflow menus ("...") unless the interface is critically crowded.*

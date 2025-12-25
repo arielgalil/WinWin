@@ -13,16 +13,30 @@
     * **Timeline:** Undefined/Flexible. The competition ends when the goal is reached, not by a specific date.
 
 ## User Roles & Permissions
+
 1.  **Super Admin (משתמש על):**
-    * **Capability:** Full CRUD on Competitions (Create/Delete/Archive).
-    * **Interface:** Dedicated Super Admin Dashboard.
+
+    *   **Capability:** Full CRUD on Competitions (Create/Delete/Archive).
+
+    *   **Hierarchical Authority:** Only Super Admins can manage other Super Admin profiles.
+
+    *   **Interface:** Dedicated Super Admin Dashboard.
+
 2.  **Competition Manager (מנהל תחרות):**
-    * **Capability:** The central power user.
+
+    *   **Capability:** The central power user.
+
         * Manage Users (Teachers/Students) and Groups.
+
+        * **Restriction:** Cannot edit or delete Super Admin users.
+
         * Manage Configuration (Target score, Prize image, Rules).
+
         * Full Data Control: Can edit/delete score transactions for *anyone*.
+
         * View Reports: Detailed breakdown of progress per group/student.
-    * **Interface:** Comprehensive Admin Panel (Must be Mobile-Friendly).
+
+    *   **Interface:** Comprehensive Admin Panel (Must be Mobile-Friendly).
 3.  **Teacher (מורה):**
     * **Capability:** Restricted input. Can only award points to *their* specific assigned students or *their* assigned group.
     * **Interface:** "Quick Input" mobile-first screen for rapid scoring in the field.
@@ -37,9 +51,9 @@
 * **Purpose:** Total control over the competition lifecycle and data.
 * **Requirements:**
     * **Data Grids:** Advanced tables with filtering, sorting, and bulk actions (e.g., "Add 50 points to selected students").
-    * **CRUD Operations:** Create/Edit/Delete groups and students with strict validation.
-    * **Audit Logs:** Ability to see who gave points to whom and when.
-    * **Responsiveness:** Must be fully functional on Desktop and Mobile (using specific RTL button layouts defined in Guidelines).
+        *   **CRUD Operations:** Create/Edit/Delete groups and students with strict validation and **enforced delete safety protocols**.
+        *   **Audit Logs:** Ability to see who gave points to whom and when.
+        *   **Responsiveness:** Must be fully functional on Desktop and Mobile (using specific RTL button layouts and destructive action safety gaps defined in Guidelines).
 
 ### 2. The Quick Input Screen (Teacher)
 * **Purpose:** Rapid data entry in real-time (e.g., in class).
@@ -66,7 +80,7 @@ WinWin is a gamified education and competition platform designed to transform th
 ## Core Goals
 *   **Engagement through Gamification:** Increase student motivation by turning educational milestones into rewarding game-like achievements.
 *   **Community Building:** Use school-wide leaderboards and collective "Mission Meters" to build a shared sense of progress and institutional pride.
-*   **Streamlined Management:** Provide educators with a powerful, mobile-friendly interface for managing competitions without administrative overhead.
+*   **Streamlined Management:** Provide educators with a visually cohesive, mobile-first interface powered by a shared UI component library for managing competitions without administrative overhead.
 
 ## Key Features
 *   **Real-time Visualization:** Dynamic leaderboards, podiums, and progress meters that update instantly as points are awarded.
