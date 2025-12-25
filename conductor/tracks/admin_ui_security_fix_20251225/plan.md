@@ -26,16 +26,30 @@ Focus: Visual tweaks in Settings and the Groups Management table.
     - [x] Sub-task: Refactor and verify.
 - [x] Task: Conductor - User Manual Verification 'Groups & Settings UI' (Protocol in workflow.md)
 
-## Phase 3: Staff Security & Layout
+## Phase 3: Staff Security & Layout [checkpoint: 628e997]
+
 Focus: Permission-based UI hiding and button alignment in the Users/Staff Manager.
 
-- [ ] Task: Security - Hide Actions for Super Admins
-    - [ ] Sub-task: Create test case: Login as Manager -> Render Staff Table -> Assert Super Admin row has NO Edit/Delete buttons.
-    - [ ] Sub-task: Create test case: Login as Super Admin -> Render Staff Table -> Assert buttons exist.
-    - [ ] Sub-task: Implement conditional rendering logic based on target user role vs. current user role.
-    - [ ] Sub-task: Refactor and verify.
-- [ ] Task: Staff Table - Button Alignment
-    - [ ] Sub-task: Create/Update test (snapshot or class check) for action column structure.
-    - [ ] Sub-task: Apply CSS fixes to ensure vertical alignment of action buttons across all rows.
-    - [ ] Sub-task: Refactor and verify.
-- [ ] Task: Conductor - User Manual Verification 'Staff Security & Layout' (Protocol in workflow.md)
+
+
+- [x] Task: Security - Hide Actions for Super Admins [d357688]
+
+    - [x] Sub-task: Create test case: Login as Manager -> Render Staff Table -> Assert Super Admin row has NO Edit/Delete buttons.
+
+    - [x] Sub-task: Create test case: Login as Super Admin -> Render Staff Table -> Assert buttons exist.
+
+    - [x] Sub-task: Implement conditional rendering logic based on target user role vs. current user role.
+
+    - [x] Sub-task: Refactor and verify.
+
+- [x] Task: Staff Table - Button Alignment [d357688]
+
+    - [x] Sub-task: Create/Update test (snapshot or class check) for action column structure.
+
+    - [x] Sub-task: Apply CSS fixes to ensure vertical alignment of action buttons across all rows.
+
+    - [x] Sub-task: Refactor and verify.
+
+- [x] Task: Conductor - User Manual Verification 'Staff Security & Layout' (Protocol in workflow.md)
+
+
