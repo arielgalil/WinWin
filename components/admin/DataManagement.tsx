@@ -236,13 +236,13 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                             <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-[var(--radius-main)]">
                                 <UploadIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{t('data_restore_title')}</h4>
+                            <h4 className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-widest">{t('data_restore_title')}</h4>
                         </div>
-                        <label className={`w-full flex flex-col items-center justify-center p-8 bg-gray-50/50 dark:bg-black/20 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-[var(--radius-container)] hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-400 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''}`}>
+                        <label className={`w-full flex flex-col items-center justify-center p-8 bg-slate-50 dark:bg-black/20 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-[var(--radius-container)] hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-400 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''}`}>
                             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-600 dark:text-blue-400">
                                 {isImporting ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <UploadIcon className="w-6 h-6" />}
                             </div>
-                            <span className="text-sm font-bold text-gray-600 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>
+                            <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>
                             <input type="file" accept=".json" onChange={handleImportTrigger} className="hidden" disabled={isImporting} />
                         </label>
                     </div>

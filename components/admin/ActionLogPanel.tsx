@@ -205,22 +205,22 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
                                         return (
                                             <tr key={log.id} className={`group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                                                <td className="p-4 text-xs text-gray-500 dark:text-gray-400 font-mono font-bold">
+                                                <td className="p-4 text-xs text-gray-900 dark:text-gray-400 font-mono font-bold">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)] dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-900 dark:text-cyan-400' : 'text-gray-900 dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
                                                         <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className="text-sm text-gray-700 dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
+                                                        <span className="text-sm text-gray-900 dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
