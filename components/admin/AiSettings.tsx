@@ -221,7 +221,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                         </button>
                     </form>
 
-                    <div className="flex flex-wrap gap-2.5 p-6 bg-white dark:bg-black/20 rounded-xl border border-gray-300 dark:border-white/5 min-h-[80px] shadow-sm">
+                    <div className="flex flex-wrap gap-2.5 p-6 bg-slate-50 dark:bg-black/20 rounded-xl border border-gray-300 dark:border-white/5 min-h-[80px] shadow-sm">
                         {keywords.length === 0 ? (
                             <div className="w-full flex items-center justify-center text-gray-500 text-sm italic py-2 font-medium">
                                 {t('ai_no_tags')}

@@ -331,7 +331,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 <div className="space-y-6">
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
-                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-gray-50 dark:bg-white/5 p-6 rounded-[var(--radius-main)] border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
+                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-slate-50 dark:bg-white/5 p-6 rounded-[var(--radius-main)] border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
                                 <h3 className="text-gray-900 dark:text-white font-bold text-base flex items-center gap-2 mb-2">
                                     {editingClass ? t('edit_group') : t('add_new_group')}
                                 </h3>

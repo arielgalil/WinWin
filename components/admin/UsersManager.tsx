@@ -278,7 +278,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 />
 
                 <div className="mb-10">
-                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-subtle)] shadow-sm">
+                    <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-5 gap-4 bg-slate-50 dark:bg-white/5 p-6 rounded-[var(--radius-main)] border border-gray-300 dark:border-[var(--border-subtle)] shadow-sm">
                         <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{t('full_name_label')}</label>
                             <input
