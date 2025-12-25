@@ -9,7 +9,7 @@
     - [ ] Subtask: Switch languages and verify all text updates in "Classes & Students Management".
 - [x] Task: Conductor - User Manual Verification 'Localization Audit & Fixes' (Protocol in workflow.md) [ef8a365]
 
-## Phase 2: Visual Polish & Unification
+## Phase 2: Visual Polish & Unification [checkpoint: a443399]
 - [x] Task: Standardize Goals Management buttons. [668586d]
 - [x] Task: Unify Admin Tab Cards. [668586d]
     - [ ] Subtask: Create/Refactor a reusable `AdminSectionCard` component (or similar) with props for Title, Icon, Description, and Content.
