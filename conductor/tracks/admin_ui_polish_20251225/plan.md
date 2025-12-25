@@ -1,13 +1,13 @@
 # Track Plan: Admin UI Polish & Score Formatting
 
 ## Phase 1: Localization Audit & Fixes
-- [x] Task: Audit `ClassesManager.tsx` for hardcoded strings. [6bc00d1]
+- [x] Task: Audit `ClassesManager.tsx` for hardcoded strings. [ef8a365]
     - [ ] Subtask: Scan file for Hebrew/English strings not wrapped in `t()`.
     - [ ] Subtask: Extract strings to `he.ts` and `en.ts`.
     - [ ] Subtask: Replace strings with `t('key')` calls.
-- [ ] Task: Verify localization.
+- [x] Task: Verify localization. [ef8a365]
     - [ ] Subtask: Switch languages and verify all text updates in "Classes & Students Management".
-- [ ] Task: Conductor - User Manual Verification 'Localization Audit & Fixes' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Localization Audit & Fixes' (Protocol in workflow.md) [ef8a365]
 
 ## Phase 2: Visual Polish & Unification
 - [ ] Task: Standardize Goals Management buttons.
