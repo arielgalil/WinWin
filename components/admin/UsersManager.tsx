@@ -434,7 +434,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                     onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
                                         openConfirmation({
                                             title: t('delete_user'),
-                                            message: t('confirm_delete_campaign'),
+                                            message: t('confirm_delete_user'),
                                             confirmText: t('delete_user'),
                                             isDanger: true,
                                             onConfirm: () => handleDeleteUser(u.id)

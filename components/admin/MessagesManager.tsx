@@ -10,6 +10,8 @@ import { useToast } from '../../hooks/useToast';
 
 import { normalizeString } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
+import { useConfirmation } from '../../hooks/useConfirmation';
+import { ConfirmationModal } from '../ui/ConfirmationModal';
 
 // Fix for framer-motion type mismatch
 const MotionDiv = motion.div as any;
@@ -37,6 +39,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
 
     const { showToast } = useToast();
     const { getErrorMessage } = useErrorFormatter();
+    const { modalConfig, openConfirmation } = useConfirmation();
 
     const placeholders = [
         { label: t('placeholder_institution_name'), value: '[שם המוסד]' },
@@ -101,7 +104,9 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     };
 
     return (
-                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
+        <>
+            <ConfirmationModal {...modalConfig} />
+            <div className="max-w-6xl mx-auto bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 <div className="flex flex-col gap-1 border-b border-gray-100 dark:border-white/5 pb-6">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-none">
                         <LayersIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {t('messages_mgmt_title')}
@@ -216,10 +221,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                         message: t('confirm_deletion'),
                                                         confirmText: t('delete_message'),
                                                         isDanger: true,
-                                                        onConfirm: () => {
-                                                            onDelete(msg.id);
-                                                            closeConfirmation();
-                                                        }
+                                                        onConfirm: () => onDelete(msg.id)
                                                     });
                                                 }}
                                                 onEdit={() => { setEditingId(msg.id); setEditText(msg.text); }}
@@ -237,5 +239,6 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 </div>
             </div>
         </div>
+    </>
     );
 };

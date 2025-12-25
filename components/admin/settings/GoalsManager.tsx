@@ -6,6 +6,7 @@ import { supabase } from '../../../supabaseClient';
 import { FormattedNumber } from '../../ui/FormattedNumber';
 import { ConfirmationModal } from '../../ui/ConfirmationModal';
 import { useLanguage } from '../../../hooks/useLanguage';
+import { useConfirmation } from '../../../hooks/useConfirmation';
 
 interface GoalsManagerProps {
     settings: AppSettings;
@@ -86,9 +87,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
     const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
-    const [modalConfig, setModalConfig] = useState<{ 
-        isOpen: boolean; title: string; message: string; confirmText?: string; isDanger: boolean; onConfirm: () => void; 
-    }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
+    const { modalConfig, openConfirmation } = useConfirmation();
 
     const minScoreAllowed = useMemo(() => {
         if (editingId) {
@@ -165,7 +164,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 confirmText={modalConfig.confirmText}
                 isDanger={modalConfig.isDanger}
                 onConfirm={modalConfig.onConfirm} 
-                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} 
+                onCancel={modalConfig.onCancel} 
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -177,8 +176,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         totalScore={totalScore} 
                         prevTarget={idx > 0 ? goals[idx - 1].target_score : 0} 
                         onEdit={() => { setEditingId(goal.id); setFormState(goal); }} 
-                        onDelete={() => setModalConfig({ 
-                            isOpen: true, 
+                        onDelete={() => openConfirmation({ 
                             title: t('delete_stage'), 
                             message: t('confirm_delete_stage'), 
                             confirmText: t('delete_stage'),
@@ -186,8 +184,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             onConfirm: () => { 
                                 const up = goals.filter(g => g.id !== goal.id); 
                                 setGoals(up); 
-                                onUpdateSettings(up, gridSize); 
-                                setModalConfig(prev => ({ ...prev, isOpen: false })); 
+                                onUpdateSettings(up, gridSize);
                             } 
                         })} 
                         isEditing={editingId === goal.id} 

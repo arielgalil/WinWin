@@ -7,6 +7,8 @@ import { useCompetitionData } from '../../hooks/useCompetitionData';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
+import { useConfirmation } from '../../hooks/useConfirmation';
+
 interface DataManagementProps {
     settings: AppSettings;
     onSave?: () => Promise<void>;
@@ -22,9 +24,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
     const [isResetting, setIsResetting] = useState(false);
     const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-    const [modalConfig, setModalConfig] = useState<{
-        isOpen: boolean; title: string; message: string; isDanger: boolean; onConfirm: () => void;
-    }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
+    const { modalConfig, openConfirmation } = useConfirmation();
 
     const handleExport = async (type: 'full' | 'settings' | 'staff' | 'structure') => {
         setIsExporting(true);
@@ -76,8 +76,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setModalConfig({
-            isOpen: true,
+        openConfirmation({
             title: t('restore_from_backup'),
             message: t('import_warning'),
             isDanger: true,
@@ -88,7 +87,6 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
 
     const processImport = async (file: File) => {
         setIsImporting(true);
-        setModalConfig(prev => ({ ...prev, isOpen: false }));
         try {
             const text = await file.text();
             const data = JSON.parse(text);
@@ -148,14 +146,12 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
         if (mode === 'scores') msg = t('reset_scores_warning');
         if (mode === 'full') msg = t('reset_full_warning');
 
-        setModalConfig({
-            isOpen: true,
+        openConfirmation({
             title: t('reset_data_title'),
             message: msg,
             isDanger: true,
             onConfirm: async () => {
                 setIsResetting(true);
-                setModalConfig(prev => ({ ...prev, isOpen: false }));
                 try {
                     const campaignId = settings.campaign_id;
                     if (!campaignId) return;
@@ -184,13 +180,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
-            <ConfirmationModal
-                isOpen={modalConfig.isOpen}
-                title={modalConfig.title}
-                message={modalConfig.message}
-                onConfirm={modalConfig.onConfirm}
-                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
-            />
+            <ConfirmationModal {...modalConfig} />
 
             <div className="bg-white dark:bg-[#1e1e2e] p-6 sm:p-8 rounded-[var(--radius-container)] border border-gray-200 dark:border-white/10 shadow-sm space-y-8">
                 {/* Header */}
@@ -270,7 +260,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                         <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
                             <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_logs_label')}</div>
                             <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_logs_desc')}</div>
-                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_logs_warning'), isDanger: true, onConfirm: () => handleReset('logs') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                            <button onClick={() => handleReset('logs')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_logs_btn')}
                             </button>
@@ -279,7 +269,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                         <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
                             <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_scores_label')}</div>
                             <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_scores_desc')}</div>
-                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_scores_warning'), isDanger: true, onConfirm: () => handleReset('scores') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                            <button onClick={() => handleReset('scores')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_scores_btn')}
                             </button>
@@ -288,7 +278,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                         <div className="p-6 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-200 dark:hover:border-red-500/20 transition-colors">
                             <div className="text-gray-900 dark:text-white font-bold text-sm mb-1">{t('reset_full_label')}</div>
                             <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mb-4 min-h-[2.5em]">{t('reset_full_desc')}</div>
-                            <button onClick={() => setModalConfig({ isOpen: true, title: t('reset_data_title'), message: t('reset_full_warning'), isDanger: true, onConfirm: () => handleReset('full') })} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
+                            <button onClick={() => handleReset('full')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-200 dark:border-white/10 hover:border-red-200 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_all_btn')}
                             </button>

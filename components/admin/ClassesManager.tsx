@@ -177,7 +177,6 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
             confirmText: t('delete_student'),
             isDanger: true,
             onConfirm: async () => {
-                closeConfirmation();
                 try {
                     await supabase.from('students').delete().eq('id', id);
                     showToast(t('student_deleted_success'), 'success');

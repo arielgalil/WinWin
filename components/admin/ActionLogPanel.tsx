@@ -10,6 +10,8 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { formatForWhatsApp, parseFormattedText } from '../../utils/whatsappUtils';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
+import { useConfirmation } from '../../hooks/useConfirmation';
+
 const MotionDiv = motion.div as any;
 
 interface ActionLogPanelProps {
@@ -43,9 +45,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     const [isProcessing, setIsProcessing] = useState(false);
     const [actionStatus, setActionStatus] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-    const [modalConfig, setModalConfig] = useState<{
-        isOpen: boolean; title: string; message: string; confirmText?: string; isDanger: boolean; onConfirm: () => void;
-    }>({ isOpen: false, title: '', message: '', isDanger: false, onConfirm: () => { } });
+    const { modalConfig, openConfirmation } = useConfirmation();
 
     const bottomRef = useRef<HTMLTableRowElement>(null);
 
@@ -117,14 +117,12 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         const actionVerb = log.is_cancelled ? t('restore') : t('cancel_short');
         const actionTitle = log.is_cancelled ? t('restore_action') : t('delete_log');
         
-        setModalConfig({
-            isOpen: true,
+        openConfirmation({
             title: actionTitle,
             message: t('modify_action_confirm', { action: actionVerb.toLowerCase() }),
             confirmText: actionTitle,
             isDanger: !log.is_cancelled,
             onConfirm: async () => {
-                setModalConfig(prev => ({ ...prev, isOpen: false }));
                 setIsProcessing(true);
                 try {
                     await onDelete(log.id);
@@ -169,15 +167,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
     return (
         <div className="max-w-6xl mx-auto space-y-8 flex flex-col pb-12 h-full relative" dir={isRTL ? 'rtl' : 'ltr'}>
-            <ConfirmationModal 
-                isOpen={modalConfig.isOpen} 
-                title={modalConfig.title} 
-                message={modalConfig.message} 
-                confirmText={modalConfig.confirmText}
-                isDanger={modalConfig.isDanger}
-                onConfirm={modalConfig.onConfirm} 
-                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} 
-            />
+            <ConfirmationModal {...modalConfig} />
 
             <AnimatePresence>
                 {actionStatus && (

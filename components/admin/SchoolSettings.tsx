@@ -164,8 +164,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         openConfirmation({
             title: t('delete_preset_title'),
             message: t('delete_preset_confirm', { label: presetToRemove?.label || '' }),
-            onConfirm: async () => {
-                closeConfirmation();
+            isDanger: true,
+            onConfirm: () => {
                 const updated = currentPresets.filter((_, i) => i !== index);
                 updateForm({ score_presets: updated });
             }
@@ -537,13 +537,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </div>
             )}
 
-            <ConfirmationModal
-                isOpen={modalConfig.isOpen}
-                title={modalConfig.title}
-                message={modalConfig.message}
-                onConfirm={modalConfig.onConfirm}
-                onCancel={() => closeConfirmation()}
-            />
+            <ConfirmationModal {...modalConfig} />
 
         </div>
     );

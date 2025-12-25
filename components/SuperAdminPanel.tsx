@@ -7,6 +7,7 @@ import { ConfirmationModal } from './ui/ConfirmationModal';
 import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/useToast';
+import { useConfirmation } from '../hooks/useConfirmation';
 import { VersionFooter } from './ui/VersionFooter';
 
 const { useNavigate } = ReactRouterDOM as any;
@@ -49,7 +50,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
         return true;
     });
 
-    const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; isDanger: boolean; showCancel?: boolean; onConfirm: () => void; }>({ isOpen: false, title: '', message: '', isDanger: false, showCancel: true, onConfirm: () => { } });
+    const { modalConfig, openConfirmation } = useConfirmation();
     const [showInstModal, setShowInstModal] = useState(false);
     const [instForm, setInstForm] = useState<Partial<Institution>>({ name: '', type: t('yeshiva'), contacts: [], crm_notes: '' });
 
@@ -112,9 +113,11 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     };
 
     const handleDeleteInstitution = async (id: string) => {
-        setModalConfig({
-            isOpen: true, title: t('delete_institution_title'), message: t('confirm_delete_institution'), isDanger: true, onConfirm: async () => {
-                setModalConfig(prev => ({ ...prev, isOpen: false }));
+        openConfirmation({
+            title: t('delete_institution_title'), 
+            message: t('confirm_delete_institution'), 
+            isDanger: true, 
+            onConfirm: async () => {
                 try {
                     const { error } = await supabase.from('institutions').delete().eq('id', id);
                     if (error) throw error;
@@ -180,13 +183,11 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     };
 
     const handleDeleteCampaign = async (id: string) => {
-        setModalConfig({
-            isOpen: true,
+        openConfirmation({
             title: t('delete_action'),
             message: t('confirm_delete_campaign'),
             isDanger: true,
             onConfirm: async () => {
-                setModalConfig(prev => ({ ...prev, isOpen: false }));
                 try {
                     const { error } = await supabase.from('campaigns').delete().eq('id', id);
                     if (error) throw error;
@@ -206,7 +207,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
 
     return (
         <div className={`min-h-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 flex flex-col admin-view`} dir={dir}>
-            <ConfirmationModal isOpen={modalConfig.isOpen} title={modalConfig.title} message={modalConfig.message} isDanger={modalConfig.isDanger} onConfirm={modalConfig.onConfirm} onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
+            <ConfirmationModal {...modalConfig} />
             <header className="bg-[var(--bg-card-header)] border-b border-[var(--border-main)] sticky top-0 z-40 px-4 h-16 shadow-sm shrink-0 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                     <div className="flex items-center gap-3">
