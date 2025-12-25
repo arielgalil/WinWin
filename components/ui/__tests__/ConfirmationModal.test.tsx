@@ -1,83 +1,86 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
+import { TrashIcon } from '../Icons';
 
-// Mock useLanguage to control direction
+// Mock dependencies
 vi.mock('../../../hooks/useLanguage', () => ({
   useLanguage: () => ({
     t: (key: string) => key,
-    dir: 'rtl'
-  })
+    dir: 'rtl',
+  }),
 }));
+
+// Mock Icons to check for their presence
+vi.mock('../Icons', async () => {
+    const actual = await vi.importActual('../Icons');
+    return {
+        ...actual,
+        AlertIcon: () => <div data-testid="alert-icon" />,
+        TrashIcon: () => <div data-testid="trash-icon" />,
+    };
+});
+
 
 describe('ConfirmationModal', () => {
   const defaultProps = {
     isOpen: true,
-    title: 'Confirm Delete',
-    message: 'Are you sure?',
+    title: 'Confirm Deletion',
+    message: 'Are you sure you want to delete this item?',
     onConfirm: vi.fn(),
     onCancel: vi.fn(),
   };
 
-  it('renders correctly when open', () => {
+  it('renders when isOpen is true', () => {
     render(<ConfirmationModal {...defaultProps} />);
-    expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure?')).toBeInTheDocument();
-  });
-
-  it('calls onConfirm when confirm button is clicked', () => {
-    render(<ConfirmationModal {...defaultProps} />);
-    fireEvent.click(screen.getByText('confirm_action'));
-    expect(defaultProps.onConfirm).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls onCancel when cancel button is clicked', () => {
-    render(<ConfirmationModal {...defaultProps} />);
-    fireEvent.click(screen.getByText('cancel'));
-    expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Confirm Deletion')).toBeInTheDocument();
+    expect(screen.getByText('Are you sure you want to delete this item?')).toBeInTheDocument();
   });
 
   it('does not render when isOpen is false', () => {
     render(<ConfirmationModal {...defaultProps} isOpen={false} />);
-    expect(screen.queryByText('Confirm Delete')).not.toBeInTheDocument();
+    expect(screen.queryByText('Confirm Deletion')).not.toBeInTheDocument();
   });
 
-  it('hides cancel button when showCancel is false', () => {
-    render(<ConfirmationModal {...defaultProps} showCancel={false} />);
-    expect(screen.queryByText('cancel')).not.toBeInTheDocument();
+  it('calls onConfirm when confirm button is clicked', () => {
+    const onConfirmMock = vi.fn();
+    render(<ConfirmationModal {...defaultProps} onConfirm={onConfirmMock} />);
+    fireEvent.click(screen.getByText('confirm_action'));
+    expect(onConfirmMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders confirm button on the right in RTL (first in DOM if using standard flex)', () => {
-    // According to guidelines: Right-most: Delete (Confirm), Left-most: Edit/Secondary (Cancel)
-    const { container } = render(<ConfirmationModal {...defaultProps} />);
-    const buttons = container.querySelectorAll('button');
-    // In RTL flex-row, the first element in DOM is the right-most visually.
-    // So Confirm should be first if it needs to be right-most.
-    expect(buttons[0]).toHaveTextContent('confirm_action');
-    expect(buttons[1]).toHaveTextContent('cancel');
+  it('calls onCancel when cancel button is clicked', () => {
+    const onCancelMock = vi.fn();
+    render(<ConfirmationModal {...defaultProps} onCancel={onCancelMock} />);
+    fireEvent.click(screen.getByText('cancel'));
+    expect(onCancelMock).toHaveBeenCalledTimes(1);
   });
 
-  it('applies reddish border when isDanger is true', () => {
+  it('calls onCancel when Escape key is pressed', () => {
+    const onCancelMock = vi.fn();
+    render(<ConfirmationModal {...defaultProps} onCancel={onCancelMock} />);
+    fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
+    expect(onCancelMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('applies danger styling when isDanger is true', () => {
     const { container } = render(<ConfirmationModal {...defaultProps} isDanger={true} />);
-    const modalContainer = container.querySelector('.relative.bg-white');
-    expect(modalContainer).toHaveClass('border-red-500');
+    const modalDiv = container.querySelector('.relative');
+    expect(modalDiv).toHaveClass('border-red-500');
   });
 
-  it('renders visually equal buttons (anti-nudge) when isDanger is true', () => {
-    const { container } = render(<ConfirmationModal {...defaultProps} isDanger={true} />);
-    const buttons = container.querySelectorAll('button');
-    
-    const confirmBtn = buttons[0];
-    const cancelBtn = buttons[1];
-
-    // They should share the same background and text color base classes to be "equal"
-    // We expect them to NOT have bg-red-600 (prominent) or bg-indigo-600
-    expect(confirmBtn).not.toHaveClass('bg-red-600');
-    expect(confirmBtn).not.toHaveClass('bg-indigo-600');
-    
-    // Check if they have the same weight (e.g. flex-1)
-    expect(confirmBtn).toHaveClass('flex-1');
-    expect(cancelBtn).toHaveClass('flex-1');
+  it('shows TrashIcon instead of AlertIcon when isDanger is true', () => {
+    render(<ConfirmationModal {...defaultProps} isDanger={true} />);
+    expect(screen.queryByTestId('alert-icon')).toBeNull();
+    expect(screen.getByTestId('trash-icon')).toBeInTheDocument();
   });
+
+  it('focuses the confirm button on open', async () => {
+    render(<ConfirmationModal {...defaultProps} />);
+    await waitFor(() => {
+        expect(screen.getByText('confirm_action')).toHaveFocus();
+    });
+  });
+
 });

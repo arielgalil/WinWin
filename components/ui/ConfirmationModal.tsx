@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertIcon } from './Icons';
+import { AlertIcon, TrashIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
 
 // Fix for framer-motion type mismatch
@@ -80,7 +80,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' 
                 : 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
             }`}>
-              <AlertIcon className="w-8 h-8" />
+              {isDanger ? <TrashIcon className="w-8 h-8" /> : <AlertIcon className="w-8 h-8" />}
             </div>
 
             <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">{title}</h3>
