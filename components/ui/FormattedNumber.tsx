@@ -19,8 +19,8 @@ export const FormattedNumber: React.FC<FormattedNumberProps> = ({ value, classNa
   // This ensures standard math notation (-100) even in RTL layout.
   
   return (
-    <span className={`inline-block font-mono tracking-tight ${className}`} dir="ltr">
-      {showMinus ? '-' : (showPlus ? '+' : '')}{absVal}
+    <span className={`inline-block font-mono tracking-tight ${className}`} dir="rtl">
+      {absVal}{showMinus ? '-' : (showPlus ? '+' : '')}
     </span>
   );
 };

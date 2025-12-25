@@ -137,7 +137,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                                     className={`min-w-[90px] rounded-[var(--radius-main)] flex flex-col items-center justify-center border active:scale-95 transition-all shadow-lg backdrop-blur-md ${bgStyle} ${isPos ? 'border-teal-200/40' : 'border-rose-200/40'}`}
                                                 >
                                                     <span className="text-white/80 text-[10px] font-bold">{preset.label}</span>
-                                                    <span className="text-white text-2xl font-black" dir="ltr">
+                                                    <span className="text-white text-2xl font-black">
                                                         <FormattedNumber value={preset.value} forceSign={true} />
                                                     </span>
                                                 </button>
@@ -158,7 +158,7 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                     <button type="button" onClick={() => setMode('presets')} className="h-full px-5 rounded-[var(--radius-main)] bg-slate-600/80 border-2 border-slate-500/40 transition-colors hover:bg-slate-500 hover:text-white"><ArrowRightIcon className="w-8 h-8 text-white rtl:rotate-0 ltr:rotate-180" /></button>
                                     <input ref={inputRef} type="text" value={formatNumberWithCommas(customValue)} onChange={(e) => setCustomValue(parseFormattedNumber(e.target.value).toString())} placeholder="0" className="w-32 h-full bg-black/40 text-white text-center text-5xl font-black rounded-[var(--radius-main)] outline-none border-2 border-white/20 focus:border-blue-500 shadow-inner backdrop-blur-sm" dir="ltr" inputMode="decimal" />
                                     <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-black rounded-[var(--radius-main)] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 backdrop-blur-md ${isNegative ? 'bg-red-600/90 border-red-200/30' : 'bg-emerald-600/90 border-teal-200/30'}`}>
-                                        <span className="text-5xl font-black leading-none drop-shadow-md" dir="ltr"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
+                                        <span className="text-5xl font-black leading-none drop-shadow-md"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
                                         <div className="rtl:scale-x-1 ltr:scale-x-[-1] opacity-90"><SendIcon className="w-8 h-8 text-white" /></div>
                                     </button>
                                 </form>
