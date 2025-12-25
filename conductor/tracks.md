@@ -4,8 +4,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: Fix Admin Settings Route Duplication
-*Link: [./conductor/tracks/admin_settings_fix_20251224/](./conductor/tracks/admin_settings_fix_20251224/)*
+
 
 ---
 
