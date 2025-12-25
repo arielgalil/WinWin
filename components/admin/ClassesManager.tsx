@@ -354,7 +354,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Group Color</label>
+                                        <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('group_color_label')}</label>
                                         <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10">
                                             {AVAILABLE_COLORS.map(c => (
                                                 <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#1e1e2e] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />

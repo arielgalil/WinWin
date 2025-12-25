@@ -18,3 +18,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Standardize Delete Actions and Safety UI
 *Link: [./conductor/archive/standardize_delete_safety_20251224/](./conductor/archive/standardize_delete_safety_20251224/)*
+
+---
+
+## [~] Track: Admin UI Polish & Score Formatting
+*Link: [./conductor/tracks/admin_ui_polish_20251225/](./conductor/tracks/admin_ui_polish_20251225/)*

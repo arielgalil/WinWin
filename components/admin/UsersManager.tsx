@@ -293,7 +293,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 value={newUserFullName}
                                 onChange={e => setNewUserFullName(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
-                                placeholder="e.g. John Doe"
+                                placeholder={t('full_name_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -304,7 +304,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 value={newUserEmail}
                                 onChange={e => setNewUserEmail(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
-                                placeholder="name@email.com"
+                                placeholder={t('email_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -315,7 +315,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                                 value={newUserPassword}
                                 onChange={e => setNewUserPassword(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-gray-400 shadow-sm"
-                                placeholder="••••••••"
+                                placeholder={t('password_placeholder')}
                             />
                         </div>
                         <div className="space-y-1.5">

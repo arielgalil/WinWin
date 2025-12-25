@@ -210,19 +210,19 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 <div className="grid grid-cols-[0.85fr_0.68fr_0.68fr_2.04fr] gap-x-4 gap-y-2 items-start">
 
                     <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1">
-                        שלב {editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1)}: שם השלב/יעד<span className="text-red-500 mr-0.5">*</span>:
+                        {t('stage_name_label_with_index', { index: editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1) })}<span className="text-red-500 mr-0.5">*</span>:
                     </label>
 
                     <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
-                        התחלה:
+                        {t('start_label')}:
                     </label>
 
                     <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
-                        ניקוד סיום<span className="text-red-500 mr-0.5">*</span>:
+                        {t('end_score_label')}<span className="text-red-500 mr-0.5">*</span>:
                     </label>
 
                     <label className="text-gray-500 dark:text-gray-400 font-bold text-[10px] uppercase tracking-wider px-1">
-                        פרס סיום (תמונה/אמוג'י):
+                        {t('end_prize_label')}:
                     </label>
 
                     {/* Row 2: Inputs */}
@@ -260,7 +260,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             <input
                                 type="text"
                                 value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
-                                placeholder="יעד..."
+                                placeholder={t('target_placeholder')}
                                 onChange={e => {
                                     const val = parseFormattedNumber(e.target.value);
                                     setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
