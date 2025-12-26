@@ -19,6 +19,6 @@ This plan outlines the steps to simplify `App.tsx` by extracting components, con
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Permission Logic' (Protocol in workflow.md) [91aa42e]
 
 ## Phase 4: Final Polish & Cleanup
-- [ ] Task: Remove redundant imports and unused code from `App.tsx`.
+- [~] Task: Remove redundant imports and unused code from `App.tsx`.
 - [ ] Task: Run full test suite and verify build.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)

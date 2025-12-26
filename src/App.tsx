@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate, useParams } from 'react-router-dom';
 import { Dashboard } from './components/Dashboard';
 import { AdminPanel } from './components/AdminPanel';
@@ -8,7 +8,6 @@ import { LiteTeacherView } from './components/lite/LiteTeacherView';
 import { LiteLogin } from './components/lite/LiteLogin';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 import { ErrorScreen } from './components/ui/ErrorScreen';
-import { SproutIcon, AlertIcon, HomeIcon, TrashIcon } from './components/ui/Icons';
 
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
