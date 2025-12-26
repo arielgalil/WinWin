@@ -9,12 +9,19 @@ const callGeminiFunction = async (payload: {
     model?: string;
     jsonSchema?: any;
 }, lang: Language = 'he'): Promise<string> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
     try {
-        const functionUrl = `${(supabase as any).functions.url}/ask-gemini`;
-        console.log(`Invoking AI Edge Function at: ${functionUrl}`);
         const { data, error } = await supabase.functions.invoke('ask-gemini', {
-            body: payload
+            body: {
+                ...payload,
+                model: payload.model || 'gemini-2.0-flash' // Default to stable model
+            },
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (error) {
             console.error("Supabase function connection error:", error.message);
@@ -28,8 +35,13 @@ const callGeminiFunction = async (payload: {
 
         return data.text || "";
     } catch (err: any) {
+        clearTimeout(timeoutId);
         console.error("Secure AI call failed:", err);
         
+        if (err.name === 'AbortError') {
+            throw new Error(t('ai_communication_error', lang) + " (Timeout)");
+        }
+
         const msg = err.message || "";
         if (msg.includes('Failed to send a request') || msg.includes('FunctionsFetchError')) {
             throw new Error(t('ai_server_connection_error', lang));
@@ -46,10 +58,8 @@ export const testGeminiConnection = async (overrideKey?: string, lang: Language 
         if (overrideKey) {
             const { GoogleGenAI } = await import("@google/genai");
             const ai = new GoogleGenAI({ apiKey: overrideKey });
-            await ai.models.generateContent({
-                model: 'gemini-2.5-flash-lite-preview-09-2025',
-                contents: "ping",
-            });
+            const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
+            await model.generateContent("ping");
             return { success: true, message: t('ai_connection_success_provided_key', lang) };
         }
 
@@ -94,7 +104,7 @@ export const generateCompetitionCommentary = async (
       return await callGeminiFunction({
           prompt,
           systemInstruction: settings.ai_custom_prompt || t('ai_instruction_commentator', lang),
-          model: 'gemini-2.5-flash-lite-preview-09-2025'
+          model: 'gemini-2.0-flash'
       }, lang);
   } catch (err) {
       return t('ai_commentary_fallback', lang);
@@ -115,7 +125,8 @@ export const generateFillerMessages = async (schoolName: string, competitionName
             jsonSchema: {
                 type: "array",
                 items: { type: "string" }
-            }
+            },
+            model: 'gemini-2.0-flash'
         }, lang);
         
         if (!text) return fallbacks;
@@ -140,6 +151,6 @@ export const generateAdminSummary = async (logs: ActionLog[], lang: Language = '
     return await callGeminiFunction({
         prompt,
         systemInstruction: t('ai_instruction_admin', lang),
-        model: 'gemini-2.5-flash-lite-preview-09-2025'
+        model: 'gemini-2.0-flash'
     }, lang);
 };
