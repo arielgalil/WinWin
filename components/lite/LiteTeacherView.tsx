@@ -70,14 +70,14 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
   if (classes.length === 0) {
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-900 text-white gap-4">
-        <RefreshIcon className="animate-spin w-10 h-10 text-blue-400" />
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--bg-page)] text-[var(--text-main)] gap-4">
+        <RefreshIcon className="animate-spin w-10 h-10 text-indigo-500" />
         <span className="font-bold animate-pulse">{t('loading_data')}</span>
       </div>
     );
   }
 
-  const glassCardStyle = "bg-slate-800/60 backdrop-blur-xl border border-white/20 shadow-2xl";
+  const glassCardStyle = "bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-main)] shadow-2xl";
   const progressPct = (currentClass?.target_score || 0) > 0 ? Math.min(100, ((currentClass?.score || 0) / currentClass!.target_score!) * 100) : 0;
 
   // Filter classes shown in dropdown - if admin see all, else only own
@@ -88,7 +88,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
       <div className="relative h-full w-full flex flex-col overflow-hidden min-h-0 admin-view">
         <AnimatePresence>
           {toast && (
-            <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-4 left-0 right-0 mx-auto w-fit z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black flex items-center gap-3 backdrop-blur-xl border border-white/20 ${toast.type === 'success' ? 'bg-green-600/90 text-white' : 'bg-red-600/90 text-white'}`}>
+            <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-4 left-0 right-0 mx-auto w-fit z-[100] px-6 py-3 rounded-[var(--radius-main)] shadow-2xl font-black flex items-center gap-3 backdrop-blur-xl border border-white/20 ${toast.type === 'success' ? 'bg-[var(--status-success-bg)] text-[var(--status-success-text)]' : 'bg-[var(--status-error-bg)] text-[var(--status-error-text)]'}`}>
               {toast.type === 'success' ? <CheckIcon className="w-6 h-6" /> : <AlertIcon className="w-6 h-6" />}
               {toast.msg}
             </MotionDiv>
@@ -106,32 +106,32 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                   padding="p-1"
                 />
                 <div className="min-w-0">
-                  <h1 className="font-black text-lg text-white truncate">{settings.school_name}</h1>
-                  <p className="text-blue-200 text-xs truncate">{user.full_name}</p>
+                  <h1 className="font-black text-lg text-[var(--text-main)] truncate">{settings.school_name}</h1>
+                  <p className="text-[var(--text-muted)] text-xs truncate">{user.full_name}</p>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button onClick={onLogout} className="p-2.5 bg-white/5 text-slate-400 rounded-[var(--radius-main)] border border-white/5 hover:bg-white/10 hover:text-white transition-all"><LogoutIcon className="w-5 h-5" /></button>
+                <button onClick={onLogout} className="p-2.5 bg-[var(--bg-surface)] text-[var(--text-muted)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all"><LogoutIcon className="w-5 h-5" /></button>
               </div>
             </div>
 
-            <div className="bg-black/20 p-2 rounded-[var(--radius-main)] flex gap-2">
-              <select value={selectedClassId || ''} onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }} className="flex-1 bg-black/40 text-white font-bold text-sm py-2 px-4 rounded-[var(--radius-main)] outline-none border border-white/10 rtl:text-right ltr:text-left">
-                {availableClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                {availableClasses.length === 0 && <option value="">{t('no_groups_assigned')}</option>}
+            <div className="bg-[var(--bg-surface)] p-2 rounded-[var(--radius-main)] flex gap-2 border border-[var(--border-subtle)]">
+              <select value={selectedClassId || ''} onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }} className="flex-1 bg-[var(--bg-input)] text-[var(--text-main)] font-bold text-sm py-2 px-4 rounded-[var(--radius-main)] outline-none border border-[var(--border-main)] rtl:text-right ltr:text-left">
+                {availableClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
+                {availableClasses.length === 0 && <option value="" className="bg-[var(--bg-card)]">{t('no_groups_assigned')}</option>}
               </select>
-              <button onClick={selectAllFiltered} className={`px-4 py-2 rounded-[var(--radius-main)] font-bold text-xs border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/20 text-rose-200 border-rose-500/30 active:bg-rose-500/30' : 'bg-emerald-500/20 text-emerald-200 border-emerald-500/30 active:bg-emerald-500/30'}`}>
+              <button onClick={selectAllFiltered} className={`px-4 py-2 rounded-[var(--radius-main)] font-bold text-xs border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20'}`}>
                 {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
               </button>
-              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-blue-500 text-white border-blue-400' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}`}><SearchIcon className="w-5 h-5" /></button>
+              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}><SearchIcon className="w-5 h-5" /></button>
             </div>
 
             <AnimatePresence>
               {isSearchOpen && (
                 <MotionDiv initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1, marginTop: 12 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                   <div className="relative">
-                    <SearchIcon className="w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 rtl:left-4 ltr:right-4" />
-                    <input ref={searchInputRef} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-black/40 border border-white/20 rounded-[var(--radius-main)] py-2 px-4 rtl:pl-10 ltr:pr-10 text-white focus:border-blue-500 outline-none transition-all placeholder:text-slate-500" />
+                    <SearchIcon className="w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 rtl:left-4 ltr:right-4 text-[var(--text-muted)]" />
+                    <input ref={searchInputRef} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] py-2 px-4 rtl:pl-10 ltr:pr-10 text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-[var(--text-muted)] opacity-60" />
                   </div>
                 </MotionDiv>
               )}
@@ -143,8 +143,8 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
           <div className="px-4 mb-2 shrink-0">
             <div className={`${glassCardStyle} rounded-[var(--radius-main)] p-3 shadow-xl`}>
               <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-2"><TargetIcon className="w-4 h-4 text-blue-300" /><span className="text-sm font-bold text-white">{t('class_target_title')}</span></div>
-                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[10px] bg-white/10 px-4 py-2.5 min-h-[44px] rounded-[calc(var(--radius-main)*0.5)] text-slate-300 flex items-center gap-2 hover:bg-white/20 transition-colors uppercase font-black active:scale-95"><EditIcon className="w-4 h-4" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
+                <div className="flex items-center gap-2"><TargetIcon className="w-4 h-4 text-indigo-500 dark:text-blue-300" /><span className="text-sm font-bold text-[var(--text-main)]">{t('class_target_title')}</span></div>
+                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[10px] bg-[var(--bg-surface)] px-4 py-2.5 min-h-[44px] rounded-[calc(var(--radius-main)*0.5)] text-[var(--text-muted)] border border-[var(--border-main)] flex items-center gap-2 hover:bg-[var(--bg-hover)] transition-colors uppercase font-black active:scale-95"><EditIcon className="w-4 h-4" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
               </div>
               {isEditingTarget ? (
                 <div className="flex gap-2">
@@ -153,19 +153,19 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                     value={targetInputValue}
                     onChange={e => setTargetInputValue(e.target.value)}
                     aria-label="Set target score"
-                    className="flex-1 bg-black/40 border border-blue-500 rounded-[var(--radius-main)] px-3 py-2 text-white font-bold text-center outline-none ring-2 ring-blue-500/20 focus:ring-4 focus:ring-blue-500/40 focus:ring-offset-1 focus:ring-offset-black"
+                    className="flex-1 bg-[var(--bg-input)] border border-indigo-500 rounded-[var(--radius-main)] px-3 py-2 text-[var(--text-main)] font-bold text-center outline-none ring-2 ring-indigo-500/20 focus:ring-4 focus:ring-indigo-500/40"
                     autoFocus
                   />
                   <button onClick={handleSaveTarget} className="bg-green-600 text-white px-5 rounded-[var(--radius-main)] font-bold active:scale-95 transition-all shadow-lg">{t('save')}</button>
                 </div>
               ) : (
                 <div>
-                  <div className="flex justify-between text-[10px] font-black text-slate-400 mb-1 uppercase tracking-wider">
+                  <div className="flex justify-between text-[10px] font-black text-[var(--text-muted)] mb-1 uppercase tracking-wider">
                     <span>{t('progress_label')}: {currentClass.score}</span>
                     <span>{t('target_label')}: {currentClass.target_score || t('not_defined')}</span>
                   </div>
-                  <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
-                    <MotionDiv className="h-full bg-gradient-to-r from-blue-600 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${progressPct}%` }} />
+                  <div className="h-2 w-full bg-[var(--bg-surface)] rounded-full overflow-hidden border border-[var(--border-subtle)] shadow-inner">
+                    <MotionDiv className="h-full bg-gradient-to-r from-indigo-600 to-blue-400" initial={{ width: 0 }} animate={{ width: `${progressPct}%` }} />
                   </div>
                 </div>
               )}
@@ -178,7 +178,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
             {!searchTerm && currentClass && <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />}
             {filteredStudents.map(student => <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />)}
             {filteredStudents.length === 0 && !currentClass && (
-              <div className="col-span-full py-12 text-center opacity-40 font-bold">{t('no_students_found')}</div>
+              <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-bold">{t('no_students_found')}</div>
             )}
           </div>
         </main>
