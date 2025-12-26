@@ -23,8 +23,8 @@ This plan outlines the steps to improve the Admin Panel UX, restore AI functiona
 - [x] Task: Conductor - User Manual Verification 'Phase 3: AI Service Restoration' (Protocol in workflow.md) [029577b]
 
 ## Phase 4: Role-Based Multi-Link Sharing
-- [ ] Task: TDD - Create sharing utility to generate dynamic message templates based on user role.
-- [ ] Task: TDD - Add Share button to the Admin Panel Header.
+- [x] Task: TDD - Create sharing utility to generate dynamic message templates based on user role. [9623615]
+- [~] Task: TDD - Add Share button to the Admin Panel Header.
 - [ ] Task: TDD - Add Share button to the Admin Mobile (Hamburger) Menu.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Multi-Link Sharing' (Protocol in workflow.md)
 
