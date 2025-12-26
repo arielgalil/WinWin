@@ -18,8 +18,8 @@ This plan outlines the steps to improve the Admin Panel UX, restore AI functiona
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Light Mode Accessibility' (Protocol in workflow.md) [checkpoint: 909e6e0]
 
 ## Phase 3: AI Service Restoration
-- [ ] Task: TDD - Debug `geminiService.ts` and `AiSettings.tsx` to identify the hanging cause.
-- [ ] Task: TDD - Fix AI Summary loading bug and ensure proper error handling/timeouts.
+- [x] Task: TDD - Debug `geminiService.ts` and `AiSettings.tsx` to identify the hanging cause. [0c2079c]
+- [~] Task: TDD - Fix AI Summary loading bug and ensure proper error handling/timeouts.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: AI Service Restoration' (Protocol in workflow.md)
 
 ## Phase 4: Role-Based Multi-Link Sharing
