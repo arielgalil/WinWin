@@ -28,7 +28,7 @@ This plan outlines the steps to reorganize the project into a standard `src/` di
 - [x] Task: Verify that `npm run build` completes without errors. [6d3e696]
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Verification' (Protocol in workflow.md) [6d3e696]
 
-## Phase 5: Cleanup & Final Validation
-- [~] Task: Remove any empty directories or redundant files in the root.
-- [ ] Task: Final regression test run of all application features.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Final Polish' (Protocol in workflow.md)
+## Phase 5: Cleanup & Final Validation [checkpoint: c9afe1b]
+- [x] Task: Remove any empty directories or redundant files in the root. [c9afe1b]
+- [x] Task: Final regression test run of all application features. [c9afe1b]
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Final Polish' (Protocol in workflow.md) [c9afe1b]
