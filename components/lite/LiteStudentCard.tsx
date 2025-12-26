@@ -58,7 +58,7 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
         {/* Score Badge - Centered in the card */}
         <div className={`font-black px-3 py-1.5 rounded-[var(--radius-main)] border transition-all duration-300 shadow-inner min-w-[50px]
             ${isSelected
-            ? 'bg-white text-blue-900 border-white scale-110'
+            ? 'bg-[var(--bg-page)] text-[var(--primary-base)] border-[var(--bg-page)] scale-110'
             : isClassEntity
               ? 'bg-purple-500/20 dark:bg-purple-500/30 text-purple-700 dark:text-purple-100 border-purple-400/30'
               : 'bg-[var(--bg-surface)] dark:bg-slate-800 text-[var(--text-main)] dark:text-white border-[var(--border-main)] dark:border-white/20'

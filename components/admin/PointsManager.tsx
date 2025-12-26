@@ -64,30 +64,30 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
       >
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('group_label')}</label>
+            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('group_label')}</label>
             <div className="relative">
               <select
                 value={selectedClassId || ''}
                 onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm appearance-none font-medium"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm appearance-none font-medium"
               >
-                {!selectedClassId && <option value="">{t('select_group_placeholder')}</option>}
-                {teacherClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {!selectedClassId && <option value="" className="bg-[var(--bg-card)]">{t('select_group_placeholder')}</option>}
+                {teacherClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
               </select>
-              <div className="absolute rtl:left-4 ltr:right-4 top-10 pointer-events-none text-gray-400 text-[10px]">▼</div>
+              <div className="absolute rtl:left-4 ltr:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] opacity-50">▼</div>
             </div>
           </div>
           <div className="relative flex-1">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder={t('search_student_placeholder')}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-medium rtl:pr-11 ltr:pl-11"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-medium rtl:pr-11 ltr:pl-11 placeholder:text-[var(--text-muted)] opacity-80"
               />
-              <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-[38px] w-5 h-5 text-gray-400" />
+              <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50" />
             </div>
           </div>
         </div>
@@ -107,14 +107,14 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
           ))}
         </div>
         {filteredStudents.length === 0 && selectedClassId && (
-          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
+          <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
             <SearchIcon className="w-16 h-16" />
             <span className="font-bold text-lg">{t('no_students_found')}</span>
           </div>
         )}
         {!selectedClassId && (
-          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4 opacity-60">
-            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+          <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
+            <div className="w-16 h-16 rounded-full bg-[var(--bg-surface)] flex items-center justify-center border border-[var(--border-subtle)]">
               <span className="text-2xl">?</span>
             </div>
             <span className="font-bold text-lg">{t('select_group_to_start')}</span>
@@ -135,8 +135,8 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
 
       <AnimatePresence>
         {toast && (
-          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl font-bold bg-white dark:bg-[#25262b] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white flex items-center gap-3 backdrop-blur-xl">
-            {toast.type === 'success' ? <CheckIcon className="w-5 h-5 text-green-500" /> : <AlertIcon className="w-5 h-5 text-red-500" />}
+          <MotionDiv initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 20 }} exit={{ opacity: 0 }} className={`fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl font-bold bg-[var(--bg-card)] border border-[var(--border-main)] flex items-center gap-3 backdrop-blur-xl ${toast.type === 'success' ? 'text-[var(--status-success-text)]' : 'text-[var(--status-error-text)]'}`}>
+            {toast.type === 'success' ? <CheckIcon className="w-5 h-5" /> : <AlertIcon className="w-5 h-5" />}
             {toast.msg}
           </MotionDiv>
         )}
