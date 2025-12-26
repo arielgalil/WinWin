@@ -8,6 +8,7 @@ import { LiteTeacherView } from './components/lite/LiteTeacherView';
 import { LiteLogin } from './components/lite/LiteLogin';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 import { ErrorScreen } from './components/ui/ErrorScreen';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
@@ -83,17 +84,7 @@ const AdminRoute = () => {
     const navigate = useNavigate();
     const { slug } = useParams();
     const { classes, settings, currentCampaign, addPoints, refreshData, campaignRole } = useCompetitionData();
-    const { canAccessAdmin, campaignRole: campaignRoleClean, isCampaignSuper, isSuper } = useAuthPermissions();
-
-    if (!user) return <Navigate to={`/login/${slug}`} replace />;
-
-    // Security: Explicit deny if role is null/undefined or not authorized
-    if (!canAccessAdmin) {
-        if (campaignRoleClean === 'teacher') {
-            return <Navigate to={`/vote/${slug}`} replace />;
-        }
-        return <Navigate to={`/comp/${slug}`} replace />;
-    }
+    const { isCampaignSuper, isSuper } = useAuthPermissions();
 
     return (
         <CampaignContext>
@@ -119,14 +110,6 @@ const VoteRoute = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const { settings, currentCampaign, campaignRole } = useCompetitionData();
-    const { canAccessVote } = useAuthPermissions();
-
-    if (!user) return <Navigate to={`/login/${slug}`} replace />;
-
-    // Security: Explicit deny if user has no role in campaign and is not superuser
-    if (!canAccessVote) {
-        return <ErrorScreen message={t('competition_access_denied')} />;
-    }
 
     return (
         <CampaignContext>
@@ -229,14 +212,34 @@ const App: React.FC = () => {
                         <Routes>
                             <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
                             <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
-                            <Route path="/login" element={<LoginRoute />} />
-                            <Route path="/login/:slug" element={<LoginRoute />} />
-                            <Route path="/comp/:slug" element={<DashboardRoute />} />
-                            <Route path="/admin/:slug" element={<AdminRoute />} />
-                            <Route path="/admin/:slug/:tab" element={<AdminRoute />} />
-                            <Route path="/vote/:slug" element={<VoteRoute />} />
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
+                                                            <Route path="/login" element={<LoginRoute />} />
+                                                            <Route path="/login/:slug" element={<LoginRoute />} />
+                                                            <Route path="/comp/:slug" element={<DashboardRoute />} />
+                                                            <Route 
+                                                                path="/admin/:slug" 
+                                                                element={
+                                                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                                                        <AdminRoute />
+                                                                    </ProtectedRoute>
+                                                                } 
+                                                            />
+                                                            <Route 
+                                                                path="/admin/:slug/:tab" 
+                                                                element={
+                                                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                                                        <AdminRoute />
+                                                                    </ProtectedRoute>
+                                                                } 
+                                                            />
+                                                            <Route 
+                                                                path="/vote/:slug" 
+                                                                element={
+                                                                    <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
+                                                                        <VoteRoute />
+                                                                    </ProtectedRoute>
+                                                                } 
+                                                            />
+                                                            <Route path="*" element={<Navigate to="/" replace />} />                        </Routes>
                     </div>
                 )}
             </div>

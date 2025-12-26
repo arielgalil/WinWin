@@ -5,6 +5,10 @@ import { useAuthPermissions } from '../services/useAuthPermissions';
 import { ErrorScreen } from './ui/ErrorScreen';
 import { useLanguage } from '../hooks/useLanguage';
 
+import { LoadingScreen } from './ui/LoadingScreen';
+import { useParams } from 'react-router-dom';
+import { useCompetitionData } from '../hooks/useCompetitionData';
+
 interface ProtectedRouteProps {
     allowedRoles: string[];
     children: React.ReactNode;
@@ -17,8 +21,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     fallbackPath = '/login' 
 }) => {
     const { user } = useAuth();
-    const { canAccessAdmin, canAccessVote, campaignRole } = useAuthPermissions();
+    const { slug } = useParams();
+    const { isLoadingCampaign } = useCompetitionData();
+    const { canAccessAdmin, canAccessVote } = useAuthPermissions();
     const { t } = useLanguage();
+
+    if (slug && isLoadingCampaign) {
+        return <LoadingScreen message={t('identifying_permissions')} />;
+    }
 
     if (!user) {
         return <Navigate to={fallbackPath} replace />;

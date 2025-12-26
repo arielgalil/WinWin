@@ -4,6 +4,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthPermissions } from '../../services/useAuthPermissions';
+import { useCompetitionData } from '../../hooks/useCompetitionData';
+import { useParams } from 'react-router-dom';
 
 // Mock dependencies
 vi.mock('../../hooks/useAuth', () => ({
@@ -14,13 +16,23 @@ vi.mock('../../services/useAuthPermissions', () => ({
     useAuthPermissions: vi.fn(),
 }));
 
+vi.mock('../../hooks/useCompetitionData', () => ({
+    useCompetitionData: vi.fn(),
+}));
+
 vi.mock('react-router-dom', () => ({
     Navigate: vi.fn(({ to }: { to: string }) => <div data-testid="navigate" data-to={to} />),
+    useParams: vi.fn(),
 }));
 
 // Mock ErrorScreen
 vi.mock('../ui/ErrorScreen', () => ({
     ErrorScreen: vi.fn(({ message }: { message: string }) => <div data-testid="error-screen">{message}</div>),
+}));
+
+// Mock LoadingScreen
+vi.mock('../ui/LoadingScreen', () => ({
+    LoadingScreen: vi.fn(({ message }: { message: string }) => <div data-testid="loading-screen">{message}</div>),
 }));
 
 // Mock useLanguage
@@ -35,9 +47,11 @@ describe('ProtectedRoute', () => {
         vi.clearAllMocks();
     });
 
-    it('redirects to login if user is not authenticated', () => {
-        vi.mocked(useAuth).mockReturnValue({ user: null } as any);
+    it('renders LoadingScreen if campaign data is loading', () => {
+        vi.mocked(useAuth).mockReturnValue({ user: { id: '1' } } as any);
         vi.mocked(useAuthPermissions).mockReturnValue({} as any);
+        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: true } as any);
+        vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
             <ProtectedRoute allowedRoles={['admin']}>
@@ -45,8 +59,24 @@ describe('ProtectedRoute', () => {
             </ProtectedRoute>
         );
 
-        expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/login');
+        expect(screen.getByTestId('loading-screen')).toBeInTheDocument();
+        expect(screen.getByText('identifying_permissions')).toBeInTheDocument();
         expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
+    });
+
+    it('redirects to login if user is not authenticated', () => {
+        vi.mocked(useAuth).mockReturnValue({ user: null } as any);
+        vi.mocked(useAuthPermissions).mockReturnValue({} as any);
+        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
+
+        render(
+            <ProtectedRoute allowedRoles={['admin']}>
+                <div data-testid="navigate" data-to="/login" />
+            </ProtectedRoute>
+        );
+
+        expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/login');
     });
 
     it('renders ErrorScreen if user is authenticated but unauthorized', () => {
@@ -54,10 +84,9 @@ describe('ProtectedRoute', () => {
         vi.mocked(useAuthPermissions).mockReturnValue({
             canAccessAdmin: false,
             canAccessVote: false,
-            isTeacher: true,
-            isAdmin: false,
-            isSuper: false
         } as any);
+        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
             <ProtectedRoute allowedRoles={['admin']}>
@@ -74,8 +103,9 @@ describe('ProtectedRoute', () => {
         vi.mocked(useAuth).mockReturnValue({ user: { id: '1' } } as any);
         vi.mocked(useAuthPermissions).mockReturnValue({
             canAccessAdmin: true,
-            isAdmin: true
         } as any);
+        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
             <ProtectedRoute allowedRoles={['admin']}>

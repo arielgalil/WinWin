@@ -8,9 +8,8 @@ This plan outlines the steps to centralize security logic by implementing a gene
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Component Creation' (Protocol in workflow.md) [c22d352]
 
 ## Phase 2: Routing Layer Refactoring
-- [ ] Task: Update `src/App.tsx` to use `ProtectedRoute` for `/admin` and `/vote` routes.
-- [ ] Task: Remove `AdminRoute` and `VoteRoute` component definitions from `App.tsx`.
-- [ ] Task: Refactor `App.tsx` to ensure loading states (`authLoading`, `isLoadingCampaign`) are handled before the router is processed.
+- [x] Task: Remove `AdminRoute` and `VoteRoute` component definitions from `App.tsx`. [eaeb97a]
+- [~] Task: Refactor `App.tsx` to ensure loading states (`authLoading`, `isLoadingCampaign`) are handled before the router is processed.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Refactoring' (Protocol in workflow.md)
 
 ## Phase 3: Verification & Polish
