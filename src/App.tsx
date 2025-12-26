@@ -15,7 +15,7 @@ import { useAuth } from './hooks/useAuth';
 import { useCompetitionData } from './hooks/useCompetitionData';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
-import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { useTheme } from './contexts/ThemeContext';
 
 const LanguageSync: React.FC = () => {
     const { settings } = useCompetitionData();
@@ -227,46 +227,35 @@ const LoginRoute = () => {
     );
 };
 
-import { ToastProvider } from './hooks/useToast';
 import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
-const AppInner: React.FC = () => {
+const App: React.FC = () => {
     const { t } = useLanguage();
     const { authLoading } = useAuth();
     const { theme } = useTheme();
 
     return (
-        <ToastProvider>
-            <RouteErrorBoundary>
-                <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]">
-                    {authLoading ? (
-                        <LoadingScreen message={t('loading_system')} />
-                    ) : (
-                        <div className="flex-1 flex flex-col min-h-0 relative">
-                            <Routes>
-                                <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
-                                <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
-                                <Route path="/login" element={<LoginRoute />} />
-                                <Route path="/login/:slug" element={<LoginRoute />} />
-                                <Route path="/comp/:slug" element={<DashboardRoute />} />
-                                <Route path="/admin/:slug" element={<AdminRoute />} />
-                                <Route path="/admin/:slug/:tab" element={<AdminRoute />} />
-                                <Route path="/vote/:slug" element={<VoteRoute />} />
-                                <Route path="*" element={<Navigate to="/" replace />} />
-                            </Routes>
-                        </div>
-                    )}
-                </div>
-            </RouteErrorBoundary>
-        </ToastProvider>
-    );
-};
-
-const App: React.FC = () => {
-    return (
-        <ThemeProvider>
-            <AppInner />
-        </ThemeProvider>
+        <RouteErrorBoundary>
+            <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]">
+                {authLoading ? (
+                    <LoadingScreen message={t('loading_system')} />
+                ) : (
+                    <div className="flex-1 flex flex-col min-h-0 relative">
+                        <Routes>
+                            <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
+                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
+                            <Route path="/login" element={<LoginRoute />} />
+                            <Route path="/login/:slug" element={<LoginRoute />} />
+                            <Route path="/comp/:slug" element={<DashboardRoute />} />
+                            <Route path="/admin/:slug" element={<AdminRoute />} />
+                            <Route path="/admin/:slug/:tab" element={<AdminRoute />} />
+                            <Route path="/vote/:slug" element={<VoteRoute />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                    </div>
+                )}
+            </div>
+        </RouteErrorBoundary>
     );
 };
 
