@@ -125,6 +125,56 @@ body {
     @apply font-sans;
 }
 
+/* NUCLEAR OPTION: Light Mode Contrast Enforcement */
+.light .admin-view {
+  /* Redefine semantic tokens to be even higher contrast in light mode */
+  --text-main: #000000;
+  --text-secondary: #000000;
+  --text-muted: #1e293b; /* Slate 800 */
+  --border-main: #94a3b8; /* Slate 400 - much darker than default 300 */
+  --border-subtle: #cbd5e1; /* Slate 300 */
+  --bg-surface: #f1f5f9; /* Slate 100 */
+  --bg-input: #ffffff;
+}
+
+/* Force standard Tailwind gray/slate text to be high contrast in Admin Light Mode */
+.light .admin-view .text-gray-900,
+.light .admin-view .text-slate-900,
+.light .admin-view .text-gray-800,
+.light .admin-view .text-slate-800,
+.light .admin-view .text-gray-700,
+.light .admin-view .text-slate-700 {
+  color: #000000 !important;
+}
+
+.light .admin-view .text-gray-600,
+.light .admin-view .text-slate-600,
+.light .admin-view .text-gray-500,
+.light .admin-view .text-slate-500,
+.light .admin-view .text-gray-400,
+.light .admin-view .text-slate-400 {
+  color: #1e293b !important; /* Force to Slate 800 */
+}
+
+/* Force borders to be more visible in light mode */
+.light .admin-view .border-gray-200,
+.light .admin-view .border-slate-200,
+.light .admin-view .border-gray-300,
+.light .admin-view .border-slate-300 {
+  border-color: #94a3b8 !important; /* Force to Slate 400 */
+}
+
+.light .admin-view .divide-gray-200,
+.light .admin-view .divide-slate-200 {
+  border-color: #cbd5e1 !important; /* Force to Slate 300 */
+}
+
+/* Improve Card and Input definition */
+.light .admin-view .bg-white,
+.light .admin-view .bg-slate-50 {
+  border-color: #94a3b8 !important;
+}
+
 /* Custom Scrollbar for Admin Area */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
