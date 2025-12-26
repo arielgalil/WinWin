@@ -1,5 +1,5 @@
 import React from 'react';
-import { SproutIcon, HomeIcon, TrophyIcon, CalculatorIcon, SettingsIcon, Volume2Icon, VolumeXIcon, ZapIcon, CrownIcon, ShieldAlertIcon, LockIcon } from '../Icons';
+import { SproutIcon, HomeIcon, TrophyIcon, CalculatorIcon, SettingsIcon, Volume2Icon, VolumeXIcon, ZapIcon, CrownIcon, ShieldAlertIcon, LockIcon } from './Icons';
 
 interface NavigationButtonProps {
     onClick: () => void;

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ClassRoom, UserProfile, Campaign } from '../../types';
-import { supabase } from '../../supabaseClient';
-import { useErrorFormatter } from '../../utils/errorUtils';
-import { useToast } from '../../hooks/useToast';
+import { ClassRoom, UserProfile, Campaign } from '../types';
+import { supabase } from '../supabaseClient';
+import { useErrorFormatter } from '../utils/errorUtils';
+import { useToast } from './useToast';
 
 export const useUsersManager = (currentCampaign?: Campaign | null) => {
     const [users, setUsers] = useState<UserProfile[]>([]);

@@ -39,7 +39,8 @@ export const useRealtimeSubscriptions = (campaignId: string | undefined, onRealt
           queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
           queryClient.refetchQueries({ queryKey: ['classes', campaignId] });
           invalidate();
-        },
+        }
+      },
       {
         table: 'students',
         handler: (payload: any) => {
