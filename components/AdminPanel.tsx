@@ -143,7 +143,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   });
 
   return (
-    <div className="relative h-screen w-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 overflow-hidden">
+    <div className="relative h-screen w-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-200 overflow-hidden">
       <FrozenOverlay isFrozen={!currentCampaign?.is_active && !isSuperAdmin} />
       <div className="flex flex-col h-full w-full overflow-hidden relative z-10 admin-view bg-[var(--bg-page)]">
         <AdminMobileMenu
@@ -160,14 +160,14 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
           onLogout={onLogout}
           campaignRole={campaignRole}
         />
-        <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-300">
+        <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-200">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-[var(--primary-base)] rounded-xl shadow-lg">
               <Logo src={settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-[var(--fs-lg)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
-              <p className="text-[var(--fs-xs)] text-[var(--text-muted)] font-[var(--fw-medium)] tracking-widest uppercase mt-1">{currentCampaign?.name || 'Admin Console'}</p>
+              <h1 className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
+              <p className="text-[var(--fs-sm)] text-[var(--text-muted)] font-[var(--fw-medium)] tracking-widest uppercase mt-1 opacity-80">{currentCampaign?.name || 'Admin Console'}</p>
             </div>
           </div>
 
@@ -187,12 +187,12 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
             {/* Profile Section */}
             <div className="flex items-center gap-3 pl-2">
               <div className="text-right hidden sm:block">
-                <p className="text-[var(--fs-sm)] font-[var(--fw-semibold)] text-[var(--text-main)] leading-none">{user.full_name}</p>
-                <p className="text-[var(--fs-xs)] font-[var(--fw-medium)] text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
+                <p className="text-[var(--fs-base)] font-[var(--fw-medium)] text-[var(--text-main)] leading-none">{user.full_name}</p>
+                <p className="text-[var(--fs-sm)] font-[var(--fw-medium)] text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
                   {isSuper ? t('role_super_user' as any) : isAdmin ? t('role_admin' as any) : t('role_teacher' as any)}
                 </p>
               </div>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-[var(--fw-bold)] text-white shadow-md text-[var(--fs-sm)] ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-[var(--fw-bold)] text-white shadow-md text-[var(--fs-base)] ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
                 {user.full_name?.charAt(0).toUpperCase() || 'U'}
               </div>
             </div>
@@ -223,7 +223,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}
                     </div>
                     <div>
-                      <h2 className="text-[var(--fs-2xl)] sm:text-[var(--fs-3xl)] font-[var(--fw-bold)] text-[var(--text-main)] tracking-tight">{headerConfig?.title}</h2>
+                      <h2 className="text-[var(--fs-xl)] font-[var(--fw-bold)] text-[var(--text-main)] tracking-tight">{headerConfig?.title}</h2>
                       <p className="text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-base)] mt-1">{headerConfig?.desc}</p>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                     )}
 
                     {!activeNotification && headerConfig?.updatedAt && (
-                      <div className="flex items-center gap-2 text-[var(--fs-xs)] text-[var(--text-muted)] font-[var(--fw-medium)] bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)]">
+                      <div className="flex items-center gap-2 text-[var(--fs-sm)] text-[var(--text-muted)] font-[var(--fw-medium)] bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)] shadow-sm">
                         <ClockIcon className="w-3.5 h-3.5" />
                         <span>{(language === 'he' ? 'נשמר ' : 'Saved ')} {formatLastSaved(headerConfig.updatedAt, language)}</span>
                       </div>

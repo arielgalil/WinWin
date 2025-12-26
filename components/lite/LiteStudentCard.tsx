@@ -49,21 +49,21 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
 
       <div className="flex flex-col items-center justify-center z-10 w-full px-2 h-full py-1">
         {/* Name - Now smaller and at the top */}
-        <span className={`font-black leading-tight text-center w-full break-words line-clamp-1 mb-1 transition-all duration-300
-            ${isSelected ? 'text-white' : 'text-[var(--text-muted)] text-[10px]'}
+        <span className={`font-[var(--fw-bold)] leading-tight text-center w-full break-words line-clamp-1 mb-1 transition-all duration-300
+            ${isSelected ? 'text-white' : 'text-[var(--text-muted)] text-[var(--fs-sm)]'}
         `}>
           {name}
         </span>
 
         {/* Score Badge - Centered in the card */}
-        <div className={`font-black px-3 py-1.5 rounded-[var(--radius-main)] border transition-all duration-300 shadow-inner min-w-[50px]
+        <div className={`font-[var(--fw-bold)] px-3 py-1.5 rounded-[var(--radius-main)] border transition-all duration-300 shadow-inner min-w-[50px]
             ${isSelected
             ? 'bg-[var(--bg-page)] text-[var(--primary-base)] border-[var(--bg-page)] scale-110'
             : isClassEntity
               ? 'bg-purple-500/20 dark:bg-purple-500/30 text-purple-700 dark:text-purple-100 border-purple-400/30'
               : 'bg-[var(--bg-surface)] dark:bg-slate-800 text-[var(--text-main)] dark:text-white border-[var(--border-main)] dark:border-white/20'
           }`}>
-          <FormattedNumber value={score} className="text-base" />
+          <FormattedNumber value={score} className="text-[var(--fs-base)]" />
         </div>
       </div>
 

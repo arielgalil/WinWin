@@ -154,11 +154,11 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     const renderFormattedSummary = (text: string) => {
         if (!text) return <div className="absolute inset-0 flex items-center justify-center text-center text-[var(--text-secondary)] p-6 font-[var(--fw-bold)] italic">{t('click_below_for_ai_analysis')}</div>;
         return text.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
-            <p key={i} className="mb-4 text-[var(--text-main)] leading-relaxed text-[var(--fs-sm)] font-[var(--fw-medium)]">
+            <p key={i} className="mb-4 text-[var(--text-main)] leading-relaxed text-[var(--fs-base)] font-[var(--fw-medium)]">
                 {parseFormattedText(paragraph).map((part, j) => {
                     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
-                        return <strong key={j} className="text-indigo-600 dark:text-indigo-400 font-[var(--fw-black)]">{content}</strong>;
+                        return <strong key={j} className="text-indigo-600 dark:text-indigo-400 font-[var(--fw-bold)]">{content}</strong>;
                     }
                     return part;
                 })}
@@ -188,7 +188,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                     >
                         <div className="custom-scrollbar overflow-x-auto flex-1 h-full">
                             <table className="w-full text-right border-collapse">
-                                <thead className="sticky top-0 bg-[var(--bg-surface)] z-10 text-[var(--text-main)] text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-wider shadow-sm border-b border-[var(--border-main)]">
+                                <thead className="sticky top-0 bg-[var(--bg-surface)] z-10 text-[var(--text-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] uppercase tracking-wider shadow-sm border-b border-[var(--border-main)]">
                                     <tr>
                                         <th className="p-4 border-b border-[var(--border-subtle)]">{t('time')}</th>
                                         <th className="p-4 border-b border-[var(--border-subtle)]">{t('performer')}</th>
@@ -205,29 +205,29 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
 
                                         return (
                                             <tr key={log.id} className={`group hover:bg-[var(--bg-hover)] transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                                                <td className="p-4 text-[var(--fs-xs)] text-[var(--text-main)] font-mono font-[var(--fw-bold)]">
+                                                <td className="p-4 text-[var(--fs-sm)] text-[var(--text-main)] font-mono font-[var(--fw-medium)]">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[var(--fs-xs)] font-[var(--fw-bold)] text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[var(--fs-sm)] font-[var(--fw-bold)] text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-[var(--fs-xs)] font-[var(--fw-bold)] whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)]'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-[var(--fs-sm)] font-[var(--fw-bold)] whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)]'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-sm)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className="text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] line-clamp-1 opacity-90">{log.description}</span>
+                                                        <span className="text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] line-clamp-1 opacity-90">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
-                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-sm)] text-center font-[var(--fw-bold)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-center font-[var(--fw-bold)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className={`text-[var(--fs-sm)] font-[var(--fw-black)] tabular-nums ${log.points > 0 ? 'text-[var(--status-success-text)]' : 'text-[var(--status-error-text)]'}`}>
+                                                        <span className={`text-[var(--fs-base)] font-[var(--fw-bold)] tabular-nums ${log.points > 0 ? 'text-[var(--status-success-text)]' : 'text-[var(--status-error-text)]'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
                                                         </span>
                                                     )}
@@ -252,7 +252,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                             </tr>
                                         );
                                     })}
-                                    <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-[var(--text-muted)] text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest">{t('end_of_list')}</td></tr>
+                                    <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-[var(--text-muted)] text-[var(--fs-sm)] font-[var(--fw-bold)] uppercase tracking-widest">{t('end_of_list')}</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -266,7 +266,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
                             className="flex flex-col h-[600px]"
                             rightAction={summary && (
-                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)] flex items-center gap-2 text-[var(--fs-xs)] font-[var(--fw-bold)] min-h-[44px] border transition-all ${isCopied ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--bg-card)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}>
+                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)] flex items-center gap-2 text-[var(--fs-sm)] font-[var(--fw-bold)] min-h-[44px] border transition-all ${isCopied ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--bg-card)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}>
                                     {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
                                     {isCopied ? t('copied') : t('copy')}
                                 </button>

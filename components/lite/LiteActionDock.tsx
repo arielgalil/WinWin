@@ -105,14 +105,14 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
 
                         {/* Status Line */}
                         <div className="flex justify-between items-center px-5 pt-3 pb-2 bg-[var(--bg-surface)] border-b border-[var(--border-subtle)]">
-                            <span className="text-[var(--text-main)] font-black text-sm flex items-center gap-3 truncate">
+                            <span className="text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] flex items-center gap-3 truncate">
                                 <span className="w-2.5 h-2.5 rounded-full animate-pulse shadow-[0_0_8px_var(--acc-points)]" style={{ backgroundColor: 'var(--acc-points)' }}></span>
                                 <span className="opacity-90">{selectionLabel}</span>
                             </span>
                             {!showNoteInput && (
                                 <button
                                     onClick={() => setShowNoteInput(true)}
-                                    className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 bg-indigo-500/10 px-2 py-1 rounded-full border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
+                                    className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-600 dark:text-indigo-400 flex items-center gap-1 bg-indigo-500/10 px-2 py-1 rounded-full border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"
                                 >
                                     <EditIcon className="w-3 h-3" /> {t('add_context')}
                                 </button>
@@ -135,8 +135,8 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                                     disabled={isProcessing}
                                                     className={`min-w-[90px] rounded-[var(--radius-main)] flex flex-col items-center justify-center border active:scale-95 transition-all shadow-md ${bgStyle} border-white/20`}
                                                 >
-                                                    <span className="text-white/80 text-[10px] font-bold">{preset.label}</span>
-                                                    <span className="text-white text-2xl font-black">
+                                                    <span className="text-white/80 text-[var(--fs-sm)] font-[var(--fw-bold)]">{preset.label}</span>
+                                                    <span className="text-white text-[var(--fs-xl)] font-[var(--fw-bold)]">
                                                         <FormattedNumber value={preset.value} forceSign={true} />
                                                     </span>
                                                 </button>
@@ -148,16 +148,16 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                                         className="w-[75px] bg-[var(--bg-surface)] border border-[var(--border-main)] rounded-[var(--radius-main)] flex flex-col items-center justify-center active:scale-95 transition-all shadow-md shrink-0 gap-2 hover:bg-[var(--bg-hover)]"
                                     >
                                         <PlusIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
-                                        <span className="text-indigo-600 dark:text-indigo-400 text-xs font-bold">{t('other')}</span>
+                                        <span className="text-indigo-600 dark:text-indigo-400 text-[var(--fs-sm)] font-[var(--fw-bold)]">{t('other')}</span>
                                     </button>
                                 </div>
                             )}
                             {mode === 'custom' && (
                                 <form onSubmit={handleCustomSubmit} className="flex gap-3 h-full absolute inset-0 z-10 items-center px-3 py-3">
                                     <button type="button" onClick={() => setMode('presets')} className="h-full px-5 rounded-[var(--radius-main)] bg-[var(--bg-surface)] border border-[var(--border-main)] text-[var(--text-main)] transition-colors hover:bg-[var(--bg-hover)]"><ArrowRightIcon className="w-8 h-8 rtl:rotate-0 ltr:rotate-180" /></button>
-                                    <input ref={inputRef} type="text" value={formatNumberWithCommas(customValue)} onChange={(e) => setCustomValue(parseFormattedNumber(e.target.value).toString())} placeholder="0" className="w-32 h-full bg-[var(--bg-input)] text-[var(--text-main)] text-center text-5xl font-black rounded-[var(--radius-main)] outline-none border-2 border-[var(--border-main)] focus:border-indigo-500 shadow-inner" dir="ltr" inputMode="decimal" />
-                                    <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-black rounded-[var(--radius-main)] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 ${isNegative ? 'bg-red-600 border-red-400' : 'bg-emerald-600 border-emerald-400'}`}>
-                                        <span className="text-5xl font-black leading-none drop-shadow-md text-white"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
+                                    <input ref={inputRef} type="text" value={formatNumberWithCommas(customValue)} onChange={(e) => setCustomValue(parseFormattedNumber(e.target.value).toString())} placeholder="0" className="w-32 h-full bg-[var(--bg-input)] text-[var(--text-main)] text-center text-[var(--fs-xl)] font-[var(--fw-bold)] rounded-[var(--radius-main)] outline-none border-2 border-[var(--border-main)] focus:border-indigo-500 shadow-inner" dir="ltr" inputMode="decimal" />
+                                    <button type="submit" disabled={!customValue || customValue === '0'} className={`flex-1 h-full font-[var(--fw-bold)] rounded-[var(--radius-main)] shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all border-2 ${isNegative ? 'bg-red-600 border-red-400' : 'bg-emerald-600 border-emerald-400'}`}>
+                                        <span className="text-[var(--fs-xl)] font-[var(--fw-bold)] leading-none drop-shadow-md text-white"><FormattedNumber value={isNaN(numValue) ? 0 : numValue} forceSign={true} /></span>
                                         <div className="rtl:scale-x-1 ltr:scale-x-[-1] opacity-90"><SendIcon className="w-8 h-8 text-white" /></div>
                                     </button>
                                 </form>

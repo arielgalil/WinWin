@@ -69,8 +69,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   style={activeTab === item.id ? { color: item.colorVar || 'var(--primary-base)' } : { color: 'var(--text-muted)' }}
                 />
                 <div className="flex flex-col text-right leading-tight">
-                  <span className="text-[var(--fs-sm)]">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
-                  {item.subtitle && <span className="text-[var(--fs-xs)] opacity-60 font-[var(--fw-normal)]">{item.subtitle}</span>}
+                  <span className="text-[var(--fs-base)]">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
+                  {item.subtitle && <span className="text-[var(--fs-sm)] opacity-60 font-[var(--fw-regular)]">{item.subtitle}</span>}
                 </div>
                 {activeTab === item.id && (
                   <div 
@@ -87,7 +87,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] space-y-1">
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-sm)]"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-base)]"
         >
           {theme === 'dark' ? <SunIcon className="w-5 h-5 text-amber-500" /> : <MoonIcon className="w-5 h-5 text-indigo-500" />}
           <span>{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
@@ -95,7 +95,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         <button
           onClick={onViewDashboard}
-          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-sm)]"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-base)]"
         >
           <TrophyIcon className="w-5 h-5 text-amber-500" />
           <span>{t('view_leaderboard')}</span>
@@ -103,14 +103,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-red-500 font-[var(--fw-medium)] text-[var(--fs-sm)]"
+          className="w-full flex items-center gap-3 p-2.5 rounded-[var(--radius-main)] hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-red-500 font-[var(--fw-medium)] text-[var(--fs-base)]"
         >
           <LogoutIcon className="w-5 h-5" />
           <span>{t('logout')}</span>
         </button>
 
         <div className="mt-4 flex items-center justify-between px-2 pt-2 border-t border-[var(--border-subtle)] opacity-60">
-          <span className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-widest">WinWin v2.0</span>
+          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-widest">WinWin v2.0</span>
           <div className="flex items-center gap-2">
             {onToggleFreeze && (
               <button

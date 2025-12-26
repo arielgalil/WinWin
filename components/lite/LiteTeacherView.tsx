@@ -106,24 +106,24 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                   padding="p-1"
                 />
                 <div className="min-w-0">
-                  <h1 className="font-black text-lg text-[var(--text-main)] truncate">{settings.school_name}</h1>
-                  <p className="text-[var(--text-muted)] text-xs truncate">{user.full_name}</p>
+                  <h1 className="font-[var(--fw-bold)] text-[var(--fs-lg)] text-[var(--text-main)] truncate">{settings.school_name}</h1>
+                  <p className="text-[var(--text-muted)] text-[var(--fs-sm)] truncate opacity-80">{user.full_name}</p>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button onClick={onLogout} className="p-2.5 bg-[var(--bg-surface)] text-[var(--text-muted)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all"><LogoutIcon className="w-5 h-5" /></button>
+                <button onClick={onLogout} className="p-2.5 bg-[var(--bg-surface)] text-[var(--text-muted)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all shadow-sm"><LogoutIcon className="w-5 h-5" /></button>
               </div>
             </div>
 
             <div className="bg-[var(--bg-surface)] p-2 rounded-[var(--radius-main)] flex gap-2 border border-[var(--border-subtle)]">
-              <select value={selectedClassId || ''} onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }} className="flex-1 bg-[var(--bg-input)] text-[var(--text-main)] font-bold text-sm py-2 px-4 rounded-[var(--radius-main)] outline-none border border-[var(--border-main)] rtl:text-right ltr:text-left">
+              <select value={selectedClassId || ''} onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }} className="flex-1 bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] py-2 px-4 rounded-[var(--radius-main)] outline-none border border-[var(--border-main)] rtl:text-right ltr:text-left shadow-sm">
                 {availableClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
                 {availableClasses.length === 0 && <option value="" className="bg-[var(--bg-card)]">{t('no_groups_assigned')}</option>}
               </select>
-              <button onClick={selectAllFiltered} className={`px-4 py-2 rounded-[var(--radius-main)] font-bold text-xs border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20'}`}>
+              <button onClick={selectAllFiltered} className={`px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20 shadow-sm'}`}>
                 {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
               </button>
-              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}><SearchIcon className="w-5 h-5" /></button>
+              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] shadow-sm'}`}><SearchIcon className="w-5 h-5" /></button>
             </div>
 
             <AnimatePresence>
@@ -131,7 +131,7 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                 <MotionDiv initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1, marginTop: 12 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                   <div className="relative">
                     <SearchIcon className="w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 rtl:left-4 ltr:right-4 text-[var(--text-muted)]" />
-                    <input ref={searchInputRef} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] py-2 px-4 rtl:pl-10 ltr:pr-10 text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-[var(--text-muted)] opacity-60" />
+                    <input ref={searchInputRef} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('search_student_placeholder')} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] py-2 px-4 rtl:pl-10 ltr:pr-10 text-[var(--text-main)] font-[var(--fw-medium)] focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" />
                   </div>
                 </MotionDiv>
               )}
@@ -143,8 +143,8 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
           <div className="px-4 mb-2 shrink-0">
             <div className={`${glassCardStyle} rounded-[var(--radius-main)] p-3 shadow-xl`}>
               <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-2"><TargetIcon className="w-4 h-4 text-indigo-500 dark:text-blue-300" /><span className="text-sm font-bold text-[var(--text-main)]">{t('class_target_title')}</span></div>
-                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[10px] bg-[var(--bg-surface)] px-4 py-2.5 min-h-[44px] rounded-[calc(var(--radius-main)*0.5)] text-[var(--text-muted)] border border-[var(--border-main)] flex items-center gap-2 hover:bg-[var(--bg-hover)] transition-colors uppercase font-black active:scale-95"><EditIcon className="w-4 h-4" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
+                <div className="flex items-center gap-2"><TargetIcon className="w-4 h-4 text-indigo-500 dark:text-blue-300" /><span className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)]">{t('class_target_title')}</span></div>
+                <button onClick={() => setIsEditingTarget(!isEditingTarget)} className="text-[var(--fs-sm)] bg-[var(--bg-surface)] px-4 py-2 min-h-[44px] rounded-[calc(var(--radius-main)*0.5)] text-[var(--text-muted)] border border-[var(--border-main)] flex items-center gap-2 hover:bg-[var(--bg-hover)] transition-colors uppercase font-[var(--fw-black)] active:scale-95 shadow-sm"><EditIcon className="w-4 h-4" /> {isEditingTarget ? t('cancel') : t('edit_action')}</button>
               </div>
               {isEditingTarget ? (
                 <div className="flex gap-2">
@@ -153,14 +153,14 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                     value={targetInputValue}
                     onChange={e => setTargetInputValue(e.target.value)}
                     aria-label="Set target score"
-                    className="flex-1 bg-[var(--bg-input)] border border-indigo-500 rounded-[var(--radius-main)] px-3 py-2 text-[var(--text-main)] font-bold text-center outline-none ring-2 ring-indigo-500/20 focus:ring-4 focus:ring-indigo-500/40"
+                    className="flex-1 bg-[var(--bg-input)] border border-indigo-500 rounded-[var(--radius-main)] px-3 py-2 text-[var(--text-main)] font-[var(--fw-bold)] text-center outline-none ring-2 ring-indigo-500/20 focus:ring-4 focus:ring-indigo-500/40 shadow-inner"
                     autoFocus
                   />
-                  <button onClick={handleSaveTarget} className="bg-green-600 text-white px-5 rounded-[var(--radius-main)] font-bold active:scale-95 transition-all shadow-lg">{t('save')}</button>
+                  <button onClick={handleSaveTarget} className="bg-green-600 text-white px-5 rounded-[var(--radius-main)] font-[var(--fw-bold)] active:scale-95 transition-all shadow-lg">{t('save')}</button>
                 </div>
               ) : (
                 <div>
-                  <div className="flex justify-between text-[10px] font-black text-[var(--text-muted)] mb-1 uppercase tracking-wider">
+                  <div className="flex justify-between text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] mb-1 uppercase tracking-wider">
                     <span>{t('progress_label')}: {currentClass.score}</span>
                     <span>{t('target_label')}: {currentClass.target_score || t('not_defined')}</span>
                   </div>
@@ -174,11 +174,11 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
         )}
 
         <main className="px-4 pb-2 flex-1 overflow-y-auto custom-scrollbar">
-          <div className={`${glassCardStyle} p-3 rounded-[var(--radius-main)] grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 min-h-[140px] items-start`}>
+          <div className={`${glassCardStyle} p-3 rounded-[var(--radius-main)] grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 min-h-[140px] items-start shadow-inner`}>
             {!searchTerm && currentClass && <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />}
             {filteredStudents.map(student => <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />)}
             {filteredStudents.length === 0 && !currentClass && (
-              <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-bold">{t('no_students_found')}</div>
+              <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-[var(--fw-bold)]">{t('no_students_found')}</div>
             )}
           </div>
         </main>

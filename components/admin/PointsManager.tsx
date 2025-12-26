@@ -64,28 +64,28 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
       >
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1">
-            <label className="block text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('group_label')}</label>
+            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('group_label')}</label>
             <div className="relative">
               <select
                 value={selectedClassId || ''}
                 onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-sm)] appearance-none font-[var(--fw-medium)]"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] appearance-none font-[var(--fw-medium)]"
               >
                 {!selectedClassId && <option value="" className="bg-[var(--bg-card)]">{t('select_group_placeholder')}</option>}
                 {teacherClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
               </select>
-              <div className="absolute rtl:left-4 ltr:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] opacity-50 text-[var(--fs-xs)]">▼</div>
+              <div className="absolute rtl:left-4 ltr:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] opacity-50 text-[var(--fs-sm)]">▼</div>
             </div>
           </div>
           <div className="relative flex-1">
-            <label className="block text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder={t('search_student_placeholder')}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-[var(--fw-medium)] rtl:pr-11 ltr:pl-11 placeholder:text-[var(--text-muted)] opacity-80"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] rtl:pr-11 ltr:pl-11 placeholder:text-[var(--text-muted)] opacity-80"
               />
               <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50" />
             </div>
@@ -115,7 +115,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
         {!selectedClassId && (
           <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
             <div className="w-16 h-16 rounded-full bg-[var(--bg-surface)] flex items-center justify-center border border-[var(--border-subtle)]">
-              <span className="text-[var(--fs-2xl)]">?</span>
+              <span className="text-[var(--fs-xl)]">?</span>
             </div>
             <span className="font-[var(--fw-bold)] text-[var(--fs-lg)]">{t('select_group_to_start')}</span>
           </div>
