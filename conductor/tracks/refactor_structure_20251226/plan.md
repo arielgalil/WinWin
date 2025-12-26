@@ -12,13 +12,13 @@ This plan outlines the steps to reorganize the project into a standard `src/` di
 - [x] Task: Move source directories (`components/`, `contexts/`, `hooks/`, `services/`, `utils/`) to `src/`. [597b63e]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Relocation' (Protocol in workflow.md) [dce5b5c]
 
-## Phase 3: Configuration & Link Updates
+## Phase 3: Configuration & Link Updates [checkpoint: c8a0bc0]
 - [x] Task: Update `index.html` to reference `/src/index.tsx`. [c8a0bc0]
 - [x] Task: Update `vite.config.ts` to reflect the new source root. [c8a0bc0]
 - [x] Task: Update `tsconfig.json` (and `tsconfig.node.json` if applicable) for the new structure. [c8a0bc0]
 - [x] Task: Update `vitest.config.ts` to ensure tests point to the correct files. [c8a0bc0]
 - [x] Task: Update `firebase.json` or any deployment scripts if they reference source paths. [c8a0bc0]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Configuration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Configuration' (Protocol in workflow.md) [c8a0bc0]
 
 ## Phase 4: Import Correction & Verification
 - [ ] Task: TDD - Run existing tests and identify broken imports.
