@@ -11,12 +11,12 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
     include: ['**/*.{test,spec}.{ts,tsx}'],
     alias: {
-      '@': path.resolve(__dirname, '.'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });
