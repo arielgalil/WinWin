@@ -13,11 +13,10 @@ This plan outlines the steps to simplify `App.tsx` by extracting components, con
 - [x] Task: Update `index.tsx` to wrap `App` with `AppProviders`. [374625f]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Provider Consolidation' (Protocol in workflow.md) [4fe95db]
 
-## Phase 3: Permission Logic Refactoring
+## Phase 3: Permission Logic Refactoring [checkpoint: 91aa42e]
 - [x] Task: TDD - Create `useAuthPermissions` hook in `src/services/useAuthPermissions.ts`. [57f96e8]
 - [x] Task: Integrate `useAuthPermissions` into `App.tsx` and remove inline logic. [57f96e8]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Permission Logic' (Protocol in workflow.md)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Permission Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Permission Logic' (Protocol in workflow.md) [91aa42e]
 
 ## Phase 4: Final Polish & Cleanup
 - [ ] Task: Remove redundant imports and unused code from `App.tsx`.
