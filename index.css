@@ -58,9 +58,44 @@
   --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* DARK THEME */
-.dark, @media (prefers-color-scheme: dark) {
-  :root:not(.light) {
+/* DARK THEME - MANUAL OVERRIDE (.dark class on html) */
+:root.dark {
+    --bg-page: #020617;    
+    --bg-card: #0f172a;    
+    --bg-surface: #1e293b; 
+    --bg-hover: #334155;   
+    --bg-active: rgba(79, 70, 229, 0.2); 
+    --bg-input: #020617;
+
+    --text-main: #f8fafc;      
+    --text-secondary: #cbd5e1; 
+    --text-muted: #94a3b8;     
+    --text-primary: #818cf8;   
+
+    --border-main: #334155;    
+    --border-subtle: #1e293b;  
+    --divide-main: #334155;
+
+    --primary-base: #6366f1;
+    --primary-hover: #818cf8;
+
+    --status-success-bg: rgba(22, 163, 74, 0.15);
+    --status-success-text: #4ade80;
+    --status-error-bg: rgba(220, 38, 38, 0.15);
+    --status-error-text: #f87171;
+
+    --acc-settings: #34d399;
+    --acc-points: #fb923c;
+    --acc-goals: #a78bfa;
+    --acc-data: #60a5fa;
+    --acc-logs: #facc15;
+    
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* DARK THEME - SYSTEM PREFERENCE (If no manual override) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
     --bg-page: #020617;    
     --bg-card: #0f172a;    
     --bg-surface: #1e293b; 
@@ -109,7 +144,7 @@ html, body {
   font-family: var(--font-family);
 }
 
-.light .admin-view {
+.light .admin-view, :root.light .admin-view {
   --text-main: #000000;
   --text-secondary: #1e293b;
   --border-main: #94a3b8;
