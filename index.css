@@ -1,12 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  /* SHARED DIMENSIONS */
+  /* Dimensions */
   --radius-main: 0.75rem; 
   --radius-container: 1rem;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* DEFAULT LIGHT THEME PALETTE */
+  /* TYPOGRAPHY - SIZES */
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-lg: 1.125rem;   /* 18px */
+  --fs-xl: 1.25rem;    /* 20px */
+  --fs-2xl: 1.5rem;    /* 24px */
+  --fs-3xl: 1.875rem;  /* 30px */
+
+  /* TYPOGRAPHY - WEIGHTS */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+  --fw-black: 900;
+
+  /* LOGICAL LAYOUT PROPERTIES (RTL AWARE) */
+  --padding-inline: 1.5rem;
+  --margin-inline: 1.5rem;
+
+  /* LIGHT MODE PALETTE (Default) */
   --bg-page: #f8fafc;      /* Slate 50 */
   --bg-card: #ffffff;      /* White */
   --bg-surface: #f1f5f9;   /* Slate 100 */
