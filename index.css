@@ -1,203 +1,146 @@
 @import "tailwindcss";
 
 @theme {
-  /* Semantic Tokens - These are the variables we will use in our components */
+  /* Semantic Tokens - Modern Design System */
   
-  /* Backgrounds */
-  --bg-page: var(--color-slate-50);
-  --bg-card: white;
-  --bg-surface: var(--color-slate-100);
-  --bg-hover: var(--color-slate-100);
-  --bg-active: var(--color-indigo-50);
-  --bg-input: white;
-  
-  /* Text */
-  --text-main: #000000;
-  --text-secondary: #1e293b; /* Slate 800 */
-  --text-muted: #475569; /* Slate 600 */
-  --text-on-primary: white;
-  --text-primary: var(--color-indigo-600);
+  /* Shared / Universal */
+  --radius-main: 0.75rem; 
+  --radius-container: 1rem;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Borders & Dividers */
-  --border-main: #cbd5e1; /* Slate 300 */
-  --border-subtle: #e2e8f0; /* Slate 200 */
-  --divide-main: #e2e8f0; /* Slate 200 */
-  
-  /* Brand / Primary */
-  --primary-base: var(--color-indigo-600);
-  --primary-hover: var(--color-indigo-700);
-  --primary-light: var(--color-indigo-50); /* Background for active items */
-  
-  /* Status */
-  --status-success-bg: var(--color-emerald-50);
-  --status-success-text: var(--color-emerald-700);
-  --status-error-bg: var(--color-red-50);
-  --status-error-text: var(--color-red-700);
-  
-  /* Effects */
-  --input-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  
-  /* Dimensions */
-  --radius-main: 0.75rem; /* 12px */
-  --radius-container: 1rem; /* 16px */
+  /* LIGHT MODE PALETTE (Default) */
+  --bg-page: #f8fafc;      /* Slate 50 */
+  --bg-card: #ffffff;      /* Pure White */
+  --bg-surface: #f1f5f9;   /* Slate 100 */
+  --bg-hover: #e2e8f0;     /* Slate 200 */
+  --bg-active: #e0e7ff;    /* Indigo 100 */
+  --bg-input: #ffffff;
 
-  /* Tab Accents (Light Mode) */
-  --acc-settings: #10b981; /* emerald-500 */
-  --acc-points: #f97316; /* orange-500 */
-  --acc-goals: #8b5cf6; /* purple-500 */
-  --acc-data: #3b82f6; /* blue-500 */
-  --acc-logs: #eab308; /* yellow-500 */
+  --text-main: #0f172a;      /* Slate 900 - Near Black */
+  --text-secondary: #334155; /* Slate 700 */
+  --text-muted: #64748b;     /* Slate 500 */
+  --text-primary: #4f46e5;   /* Indigo 600 */
+
+  --border-main: #cbd5e1;    /* Slate 300 */
+  --border-subtle: #e2e8f0;  /* Slate 200 */
+  --divide-main: #e2e8f0;
+
+  --primary-base: #4f46e5;
+  --primary-hover: #4338ca;
+  
+  --status-success-bg: #f0fdf4;
+  --status-success-text: #15803d;
+  --status-error-bg: #fef2f2;
+  --status-error-text: #b91c1c;
+
+  /* Tab Accents */
+  --acc-settings: #10b981;
+  --acc-points: #f97316;
+  --acc-goals: #8b5cf6;
+  --acc-data: #3b82f6;
+  --acc-logs: #eab308;
+  
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* DARK MODE OVERRIDES */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    /* ... existing dark variables ... */
-    --bg-page: #020617; 
-    --bg-card: #0f172a; 
-    --bg-surface: #1e293b; 
-    --bg-hover: #1e293b;
-    --bg-active: rgba(99, 102, 241, 0.1); 
+    --bg-page: #020617;    /* Slate 950 - Deepest */
+    --bg-card: #0f172a;    /* Slate 900 - Elevate cards */
+    --bg-surface: #1e293b; /* Slate 800 - Contrast area */
+    --bg-hover: #334155;   /* Slate 700 */
+    --bg-active: rgba(79, 70, 229, 0.2); 
     --bg-input: #020617;
 
-    /* Text */
-    --text-main: #f8fafc; 
-    --text-secondary: #94a3b8; 
-    --text-muted: #64748b; 
-    --text-primary: #818cf8;
+    --text-main: #f8fafc;      /* Slate 50 */
+    --text-secondary: #cbd5e1; /* Slate 300 */
+    --text-muted: #94a3b8;     /* Slate 400 */
+    --text-primary: #818cf8;   /* Indigo 400 */
 
-    /* Status Colors (Semantic) */
-    --status-success-bg: rgba(16, 185, 129, 0.1);
-    --status-success-text: #34d399;
-    --status-error-bg: rgba(239, 68, 68, 0.1);
+    --border-main: #334155;    /* Slate 700 */
+    --border-subtle: #1e293b;  /* Slate 800 */
+    --divide-main: #334155;
+
+    --primary-base: #6366f1;
+    --primary-hover: #818cf8;
+
+    --status-success-bg: rgba(22, 163, 74, 0.15);
+    --status-success-text: #4ade80;
+    --status-error-bg: rgba(220, 38, 38, 0.15);
     --status-error-text: #f87171;
 
-    /* Tab Accents (Dark Mode) */
     --acc-settings: #34d399;
     --acc-points: #fb923c;
     --acc-goals: #a78bfa;
     --acc-data: #60a5fa;
     --acc-logs: #facc15;
+    
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
   }
 }
 
 /* Manual .dark class support */
-:root.dark,
-html.dark,
-body.dark {
-    /* Backgrounds */
-    --bg-page: #020617; 
-    --bg-card: #0f172a; 
-    --bg-surface: #1e293b; 
-    --bg-hover: #1e293b;
-    --bg-active: rgba(99, 102, 241, 0.1); 
+:root.dark, html.dark, body.dark {
+    --bg-page: #020617;
+    --bg-card: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-hover: #334155;
+    --bg-active: rgba(79, 70, 229, 0.2); 
     --bg-input: #020617;
-
-    /* Text */
-    --text-main: #f8fafc; 
-    --text-secondary: #94a3b8; 
-    --text-muted: #64748b; 
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
     --text-primary: #818cf8;
-
-    /* Status Colors (Semantic) */
-    --status-success-bg: rgba(16, 185, 129, 0.1);
-    --status-success-text: #34d399;
-    --status-error-bg: rgba(239, 68, 68, 0.1);
+    --border-main: #334155;
+    --border-subtle: #1e293b;
+    --divide-main: #334155;
+    --primary-base: #6366f1;
+    --primary-hover: #818cf8;
+    --status-success-bg: rgba(22, 163, 74, 0.15);
+    --status-success-text: #4ade80;
+    --status-error-bg: rgba(220, 38, 38, 0.15);
     --status-error-text: #f87171;
-
-    /* Tab Accents (Dark Mode) */
     --acc-settings: #34d399;
     --acc-points: #fb923c;
     --acc-goals: #a78bfa;
     --acc-data: #60a5fa;
     --acc-logs: #facc15;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
 }
 
-/* Global Reset */
+/* Global Body Styling */
 body {
   background-color: var(--bg-page);
   color: var(--text-main);
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
+  @apply font-sans antialiased;
 }
 
-/* Admin Specific Utilities */
-.admin-view {
-    @apply font-sans;
-}
-
-/* NUCLEAR OPTION: Light Mode Contrast Enforcement */
+/* Admin Specific Overrides for high contrast in light mode */
 .light .admin-view {
-  /* Redefine semantic tokens to be even higher contrast in light mode */
-  --text-main: #000000;
-  --text-secondary: #000000;
-  --text-muted: #1e293b; /* Slate 800 */
-  --border-main: #94a3b8; /* Slate 400 - much darker than default 300 */
-  --border-subtle: #cbd5e1; /* Slate 300 */
-  --bg-surface: #f1f5f9; /* Slate 100 */
-  --bg-input: #ffffff;
-
-  /* Force Status Colors high contrast in light mode */
-  --status-success-bg: #ecfdf5; /* emerald-50 */
-  --status-success-text: #047857; /* emerald-700 */
-  --status-error-bg: #fef2f2; /* red-50 */
-  --status-error-text: #b91c1c; /* red-700 */
+  --text-main: #000000;      /* Absolute Black for max contrast */
+  --text-secondary: #1e293b; /* Slate 800 */
+  --border-main: #94a3b8;    /* Slate 400 - Clearer separation */
 }
 
-/* Force standard Tailwind gray/slate text to be high contrast in Admin Light Mode */
-.light .admin-view .text-gray-900,
-.light .admin-view .text-slate-900,
-.light .admin-view .text-gray-800,
-.light .admin-view .text-slate-800,
-.light .admin-view .text-gray-700,
-.light .admin-view .text-slate-700,
-.light .admin-view .text-gray-950,
-.light .admin-view .text-slate-950 {
-  color: #000000 !important;
-}
+/* Force standard Tailwind gray/slate text to be theme-aware in Admin */
+.admin-view .text-gray-950, .admin-view .text-slate-950 { color: var(--text-main); }
+.admin-view .text-gray-900, .admin-view .text-slate-900 { color: var(--text-main); }
+.admin-view .text-gray-800, .admin-view .text-slate-800 { color: var(--text-secondary); }
+.admin-view .text-gray-700, .admin-view .text-slate-700 { color: var(--text-secondary); }
+.admin-view .text-gray-600, .admin-view .text-slate-600 { color: var(--text-muted); }
+.admin-view .text-gray-500, .admin-view .text-slate-500 { color: var(--text-muted); }
 
-.light .admin-view .text-gray-600,
-.light .admin-view .text-slate-600,
-.light .admin-view .text-gray-500,
-.light .admin-view .text-slate-500,
-.light .admin-view .text-gray-400,
-.light .admin-view .text-slate-400 {
-  color: #1e293b !important; /* Force to Slate 800 */
-}
+/* Force standard Tailwind background colors to be theme-aware in Admin */
+.admin-view .bg-white { background-color: var(--bg-card) !important; }
+.admin-view .bg-gray-50, .admin-view .bg-slate-50 { background-color: var(--bg-page) !important; }
+.admin-view .bg-gray-100, .admin-view .bg-slate-100 { background-color: var(--bg-surface) !important; }
+.admin-view .bg-black { background-color: var(--bg-page) !important; } /* Nuclear Fix for hardcoded black */
 
-/* Specific category colors for Admin Light Mode */
-.light .admin-view .text-emerald-700, .light .admin-view .text-green-700, .light .admin-view .text-emerald-600 { color: #047857 !important; }
-.light .admin-view .text-rose-700, .light .admin-view .text-red-700, .light .admin-view .text-rose-600 { color: #b91c1c !important; }
-.light .admin-view .text-indigo-600, .light .admin-view .text-indigo-700 { color: #4338ca !important; }
-
-/* Force borders to be more visible in light mode */
-.light .admin-view .border-gray-200,
-.light .admin-view .border-slate-200,
-.light .admin-view .border-gray-300,
-.light .admin-view .border-slate-300,
-.light .admin-view .border-gray-400,
-.light .admin-view .border-slate-400 {
-  border-color: #94a3b8 !important; /* Force to Slate 400 */
-}
-
-.light .admin-view .divide-gray-200,
-.light .admin-view .divide-slate-200,
-.light .admin-view .divide-gray-300,
-.light .admin-view .divide-slate-300 {
-  border-color: #cbd5e1 !important; /* Force to Slate 300 */
-}
-
-/* Improve Card and Input definition */
-.light .admin-view .bg-white,
-.light .admin-view .bg-slate-50,
-.light .admin-view .bg-gray-50 {
-  background-color: var(--bg-card) !important;
-}
-
-.light .admin-view .bg-slate-100,
-.light .admin-view .bg-gray-100 {
-  background-color: var(--bg-surface) !important;
-}
+/* Standardized Borders */
+.admin-view .border-gray-200, .admin-view .border-slate-200 { border-color: var(--border-subtle) !important; }
+.admin-view .border-gray-300, .admin-view .border-slate-300 { border-color: var(--border-main) !important; }
 
 /* Custom Scrollbar for Admin Area */
 .custom-scrollbar::-webkit-scrollbar {

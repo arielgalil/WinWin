@@ -37,7 +37,7 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
   };
 
   const backgroundStyle = {
-    backgroundColor: '#0f172a',
+    backgroundColor: 'var(--bg-page)',
     backgroundImage: `
         radial-gradient(circle at 0% 0%, ${primaryColor} 0%, transparent 80%),
         radial-gradient(circle at 100% 100%, ${secondaryColor} 0%, transparent 80%),
@@ -49,7 +49,7 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
 
   return (
     <div
-      className={`absolute inset-0 w-full h-full font-sans text-white z-0 overflow-hidden low-perf:bg-slate-950 low-perf:!bg-none ${className}`}
+      className={`absolute inset-0 w-full h-full font-sans text-[var(--text-main)] z-0 overflow-hidden low-perf:bg-[var(--bg-page)] low-perf:!bg-none ${className}`}
       style={backgroundStyle}
     >
       {children}

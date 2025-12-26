@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ScorePreset } from '../../types';
 import { PlusIcon, ArrowRightIcon, SendIcon, EditIcon, XIcon } from '../ui/Icons';
@@ -168,7 +167,5 @@ export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, s
                 </MotionDiv>
             )}
         </AnimatePresence>
-    );
-};
     );
 };
