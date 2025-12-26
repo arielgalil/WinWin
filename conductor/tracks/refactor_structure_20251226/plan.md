@@ -2,10 +2,10 @@
 
 This plan outlines the steps to reorganize the project into a standard `src/` directory structure.
 
-## Phase 1: Preparation & Directory Setup
+## Phase 1: Preparation & Directory Setup [checkpoint: 0087baa]
 - [x] Task: Create the `src/` directory if it doesn't already exist. [daa3f1c]
 - [x] Task: Create the `src/test/` directory for any root-level test utilities (if applicable). [daa3f1c]
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md) [0087baa]
 
 ## Phase 2: Source Code Relocation
 - [ ] Task: Move core files (`App.tsx`, `index.tsx`, `index.css`, `types.ts`, `config.ts`, `supabaseClient.ts`) to `src/`.
