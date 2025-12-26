@@ -13,7 +13,7 @@ This plan outlines the steps to centralize security logic by implementing a gene
 - [x] Task: Refactor `App.tsx` to ensure loading states (`authLoading`, `isLoadingCampaign`) are handled before the router is processed. [4361a94]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Refactoring' (Protocol in workflow.md) [4bde09b]
 
-## Phase 3: Verification & Polish
-- [ ] Task: Verify redirection and "Access Denied" behavior for different user roles (Super Admin, Admin, Teacher, Logged out).
-- [ ] Task: Run full regression test suite and ensure build success.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Polish' (Protocol in workflow.md)
+## Phase 3: Verification & Polish [checkpoint: 10612]
+- [x] Task: Verify redirection and "Access Denied" behavior for different user roles (Super Admin, Admin, Teacher, Logged out). [4bde09b]
+- [x] Task: Run full regression test suite and ensure build success. [4bde09b]
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Polish' (Protocol in workflow.md) [10612]
