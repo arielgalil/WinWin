@@ -223,7 +223,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}
                     </div>
                     <div>
-                      <h2 className="text-[var(--fs-xl)] font-[var(--fw-bold)] text-[var(--text-main)] tracking-tight">{headerConfig?.title}</h2>
+                      <h2 className="text-[var(--fs-2xl)] sm:text-[var(--fs-3xl)] font-[var(--fw-bold)] text-[var(--text-main)] tracking-tight">{headerConfig?.title}</h2>
                       <p className="text-[var(--text-secondary)] font-[var(--fw-medium)] text-[var(--fs-base)] mt-1">{headerConfig?.desc}</p>
                     </div>
                   </div>
@@ -237,24 +237,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                     )}
 
                     {!activeNotification && headerConfig?.updatedAt && (
-                      <div className="flex items-center gap-2 text-[var(--fs-sm)] text-[var(--text-muted)] font-[var(--fw-medium)] bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)] shadow-sm">
-                        <ClockIcon className="w-3.5 h-3.5" />
-                        <span>{(language === 'he' ? 'נשמר ' : 'Saved ')} {formatLastSaved(headerConfig.updatedAt, language)}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                  <div className="flex items-center gap-3">
-                    {activeNotification && (
-                      <SaveNotificationBadge
-                        notification={activeNotification}
-                        onDismiss={() => dismiss(activeTab)}
-                      />
-                    )}
-
-                    {!activeNotification && headerConfig?.updatedAt && (
-                      <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-medium bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)]">
+                      <div className="flex items-center gap-2 text-[var(--fs-xs)] text-[var(--text-muted)] font-[var(--fw-medium)] bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-main)]">
                         <ClockIcon className="w-3.5 h-3.5" />
                         <span>{(language === 'he' ? 'נשמר ' : 'Saved ')} {formatLastSaved(headerConfig.updatedAt, language)}</span>
                       </div>
