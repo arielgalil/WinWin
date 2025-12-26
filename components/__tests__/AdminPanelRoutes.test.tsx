@@ -2,10 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { AdminPanel } from '../AdminPanel';
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
-import * as ReactRouterDOM from 'react-router-dom';
+import { ToastProvider } from '../../hooks/useToast';
+import { ThemeProvider } from '../../contexts/ThemeContext';
 
+// Mock dependencies
 vi.mock('../../hooks/useLanguage', () => ({
   useLanguage: () => ({ 
     t: (key: string) => key, 
@@ -18,33 +20,32 @@ vi.mock('../../hooks/useLanguage', () => ({
 vi.mock('../../hooks/useCompetitionData', () => ({
   useCompetitionData: () => ({
     logs: [],
+    loadMoreLogs: vi.fn(),
+    deleteLog: vi.fn(),
+    updateLog: vi.fn(),
     currentCampaign: { is_active: true, name: 'תחרות בדיקה' },
+    updateClassTarget: vi.fn(),
+    updateSettingsGoals: vi.fn(),
+    updateTabTimestamp: vi.fn(),
     refreshData: vi.fn(),
     tickerMessages: [],
+    addTickerMessage: vi.fn(),
+    deleteTickerMessage: vi.fn(),
     updateTickerMessage: vi.fn(),
   })
-}));
-
-vi.mock('../admin/AdminSidebar', () => ({
-  AdminSidebar: ({ activeTab }: any) => <div data-testid="sidebar" data-active-tab={activeTab} />
 }));
 
 vi.mock('../admin/AdminMobileMenu', () => ({
   AdminMobileMenu: () => <div data-testid="mobile-menu" />
 }));
 
+vi.mock('../admin/AdminSidebar', () => ({
+  AdminSidebar: () => <div data-testid="sidebar" />
+}));
+
 vi.mock('../ui/VersionFooter', () => ({
   VersionFooter: () => <div data-testid="footer" />
 }));
-
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useParams: vi.fn(),
-    useNavigate: () => vi.fn(),
-  };
-});
 
 const mockUser = {
   id: '1',
@@ -54,6 +55,7 @@ const mockUser = {
 
 const mockSettings = {
   school_name: 'בית ספר בדיקה',
+  logo_url: 'test-logo.png',
 };
 
 describe('AdminPanel Route Mapping', () => {
@@ -65,35 +67,43 @@ describe('AdminPanel Route Mapping', () => {
     onLogout: vi.fn(),
     onRefreshData: vi.fn(),
     onViewDashboard: vi.fn(),
+    isAdmin: true,
   };
 
   it('maps legacy "school" tab to "settings"', () => {
-    vi.mocked(ReactRouterDOM.useParams).mockReturnValue({ slug: 'test-slug', tab: 'school' });
-    
     render(
-      <BrowserRouter>
-        <LanguageProvider>
-          <AdminPanel {...defaultProps} />
-        </LanguageProvider>
-      </BrowserRouter>
+      <MemoryRouter initialEntries={['/admin/test-slug/school']}>
+        <ThemeProvider>
+          <ToastProvider>
+            <LanguageProvider>
+              <Routes>
+                <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
+              </Routes>
+            </LanguageProvider>
+          </ToastProvider>
+        </ThemeProvider>
+      </MemoryRouter>
     );
     
-    const sidebar = screen.getByTestId('sidebar');
-    expect(sidebar.getAttribute('data-active-tab')).toBe('settings');
+    // Header should show settings title
+    expect(screen.getByText('tab_settings')).toBeDefined();
   });
 
   it('uses "settings" directly', () => {
-    vi.mocked(ReactRouterDOM.useParams).mockReturnValue({ slug: 'test-slug', tab: 'settings' });
-    
     render(
-      <BrowserRouter>
-        <LanguageProvider>
-          <AdminPanel {...defaultProps} />
-        </LanguageProvider>
-      </BrowserRouter>
+      <MemoryRouter initialEntries={['/admin/test-slug/settings']}>
+        <ThemeProvider>
+          <ToastProvider>
+            <LanguageProvider>
+              <Routes>
+                <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
+              </Routes>
+            </LanguageProvider>
+          </ToastProvider>
+        </ThemeProvider>
+      </MemoryRouter>
     );
     
-    const sidebar = screen.getByTestId('sidebar');
-    expect(sidebar.getAttribute('data-active-tab')).toBe('settings');
+    expect(screen.getByText('tab_settings')).toBeDefined();
   });
 });

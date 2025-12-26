@@ -5,6 +5,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { ThemeProvider } from '../../contexts/ThemeContext';
+import { ToastProvider } from '../../hooks/useToast';
 import * as sharingUtils from '../../utils/sharingUtils';
 
 // Mock dependencies
@@ -96,9 +97,11 @@ describe('AdminPanel Sharing', () => {
     render(
       <BrowserRouter>
         <ThemeProvider>
-          <LanguageProvider>
-            <AdminPanel {...defaultProps} />
-          </LanguageProvider>
+          <ToastProvider>
+            <LanguageProvider>
+              <AdminPanel {...defaultProps} />
+            </LanguageProvider>
+          </ToastProvider>
         </ThemeProvider>
       </BrowserRouter>
     );
@@ -113,9 +116,11 @@ describe('AdminPanel Sharing', () => {
     render(
       <BrowserRouter>
         <ThemeProvider>
-          <LanguageProvider>
-            <AdminPanel {...defaultProps} />
-          </LanguageProvider>
+          <ToastProvider>
+            <LanguageProvider>
+              <AdminPanel {...defaultProps} />
+            </LanguageProvider>
+          </ToastProvider>
         </ThemeProvider>
       </BrowserRouter>
     );

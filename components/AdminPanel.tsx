@@ -179,6 +179,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
           onTabChange={handleTabChange}
           onViewDashboard={onViewDashboard}
           onManualRefresh={handleRefresh}
+          onShare={handleShare}
           isRefreshing={isRefreshing}
           onLogout={onLogout}
           campaignRole={campaignRole}

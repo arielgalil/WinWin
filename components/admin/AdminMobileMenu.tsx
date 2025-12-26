@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { UserProfile } from '../../types';
-import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIcon, MoonIcon } from '../ui/Icons';
+import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIcon, MoonIcon, ShareIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -19,6 +19,7 @@ interface AdminMobileMenuProps {
   onTabChange: (id: string) => void;
   onViewDashboard: () => void;
   onManualRefresh: () => void;
+  onShare: () => void;
   isRefreshing: boolean;
   onLogout: () => void;
   campaignRole?: 'admin' | 'teacher' | 'superuser' | null;
@@ -36,6 +37,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   onTabChange,
   onViewDashboard,
   onManualRefresh,
+  onShare,
   isRefreshing,
   onLogout,
   campaignRole: propRole,
@@ -168,6 +170,13 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                       >
                                           {theme === 'dark' ? <SunIcon className="w-6 h-6 text-amber-500" /> : <MoonIcon className="w-6 h-6 text-indigo-500" />}
                                           <span className="text-[var(--fs-sm)] font-[var(--fw-bold)]">{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
+                                      </button>
+                                      <button
+                                          onClick={() => { onShare(); setIsOpen(false); }}
+                                          className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] gap-2 shadow-sm transition-all"
+                                      >
+                                          <ShareIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)]">{t('copy_link')}</span>
                                       </button>
                                       <button
                                           onClick={() => { onManualRefresh(); setIsOpen(false); }}
