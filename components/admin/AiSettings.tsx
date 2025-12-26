@@ -161,18 +161,18 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
             >
                 <div className="space-y-6">
                     <div className="space-y-2">
-                        <label className="block text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
+                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
                         <div className="relative max-w-2xl">
                             <input
                                 type="password"
                                 value={geminiApiKey}
                                 onChange={e => setGeminiApiKey(e.target.value)}
                                 placeholder={t('ai_api_key_placeholder')}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12 shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-mono ltr:pl-12 rtl:pr-12 shadow-sm"
                             />
-                            <KeyIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                            <KeyIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50 pointer-events-none" />
                         </div>
-                        <p className="text-[11px] text-gray-500 dark:text-gray-500 italic mt-2">{t('ai_test_connection_desc')}</p>
+                        <p className="text-[11px] text-[var(--text-muted)] italic mt-2 opacity-70">{t('ai_test_connection_desc')}</p>
                     </div>
                 </div>
             </AdminSectionCard>
@@ -184,20 +184,20 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
+                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
                         <textarea
                             value={DEFAULT_PROMPT}
                             disabled
-                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-slate-100 dark:bg-black/20 text-xs leading-relaxed resize-none font-bold h-64 text-gray-700 dark:text-gray-500 shadow-inner"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-muted)] text-xs leading-relaxed resize-none font-bold h-64 shadow-inner"
                         />
                     </div>
                     <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider">{t('ai_custom_prompt_label')}</label>
+                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('ai_custom_prompt_label')}</label>
                         <textarea
                             value={customPrompt}
                             onChange={e => setCustomPrompt(e.target.value)}
                             placeholder={t('ai_custom_prompt_placeholder')}
-                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm font-bold text-gray-950 placeholder:text-gray-400"
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm leading-relaxed h-64 shadow-sm font-bold placeholder:text-[var(--text-muted)]/50"
                         />
                     </div>
                 </div>
@@ -214,23 +214,23 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             value={newKeyword}
                             onChange={e => setNewKeyword(e.target.value)}
                             placeholder={t('ai_keywords_placeholder')}
-                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold placeholder:text-gray-400 shadow-sm"
+                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold placeholder:text-[var(--text-muted)]/50 shadow-sm"
                         />
                         <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95">
                             <PlusIcon className="w-5 h-5" />
                         </button>
                     </form>
 
-                    <div className="flex flex-wrap gap-2.5 p-6 bg-slate-100 dark:bg-black/20 rounded-xl border border-gray-300 dark:border-white/5 min-h-[80px] shadow-inner">
+                    <div className="flex flex-wrap gap-2.5 p-6 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] min-h-[80px] shadow-inner">
                         {keywords.length === 0 ? (
-                            <div className="w-full flex items-center justify-center text-gray-600 text-sm italic py-2 font-bold">
+                            <div className="w-full flex items-center justify-center text-[var(--text-muted)] text-sm italic py-2 font-bold">
                                 {t('ai_no_tags')}
                             </div>
                         ) : (
                             keywords.map((kw, idx) => (
-                                <div key={idx} className="bg-white dark:bg-white/10 text-gray-900 dark:text-gray-200 px-4 py-1.5 rounded-full flex items-center gap-3 text-xs font-black border border-gray-300 dark:border-white/10 shadow-sm animate-in zoom-in-95">
+                                <div key={idx} className="bg-[var(--bg-card)] text-[var(--text-main)] px-4 py-1.5 rounded-full flex items-center gap-3 text-xs font-black border border-[var(--border-main)] shadow-sm animate-in zoom-in-95">
                                     <span>{kw}</span>
-                                    <button onClick={() => removeKeyword(kw)} className="text-gray-500 hover:text-red-600 transition-colors">
+                                    <button onClick={() => removeKeyword(kw)} className="text-[var(--text-muted)] hover:text-red-600 transition-colors">
                                         <XIcon className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
@@ -248,7 +248,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 exit={{ y: 20, opacity: 0 }}
-                                className="bg-white dark:bg-[#25262b] border border-gray-200 dark:border-gray-700 p-2 rounded-xl shadow-2xl flex items-center gap-4 pointer-events-auto min-w-[300px]"
+                                className="bg-[var(--bg-card)] border border-[var(--border-main)] p-2 rounded-xl shadow-2xl flex items-center gap-4 pointer-events-auto min-w-[300px]"
                             >
                                 <div className="flex-1 px-4">
                                     {message ? (
@@ -256,7 +256,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                                             {message.text}
                                         </span>
                                     ) : (
-                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{t('changes_detected')}</span>
+                                        <span className="text-sm font-bold text-[var(--text-main)]">{t('changes_detected')}</span>
                                     )}
                                 </div>
                                 <button

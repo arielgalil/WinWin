@@ -331,33 +331,33 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 <div className="space-y-6">
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
-                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-slate-50 dark:bg-white/5 p-6 rounded-[var(--radius-main)] border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col gap-4 relative overflow-hidden group">
-                                <h3 className="text-gray-900 dark:text-white font-bold text-base flex items-center gap-2 mb-2">
+                            <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border-2 border-dashed border-[var(--border-main)] flex flex-col gap-4 relative overflow-hidden group">
+                                <h3 className="text-[var(--text-main)] font-bold text-base flex items-center gap-2 mb-2">
                                     {editingClass ? t('edit_group') : t('add_new_group')}
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('group_name_placeholder')}</label>
+                                        <label className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('group_name_placeholder')}</label>
                                         <input 
                                             value={newClassName} 
                                             onChange={e => setNewClassName(e.target.value)} 
                                             placeholder={t('group_name_placeholder')} 
-                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                             autoFocus 
                                         />
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">{t('group_color_label')}</label>
-                                        <div className="flex flex-wrap gap-2 p-3 bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 shadow-sm">
+                                        <label className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('group_color_label')}</label>
+                                        <div className="flex flex-wrap gap-2 p-3 bg-[var(--bg-card)] rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             {AVAILABLE_COLORS.map(c => (
-                                                <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#1e1e2e] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
+                                                <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-[var(--bg-card)] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
                                             ))}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-auto pt-2 justify-end">
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-white dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-600 dark:text-gray-300 font-bold py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 text-xs transition-all">{t('cancel')}</button>
+                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] font-bold py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] text-xs transition-all">{t('cancel')}</button>
                                     <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-[var(--radius-main)] text-xs shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
                                 </div>
                             </MotionDiv>
@@ -385,12 +385,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 header: t('students_label'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <span className="text-gray-800 dark:text-gray-400 font-bold">
+                                        <span className="text-[var(--text-main)] opacity-80 font-bold">
                                             {cls.students?.length || 0} {t('students_label')}
                                         </span>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
-                                            className="p-1.5 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-full text-indigo-800 dark:text-indigo-400 transition-colors border border-gray-200 hover:border-indigo-300 dark:hover:border-indigo-500/30"
+                                            className="p-1.5 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-full text-indigo-800 dark:text-indigo-400 transition-colors border border-[var(--border-main)] hover:border-indigo-300 dark:hover:border-indigo-500/30 shadow-sm"
                                             title={t('manage_students_button')}
                                         >
                                             <UsersIcon className="w-4 h-4" />
@@ -421,42 +421,42 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 {view === 'students' && selectedClass && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
                         <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-                        <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
-                            <div className="p-6 border-b border-gray-200 dark:border-white/5 flex justify-between items-center shrink-0 bg-slate-100 dark:bg-white/5">
+                        <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-container)] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
+                            <div className="p-6 border-b border-[var(--border-subtle)] flex justify-between items-center shrink-0 bg-[var(--bg-surface)]">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-[var(--radius-main)] flex items-center justify-center text-white shadow-sm ${selectedClass.color}`}>
                                         <UsersIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-950 dark:text-white leading-none">{selectedClass.name}</h3>
-                                        <p className="text-gray-700 dark:text-gray-400 text-xs font-black mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
+                                        <h3 className="text-xl font-bold text-[var(--text-main)] leading-none">{selectedClass.name}</h3>
+                                        <p className="text-[var(--text-muted)] text-xs font-black mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setView('list')} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full text-gray-600 hover:text-gray-950 dark:hover:text-white transition-all"><XIcon className="w-5 h-5" /></button>
+                                <button onClick={() => setView('list')} className="p-2 hover:bg-[var(--bg-hover)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"><XIcon className="w-5 h-5" /></button>
                             </div>
 
-                            <div className="p-6 flex flex-col gap-6 overflow-hidden bg-white dark:bg-[#1e1e2e]">
+                            <div className="p-6 flex flex-col gap-6 overflow-hidden bg-[var(--bg-card)]">
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="relative flex-[2]">
-                                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+                                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
                                         <div className="relative">
-                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                                             <input 
                                                 value={searchTerm} 
                                                 onChange={e => setSearchTerm(e.target.value)} 
                                                 placeholder={t('search_student_placeholder')} 
-                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 font-bold placeholder:text-gray-500" 
+                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 font-bold placeholder:text-[var(--text-muted)]/50 shadow-inner" 
                                             />
                                         </div>
                                     </div>
                                     <form onSubmit={handleAddStudent} className="flex-[3] flex flex-col gap-2">
-                                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider">{t('new_student_placeholder')}</label>
+                                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('new_student_placeholder')}</label>
                                         <div className="flex gap-3">
                                             <input 
                                                 value={newStudentName} 
                                                 onChange={e => setNewStudentName(e.target.value)} 
                                                 placeholder={t('new_student_placeholder')} 
-                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 font-bold placeholder:text-gray-500" 
+                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 font-bold placeholder:text-[var(--text-muted)]/50 shadow-inner" 
                                             />
                                             <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-sm">{t('add')}</button>
                                         </div>
@@ -471,7 +471,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                             {
                                                 key: 'name',
                                                 header: t('student_name_label'),
-                                                render: (s) => <span className="text-gray-900 dark:text-gray-200 font-bold">{s.name}</span>
+                                                render: (s) => <span className="text-[var(--text-main)] font-bold">{s.name}</span>
                                             }
                                         ]}
                                         actions={(s) => (
@@ -484,10 +484,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-slate-100 dark:bg-white/5 border-t border-gray-200 dark:border-white/5 flex justify-end shrink-0">
+                            <div className="p-4 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] flex justify-end shrink-0">
                                 <button 
                                     onClick={() => setView('list')} 
-                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-800 dark:text-gray-300 font-bold rounded-[var(--radius-main)] hover:bg-slate-50 dark:hover:bg-white/10 transition-all text-sm shadow-sm"
+                                    className="px-6 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-bold rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-sm shadow-sm"
                                 >
                                     {t('close_window')}
                                 </button>
