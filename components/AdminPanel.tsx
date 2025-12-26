@@ -14,6 +14,9 @@ import { SaveNotificationProvider, useSaveNotification } from '../contexts/SaveN
 import { SaveNotificationBadge } from './ui/SaveNotificationBadge';
 import { formatLastSaved } from '../utils/dateUtils';
 import { useLanguage } from '../hooks/useLanguage';
+import { useToast } from '../hooks/useToast';
+import { ShareIcon } from './ui/Icons';
+import { generateRoleBasedShareMessage } from '../utils/sharingUtils';
 
 const { useParams, useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -64,6 +67,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   user, classes, settings, onLogout, onViewDashboard, isSuperAdmin, initialTab, campaignRole
 }) => {
   const { t, language } = useLanguage();
+  const { showToast } = useToast();
   const { slug, tab: activeTabFromUrl } = useParams();
   const navigate = useNavigate();
   const { notifications, dismiss } = useSaveNotification();
@@ -112,6 +116,25 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
       return false;
     } finally {
       setIsRefreshing(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!currentCampaign) return;
+    
+    try {
+      const message = generateRoleBasedShareMessage({
+        role: campaignRole || user.role,
+        campaign: currentCampaign,
+        institutionName: settings.school_name,
+        origin: window.location.origin
+      });
+      
+      await navigator.clipboard.writeText(message);
+      showToast(t('copied_to_clipboard'), 'success');
+    } catch (err) {
+      console.error("Share failed:", err);
+      showToast(t('copy_error'), 'error');
     }
   };
 
@@ -172,15 +195,25 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Quick Actions or Refresh button */}
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="p-2 rounded-full hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-secondary)]"
-              title={t('refresh')}
-            >
-              <RefreshIcon className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </button>
+            {/* Quick Actions */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="p-2.5 rounded-full hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] active:scale-90"
+                title={t('refresh')}
+              >
+                <RefreshIcon className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </button>
+
+              <button
+                onClick={handleShare}
+                className="p-2.5 rounded-full hover:bg-[var(--bg-hover)] transition-all text-[var(--text-secondary)] active:scale-90"
+                title={t('copy_link')}
+              >
+                <ShareIcon className="w-5 h-5" />
+              </button>
+            </div>
 
             <div className="w-px h-6 bg-[var(--border-main)]" />
 
