@@ -9,8 +9,8 @@ This plan outlines the steps to simplify `App.tsx` by extracting components, con
 - [x] Task: Conductor - User Manual Verification 'Phase 1: UI Extraction' (Protocol in workflow.md) [5ecf6ca]
 
 ## Phase 2: Provider Consolidation
-- [ ] Task: TDD - Create `AppProviders` wrapper in `src/contexts/AppProviders.tsx`.
-- [ ] Task: Update `index.tsx` to wrap `App` with `AppProviders`.
+- [x] Task: TDD - Create `AppProviders` wrapper in `src/contexts/AppProviders.tsx`. [374625f]
+- [x] Task: Update `index.tsx` to wrap `App` with `AppProviders`. [374625f]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Provider Consolidation' (Protocol in workflow.md)
 
 ## Phase 3: Permission Logic Refactoring
