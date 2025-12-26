@@ -29,5 +29,5 @@ This plan outlines the steps to improve the Admin Panel UX, restore AI functiona
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Multi-Link Sharing' (Protocol in workflow.md) [checkpoint: 32e3046]
 
 ## Phase 5: Final Polish & Verification
-- [ ] Task: Final regression testing of all Admin Panel features.
+- [~] Task: Final regression testing of all Admin Panel features.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Final Polish' (Protocol in workflow.md)

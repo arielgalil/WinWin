@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ClassRoom, UserProfile } from '../../types';
 import { PlusIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
-import { AdminTable, Column } from '../ui/AdminTable';
+import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { supabase } from '../../supabaseClient';
@@ -305,7 +305,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 input.click();
                             }}
                             disabled={isImporting}
-                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 font-bold rounded-[var(--radius-main)] hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                            className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-[var(--fw-bold)] rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm"
                         >
                             {isImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                             {t('smart_import')}
@@ -313,7 +313,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
                         <button
                             onClick={() => setIsAddingClass(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-sm"
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-[var(--fs-sm)]"
                         >
                             <PlusIcon className="w-4 h-4" />
                             {t('add_new_group')}
@@ -322,7 +322,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 }
             >
                 {importStatus && (
-                    <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-[var(--radius-main)] flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold animate-pulse mb-6 text-sm">
+                    <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 p-4 rounded-[var(--radius-main)] flex items-center gap-3 text-blue-600 dark:text-blue-400 font-[var(--fw-bold)] animate-pulse mb-6 text-[var(--fs-sm)]">
                         <RefreshIcon className="w-4 h-4 animate-spin" />
                         {importStatus}
                     </div>
@@ -332,23 +332,23 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                     <AnimatePresence>
                         {(isAddingClass || editingClass) && (
                             <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border-2 border-dashed border-[var(--border-main)] flex flex-col gap-4 relative overflow-hidden group">
-                                <h3 className="text-[var(--text-main)] font-bold text-base flex items-center gap-2 mb-2">
+                                <h3 className="text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] flex items-center gap-2 mb-2">
                                     {editingClass ? t('edit_group') : t('add_new_group')}
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('group_name_placeholder')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_name_placeholder')}</label>
                                         <input 
                                             value={newClassName} 
                                             onChange={e => setNewClassName(e.target.value)} 
                                             placeholder={t('group_name_placeholder')} 
-                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-medium)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                             autoFocus 
                                         />
                                     </div>
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('group_color_label')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_color_label')}</label>
                                         <div className="flex flex-wrap gap-2 p-3 bg-[var(--bg-card)] rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             {AVAILABLE_COLORS.map(c => (
                                                 <button key={c} onClick={() => setNewClassColor(c)} className={`w-6 h-6 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-[var(--bg-card)] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
@@ -357,8 +357,8 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-auto pt-2 justify-end">
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] font-bold py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] text-xs transition-all">{t('cancel')}</button>
-                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-[var(--radius-main)] text-xs shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
+                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] font-[var(--fw-bold)] py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] text-[var(--fs-xs)] transition-all shadow-sm">{t('cancel')}</button>
+                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] py-2.5 rounded-[var(--radius-main)] text-[var(--fs-xs)] shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
                                 </div>
                             </MotionDiv>
                         )}
@@ -373,10 +373,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 header: t('group_header'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-8 h-8 rounded-[var(--radius-main)] ${cls.color} flex items-center justify-center text-white text-[10px] shadow-sm`}>
+                                        <div className={`w-8 h-8 rounded-[var(--radius-main)] ${cls.color} flex items-center justify-center text-white text-[var(--fs-xs)] shadow-sm`}>
                                             <UsersIcon className="w-4 h-4" />
                                         </div>
-                                        <span className="font-bold text-[var(--text-main)]">{cls.name}</span>
+                                        <span className="font-[var(--fw-bold)] text-[var(--text-main)] text-[var(--fs-base)]">{cls.name}</span>
                                     </div>
                                 )
                             },
@@ -385,7 +385,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 header: t('students_label'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <span className="text-[var(--text-main)] opacity-80 font-bold">
+                                        <span className="text-[var(--text-main)] opacity-80 font-[var(--fw-bold)] text-[var(--fs-sm)]">
                                             {cls.students?.length || 0} {t('students_label')}
                                         </span>
                                         <button 
@@ -428,8 +428,8 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         <UsersIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-[var(--text-main)] leading-none">{selectedClass.name}</h3>
-                                        <p className="text-[var(--text-muted)] text-xs font-black mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
+                                        <h3 className="text-[var(--fs-lg)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none">{selectedClass.name}</h3>
+                                        <p className="text-[var(--text-muted)] text-[var(--fs-xs)] font-[var(--fw-bold)] mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => setView('list')} className="p-2 hover:bg-[var(--bg-hover)] rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all"><XIcon className="w-5 h-5" /></button>
@@ -438,27 +438,27 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             <div className="p-6 flex flex-col gap-6 overflow-hidden bg-[var(--bg-card)]">
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="relative flex-[2]">
-                                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+                                        <label className="block text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
                                         <div className="relative">
                                             <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                                             <input 
                                                 value={searchTerm} 
                                                 onChange={e => setSearchTerm(e.target.value)} 
                                                 placeholder={t('search_student_placeholder')} 
-                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 font-bold placeholder:text-[var(--text-muted)]/50 shadow-inner" 
+                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" 
                                             />
                                         </div>
                                     </div>
                                     <form onSubmit={handleAddStudent} className="flex-[3] flex flex-col gap-2">
-                                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('new_student_placeholder')}</label>
+                                        <label className="block text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('new_student_placeholder')}</label>
                                         <div className="flex gap-3">
                                             <input 
                                                 value={newStudentName} 
                                                 onChange={e => setNewStudentName(e.target.value)} 
                                                 placeholder={t('new_student_placeholder')} 
-                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 font-bold placeholder:text-[var(--text-muted)]/50 shadow-inner" 
+                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" 
                                             />
-                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-sm">{t('add')}</button>
+                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-[var(--fs-sm)]">{t('add')}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -471,7 +471,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                             {
                                                 key: 'name',
                                                 header: t('student_name_label'),
-                                                render: (s) => <span className="text-[var(--text-main)] font-bold">{s.name}</span>
+                                                render: (s) => <span className="text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)]">{s.name}</span>
                                             }
                                         ]}
                                         actions={(s) => (
@@ -487,7 +487,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             <div className="p-4 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] flex justify-end shrink-0">
                                 <button 
                                     onClick={() => setView('list')} 
-                                    className="px-6 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-bold rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-sm shadow-sm"
+                                    className="px-6 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-[var(--fw-bold)] rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm"
                                 >
                                     {t('close_window')}
                                 </button>

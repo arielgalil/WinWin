@@ -183,36 +183,36 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('institution_name')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('institution_name')}</label>
                             <input 
                                 value={formData.school_name || ''} 
                                 onChange={e => updateForm({ school_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold shadow-sm" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-medium)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" 
                                 placeholder={t('school_name_placeholder')} 
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
                             <input 
                                 value={formData.competition_name || ''} 
                                 onChange={e => updateForm({ competition_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold shadow-sm" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" 
                                 placeholder={t('competition_name_placeholder')} 
                             />
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('language_setting')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('language_setting')}</label>
                             <div className="flex gap-4 p-1">
                                 <button
                                     type="button"
                                     onClick={() => updateForm({ language: 'he' })}
-                                    className={`flex-1 justify-center flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-900 dark:text-indigo-400' : 'border-[var(--border-main)] hover:bg-[var(--bg-hover)] text-[var(--text-main)]'}`}
+                                    className={`flex-1 justify-center flex items-center gap-3 px-4 py-2 rounded-[var(--radius-main)] border transition-all ${formData.language !== 'en' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-900 dark:text-indigo-400 font-[var(--fw-bold)]' : 'border-[var(--border-main)] hover:bg-[var(--bg-hover)] text-[var(--text-main)]'}`}
                                 >
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language !== 'en' ? 'border-indigo-500' : 'border-[var(--text-muted)]'}`}>
                                         {formData.language !== 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className="text-sm font-bold">{t('hebrew')}</span>
+                                    <span className="text-[var(--fs-base)]">{t('hebrew')}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -222,13 +222,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language === 'en' ? 'border-indigo-500' : 'border-[var(--text-muted)]'}`}>
                                         {formData.language === 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className="text-sm font-bold">{t('english')}</span>
+                                    <span className="text-[var(--fs-base)]">{t('english')}</span>
                                 </button>
                             </div>
                         </div>
 
                         <div className="md:col-span-2 pt-6 border-t border-[var(--border-subtle)]">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('logo_upload')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('logo_upload')}</label>
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
                                     <div className="w-24 h-24 bg-[var(--bg-surface)] rounded-full p-2 border border-[var(--border-main)] shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
@@ -239,11 +239,11 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.logo_url || ''}
                                         onChange={e => updateForm({ logo_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-mono shadow-sm"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono shadow-sm"
                                         placeholder="https://image-url.com/logo.png"
                                     />
                                     <div className="flex gap-3">
-                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-card)] text-[var(--text-main)] font-semibold hover:bg-[var(--bg-hover)] transition-all text-sm shadow-sm">
+                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-card)] text-[var(--text-main)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm">
                                             {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                                             {isUploading ? t('saving') : t('upload_file_button')}
                                             <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
@@ -251,7 +251,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     </div>
                                 </div>
                             </div>
-                            {uploadError && <p className="text-red-500 text-xs mt-2 font-bold">{uploadError}</p>}
+                            {uploadError && <p className="text-red-500 text-[var(--fs-xs)] mt-2 font-[var(--fw-bold)]">{uploadError}</p>}
                         </div>
                     </div>
                 </AdminSectionCard>
@@ -266,28 +266,28 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('youtube_link')}</label>
+                                    <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('youtube_link')}</label>
                                     <input
                                         value={formData.background_music_url || ''}
                                         onChange={e => updateForm({ background_music_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm ltr:text-left shadow-inner"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] ltr:text-left shadow-inner"
                                         placeholder={t('youtube_placeholder')}
                                     />
                                 </div>
                                 <div className="flex items-center justify-between p-4 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
-                                    <span className="text-sm font-bold text-[var(--text-main)]">{t('playback_mode')}</span>
+                                    <span className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)]">{t('playback_mode')}</span>
                                     <div className="flex bg-[var(--bg-card)] p-1 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-sm">
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'loop' })}
-                                            className={`flex-1 px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                         >
                                             {t('loop')}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'once' })}
-                                            className={`flex-1 px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                         >
                                             {t('once')}
                                         </button>
@@ -298,8 +298,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center px-1">
-                                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('initial_volume')}</label>
-                                        <span className="text-xs font-bold text-indigo-600">{formData.background_music_volume || 50}%</span>
+                                        <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('initial_volume')}</label>
+                                        <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-600">{formData.background_music_volume || 50}%</span>
                                     </div>
                                     <div className="flex items-center gap-4 group bg-[var(--bg-surface)] p-4 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
                                         <Volume2Icon className="w-5 h-5 text-[var(--text-muted)]" />
@@ -314,7 +314,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     </div>
                                 </div>
                                 <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-[var(--radius-main)]">
-                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
+                                    <p className="text-[var(--fs-sm)] text-blue-600 dark:text-blue-400 font-[var(--fw-medium)] leading-relaxed">
                                         {t('tip_atmosphere_desc')}
                                     </p>
                                 </div>
@@ -332,20 +332,20 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <div className="p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] space-y-4 shadow-inner">
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('brand_palette')}</h4>
+                                <h4 className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('brand_palette')}</h4>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{t('primary_color')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('primary_color')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             <input type="color" value={formData.primary_color || '#1877F2'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[10px] font-mono font-bold uppercase text-[var(--text-main)]">{formData.primary_color}</span>
+                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.primary_color}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{t('secondary_color')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('secondary_color')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             <input type="color" value={formData.secondary_color || '#050505'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[10px] font-mono font-bold uppercase text-[var(--text-main)]">{formData.secondary_color}</span>
+                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.secondary_color}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -353,8 +353,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center px-1">
-                                    <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('lighting_effect')}</label>
-                                    <span className="text-xs font-bold text-indigo-600">{formData.background_brightness || 50}%</span>
+                                    <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('lighting_effect')}</label>
+                                    <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-600">{formData.background_brightness || 50}%</span>
                                 </div>
                                 <div className="flex items-center gap-4 bg-[var(--bg-surface)] p-4 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
                                     <MoonIcon className="w-4 h-4 text-[var(--text-muted)]" />
@@ -373,26 +373,26 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
                         <div className="space-y-6">
                             <div className="p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] space-y-4 shadow-inner">
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('typography_colors')}</h4>
+                                <h4 className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('typography_colors')}</h4>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{t('title_1_label')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_1_label')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[10px] font-mono font-bold uppercase text-[var(--text-main)]">{formData.header_text_color_1}</span>
+                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_1}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{t('title_2_label')}</label>
+                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_2_label')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                             <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[10px] font-mono font-bold uppercase text-[var(--text-main)]">{formData.header_text_color_2}</span>
+                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_2}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-200 dark:border-pink-500/20 rounded-[var(--radius-main)]">
-                                <p className="text-xs text-pink-700 dark:text-pink-400 font-medium leading-relaxed italic">
+                                <p className="text-[var(--fs-sm)] text-pink-700 dark:text-pink-400 font-[var(--fw-medium)] leading-relaxed italic">
                                     {t('contrast_test_tip')}
                                 </p>
                             </div>
@@ -409,44 +409,44 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('min_points_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('min_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('max_points_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('max_points_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('points_step_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('points_step_label')}</label>
                             <input
                                 type="text"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-4 pt-6 mt-6 border-t border-[var(--border-subtle)]">
-                        <label className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
+                        <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
                         <div className="flex flex-wrap gap-3">
                             {(formData.score_presets || []).map((preset, idx) => (
                                 <div key={idx} className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-2 flex items-center gap-3 shadow-sm hover:border-indigo-500 transition-colors group">
-                                    <span className="text-sm font-bold text-[var(--text-main)]">{preset.label}</span>
-                                    <span className="text-xs text-indigo-700 dark:text-indigo-400 font-bold px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
+                                    <span className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)]">{preset.label}</span>
+                                    <span className="text-[var(--fs-sm)] text-indigo-700 dark:text-indigo-400 font-[var(--fw-bold)] px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
                                         <FormattedNumber value={preset.value} forceSign={true} />
                                     </span>
-                                    <button type="button" onClick={() => removePreset(idx)} className="text-[var(--text-muted)] hover:text-red-500 transition-colors">
+                                    <button type="button" onClick={() => removePreset(idx)} className="text-[var(--text-muted)] hover:text-red-500 transition-colors p-1">
                                         <XIcon className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
@@ -455,24 +455,24 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     </div>
 
                     <div className="space-y-4 pt-6 mt-6 border-t border-[var(--border-subtle)]">
-                        <h4 className="block text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
+                        <h4 className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
                         <div className="flex flex-col sm:flex-row gap-4 p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-inner">
                             <div className="flex-1 space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-[var(--text-muted)]">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm shadow-sm" placeholder={t('button_label_placeholder')} />
+                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('button_label')}</label>
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" placeholder={t('button_label_placeholder')} />
                             </div>
                             <div className="sm:w-32 space-y-1">
-                                <label className="text-[10px] font-bold uppercase text-[var(--text-muted)] text-center block">{t('points')}</label>
+                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)] text-center block">{t('points')}</label>
                                 <input
                                     type="text"
                                     value={formatNumberWithCommas(newPresetValue || '')}
                                     onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
-                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-sm font-bold text-center shadow-sm"
+                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] text-center shadow-sm"
                                     placeholder="10"
                                 />
                             </div>
                             <div className="sm:pt-5 pt-2 flex items-end">
-                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center">
+                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] py-2.5 px-6 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center text-[var(--fs-sm)]">
                                     <PlusIcon className="w-4 h-4" />
                                     {t('add')}
                                 </button>
@@ -492,18 +492,18 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             exit={{ y: 20, opacity: 0 }}
                             className="bg-[var(--bg-card)] text-[var(--text-main)] p-3 rounded-[var(--radius-main)] shadow-2xl flex items-center justify-between gap-4 border border-[var(--border-main)]"
                         >
-                            <span className="text-sm font-bold pl-2">{t('unsaved_changes')}</span>
+                            <span className="text-[var(--fs-base)] font-[var(--fw-bold)] pl-2">{t('unsaved_changes')}</span>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setFormData(settings)}
-                                    className="px-4 py-2 rounded-[var(--radius-main)] text-sm font-bold hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-muted)]"
+                                    className="px-4 py-2 rounded-[var(--radius-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-muted)]"
                                 >
                                     {t('cancel' as any)}
                                 </button>
                                 <button
                                     onClick={handleSaveSettings}
                                     disabled={isSaving}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-[var(--radius-main)] flex items-center gap-2 font-bold disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-[var(--radius-main)] flex items-center gap-2 font-[var(--fw-bold)] text-[var(--fs-sm)] disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
                                 >
                                     {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
                                     {isSaving ? t('saving') : t('save')}
