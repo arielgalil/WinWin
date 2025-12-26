@@ -311,9 +311,6 @@ export const en = {
     goal_achieved: "Goal Achieved!",
     common_goal: "Common Goal",
     more_points: "More",
-    points_mgmt_desc: "Select students and enter quick points",
-    select_group_placeholder: "Select group...",
-    select_group_to_start: "Please select a group to start",
     cumulative_score: "Cumulative Score",
     together: "Together",
     last_update: "Last Update",
@@ -346,12 +343,9 @@ export const en = {
     upload_file: "Upload File",
     update_stage_details: "Update Stage Details",
     add_stage_to_list: "Add New Step +",
-    stage_name_placeholder: "The Basics",
-    target_placeholder: "Target...",
-    emoji: "Emoji",
-
-    // Users Manager
-    team_mgmt_title: "Team Management - %{campaign}",
+        stage_name_placeholder: "The Basics",
+        
+        // Users Manager    team_mgmt_title: "Team Management - %{campaign}",
     full_name_placeholder: "e.g. John Doe",
     email_placeholder: "name@email.com",
     password_placeholder: "••••••••",
@@ -386,7 +380,6 @@ export const en = {
 
     // Goals Management
     goals_mgmt_title: "Goals & Milestones Management",
-    goals_mgmt_desc: "Set points required to reveal stages and group targets",
     institutional_goals_title: "Shared Institutional Goals",
     institutional_goals_desc: "Competition stages that everyone reveals together as points are accumulated",
     group_goals_title: "Individual Group Goals",
@@ -399,7 +392,6 @@ export const en = {
 
     // Classes Manager
     classes_management_title: "Classes & Students Management",
-    classes_management_desc: "Manage the competition structure",
     add_class_label: "Add Group",
     search_classes_placeholder: "Search groups...",
     smart_import: "Smart Import",
@@ -465,7 +457,6 @@ export const en = {
     rank_label: "Rank",
     student_name_label: "Student Name",
     target_score_header: "Target Score",
-    progress_label: "Progress",
     trend_label: "Trend",
     no_students_found: "No students found",
 
