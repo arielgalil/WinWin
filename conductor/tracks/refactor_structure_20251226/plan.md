@@ -3,8 +3,8 @@
 This plan outlines the steps to reorganize the project into a standard `src/` directory structure.
 
 ## Phase 1: Preparation & Directory Setup
-- [x] Task: Create the `src/` directory if it doesn't already exist.
-- [~] Task: Create the `src/test/` directory for any root-level test utilities (if applicable).
+- [x] Task: Create the `src/` directory if it doesn't already exist. [daa3f1c]
+- [x] Task: Create the `src/test/` directory for any root-level test utilities (if applicable). [daa3f1c]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
 
 ## Phase 2: Source Code Relocation
