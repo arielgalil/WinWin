@@ -160,14 +160,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 </div>
 
                 <div className="lg:col-span-2 space-y-4">
-                    <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider flex justify-between items-center px-1">
+                    <h4 className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider flex justify-between items-center px-1">
                         <span>{t('active_messages_list', { count: messages.length })}</span>
                     </h4>
 
                     <div className="bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-main)] min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
                         <AnimatePresence initial={false}>
                             {messages.length === 0 ? (
-                                <div className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)] text-sm italic font-black">
+                                <div className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)] text-[var(--fs-base)] italic font-[var(--fw-bold)]">
                                     {t('no_data')}
                                 </div>
                             ) : (
@@ -189,10 +189,10 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                             value={editText}
                                                             onChange={e => setEditText(e.target.value)}
                                                             maxLength={150}
-                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-indigo-400 dark:border-white/10 bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none font-bold"
+                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-indigo-400 dark:border-white/10 bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none font-[var(--fw-bold)]"
                                                             autoFocus
                                                         />
-                                                        <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[9px] font-bold ${editText.length >= 140 ? 'text-red-600' : 'text-[var(--text-muted)]'}`}>
+                                                        <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[var(--fs-sm)] font-[var(--fw-bold)] ${editText.length >= 140 ? 'text-red-600' : 'text-[var(--text-muted)]'}`}>
                                                             {editText.length}/150
                                                         </div>
                                                     </div>
@@ -207,13 +207,13 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between gap-4">
-                                                    <p className="text-[var(--text-main)] text-sm font-black leading-relaxed whitespace-pre-wrap break-words">
+                                                    <p className="text-[var(--text-main)] text-[var(--fs-base)] font-[var(--fw-bold)] leading-relaxed whitespace-pre-wrap break-words opacity-90">
                                                         {msg.text}
                                                     </p>
 
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                                                         <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowUpIcon className="w-4 h-4" /></button>
-                                                        <span className="text-[10px] text-[var(--text-main)] font-black min-w-[12px] text-center">{index + 1}</span>
+                                                        <span className="text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] min-w-[12px] text-center">{index + 1}</span>
                                                         <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowDownIcon className="w-4 h-4" /></button>
                                                     </div>
                                                 </div>
