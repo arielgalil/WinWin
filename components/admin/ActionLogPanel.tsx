@@ -64,6 +64,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         return () => observer.disconnect();
     }, [logs.length, onLoadMore]);
 
+    // Auto-generate summary on mount if logs exist and summary is empty
+    useEffect(() => {
+        if (logs.length > 0 && !summary && !isLoadingAI) {
+            handleGenerateSummary();
+        }
+    }, [logs.length]);
+
     const showStatus = (type: 'success' | 'error', text: string) => {
         setActionStatus({ type, text });
         setTimeout(() => setActionStatus(null), 3000);
@@ -152,7 +159,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     };
 
     const renderFormattedSummary = (text: string) => {
-        if (!text) return <div className="absolute inset-0 flex items-center justify-center text-center text-[var(--text-secondary)] p-6 font-[var(--fw-bold)] italic">{t('click_below_for_ai_analysis')}</div>;
+        if (!text && !isLoadingAI) return <div className="absolute inset-0 flex items-center justify-center text-center text-[var(--text-secondary)] p-6 font-[var(--fw-bold)] italic">{t('click_below_for_ai_analysis')}</div>;
+        if (isLoadingAI) return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[var(--text-muted)] p-6">
+                <RefreshIcon className="w-10 h-10 animate-spin" />
+                <span className="font-[var(--fw-bold)]">{t('analyzing_data')}</span>
+            </div>
+        );
         return text.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
             <p key={i} className="mb-4 text-[var(--text-main)] leading-relaxed text-[var(--fs-base)] font-[var(--fw-medium)]">
                 {parseFormattedText(paragraph).map((part, j) => {
@@ -272,11 +285,15 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                 </button>
                             )}
                         >
-                            <button onClick={handleGenerateSummary} disabled={isLoadingAI} className="mb-6 w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-[var(--fw-bold)] py-3 rounded-[var(--radius-main)] items-center justify-center gap-2 transition-all shadow-md shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-not-allowed">
+                            <button 
+                                onClick={handleGenerateSummary} 
+                                disabled={isLoadingAI} 
+                                className="mb-6 w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-[var(--fw-bold)] py-4 rounded-[var(--radius-main)] flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
                                 {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
                                 <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
                             </button>
-                            <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner">
+                            <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner relative">
                                 {renderFormattedSummary(summary || '')}
                             </div>
                         </AdminSectionCard>
