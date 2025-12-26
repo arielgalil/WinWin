@@ -2,11 +2,11 @@
 
 This plan outlines the steps to simplify `App.tsx` by extracting components, consolidating providers, and refactoring permissions logic.
 
-## Phase 1: UI Component Extraction
+## Phase 1: UI Component Extraction [checkpoint: 5ecf6ca]
 - [x] Task: TDD - Create `LoadingScreen` component in `src/components/ui/LoadingScreen.tsx`. [0c847a0]
 - [x] Task: TDD - Create `ErrorScreen` component in `src/components/ui/ErrorScreen.tsx`. [0c847a0]
 - [x] Task: Update `App.tsx` to import and use the extracted components. [0c847a0]
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: UI Extraction' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: UI Extraction' (Protocol in workflow.md) [5ecf6ca]
 
 ## Phase 2: Provider Consolidation
 - [ ] Task: TDD - Create `AppProviders` wrapper in `src/contexts/AppProviders.tsx`.
