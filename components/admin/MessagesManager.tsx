@@ -160,14 +160,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 </div>
 
                 <div className="lg:col-span-2 space-y-4">
-                    <h4 className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider flex justify-between items-center">
+                    <h4 className="text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider flex justify-between items-center">
                         <span>{t('active_messages_list', { count: messages.length })}</span>
                     </h4>
 
-                    <div className="bg-white dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
+                    <div className="bg-slate-100 dark:bg-black/20 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/5 min-h-[300px] max-h-[450px] overflow-y-auto custom-scrollbar p-3 space-y-3 relative shadow-inner">
                         <AnimatePresence initial={false}>
                             {messages.length === 0 ? (
-                                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm italic font-medium">
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-600 text-sm italic font-black">
                                     {t('no_data')}
                                 </div>
                             ) : (
@@ -178,7 +178,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                         initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 shadow-md' : 'bg-slate-50 dark:bg-white/5 border-gray-200 dark:border-white/10 shadow-sm hover:border-gray-300 hover:bg-white dark:hover:border-indigo-500/30'}`}
+                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 shadow-md' : 'bg-white dark:bg-white/5 border-gray-300 dark:border-white/10 shadow-sm hover:border-gray-400 hover:bg-slate-50 dark:hover:border-indigo-500/30'}`}
                                     >
                                         {/* Message Text Area */}
                                         <div className="flex-1 min-w-0">
@@ -187,34 +187,34 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                                     <div className="relative flex-1">
                                                         <textarea
                                                             value={editText}
-                                                            onChange={e => setEditText(e.target.value)}
+                                                            onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))}
                                                             maxLength={150}
-                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none"
+                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-gray-400 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none font-bold"
                                                             autoFocus
                                                         />
-                                                        <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[9px] font-bold ${editText.length >= 140 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`}>
+                                                        <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[9px] font-bold ${editText.length >= 140 ? 'text-red-600' : 'text-gray-600 dark:text-gray-500'}`}>
                                                             {editText.length}/150
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-1 shrink-0">
-                                                        <button onClick={saveEdit} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-green-100 dark:hover:bg-green-500/20">
+                                                        <button onClick={saveEdit} className="p-2 bg-green-100 dark:bg-green-500/10 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-500/20 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-green-200 dark:hover:bg-green-500/20">
                                                             <CheckIcon className="w-4 h-4" />
                                                         </button>
-                                                        <button onClick={() => setEditingId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-gray-200 dark:hover:bg-white/10">
+                                                        <button onClick={() => setEditingId(null)} className="p-2 bg-slate-200 dark:bg-white/5 text-gray-800 dark:text-gray-400 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-slate-300 dark:hover:bg-white/10">
                                                             <XIcon className="w-4 h-4" />
                                                         </button>
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between gap-4">
-                                                    <p className="text-gray-700 dark:text-gray-200 text-sm font-semibold leading-relaxed whitespace-pre-wrap break-words">
+                                                    <p className="text-gray-950 dark:text-gray-200 text-sm font-black leading-relaxed whitespace-pre-wrap break-words">
                                                         {msg.text}
                                                     </p>
 
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-gray-400 hover:text-indigo-500 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowUpIcon className="w-4 h-4" /></button>
-                                                        <span className="text-[10px] text-gray-400 font-bold min-w-[12px] text-center">{index + 1}</span>
-                                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-gray-400 hover:text-indigo-500 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowDownIcon className="w-4 h-4" /></button>
+                                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-gray-600 hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowUpIcon className="w-4 h-4" /></button>
+                                                        <span className="text-[10px] text-gray-700 font-black min-w-[12px] text-center">{index + 1}</span>
+                                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-gray-600 hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center"><ArrowDownIcon className="w-4 h-4" /></button>
                                                     </div>
                                                 </div>
                                             )}

@@ -77,8 +77,8 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
                                 header: t('group_header'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-3 h-3 rounded-full ${cls.color} shadow-sm ring-2 ring-white dark:ring-[#1e1e2e]`}></div>
-                                        <span className="font-bold text-gray-900 dark:text-white">{cls.name}</span>
+                                        <div className={`w-3 h-3 rounded-full ${cls.color} shadow-sm ring-2 ring-[var(--bg-card)]`}></div>
+                                        <span className="font-bold text-[var(--text-main)]">{cls.name}</span>
                                     </div>
                                 )
                             },
@@ -95,9 +95,9 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
                                         <div className="flex flex-col gap-1.5 min-w-[120px]">
                                             <div className="flex justify-between text-[10px] font-bold">
                                                 <span className="text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</span>
-                                                <span className="text-gray-400 font-normal"><FormattedNumber value={currentScore} /> / <FormattedNumber value={targetNum} /></span>
+                                                <span className="text-[var(--text-muted)] font-normal"><FormattedNumber value={currentScore} /> / <FormattedNumber value={targetNum} /></span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                            <div className="h-1.5 w-full bg-[var(--bg-surface)] rounded-full overflow-hidden">
                                                 <MotionDiv className="h-full bg-indigo-500" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
                                             </div>
                                         </div>
@@ -139,13 +139,13 @@ const ClassTargetInput = React.memo(({ cls, onSave }: { cls: ClassRoom, onSave: 
                 type="text" 
                 value={formatNumberWithCommas(target)} 
                 onChange={(e) => setTarget(parseFormattedNumber(e.target.value).toString())} 
-                className="w-full px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-xs text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+                className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-xs text-center font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm" 
                 placeholder="0" 
             />
             <button 
                 onClick={handleSave} 
                 disabled={isSaving} 
-                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all active:scale-95 ${isSaved ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-indigo-500'}`}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all active:scale-95 ${isSaved ? 'bg-green-600 text-white' : 'bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-indigo-500 border border-[var(--border-main)]'}`}
             >
                 {isSaving ? <RefreshIcon className="w-3 h-3 animate-spin" /> : isSaved ? <CheckIcon className="w-3 h-3" /> : <SaveIcon className="w-3 h-3" />}
             </button>

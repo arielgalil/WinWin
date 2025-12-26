@@ -385,12 +385,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 header: t('students_label'),
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
-                                        <span className="text-gray-500 dark:text-gray-400 font-medium">
+                                        <span className="text-gray-800 dark:text-gray-400 font-bold">
                                             {cls.students?.length || 0} {t('students_label')}
                                         </span>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
-                                            className="p-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-500/20 rounded-full text-indigo-600 dark:text-indigo-400 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30"
+                                            className="p-1.5 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-full text-indigo-800 dark:text-indigo-400 transition-colors border border-gray-200 hover:border-indigo-300 dark:hover:border-indigo-500/30"
                                             title={t('manage_students_button')}
                                         >
                                             <UsersIcon className="w-4 h-4" />
@@ -422,41 +422,41 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
                         <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setView('list')} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
                         <MotionDiv initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-4xl bg-white dark:bg-[#1e1e2e] border border-gray-200 dark:border-white/10 rounded-[var(--radius-container)] shadow-2xl flex flex-col overflow-hidden max-h-[85vh]">
-                            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center shrink-0 bg-gray-50/50 dark:bg-white/5">
+                            <div className="p-6 border-b border-gray-200 dark:border-white/5 flex justify-between items-center shrink-0 bg-slate-100 dark:bg-white/5">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-[var(--radius-main)] flex items-center justify-center text-white shadow-sm ${selectedClass.color}`}>
                                         <UsersIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-none">{selectedClass.name}</h3>
-                                        <p className="text-gray-500 dark:text-gray-400 text-xs font-bold mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
+                                        <h3 className="text-xl font-bold text-gray-950 dark:text-white leading-none">{selectedClass.name}</h3>
+                                        <p className="text-gray-700 dark:text-gray-400 text-xs font-black mt-1 uppercase tracking-wide">{t('manage_students_title')}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setView('list')} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"><XIcon className="w-5 h-5" /></button>
+                                <button onClick={() => setView('list')} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full text-gray-600 hover:text-gray-950 dark:hover:text-white transition-all"><XIcon className="w-5 h-5" /></button>
                             </div>
 
                             <div className="p-6 flex flex-col gap-6 overflow-hidden bg-white dark:bg-[#1e1e2e]">
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="relative flex-[2]">
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+                                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
                                         <div className="relative">
-                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                             <input 
                                                 value={searchTerm} 
                                                 onChange={e => setSearchTerm(e.target.value)} 
                                                 placeholder={t('search_student_placeholder')} 
-                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10" 
+                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 font-bold placeholder:text-gray-500" 
                                             />
                                         </div>
                                     </div>
                                     <form onSubmit={handleAddStudent} className="flex-[3] flex flex-col gap-2">
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('new_student_placeholder')}</label>
+                                        <label className="block text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-wider">{t('new_student_placeholder')}</label>
                                         <div className="flex gap-3">
                                             <input 
                                                 value={newStudentName} 
                                                 onChange={e => setNewStudentName(e.target.value)} 
                                                 placeholder={t('new_student_placeholder')} 
-                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
+                                                className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-gray-300 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 font-bold placeholder:text-gray-500" 
                                             />
                                             <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-sm">{t('add')}</button>
                                         </div>
@@ -471,7 +471,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                             {
                                                 key: 'name',
                                                 header: t('student_name_label'),
-                                                render: (s) => <span className="text-gray-700 dark:text-gray-200 font-semibold">{s.name}</span>
+                                                render: (s) => <span className="text-gray-900 dark:text-gray-200 font-bold">{s.name}</span>
                                             }
                                         ]}
                                         actions={(s) => (
@@ -484,10 +484,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex justify-end shrink-0">
+                            <div className="p-4 bg-slate-100 dark:bg-white/5 border-t border-gray-200 dark:border-white/5 flex justify-end shrink-0">
                                 <button 
                                     onClick={() => setView('list')} 
-                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-[var(--radius-main)] hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-sm"
+                                    className="px-6 py-2 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-800 dark:text-gray-300 font-bold rounded-[var(--radius-main)] hover:bg-slate-50 dark:hover:bg-white/10 transition-all text-sm shadow-sm"
                                 >
                                     {t('close_window')}
                                 </button>

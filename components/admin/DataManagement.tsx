@@ -203,29 +203,29 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Export Section */}
-                    <div className="space-y-4">
+                    <div div className="space-y-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-[var(--radius-main)]">
-                                <DownloadIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                            <div className="p-1.5 bg-slate-100 dark:bg-emerald-500/10 rounded-[var(--radius-main)] border border-emerald-200">
+                                <DownloadIcon className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
                             </div>
-                            <h4 className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-widest">{t('export_backup_title')}</h4>
+                            <h4 className="text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-widest">{t('export_backup_title')}</h4>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                            <button onClick={() => handleExport('full')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
-                                <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{t('full_backup')}</div>
-                                <div className="text-[10px] text-gray-600 dark:text-gray-400 font-bold">JSON + Media</div>
+                            <button onClick={() => handleExport('full')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-950 dark:text-white font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('full_backup')}</div>
+                                <div className="text-[10px] text-gray-700 dark:text-gray-400 font-bold">JSON + Media</div>
                             </button>
-                            <button onClick={() => handleExport('structure')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
-                                <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{t('structure_backup')}</div>
-                                <div className="text-[10px] text-gray-600 dark:text-gray-400 font-bold">Classes & Students</div>
+                            <button onClick={() => handleExport('structure')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-950 dark:text-white font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('structure_backup')}</div>
+                                <div className="text-[10px] text-gray-700 dark:text-gray-400 font-bold">Classes & Students</div>
                             </button>
-                            <button onClick={() => handleExport('settings')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
-                                <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{t('settings_backup')}</div>
-                                <div className="text-[10px] text-gray-600 dark:text-gray-400 font-bold">Campaign Settings</div>
+                            <button onClick={() => handleExport('settings')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-950 dark:text-white font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('settings_backup')}</div>
+                                <div className="text-[10px] text-gray-700 dark:text-gray-400 font-bold">Campaign Settings</div>
                             </button>
-                            <button onClick={() => handleExport('staff')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
-                                <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{t('staff_backup')}</div>
-                                <div className="text-[10px] text-gray-600 dark:text-gray-400 font-bold">Staff & Roles</div>
+                            <button onClick={() => handleExport('staff')} disabled={isExporting} className="group p-4 bg-slate-50 dark:bg-white/5 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-gray-300 dark:border-white/10 hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95">
+                                <div className="text-gray-950 dark:text-white font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('staff_backup')}</div>
+                                <div className="text-[10px] text-gray-700 dark:text-gray-400 font-bold">Staff & Roles</div>
                             </button>
                         </div>
                     </div>
@@ -233,52 +233,52 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                     {/* Import Section */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 rounded-[var(--radius-main)]">
-                                <UploadIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            <div className="p-1.5 bg-slate-100 dark:bg-blue-500/10 rounded-[var(--radius-main)] border border-blue-200">
+                                <UploadIcon className="w-4 h-4 text-blue-800 dark:text-blue-400" />
                             </div>
-                            <h4 className="text-xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-widest">{t('data_restore_title')}</h4>
+                            <h4 className="text-xs font-bold text-gray-800 dark:text-gray-400 uppercase tracking-widest">{t('data_restore_title')}</h4>
                         </div>
-                        <label className={`w-full flex flex-col items-center justify-center p-8 bg-slate-50 dark:bg-black/20 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-[var(--radius-container)] hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-400 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''}`}>
-                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-600 dark:text-blue-400">
+                        <label className={`w-full flex flex-col items-center justify-center p-8 bg-slate-100 dark:bg-black/20 border-2 border-dashed border-gray-400 dark:border-white/10 rounded-[var(--radius-container)] hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-500 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''} shadow-inner`}>
+                            <div className="w-12 h-12 bg-blue-200 dark:bg-blue-500/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-800 dark:text-blue-400">
                                 {isImporting ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <UploadIcon className="w-6 h-6" />}
                             </div>
-                            <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>
+                            <span className="text-sm font-black text-gray-800 dark:text-gray-300 group-hover:text-blue-900 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>
                             <input type="file" accept=".json" onChange={handleImportTrigger} className="hidden" disabled={isImporting} />
                         </label>
                     </div>
                 </div>
 
                 {/* Danger Zone */}
-                <div className="mt-10 pt-10 border-t border-gray-100 dark:border-white/5">
+                <div className="mt-10 pt-10 border-t border-gray-200 dark:border-white/5">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-1.5 bg-red-50 dark:bg-red-500/10 rounded-[var(--radius-main)]">
-                            <AlertIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        <div className="p-1.5 bg-red-100 dark:bg-red-500/10 rounded-[var(--radius-main)] border border-red-200">
+                            <AlertIcon className="w-4 h-4 text-red-800 dark:text-red-400" />
                         </div>
-                        <h4 className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest leading-none">{t('danger_zone_title')}</h4>
+                        <h4 className="text-xs font-black text-red-800 dark:text-red-400 uppercase tracking-widest leading-none">{t('danger_zone_title')}</h4>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-6 bg-slate-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-300 dark:hover:border-red-500/20 transition-colors">
-                            <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1">{t('reset_logs_label')}</div>
-                            <div className="text-[11px] text-gray-600 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_logs_desc')}</div>
-                            <button onClick={() => handleReset('logs')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-300 dark:border-white/10 hover:border-red-300 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                        <div className="p-6 bg-slate-100 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-400 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-950 dark:text-white font-black text-sm mb-1">{t('reset_logs_label')}</div>
+                            <div className="text-[11px] text-gray-800 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_logs_desc')}</div>
+                            <button onClick={() => handleReset('logs')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-500/10 text-gray-900 dark:text-gray-300 hover:text-red-800 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-black transition-all border border-gray-400 dark:border-white/10 hover:border-red-400 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_logs_btn')}
                             </button>
                         </div>
 
-                        <div className="p-6 bg-slate-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-300 dark:hover:border-red-500/20 transition-colors">
-                            <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1">{t('reset_scores_label')}</div>
-                            <div className="text-[11px] text-gray-600 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_scores_desc')}</div>
-                            <button onClick={() => handleReset('scores')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-300 dark:border-white/10 hover:border-red-300 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                        <div className="p-6 bg-slate-100 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-400 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-950 dark:text-white font-black text-sm mb-1">{t('reset_scores_label')}</div>
+                            <div className="text-[11px] text-gray-800 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_scores_desc')}</div>
+                            <button onClick={() => handleReset('scores')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-500/10 text-gray-900 dark:text-gray-300 hover:text-red-800 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-black transition-all border border-gray-400 dark:border-white/10 hover:border-red-400 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_scores_btn')}
                             </button>
                         </div>
 
-                        <div className="p-6 bg-slate-50 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-300 dark:hover:border-red-500/20 transition-colors">
-                            <div className="text-[var(--text-main)] dark:text-white font-bold text-sm mb-1">{t('reset_full_label')}</div>
-                            <div className="text-[11px] text-gray-600 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_full_desc')}</div>
-                            <button onClick={() => handleReset('full')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-bold transition-all border border-gray-300 dark:border-white/10 hover:border-red-300 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                        <div className="p-6 bg-slate-100 dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-[var(--radius-main)] shadow-sm hover:border-red-400 dark:hover:border-red-500/20 transition-colors">
+                            <div className="text-gray-950 dark:text-white font-black text-sm mb-1">{t('reset_full_label')}</div>
+                            <div className="text-[11px] text-gray-800 dark:text-gray-400 font-bold mb-4 min-h-[2.5em]">{t('reset_full_desc')}</div>
+                            <button onClick={() => handleReset('full')} disabled={isResetting} className="w-full py-2.5 bg-white dark:bg-white/5 hover:bg-red-100 dark:hover:bg-red-500/10 text-gray-900 dark:text-gray-300 hover:text-red-800 dark:hover:text-red-400 rounded-[var(--radius-main)] text-xs font-black transition-all border border-gray-400 dark:border-white/10 hover:border-red-400 dark:hover:border-red-500/20 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
                                 <AlertIcon className="w-3.5 h-3.5" />
                                 {t('reset_all_btn')}
                             </button>

@@ -158,7 +158,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                 {parseFormattedText(paragraph).map((part, j) => {
                     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
-                        return <strong key={j} className="text-yellow-400 font-black">{content}</strong>;
+                        return <strong key={j} className="text-yellow-600 dark:text-yellow-400 font-black">{content}</strong>;
                     }
                     return part;
                 })}
@@ -188,46 +188,46 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                     >
                         <div className="custom-scrollbar overflow-x-auto flex-1 h-full">
                             <table className="w-full text-right border-collapse">
-                                <thead className="sticky top-0 bg-slate-50 dark:bg-white/5 z-10 text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                <thead className="sticky top-0 bg-[var(--bg-surface)] z-10 text-[var(--text-main)] text-[10px] font-bold uppercase tracking-wider shadow-sm border-b border-[var(--border-main)]">
                                     <tr>
-                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('time')}</th>
-                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('performer')}</th>
-                                        <th className="p-4 border-b border-gray-300 dark:border-white/10">{t('description')}</th>
-                                        <th className="p-4 border-b border-gray-300 dark:border-white/10 text-center">{t('points')}</th>
-                                        {isAdmin && <th className="p-4 border-b border-gray-300 dark:border-white/10 text-center">{t('actions')}</th>}
+                                        <th className="p-4 border-b border-[var(--border-subtle)]">{t('time')}</th>
+                                        <th className="p-4 border-b border-[var(--border-subtle)]">{t('performer')}</th>
+                                        <th className="p-4 border-b border-[var(--border-subtle)]">{t('description')}</th>
+                                        <th className="p-4 border-b border-[var(--border-subtle)] text-center">{t('points')}</th>
+                                        {isAdmin && <th className="p-4 border-b border-[var(--border-subtle)] text-center">{t('actions')}</th>}
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 dark:divide-white/5">
+                                <tbody className="divide-y divide-[var(--border-subtle)]">
                                     {logs.map((log) => {
                                         const isMine = log.user_id === currentUser?.id;
                                         const isCancelled = log.is_cancelled;
                                         const isEditing = editingLogId === log.id;
 
                                         return (
-                                            <tr key={log.id} className={`group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
-                                                <td className="p-4 text-xs text-gray-900 dark:text-gray-400 font-mono font-bold">
+                                            <tr key={log.id} className={`group hover:bg-[var(--bg-hover)] transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                                                <td className="p-4 text-xs text-[var(--text-main)] dark:text-gray-400 font-mono font-bold">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-600' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-900 dark:text-cyan-400' : 'text-gray-900 dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-900 dark:text-cyan-400' : 'text-[var(--text-main)] dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className="text-sm text-gray-900 dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
+                                                        <span className="text-sm text-[var(--text-main)] dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
-                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-black/20 text-sm text-center font-bold outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-center font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
                                                         </span>
                                                     )}
@@ -237,13 +237,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
-                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20 rounded-[var(--radius-main)]-colors min-h-[44px] min-w-[44px] flex items-center justify-center"><SaveIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 rounded-[var(--radius-main)]-colors min-h-[44px] min-w-[44px] flex items-center justify-center"><XIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-100 dark:bg-green-500/10 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-500/20 rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><SaveIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><XIcon className="w-4 h-4" /></button>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => startEditing(log)} className="p-2 text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-[var(--radius-main)]-all min-h-[44px] min-w-[44px] flex items-center justify-center" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-[var(--radius-main)]-all min-h-[44px] min-w-[44px] flex items-center justify-center ${isCancelled ? 'text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10' : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
+                                                                    <button onClick={() => startEditing(log)} className="p-2 text-[var(--text-muted)] hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm ${isCancelled ? 'text-green-700 hover:bg-green-100 dark:hover:bg-green-500/10' : 'text-[var(--text-muted)] hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
                                                                 </>
                                                             )}
                                                         </div>
@@ -252,7 +252,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                             </tr>
                                         );
                                     })}
-                                    <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-gray-400 text-[10px] font-bold uppercase tracking-widest">{t('end_of_list')}</td></tr>
+                                    <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-widest">{t('end_of_list')}</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -266,7 +266,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
                             className="flex flex-col h-[600px]"
                             rightAction={summary && (
-                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)]-all flex items-center gap-2 text-xs font-bold min-h-[44px] ${isCopied ? 'bg-green-100 text-green-700' : 'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50'}`}>
+                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)] flex items-center gap-2 text-xs font-bold min-h-[44px] border transition-all ${isCopied ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--bg-card)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}>
                                     {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
                                     {isCopied ? t('copied') : t('copy')}
                                 </button>
@@ -276,7 +276,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                 {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
                                 <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
                             </button>
-                            <div className="bg-slate-50 dark:bg-black/20 rounded-xl p-6 flex-1 overflow-y-auto border border-gray-300 dark:border-white/5 custom-scrollbar text-gray-800 dark:text-gray-200 shadow-inner">
+                            <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner">
                                 {renderFormattedSummary(summary || '')}
                             </div>
                         </AdminSectionCard>
