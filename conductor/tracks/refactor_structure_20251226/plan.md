@@ -20,13 +20,13 @@ This plan outlines the steps to reorganize the project into a standard `src/` di
 - [x] Task: Update `firebase.json` or any deployment scripts if they reference source paths. [c8a0bc0]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Configuration' (Protocol in workflow.md) [c8a0bc0]
 
-## Phase 4: Import Correction & Verification
+## Phase 4: Import Correction & Verification [checkpoint: 6d3e696]
 - [x] Task: TDD - Run existing tests and identify broken imports. [eb9d5e9]
-- [x] Task: Perform global search and replace to fix relative imports across the entire project. [eb9d5e9]
-- [~] Task: Fix specific imports in `src/index.tsx` and `src/App.tsx`.
-- [ ] Task: Verify that `npm run dev` starts the application correctly.
-- [ ] Task: Verify that `npm run build` completes without errors.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Verification' (Protocol in workflow.md)
+- [x] Task: Perform global search and replace to fix relative imports across the entire project. [6d3e696]
+- [x] Task: Fix specific imports in `src/index.tsx` and `src/App.tsx`. [6d3e696]
+- [x] Task: Verify that `npm run dev` starts the application correctly. [6d3e696]
+- [x] Task: Verify that `npm run build` completes without errors. [6d3e696]
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Verification' (Protocol in workflow.md) [6d3e696]
 
 ## Phase 5: Cleanup & Final Validation
 - [ ] Task: Remove any empty directories or redundant files in the root.
