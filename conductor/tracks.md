@@ -26,5 +26,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Admin Panel Enhancements & Fixes
-*Link: [./conductor/tracks/admin_enhancements_20251225/](./conductor/tracks/admin_enhancements_20251225/)*
+## [~] Track: Project Structure Refactoring
+*Link: [./conductor/tracks/refactor_structure_20251226/](./conductor/tracks/refactor_structure_20251226/)*

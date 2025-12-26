@@ -20,6 +20,8 @@
 
     *   **Hierarchical Authority:** Only Super Admins can manage other Super Admin profiles.
 
+    *   **Sharing:** Can generate and share comprehensive multi-link invitations (Dashboard, Scoring, and Admin Panel).
+
     *   **Interface:** Dedicated Super Admin Dashboard.
 
 2.  **Competition Manager (מנהל תחרות):**
@@ -35,6 +37,8 @@
         * Full Data Control: Can edit/delete score transactions for *anyone*.
 
         * View Reports: Detailed breakdown of progress per group/student.
+
+        * **Sharing:** Can generate and share filtered multi-link invitations (Dashboard and Scoring only).
 
     *   **Interface:** Comprehensive Admin Panel (Must be Mobile-Friendly).
 3.  **Teacher (מורה):**
@@ -54,6 +58,7 @@
         *   **CRUD Operations:** Create/Edit/Delete groups and students with strict validation and **enforced delete safety protocols**.
         *   **Audit Logs:** Ability to see who gave points to whom and when.
         *   **Responsiveness:** Must be fully functional on Desktop and Mobile (using specific RTL button layouts and destructive action safety gaps defined in Guidelines).
+    *   **Quick Actions:** Role-based "Share" utility in header and mobile menu for easy distribution of competition links.
 
 ### 2. The Quick Input Screen (Teacher)
 * **Purpose:** Rapid data entry in real-time (e.g., in class).
@@ -85,6 +90,7 @@ WinWin is a gamified education and competition platform designed to transform th
 ## Key Features
 *   **Real-time Visualization:** Dynamic leaderboards, podiums, and progress meters that update instantly as points are awarded.
 *   **Robust Admin Suite:** Comprehensive tools for managing classes, importing student data via Excel, and fine-tuning competition settings.
+*   **Role-Based Sharing:** Intelligent link generation that provides the right tools to the right users with a single click.
 *   **AI Integration:** Leverages Google Gemini to provide intelligent settings management and potentially automated feedback or analysis.
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
 
