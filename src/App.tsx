@@ -13,6 +13,7 @@ import { SproutIcon, AlertIcon, HomeIcon, TrashIcon } from './components/ui/Icon
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
 import { useCompetitionData } from './hooks/useCompetitionData';
+import { useAuthPermissions } from './services/useAuthPermissions';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
 import { useTheme } from './contexts/ThemeContext';
@@ -82,22 +83,13 @@ const AdminRoute = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { slug } = useParams();
-    const { campaignRole, classes, settings, currentCampaign, addPoints, refreshData } = useCompetitionData();
+    const { classes, settings, currentCampaign, addPoints, refreshData, campaignRole } = useCompetitionData();
+    const { canAccessAdmin, campaignRole: campaignRoleClean, isCampaignSuper, isSuper } = useAuthPermissions();
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
-    // Enhanced security: Explicit role checking with fallback to deny
-    const userRole = user.role?.toLowerCase().trim();
-    const campaignRoleClean = campaignRole?.toLowerCase().trim();
-
-    const isSuper = isSuperUser(userRole);
-    const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
-    const isCampaignSuper = campaignRoleClean === 'superuser' || campaignRoleClean === 'super_user';
-
-    const canAccess = isSuper || isAdmin || isCampaignSuper;
-
     // Security: Explicit deny if role is null/undefined or not authorized
-    if (!canAccess) {
+    if (!canAccessAdmin) {
         if (campaignRoleClean === 'teacher') {
             return <Navigate to={`/vote/${slug}`} replace />;
         }
@@ -115,7 +107,7 @@ const AdminRoute = () => {
                 onLogout={async () => { await logout(); navigate('/'); }}
                 onRefreshData={refreshData}
                 onViewDashboard={() => navigate(`/comp/${slug}`)}
-                isSuperAdmin={isSuperUser(user.role) || campaignRole === 'superuser'}
+                isSuperAdmin={isSuper || isCampaignSuper}
                 campaignRole={campaignRole}
             />
         </CampaignContext>
@@ -127,20 +119,13 @@ const VoteRoute = () => {
     const { user, logout } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
-    const { campaignRole, settings, currentCampaign } = useCompetitionData();
+    const { settings, currentCampaign, campaignRole } = useCompetitionData();
+    const { canAccessVote } = useAuthPermissions();
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
-    // Enhanced security: Explicit role checking
-    const userRole = user.role?.toLowerCase().trim();
-    const campaignRoleClean = campaignRole?.toLowerCase().trim();
-
-    const isSuper = isSuperUser(userRole);
-    const isAdmin = userRole === 'admin' || campaignRoleClean === 'admin' || campaignRoleClean === 'competition_admin';
-    const isTeacher = campaignRoleClean === 'teacher';
-
     // Security: Explicit deny if user has no role in campaign and is not superuser
-    if (!isSuper && !isAdmin && !isTeacher) {
+    if (!canAccessVote) {
         return <ErrorScreen message={t('competition_access_denied')} />;
     }
 
@@ -161,15 +146,16 @@ const LoginRoute = () => {
     const { user, login, authLoading, loginError, savedEmail } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
-    const { settings, isLoadingCampaign, campaignRole, currentCampaign } = useCompetitionData();
+    const { settings, isLoadingCampaign, currentCampaign } = useCompetitionData();
+    const { canAccessAdmin, isTeacher, isSuper, campaignRole } = useAuthPermissions();
 
     useEffect(() => {
         if (user && !authLoading) {
             if (slug) {
                 if (campaignRole) {
                     // User has access to this campaign
-                    if (campaignRole === 'admin' || campaignRole === 'superuser' || isSuperUser(user.role)) navigate(`/admin/${slug}`, { replace: true });
-                    else if (campaignRole === 'teacher') navigate(`/vote/${slug}`, { replace: true });
+                    if (canAccessAdmin) navigate(`/admin/${slug}`, { replace: true });
+                    else if (isTeacher) navigate(`/vote/${slug}`, { replace: true });
                     else navigate(`/comp/${slug}`, { replace: true });
                 } else if (campaignRole === null) {
                     // User is confirmed to not have access to this campaign
@@ -177,11 +163,11 @@ const LoginRoute = () => {
                 }
                 // campaignRole === undefined means still loading, useEffect will run again when it resolves
             } else {
-                if (isSuperUser(user.role)) navigate('/super', { replace: true });
+                if (isSuper) navigate('/super', { replace: true });
                 else navigate('/', { replace: true });
             }
         }
-    }, [user, authLoading, slug, navigate, campaignRole]);
+    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper]);
 
     if (slug && (isLoadingCampaign || (user && campaignRole === undefined))) return <LoadingScreen message={t('identifying_permissions')} />;
 
