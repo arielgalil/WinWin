@@ -6,6 +6,8 @@ import { CampaignSelector } from './components/CampaignSelector';
 import { SuperAdminPanel } from './components/SuperAdminPanel';
 import { LiteTeacherView } from './components/lite/LiteTeacherView';
 import { LiteLogin } from './components/lite/LiteLogin';
+import { LoadingScreen } from './components/ui/LoadingScreen';
+import { ErrorScreen } from './components/ui/ErrorScreen';
 import { SproutIcon, AlertIcon, HomeIcon, TrashIcon } from './components/ui/Icons';
 
 import { DynamicTitle } from './components/ui/DynamicTitle';
@@ -14,71 +16,6 @@ import { useCompetitionData } from './hooks/useCompetitionData';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
-
-const LoadingScreen = ({ message }: { message?: string }) => {
-    const { t } = useLanguage();
-    const [showOptions, setShowOptions] = useState(false);
-    const { setAuthLoading, hardReset } = useAuth();
-
-    const displayMessage = message || t('loading_data');
-
-    useEffect(() => {
-        const timer = setTimeout(() => setShowOptions(true), 4000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    return (
-        <div className="flex-1 flex items-center justify-center flex-col gap-8 p-4 text-center bg-[#020617] relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-500/10 via-transparent to-transparent opacity-50" />
-
-            <div className="relative">
-                <div className="w-24 h-24 bg-green-500/20 rounded-full absolute inset-0 blur-3xl animate-pulse" />
-                <SproutIcon className="w-24 h-24 text-green-500 animate-bounce relative z-10" />
-            </div>
-
-            <div className="space-y-3 relative z-10">
-                <h2 className="text-3xl font-black text-white tracking-tight">{displayMessage}</h2>
-                <p className="text-slate-500 text-sm font-medium">{t('loading_wait')}</p>
-            </div>
-
-            {showOptions && (
-                <div className="flex flex-col gap-3 mt-8 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <button
-                        onClick={() => setAuthLoading(false)}
-                        className="bg-white/5 hover:bg-white/10 text-slate-300 px-6 py-2.5 rounded-xl border border-white/10 text-xs font-black transition-all"
-                    >
-                        {t('stuck_skip')}
-                    </button>
-
-                    <button
-                        onClick={hardReset}
-                        className="text-red-400/60 hover:text-red-400 text-[10px] font-bold flex items-center gap-2 mx-auto transition-all bg-red-500/5 hover:bg-red-500/10 px-4 py-1.5 rounded-full border border-red-500/10"
-                    >
-                        <TrashIcon className="w-3 h-3" />
-                        {t('hard_reset')}
-                    </button>
-                </div>
-            )}
-        </div>
-    );
-};
-
-const ErrorScreen = ({ message }: { message: string }) => {
-    const { t } = useLanguage();
-    const navigate = useNavigate();
-    return (
-        <div className="flex-1 flex items-center justify-center p-6 text-center">
-            <div className="bg-slate-900 border border-white/10 p-10 rounded-[3rem] max-w-md w-full shadow-2xl">
-                <AlertIcon className="w-16 h-16 text-red-500 mx-auto mb-6" />
-                <h2 className="text-2xl font-black text-white mb-4">{t('load_error')}</h2>
-                <p className="text-slate-400 mb-8 font-medium">{message}</p>
-                <button onClick={() => navigate('/')} className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all">
-                    <HomeIcon className="w-5 h-5" /> {t('back_to_selection')}
-                </button>
-            </div>
-        </div>
-    );
-};
 
 const LanguageSync: React.FC = () => {
     const { settings } = useCompetitionData();
