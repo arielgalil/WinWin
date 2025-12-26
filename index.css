@@ -41,40 +41,44 @@
   /* Dimensions */
   --radius-main: 0.75rem; /* 12px */
   --radius-container: 1rem; /* 16px */
+
+  /* Tab Accents (Light Mode) */
+  --acc-settings: #10b981; /* emerald-500 */
+  --acc-points: #f97316; /* orange-500 */
+  --acc-goals: #8b5cf6; /* purple-500 */
+  --acc-data: #3b82f6; /* blue-500 */
+  --acc-logs: #eab308; /* yellow-500 */
 }
 
 /* DARK MODE OVERRIDES */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    /* Backgrounds */
-    --bg-page: #020617; /* Slate 950 - Deepest background */
-    --bg-card: #0f172a; /* Slate 900 - Cards float above page */
-    --bg-surface: #1e293b; /* Slate 800 - Inputs, headers */
-    --bg-hover: #1e293b; /* Hover state on cards */
-    --bg-active: rgba(99, 102, 241, 0.1); /* Indigo 500 @ 10% */
-    --bg-input: #020617; /* Input background same as page */
+    /* ... existing dark variables ... */
+    --bg-page: #020617; 
+    --bg-card: #0f172a; 
+    --bg-surface: #1e293b; 
+    --bg-hover: #1e293b;
+    --bg-active: rgba(99, 102, 241, 0.1); 
+    --bg-input: #020617;
 
     /* Text */
-    --text-main: #f8fafc; /* Slate 50 */
-    --text-secondary: #94a3b8; /* Slate 400 */
-    --text-muted: #64748b; /* Slate 500 */
-    --text-primary: #818cf8; /* Indigo 400 - Lighter for dark mode */
+    --text-main: #f8fafc; 
+    --text-secondary: #94a3b8; 
+    --text-muted: #64748b; 
+    --text-primary: #818cf8;
 
-    /* Borders */
-    --border-main: #1e293b; /* Slate 800 */
-    --border-subtle: #0f172a; /* Slate 900 */
-    --divide-main: #1e293b;
+    /* Status Colors (Semantic) */
+    --status-success-bg: rgba(16, 185, 129, 0.1);
+    --status-success-text: #34d399;
+    --status-error-bg: rgba(239, 68, 68, 0.1);
+    --status-error-text: #f87171;
 
-    /* Primary */
-    --primary-base: #6366f1; /* Indigo 500 */
-    --primary-hover: #818cf8; /* Indigo 400 */
-    --primary-light: rgba(99, 102, 241, 0.15); 
-    
-    /* Status */
-    --status-success-bg: rgba(16, 185, 129, 0.1); /* Emerald 500 @ 10% */
-    --status-success-text: #34d399; /* Emerald 400 */
-    --status-error-bg: rgba(239, 68, 68, 0.1); /* Red 500 @ 10% */
-    --status-error-text: #f87171; /* Red 400 */
+    /* Tab Accents (Dark Mode) */
+    --acc-settings: #34d399;
+    --acc-points: #fb923c;
+    --acc-goals: #a78bfa;
+    --acc-data: #60a5fa;
+    --acc-logs: #facc15;
   }
 }
 
@@ -96,21 +100,18 @@ body.dark {
     --text-muted: #64748b; 
     --text-primary: #818cf8;
 
-    /* Borders */
-    --border-main: #1e293b; 
-    --border-subtle: #0f172a; 
-    --divide-main: #1e293b;
+    /* Status Colors (Semantic) */
+    --status-success-bg: rgba(16, 185, 129, 0.1);
+    --status-success-text: #34d399;
+    --status-error-bg: rgba(239, 68, 68, 0.1);
+    --status-error-text: #f87171;
 
-    /* Primary */
-    --primary-base: #6366f1; 
-    --primary-hover: #818cf8; 
-    --primary-light: rgba(99, 102, 241, 0.15); 
-    
-    /* Status */
-    --status-success-bg: rgba(16, 185, 129, 0.1); 
-    --status-success-text: #34d399; 
-    --status-error-bg: rgba(239, 68, 68, 0.1); 
-    --status-error-text: #f87171; 
+    /* Tab Accents (Dark Mode) */
+    --acc-settings: #34d399;
+    --acc-points: #fb923c;
+    --acc-goals: #a78bfa;
+    --acc-data: #60a5fa;
+    --acc-logs: #facc15;
 }
 
 /* Global Reset */
@@ -135,6 +136,12 @@ body {
   --border-subtle: #cbd5e1; /* Slate 300 */
   --bg-surface: #f1f5f9; /* Slate 100 */
   --bg-input: #ffffff;
+
+  /* Force Status Colors high contrast in light mode */
+  --status-success-bg: #ecfdf5; /* emerald-50 */
+  --status-success-text: #047857; /* emerald-700 */
+  --status-error-bg: #fef2f2; /* red-50 */
+  --status-error-text: #b91c1c; /* red-700 */
 }
 
 /* Force standard Tailwind gray/slate text to be high contrast in Admin Light Mode */
@@ -143,7 +150,9 @@ body {
 .light .admin-view .text-gray-800,
 .light .admin-view .text-slate-800,
 .light .admin-view .text-gray-700,
-.light .admin-view .text-slate-700 {
+.light .admin-view .text-slate-700,
+.light .admin-view .text-gray-950,
+.light .admin-view .text-slate-950 {
   color: #000000 !important;
 }
 
@@ -156,23 +165,38 @@ body {
   color: #1e293b !important; /* Force to Slate 800 */
 }
 
+/* Specific category colors for Admin Light Mode */
+.light .admin-view .text-emerald-700, .light .admin-view .text-green-700, .light .admin-view .text-emerald-600 { color: #047857 !important; }
+.light .admin-view .text-rose-700, .light .admin-view .text-red-700, .light .admin-view .text-rose-600 { color: #b91c1c !important; }
+.light .admin-view .text-indigo-600, .light .admin-view .text-indigo-700 { color: #4338ca !important; }
+
 /* Force borders to be more visible in light mode */
 .light .admin-view .border-gray-200,
 .light .admin-view .border-slate-200,
 .light .admin-view .border-gray-300,
-.light .admin-view .border-slate-300 {
+.light .admin-view .border-slate-300,
+.light .admin-view .border-gray-400,
+.light .admin-view .border-slate-400 {
   border-color: #94a3b8 !important; /* Force to Slate 400 */
 }
 
 .light .admin-view .divide-gray-200,
-.light .admin-view .divide-slate-200 {
+.light .admin-view .divide-slate-200,
+.light .admin-view .divide-gray-300,
+.light .admin-view .divide-slate-300 {
   border-color: #cbd5e1 !important; /* Force to Slate 300 */
 }
 
 /* Improve Card and Input definition */
 .light .admin-view .bg-white,
-.light .admin-view .bg-slate-50 {
-  border-color: #94a3b8 !important;
+.light .admin-view .bg-slate-50,
+.light .admin-view .bg-gray-50 {
+  background-color: var(--bg-card) !important;
+}
+
+.light .admin-view .bg-slate-100,
+.light .admin-view .bg-gray-100 {
+  background-color: var(--bg-surface) !important;
 }
 
 /* Custom Scrollbar for Admin Area */

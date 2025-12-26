@@ -213,21 +213,21 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
-                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-900 dark:text-cyan-400' : 'text-[var(--text-main)] dark:text-gray-100'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
+                                                        <span className={`text-xs font-bold whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)]'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
                                                         <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className="text-sm text-[var(--text-main)] dark:text-gray-300 font-bold line-clamp-1">{log.description}</span>
+                                                        <span className="text-sm text-[var(--text-main)] font-bold line-clamp-1 opacity-90">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
                                                         <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-center font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
                                                     ) : (
-                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
+                                                        <span className={`text-sm font-black tabular-nums ${log.points > 0 ? 'text-[var(--status-success-text)]' : 'text-[var(--status-error-text)]'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
                                                         </span>
                                                     )}
@@ -237,13 +237,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
-                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-green-100 dark:bg-green-500/10 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-500/20 rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><SaveIcon className="w-4 h-4" /></button>
+                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-[var(--status-success-bg)] text-[var(--status-success-text)] border border-[var(--status-success-text)]/20 rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><SaveIcon className="w-4 h-4" /></button>
                                                                     <button onClick={() => setEditingLogId(null)} className="p-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><XIcon className="w-4 h-4" /></button>
                                                                 </>
                                                             ) : (
                                                                 <>
                                                                     <button onClick={() => startEditing(log)} className="p-2 text-[var(--text-muted)] hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm ${isCancelled ? 'text-green-700 hover:bg-green-100 dark:hover:bg-green-500/10' : 'text-[var(--text-muted)] hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-500/10'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
+                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm ${isCancelled ? 'bg-[var(--status-success-bg)] text-[var(--status-success-text)]' : 'text-[var(--text-muted)] hover:bg-[var(--status-error-bg)] hover:text-[var(--status-error-text)]'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
                                                                 </>
                                                             )}
                                                         </div>

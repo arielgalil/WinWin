@@ -59,17 +59,24 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 onMouseEnter={() => onTabHover?.(item.id)}
                 aria-current={activeTab === item.id ? 'page' : undefined}
                 className={`w-full text-right py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative ${activeTab === item.id
-                  ? 'bg-[var(--bg-active)] text-indigo-600 dark:text-indigo-400 font-semibold'
+                  ? 'bg-[var(--bg-active)] font-semibold'
                   : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-medium'
                   }`}
+                style={activeTab === item.id ? { color: item.colorVar || 'var(--primary-base)' } : {}}
               >
-                <item.icon className={`w-5 h-5 transition-colors ${activeTab === item.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}`} />
+                <item.icon 
+                  className="w-5 h-5 transition-colors" 
+                  style={activeTab === item.id ? { color: item.colorVar || 'var(--primary-base)' } : { color: 'var(--text-muted)' }}
+                />
                 <div className="flex flex-col text-right leading-tight">
                   <span className="text-sm">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
                   {item.subtitle && <span className="text-[10px] opacity-60 font-normal">{item.subtitle}</span>}
                 </div>
                 {activeTab === item.id && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full" />
+                  <div 
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full" 
+                    style={{ backgroundColor: item.colorVar || 'var(--primary-base)' }}
+                  />
                 )}
               </button>
             )

@@ -116,24 +116,24 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   };
 
   const headerConfig = useMemo(() => {
-    const configs: Record<TabType, { icon: any; color: string; title: string; desc: string; updatedAt?: string }> = {
-      'settings': { icon: SettingsIcon, color: 'text-green-400', title: t('tab_settings' as any), desc: t('settings_title' as any), updatedAt: settings?.settings_updated_at },
-      'points': { icon: CalculatorIcon, color: 'text-orange-400', title: t('tab_points' as any), desc: t('points_mgmt_desc' as any), updatedAt: settings?.logs_updated_at },
-      'goals': { icon: TargetIcon, color: 'text-purple-400', title: t('tab_goals' as any), desc: t('goals_mgmt_desc' as any), updatedAt: settings?.goals_updated_at },
-      'data-management': { icon: UsersIcon, color: 'text-blue-400', title: t('tab_data_management' as any), desc: t('classes_management_desc' as any), updatedAt: settings?.classes_updated_at },
-      'logs': { icon: ClockIcon, color: 'text-yellow-400', title: t('tab_logs' as any), desc: t('activity_log_description' as any), updatedAt: settings?.logs_updated_at },
+    const configs: Record<TabType, { icon: any; colorVar: string; title: string; desc: string; updatedAt?: string }> = {
+      'settings': { icon: SettingsIcon, colorVar: 'var(--acc-settings)', title: t('tab_settings' as any), desc: t('settings_title' as any), updatedAt: settings?.settings_updated_at },
+      'points': { icon: CalculatorIcon, colorVar: 'var(--acc-points)', title: t('tab_points' as any), desc: t('points_mgmt_desc' as any), updatedAt: settings?.logs_updated_at },
+      'goals': { icon: TargetIcon, colorVar: 'var(--acc-goals)', title: t('tab_goals' as any), desc: t('goals_mgmt_desc' as any), updatedAt: settings?.goals_updated_at },
+      'data-management': { icon: UsersIcon, colorVar: 'var(--acc-data)', title: t('tab_data_management' as any), desc: t('classes_management_desc' as any), updatedAt: settings?.classes_updated_at },
+      'logs': { icon: ClockIcon, colorVar: 'var(--acc-logs)', title: t('tab_logs' as any), desc: t('activity_log_description' as any), updatedAt: settings?.logs_updated_at },
     };
     return configs[activeTab] || configs['points'];
   }, [activeTab, settings, t]);
 
   const navItems = [
-    { id: 'settings', label: t('tab_settings' as any), icon: SettingsIcon, color: 'border-green-500', adminOnly: true },
-    { id: 'data-management', label: t('tab_data_management' as any), icon: UsersIcon, color: 'border-blue-500', adminOnly: true },
+    { id: 'settings', label: t('tab_settings' as any), icon: SettingsIcon, colorVar: 'var(--acc-settings)', adminOnly: true },
+    { id: 'data-management', label: t('tab_data_management' as any), icon: UsersIcon, colorVar: 'var(--acc-data)', adminOnly: true },
     { divider: true },
-    { id: 'goals', label: t('tab_goals' as any), icon: TargetIcon, color: 'border-purple-500', adminOnly: true },
-    { id: 'points', label: t('tab_points' as any), icon: CalculatorIcon, color: 'border-orange-400', adminOnly: false },
+    { id: 'goals', label: t('tab_goals' as any), icon: TargetIcon, colorVar: 'var(--acc-goals)', adminOnly: true },
+    { id: 'points', label: t('tab_points' as any), icon: CalculatorIcon, colorVar: 'var(--acc-points)', adminOnly: false },
     { divider: true },
-    { id: 'logs', label: t('tab_logs' as any), icon: ClockIcon, color: 'border-yellow-500', adminOnly: false },
+    { id: 'logs', label: t('tab_logs' as any), icon: ClockIcon, colorVar: 'var(--acc-logs)', adminOnly: false },
   ];
 
   const visibleNavItems = navItems.filter(item => {
@@ -162,7 +162,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         />
         <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-300">
           <div className="flex items-center gap-4">
-            <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/20">
+            <div className="p-2 bg-[var(--primary-base)] rounded-xl shadow-lg">
               <Logo src={settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
             </div>
             <div className="hidden sm:block">
@@ -216,7 +216,10 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 {/* Modern Content Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 border-b border-[var(--border-main)]">
                   <div className="flex items-center gap-5">
-                    <div className={`p-3.5 rounded-2xl bg-[var(--bg-surface)] shadow-sm border border-[var(--border-main)] text-${headerConfig?.color?.split('-')[1]}-500`}>
+                    <div 
+                      className="p-3.5 rounded-2xl bg-[var(--bg-surface)] shadow-sm border border-[var(--border-main)] transition-colors"
+                      style={{ color: headerConfig?.colorVar }}
+                    >
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}
                     </div>
                     <div>
