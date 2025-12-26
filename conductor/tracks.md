@@ -26,5 +26,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Decompose and Clean up App.tsx
-*Link: [./conductor/tracks/decompose_app_20251226/](./conductor/tracks/decompose_app_20251226/)*
+## [~] Track: Generic ProtectedRoute Component
+*Link: [./conductor/tracks/protected_route_20251226/](./conductor/tracks/protected_route_20251226/)*

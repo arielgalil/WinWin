@@ -91,6 +91,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **Real-time Visualization:** Dynamic leaderboards, podiums, and progress meters that update instantly as points are awarded.
 *   **Robust Admin Suite:** Comprehensive tools for managing classes, importing student data via Excel, and fine-tuning competition settings.
 *   **Role-Based Sharing:** Intelligent link generation that provides the right tools to the right users with a single click.
+*   **Centralized Access Control:** Dedicated internal services for managing user permissions and routing safety.
 *   **AI Integration:** Leverages Google Gemini to provide intelligent settings management and potentially automated feedback or analysis.
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
 
