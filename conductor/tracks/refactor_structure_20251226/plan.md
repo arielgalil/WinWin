@@ -7,10 +7,10 @@ This plan outlines the steps to reorganize the project into a standard `src/` di
 - [x] Task: Create the `src/test/` directory for any root-level test utilities (if applicable). [daa3f1c]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md) [0087baa]
 
-## Phase 2: Source Code Relocation
+## Phase 2: Source Code Relocation [checkpoint: dce5b5c]
 - [x] Task: Move core files (`App.tsx`, `index.tsx`, `index.css`, `types.ts`, `config.ts`, `supabaseClient.ts`) to `src/`. [597b63e]
 - [x] Task: Move source directories (`components/`, `contexts/`, `hooks/`, `services/`, `utils/`) to `src/`. [597b63e]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Relocation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Relocation' (Protocol in workflow.md) [dce5b5c]
 
 ## Phase 3: Configuration & Link Updates
 - [ ] Task: Update `index.html` to reference `/src/index.tsx`.
