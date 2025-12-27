@@ -28,7 +28,7 @@ This plan outlines the steps to transform the WinWin application into a full-fea
     - [x] Test that the dashboard loads data from cache when offline.
 - [x] Task: Conductor - User Manual Verification 'Supabase Data Caching (Read Operations)' (Protocol in workflow.md)
 
-## Phase 4: Background Sync (Write Operations)
+## Phase 4: Background Sync (Write Operations) [checkpoint: 6768654]
 - [x] Task: Setup Workbox Background Sync (dbe64bd)
     - [x] Configure `workbox-background-sync` in the service worker.
     - [x] Define a "sync-queue" for Supabase RPC and REST mutations.
@@ -37,7 +37,7 @@ This plan outlines the steps to transform the WinWin application into a full-fea
     - [x] Verify that an offline score entry is automatically submitted when the connection is restored.
 - [x] Task: Implement Deferred Asset Uploads (dbe64bd)
     - [x] Extend background sync to handle file uploads (e.g., institution logos).
-- [ ] Task: Conductor - User Manual Verification 'Background Sync (Write Operations)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Background Sync (Write Operations)' (Protocol in workflow.md)
 
 ## Phase 5: Update Lifecycle & Final Polish
 - [ ] Task: "Update Available" UI
