@@ -2,11 +2,11 @@
 
 This plan outlines the steps to enhance type safety and centralize magic numbers across the project.
 
-## Phase 1: Constants Centralization
+## Phase 1: Constants Centralization [checkpoint: 329fe94]
 - [x] Task: Create and export timeout and polling constants in `src/config.ts`. (2c13b82)
 - [x] Task: Refactor `App.tsx` to use constants for loading screen timeouts. (0c022b2)
 - [x] Task: Refactor `src/contexts/AuthContext.tsx` to use constants for auth-related timeouts. (d4030ab)
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Constants' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Constants' (Protocol in workflow.md)
 
 ## Phase 2: Type Safety - types.ts
 - [ ] Task: Audit actual structure of `snapshot_data` usage in the application.
