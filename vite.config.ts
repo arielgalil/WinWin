@@ -22,7 +22,49 @@ export default defineConfig(({ mode }) => {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
             cleanupOutdatedCaches: true,
             clientsClaim: true,
-            skipWaiting: true
+            skipWaiting: true,
+            runtimeCaching: [
+              {
+                urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'google-fonts-stylesheets',
+                  expiration: {
+                    maxEntries: 10,
+                    maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                  }
+                }
+              },
+              {
+                urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'google-fonts-webfonts',
+                  expiration: {
+                    maxEntries: 20,
+                    maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                  }
+                }
+              },
+              {
+                urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/,
+                handler: 'StaleWhileRevalidate',
+                options: {
+                  cacheName: 'supabase-rest-cache',
+                  expiration: {
+                    maxEntries: 100,
+                    maxAgeSeconds: 60 * 60 * 24 // 1 day
+                  },
+                  cacheableResponse: {
+                    statuses: [0, 200]
+                  }
+                }
+              },
+              {
+                urlPattern: /^https:\/\/.*\.supabase\.co\/auth\/v1\/.*/,
+                handler: 'NetworkOnly'
+              }
+            ]
           },
           manifest: {
             name: 'WinWin - תחרות מצמיחה',
