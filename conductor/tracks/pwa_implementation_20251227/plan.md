@@ -40,9 +40,9 @@ This plan outlines the steps to transform the WinWin application into a full-fea
 - [x] Task: Conductor - User Manual Verification 'Background Sync (Write Operations)' (Protocol in workflow.md)
 
 ## Phase 5: Update Lifecycle & Final Polish
-- [ ] Task: "Update Available" UI
-    - [ ] Implement a custom hook/component to listen for `onNeedRefresh` from `vite-plugin-pwa`.
-    - [ ] Show a Toast notification with a "Refresh" button when a new version is detected.
+- [x] Task: "Update Available" UI (9a5f89d)
+    - [x] Implement a custom hook/component to listen for `onNeedRefresh` from `vite-plugin-pwa`.
+    - [x] Show a Toast notification with a "Refresh" button when a new version is detected.
 - [ ] Task: PWA Audit & Optimization
     - [ ] Run Lighthouse PWA audit and fix any remaining issues.
     - [ ] Verify maskable icons and theme colors across different platforms (Android/iOS).
