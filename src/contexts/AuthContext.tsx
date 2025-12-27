@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext, useCallback, useRef } from '
 import { supabase } from '../supabaseClient';
 import { UserProfile } from '../types';
 import { t } from '../utils/i18n';
+import { TIMEOUTS } from '../config';
 
 const SAVED_EMAIL_KEY = 'metziacha_saved_email';
 
@@ -51,7 +52,7 @@ try {
 
             const { data: profileData, error: profileError } = await Promise.race([
                 supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
-                new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Profile Timeout')), 6000))
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Profile Timeout')), TIMEOUTS.authProfileFetchMs))
             ]);
 
             if (profileError) throw profileError;
@@ -153,7 +154,7 @@ try {
             if (authLoading) {
                 updateLoadingState(false, "Safety Timeout");
             }
-        }, 8000);
+        }, TIMEOUTS.authSafetyTimeoutMs);
 
         const initAuth = async () => {
             try {
