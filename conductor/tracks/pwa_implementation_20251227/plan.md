@@ -13,12 +13,12 @@ This plan outlines the steps to transform the WinWin application into a full-fea
 - [x] Task: Conductor - User Manual Verification 'Infrastructure & Basic PWA Setup' (Protocol in workflow.md)
 
 ## Phase 2: Offline Asset Caching (App Shell)
-- [ ] Task: Configure Pre-caching Strategy
-    - [ ] Define workbox glob patterns in `vite.config.ts` to include all essential assets (JS, CSS, HTML, Fonts).
-    - [ ] Ensure `index.html` is cached as the entry point for offline navigation.
-- [ ] Task: Offline UI Fallback
-    - [ ] Create a simple `OfflineIndicator` component to notify users when they are disconnected.
-    - [ ] Integrate the indicator into the main layout.
+- [x] Task: Configure Pre-caching Strategy (bb3602c)
+    - [x] Define workbox glob patterns in `vite.config.ts` to include all essential assets (JS, CSS, HTML, Fonts).
+    - [x] Ensure `index.html` is cached as the entry point for offline navigation.
+- [x] Task: Offline UI Fallback (bb3602c)
+    - [x] Create a simple `OfflineIndicator` component to notify users when they are disconnected.
+    - [x] Integrate the indicator into the main layout.
 - [ ] Task: Conductor - User Manual Verification 'Offline Asset Caching (App Shell)' (Protocol in workflow.md)
 
 ## Phase 3: Supabase Data Caching (Read Operations)
