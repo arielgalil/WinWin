@@ -9,9 +9,9 @@ This plan outlines the steps to enhance type safety and centralize magic numbers
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Constants' (Protocol in workflow.md)
 
 ## Phase 2: Type Safety - types.ts
-- [ ] Task: Audit actual structure of `snapshot_data` usage in the application.
-- [ ] Task: TDD - Define specific interfaces for `snapshot_data` in `src/types.ts` and replace `any`.
-- [ ] Task: Verify that components consuming snapshots still compile and behave correctly.
+- [x] Task: Audit actual structure of `snapshot_data` usage in the application. (Audit done: currently unused in TS, reserved for future undo/redo logic in DB)
+- [x] Task: TDD - Define specific interfaces for `snapshot_data` in `src/types.ts` and replace `any`. (a764c4a)
+- [x] Task: Verify that components consuming snapshots still compile and behave correctly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Types.ts' (Protocol in workflow.md)
 
 ## Phase 3: Type Safety - App.tsx & Global Audit
