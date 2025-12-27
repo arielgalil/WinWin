@@ -21,6 +21,13 @@ export const CONFIG = {
   }
 };
 
+export const TIMEOUTS = {
+  loadingScreenOptionsMs: 4000,
+  toastDurationMs: 4000,
+  authProfileFetchMs: 6000,
+  authSafetyTimeoutMs: 8000,
+};
+
 /**
  * Checks if a user has superuser privileges.
  * Strictly relies on the role provided from the database profile or campaign role.
