@@ -4,7 +4,7 @@ This plan outlines the steps to enhance type safety and centralize magic numbers
 
 ## Phase 1: Constants Centralization
 - [x] Task: Create and export timeout and polling constants in `src/config.ts`. (2c13b82)
-- [ ] Task: Refactor `App.tsx` to use constants for loading screen timeouts.
+- [x] Task: Refactor `App.tsx` to use constants for loading screen timeouts. (0c022b2)
 - [ ] Task: Refactor `src/contexts/AuthContext.tsx` to use constants for auth-related timeouts.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Constants' (Protocol in workflow.md)
 
