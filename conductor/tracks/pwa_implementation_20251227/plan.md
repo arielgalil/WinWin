@@ -29,14 +29,14 @@ This plan outlines the steps to transform the WinWin application into a full-fea
 - [x] Task: Conductor - User Manual Verification 'Supabase Data Caching (Read Operations)' (Protocol in workflow.md)
 
 ## Phase 4: Background Sync (Write Operations)
-- [ ] Task: Setup Workbox Background Sync
-    - [ ] Configure `workbox-background-sync` in the service worker.
-    - [ ] Define a "sync-queue" for Supabase RPC and REST mutations.
-- [ ] Task: Implement Deferred Score Entries
-    - [ ] Wrap score entry mutations to ensure they are captured by the sync queue when offline.
-    - [ ] Verify that an offline score entry is automatically submitted when the connection is restored.
-- [ ] Task: Implement Deferred Asset Uploads
-    - [ ] Extend background sync to handle file uploads (e.g., institution logos).
+- [x] Task: Setup Workbox Background Sync (dbe64bd)
+    - [x] Configure `workbox-background-sync` in the service worker.
+    - [x] Define a "sync-queue" for Supabase RPC and REST mutations.
+- [x] Task: Implement Deferred Score Entries (dbe64bd)
+    - [x] Wrap score entry mutations to ensure they are captured by the sync queue when offline.
+    - [x] Verify that an offline score entry is automatically submitted when the connection is restored.
+- [x] Task: Implement Deferred Asset Uploads (dbe64bd)
+    - [x] Extend background sync to handle file uploads (e.g., institution logos).
 - [ ] Task: Conductor - User Manual Verification 'Background Sync (Write Operations)' (Protocol in workflow.md)
 
 ## Phase 5: Update Lifecycle & Final Polish
