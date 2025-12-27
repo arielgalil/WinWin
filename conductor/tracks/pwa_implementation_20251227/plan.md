@@ -22,10 +22,10 @@ This plan outlines the steps to transform the WinWin application into a full-fea
 - [x] Task: Conductor - User Manual Verification 'Offline Asset Caching (App Shell)' (Protocol in workflow.md)
 
 ## Phase 3: Supabase Data Caching (Read Operations)
-- [ ] Task: Implement Stale-While-Revalidate for Supabase Calls
-    - [ ] Identify critical API endpoints (Competitions, Leaderboards).
-    - [ ] Configure `runtimeCaching` in `vite.config.ts` for these patterns.
-    - [ ] Test that the dashboard loads data from cache when offline.
+- [x] Task: Implement Stale-While-Revalidate for Supabase Calls (fbfbb15)
+    - [x] Identify critical API endpoints (Competitions, Leaderboards).
+    - [x] Configure `runtimeCaching` in `vite.config.ts` for these patterns.
+    - [x] Test that the dashboard loads data from cache when offline.
 - [ ] Task: Conductor - User Manual Verification 'Supabase Data Caching (Read Operations)' (Protocol in workflow.md)
 
 ## Phase 4: Background Sync (Write Operations)
