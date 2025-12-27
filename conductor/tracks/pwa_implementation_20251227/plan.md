@@ -3,13 +3,13 @@
 This plan outlines the steps to transform the WinWin application into a full-featured PWA with offline support and background sync capabilities, utilizing `vite-plugin-pwa`.
 
 ## Phase 1: Infrastructure & Basic PWA Setup
-- [ ] Task: Install and Configure `vite-plugin-pwa`
-    - [ ] Add `vite-plugin-pwa` dependency.
-    - [ ] Update `vite.config.ts` with basic PWA configuration (manifest, icons, theme color).
-    - [ ] Create/Source high-resolution icons (192x192, 512x512, maskable).
-- [ ] Task: Service Worker Registration
-    - [ ] Implement automatic service worker registration in `index.tsx` or `App.tsx`.
-    - [ ] Verify service worker is registered in development using `vite-plugin-pwa` dev options.
+- [x] Task: Install and Configure `vite-plugin-pwa` (8d8c45a)
+    - [x] Add `vite-plugin-pwa` dependency.
+    - [x] Update `vite.config.ts` with basic PWA configuration (manifest, icons, theme color).
+    - [x] Create/Source high-resolution icons (192x192, 512x512, maskable).
+- [x] Task: Service Worker Registration (8d8c45a)
+    - [x] Implement automatic service worker registration in `index.tsx` or `App.tsx`.
+    - [x] Verify service worker is registered in development using `vite-plugin-pwa` dev options.
 - [ ] Task: Conductor - User Manual Verification 'Infrastructure & Basic PWA Setup' (Protocol in workflow.md)
 
 ## Phase 2: Offline Asset Caching (App Shell)

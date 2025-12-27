@@ -22,6 +22,6 @@ This plan outlines the steps to enhance type safety and centralize magic numbers
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Global Types' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification
-- [ ] Task: Run full regression test suite.
-- [ ] Task: Verify production build (`npm run build`).
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)
+- [x] Task: Run full regression test suite.
+- [x] Task: Verify production build (`npm run build`).
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)

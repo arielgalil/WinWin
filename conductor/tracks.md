@@ -26,10 +26,10 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Types and Constants Refinement
-*Link: [./conductor/tracks/types_refinement_20251226/](./conductor/tracks/types_refinement_20251226/)*
+## [x] Track: Types and Constants Refinement
+*Link: [./conductor/archive/types_refinement_20251226/](./conductor/archive/types_refinement_20251226/)*
 
 ---
 
-## [ ] Track: PWA Implementation
+## [~] Track: PWA Implementation
 *Link: [./conductor/tracks/pwa_implementation_20251227/](./conductor/tracks/pwa_implementation_20251227/)*
