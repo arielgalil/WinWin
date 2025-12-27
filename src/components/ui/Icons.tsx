@@ -61,7 +61,9 @@ import {
   CheckCircle,
   AlertCircle,
   Info,
-  Clock
+  Clock,
+  WifiOff,
+  Wifi
 } from 'lucide-react';
 
 export const TrophyIcon = ({ className }: { className?: string }) => <Trophy className={className} />;
@@ -124,3 +126,5 @@ export const Volume2Icon = ({ className }: { className?: string }) => <Volume2 c
 export const VolumeXIcon = ({ className }: { className?: string }) => <VolumeX className={className} />;
 export const ZapIcon = ({ className }: { className?: string }) => <Zap className={className} />;
 export const ClockIcon = ({ className }: { className?: string }) => <Clock className={className} />;
+export const WifiOffIcon = ({ className }: { className?: string }) => <WifiOff className={className} />;
+export const WifiIcon = ({ className }: { className?: string }) => <Wifi className={className} />;

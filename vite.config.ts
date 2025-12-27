@@ -18,6 +18,12 @@ export default defineConfig(({ mode }) => {
         VitePWA({
           registerType: 'autoUpdate',
           includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+          workbox: {
+            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+            cleanupOutdatedCaches: true,
+            clientsClaim: true,
+            skipWaiting: true
+          },
           manifest: {
             name: 'WinWin - תחרות מצמיחה',
             short_name: 'WinWin',
