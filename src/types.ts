@@ -120,6 +120,10 @@ export interface AppSettings {
   logs_updated_at?: string;
 }
 
+export interface LogSnapshot {
+  [key: string]: string | number | boolean | null | LogSnapshot | LogSnapshot[];
+}
+
 export interface ActionLog {
   id: string;
   created_at: string;
@@ -130,7 +134,7 @@ export interface ActionLog {
   student_id?: string | null;
   class_id?: string | null;
   campaign_id?: string;
-  snapshot_data?: any; 
+  snapshot_data?: LogSnapshot; 
   is_cancelled?: boolean; 
   note?: string; 
 }
