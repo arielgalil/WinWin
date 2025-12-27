@@ -1,13 +1,23 @@
 
 // Central configuration file
+
+interface ImportMetaEnv {
+  [key: string]: string | undefined;
+}
+
+interface CustomImportMeta extends ImportMeta {
+  env: ImportMetaEnv;
+}
+
 const getEnvVar = (key: string, fallback: string = ''): string => {
   // Try Vite environment variables first (client-side)
-  if (typeof (import.meta as any).env !== 'undefined') {
-    return (import.meta as any).env[`VITE_${key}`] || (import.meta as any).env[key] || fallback;
+  const meta = import.meta as unknown as CustomImportMeta;
+  if (meta.env) {
+    return meta.env[`VITE_${key}`] || meta.env[key] || fallback;
   }
   // Fallback to process.env (server-side)
   if (typeof process !== 'undefined' && process.env) {
-    return process.env[key] || fallback;
+    return (process.env as Record<string, string | undefined>)[key] || fallback;
   }
   return fallback;
 };

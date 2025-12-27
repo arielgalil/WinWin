@@ -15,10 +15,10 @@ This plan outlines the steps to enhance type safety and centralize magic numbers
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Types.ts' (Protocol in workflow.md)
 
 ## Phase 3: Type Safety - App.tsx & Global Audit
-- [ ] Task: TDD - Refactor `LanguageSync` in `App.tsx` to use `AppSettings` and remove `any`.
-- [ ] Task: Identify and replace other `any` usages in `App.tsx`.
-- [ ] Task: Perform global search for `any` in `src/` and fix high-priority instances (e.g., event handlers, context values).
-- [ ] Task: Run `npx tsc --noEmit` to verify type integrity.
+- [x] Task: TDD - Refactor `LanguageSync` in `App.tsx` to use `AppSettings` and remove `any`. (2940d9a)
+- [x] Task: Identify and replace other `any` usages in `App.tsx`. (Fixed App.tsx and config.ts)
+- [x] Task: Perform global search for `any` in `src/` and fix high-priority instances (e.g., event handlers, context values).
+- [x] Task: Run `npx tsc --noEmit` to verify type integrity.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Global Types' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification

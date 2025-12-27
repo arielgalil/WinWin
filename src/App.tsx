@@ -24,7 +24,7 @@ const LanguageSync: React.FC = () => {
 
     useEffect(() => {
         if (settings?.language && settings.language !== language) {
-            setLanguage(settings.language as any);
+            setLanguage(settings.language);
         }
     }, [settings?.language, language, setLanguage]);
 
@@ -86,6 +86,8 @@ const AdminRoute = () => {
     const { classes, settings, currentCampaign, addPoints, refreshData, campaignRole } = useCompetitionData();
     const { isCampaignSuper, isSuper } = useAuthPermissions();
 
+    if (!user) return <Navigate to={`/login/${slug}`} replace />;
+
     return (
         <CampaignContext>
             <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('manage')} />
@@ -110,6 +112,8 @@ const VoteRoute = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const { settings, currentCampaign, campaignRole } = useCompetitionData();
+
+    if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
     return (
         <CampaignContext>
