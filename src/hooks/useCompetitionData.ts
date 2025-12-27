@@ -5,10 +5,12 @@ import { supabase } from '../supabaseClient';
 import { ClassRoom, AppSettings, TickerMessage, Campaign, CompetitionGoal } from '../types';
 import { useAuth } from './useAuth';
 import { useLanguage } from './useLanguage';
+import { useToast } from './useToast';
 import { logger } from '../utils/logger';
 
 export const useCompetitionData = (slugOverride?: string) => {
   const { t } = useLanguage();
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
@@ -164,6 +166,10 @@ export const useCompetitionData = (slugOverride?: string) => {
 
     logger.info("Calling add_score_transaction with params:", rpcParams);
     
+    if (!window.navigator.onLine) {
+      showToast(t('sync_pending'), 'info');
+    }
+
     const { error } = await supabase.rpc('add_score_transaction', rpcParams);
     if (error) {
       logger.error("RPC Point Transaction Error:", error);
@@ -192,6 +198,10 @@ export const useCompetitionData = (slugOverride?: string) => {
     const { data: log, error: fetchErr } = await supabase.from('action_logs').select('is_cancelled').eq('id', id).single();
     if (fetchErr) { console.error("Error fetching log state:", fetchErr); return; }
     
+    if (!window.navigator.onLine) {
+      showToast(t('sync_pending'), 'info');
+    }
+
     const { error: updErr } = await supabase.from('action_logs').update({ is_cancelled: !log?.is_cancelled }).eq('id', id);
     if (updErr) console.error("Error toggling log cancellation:", updErr);
     
@@ -199,6 +209,9 @@ export const useCompetitionData = (slugOverride?: string) => {
   };
 
   const updateLog = async ({ id, description, points }: { id: string; description: string; points: number }) => {
+    if (!window.navigator.onLine) {
+      showToast(t('sync_pending'), 'info');
+    }
     const { error } = await supabase.from('action_logs').update({ description, points }).eq('id', id);
     if (error) console.error("Log update error:", error);
     invalidate();

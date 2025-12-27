@@ -79,6 +79,10 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         setIsSaving(true);
 
         try {
+            if (!window.navigator.onLine) {
+                showToast(t('sync_pending'), 'info');
+            }
+
             const payload = {
                 campaign_id: campaignId,
                 school_name: formData.school_name || '',
@@ -134,6 +138,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         }
         setIsUploading(true);
         try {
+            if (!window.navigator.onLine) {
+                showToast(t('sync_pending'), 'info');
+            }
             const fileExt = file.name.split('.').pop();
             const fileName = `logo_${settings.campaign_id}_${Date.now()}.${fileExt}`;
             const { error: uploadErr } = await supabase.storage.from('campaign-logos').upload(fileName, file);
