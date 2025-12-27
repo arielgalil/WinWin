@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SproutIcon, TrashIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useAuth } from '../../hooks/useAuth';
+import { TIMEOUTS } from '../../config';
 
 interface LoadingScreenProps {
     message?: string;
@@ -15,7 +16,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ message }) => {
     const displayMessage = message || t('loading_data');
 
     useEffect(() => {
-        const timer = setTimeout(() => setShowOptions(true), 4000);
+        const timer = setTimeout(() => setShowOptions(true), TIMEOUTS.loadingScreenOptionsMs);
         return () => clearTimeout(timer);
     }, []);
 

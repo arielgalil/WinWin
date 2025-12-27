@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { LoadingScreen } from '../LoadingScreen';
 import { describe, it, expect, vi } from 'vitest';
+import { TIMEOUTS } from '../../../config';
 import React from 'react';
 
 // Mock hooks used in LoadingScreen
@@ -35,9 +36,9 @@ describe('LoadingScreen', () => {
         // Options should not be visible initially
         expect(screen.queryByText('stuck_skip')).not.toBeInTheDocument();
         
-        // Fast-forward 4 seconds
+        // Fast-forward to timeout
         await act(async () => {
-            vi.advanceTimersByTime(4000);
+            vi.advanceTimersByTime(TIMEOUTS.loadingScreenOptionsMs);
         });
         
         expect(screen.getByText('stuck_skip')).toBeInTheDocument();
