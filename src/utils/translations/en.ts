@@ -523,6 +523,9 @@ export const en = {
     ai_prompt_summarize: "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
     ai_instruction_admin: "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
         changes_detected: 'Changes detected',
-        offline_message: "You are offline. Some actions may not work until connection is restored.",
-    };
-    
+            offline_message: "You are offline. Some actions may not work until connection is restored.",
+            pwa_offline_ready: "App is ready for offline usage",
+            pwa_update_available: "New version available. Update now?",
+            pwa_refresh_button: "Refresh & Update",
+        };
+        

@@ -18,6 +18,7 @@ import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
 import { useTheme } from './contexts/ThemeContext';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
+import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
 
 const LanguageSync: React.FC = () => {
     const { settings } = useCompetitionData();
@@ -210,6 +211,7 @@ const App: React.FC = () => {
     return (
         <RouteErrorBoundary>
             <OfflineIndicator />
+            <PwaReloadPrompt />
             <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]">
                 {authLoading ? (
                     <LoadingScreen message={t('loading_system')} />
