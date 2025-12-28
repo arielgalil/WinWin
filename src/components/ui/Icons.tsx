@@ -59,7 +59,7 @@ export const RefreshIcon = ({ className }: IconProps) => <MaterialIcon name="syn
 export const SchoolIcon = ({ className }: IconProps) => <MaterialIcon name="school" className={className} />;
 export const LogoutIcon = ({ className }: IconProps) => <MaterialIcon name="logout" className={className} />;
 export const SparklesIcon = ({ className }: IconProps) => <MaterialIcon name="auto_awesome" className={className} filled />;
-export const CrownIcon = ({ className }: IconProps) => <MaterialIcon name="chess_king" className={className} filled />;
+export const CrownIcon = ({ className }: IconProps) => <MaterialIcon name="crown" className={className} filled />;
 export const MedalIcon = ({ className }: IconProps) => <MaterialIcon name="military_tech" className={className} />;
 export const StarIcon = ({ className }: IconProps) => <MaterialIcon name="star" className={className} filled />;
 export const TrashIcon = ({ className }: IconProps) => <MaterialIcon name="delete" className={className} />;
@@ -100,7 +100,7 @@ export const CalculatorIcon = ({ className }: IconProps) => <MaterialIcon name="
 export const DollarSignIcon = ({ className }: IconProps) => <MaterialIcon name="attach_money" className={className} />;
 export const SproutIcon = ({ className }: IconProps) => <MaterialIcon name="eco" className={className} />;
 export const KeyIcon = ({ className }: IconProps) => <MaterialIcon name="key" className={className} />;
-export const ShieldAlertIcon = ({ className }: IconProps) => <MaterialIcon name="shield_alert" className={className} />;
+export const ShieldAlertIcon = ({ className }: IconProps) => <MaterialIcon name="report" className={className} />;
 export const ChevronRightIcon = ({ className }: IconProps) => <MaterialIcon name="chevron_right" className={className} />;
 export const MusicIcon = ({ className }: IconProps) => <MaterialIcon name="music_note" className={className} />;
 export const Volume2Icon = ({ className }: IconProps) => <MaterialIcon name="volume_up" className={className} />;
