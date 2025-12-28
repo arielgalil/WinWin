@@ -30,7 +30,7 @@ describe('AdminMobileMenu Theme Toggle', () => {
   it('renders theme toggle and calls toggleTheme', () => {
     // This test is expected to fail initially as the toggle is missing in Mobile Menu
     render(<AdminMobileMenu {...defaultProps} />);
-    const toggleButton = screen.getByText('dark_mode');
+    const toggleButton = screen.getByRole('button', { name: /dark_mode/i });
     fireEvent.click(toggleButton);
     expect(mockToggleTheme).toHaveBeenCalledTimes(1);
   });

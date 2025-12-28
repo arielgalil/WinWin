@@ -27,7 +27,7 @@ describe('AdminSidebar Theme Toggle', () => {
   it('calls toggleTheme when theme button is clicked', () => {
     render(<AdminSidebar {...defaultProps} />);
     // In dark mode, it shows SunIcon and "light_mode" text
-    const toggleButton = screen.getByText('light_mode');
+    const toggleButton = screen.getByRole('button', { name: /light_mode/i });
     fireEvent.click(toggleButton);
     expect(mockToggleTheme).toHaveBeenCalledTimes(1);
   });
