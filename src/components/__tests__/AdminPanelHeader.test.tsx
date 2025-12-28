@@ -22,7 +22,15 @@ vi.mock('../../hooks/useLanguage', () => ({
 
 vi.mock('../../hooks/useCampaign', () => ({
   useCampaign: () => ({
-    campaign: { id: 'test-camp', name: 'תחרות בדיקה', is_active: true },
+    campaign: { 
+      id: 'test-camp', 
+      name: 'תחרות בדיקה', 
+      is_active: true,
+      institution: {
+        logo_url: 'institution-logo.png',
+        name: 'מוסד בדיקה'
+      }
+    },
     settings: { school_name: 'בית ספר בדיקה', logo_url: 'test-logo.png' },
     isLoadingCampaign: false
   })
@@ -117,7 +125,41 @@ describe('AdminPanel Header Improvements', () => {
     expect(screen.queryByText('Admin Console')).toBeNull();
   });
 
-  it('renders a non-clickable logo', () => {
+  it('renders the institution logo when available', () => {
+    render(
+      <BrowserRouter>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
+      </BrowserRouter>
+    );
+    
+    // The Logo component should be called with institution-logo.png
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toBe('institution-logo.png');
+  });
+
+  it('renders the User Profile with Name and Role', () => {
+    render(
+      <BrowserRouter>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
+      </BrowserRouter>
+    );
+    
+    // Should display full name
+    expect(screen.getByText('מנהל תחרות')).toBeDefined();
+    
+    // Should display role (role_admin translation is "role_admin" in mock)
+    expect(screen.getByText('role_admin')).toBeDefined();
+  });
+
+  it('renders a non-clickable logo in the header', () => {
     const { container } = render(
       <BrowserRouter>
         <ToastProvider>

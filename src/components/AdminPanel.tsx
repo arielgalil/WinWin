@@ -194,7 +194,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-200">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-[var(--primary-base)] rounded-xl shadow-lg">
-              <Logo src={settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
+              <Logo src={campaign?.institution?.logo_url || settings.logo_url} className="w-6 h-6 invert brightness-0 text-white" fallbackIcon="school" padding="p-0" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
@@ -227,13 +227,13 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
             {/* Profile Section */}
             <div className="flex items-center gap-3 pl-2">
-              <div className="text-right hidden sm:block">
-                <p className="text-[var(--fs-base)] font-[var(--fw-medium)] text-[var(--text-main)] leading-none">{user.full_name}</p>
-                <p className="text-[var(--fs-sm)] font-[var(--fw-medium)] text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
+              <div className="text-right">
+                <p className="text-[var(--fs-sm)] sm:text-[var(--fs-base)] font-[var(--fw-medium)] text-[var(--text-main)] leading-none">{user.full_name}</p>
+                <p className="text-[10px] sm:text-[var(--fs-sm)] font-[var(--fw-medium)] text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mt-1">
                   {isSuper ? t('role_super_user' as any) : isAdmin ? t('role_admin' as any) : t('role_teacher' as any)}
                 </p>
               </div>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-[var(--fw-bold)] text-white shadow-md text-[var(--fs-base)] ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
+              <div className={`hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-[var(--fw-bold)] text-white shadow-md text-[var(--fs-base)] ring-2 ring-[var(--bg-card)] bg-gradient-to-br ${isSuper ? 'from-amber-400 to-orange-500' : 'from-indigo-500 to-purple-600'}`}>
                 {user.full_name?.charAt(0).toUpperCase() || 'U'}
               </div>
             </div>
