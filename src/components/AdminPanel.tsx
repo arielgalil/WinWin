@@ -195,7 +195,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-colors duration-200">
           <div className="flex items-center gap-4">
             <div className="shrink-0">
-              <Logo src={settings.logo_url || campaign?.institution?.logo_url || campaign?.logo_url} className="w-10 h-10 border-2 border-indigo-500/20 shadow-sm" fallbackIcon="school" padding="p-1" />
+              <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings.logo_url} className="w-10 h-10 border-2 border-indigo-500/20 shadow-sm" fallbackIcon="school" padding="p-1" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>

@@ -170,9 +170,9 @@ describe('AdminPanel Header Improvements', () => {
       </BrowserRouter>
     );
     
-    // Find the logo container (the one with the primary-base background)
+    // Find the logo container (the one with the indigo border)
     const logoContainer = Array.from(container.querySelectorAll('div')).find(el => 
-      el.className.includes('bg-[var(--primary-base)]')
+      el.className.includes('border-indigo-500/20')
     );
     expect(logoContainer).toBeDefined();
     
