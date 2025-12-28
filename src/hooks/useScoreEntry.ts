@@ -1,7 +1,10 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useCompetitionData } from './useCompetitionData';
 import { triggerHaptic } from '../utils/haptics';
 import { useAuth } from './useAuth';
+import { useCampaign } from './useCampaign';
+import { useClasses } from './useClasses';
+import { useCampaignRole } from './useCampaignRole';
+import { useCompetitionMutations } from './useCompetitionMutations';
 import { isAdmin as checkIsAdmin } from '../config';
 import { useLanguage } from './useLanguage';
 
@@ -9,8 +12,11 @@ const CLASS_ENTITY_ID = 'CLASS_ENTITY';
 
 export const useScoreEntry = (initialClassId: string | null) => {
   const { t } = useLanguage();
-  const { classes, settings, addPoints, updateClassTarget, campaignRole } = useCompetitionData();
   const { user } = useAuth();
+  const { campaign, settings } = useCampaign();
+  const { classes = [] } = useClasses(campaign?.id);
+  const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+  const { addPoints, updateClassTarget } = useCompetitionMutations(campaign?.id);
   
   const isAdmin = checkIsAdmin(user?.role, campaignRole);
   
@@ -150,6 +156,14 @@ export const useScoreEntry = (initialClassId: string | null) => {
       updateClassTarget,
       CLASS_ENTITY_ID,
       classes,
-      settings
+      settings: settings || {
+        school_name: t('loading'),
+        competition_name: '',
+        logo_url: null,
+        primary_color: '#4c1d95',
+        secondary_color: '#0f172a',
+        background_brightness: 50,
+        score_presets: []
+      }
   };
 };

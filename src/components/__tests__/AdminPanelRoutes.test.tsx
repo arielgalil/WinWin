@@ -20,21 +20,34 @@ vi.mock('../../hooks/useLanguage', () => ({
   })
 }));
 
-vi.mock('../../hooks/useCompetitionData', () => ({
-  useCompetitionData: () => ({
-    logs: [],
-    loadMoreLogs: vi.fn(),
+vi.mock('../../hooks/useCampaign', () => ({
+  useCampaign: () => ({
+    campaign: { id: 'test-camp', name: 'תחרות בדיקה', is_active: true },
+    settings: { school_name: 'בית ספר בדיקה', logo_url: 'test-logo.png' },
+    isLoadingCampaign: false
+  })
+}));
+
+vi.mock('../../hooks/useClasses', () => ({
+  useClasses: () => ({ classes: [], isLoading: false })
+}));
+
+vi.mock('../../hooks/useTicker', () => ({
+  useTicker: () => ({ tickerMessages: [], isLoading: false })
+}));
+
+vi.mock('../../hooks/useLogs', () => ({
+  useLogs: () => ({ logs: [], isLoading: false, fetchNextPage: vi.fn() })
+}));
+
+vi.mock('../../hooks/useCompetitionMutations', () => ({
+  useCompetitionMutations: () => ({
     deleteLog: vi.fn(),
     updateLog: vi.fn(),
-    currentCampaign: { is_active: true, name: 'תחרות בדיקה' },
     updateClassTarget: vi.fn(),
     updateSettingsGoals: vi.fn(),
     updateTabTimestamp: vi.fn(),
-    refreshData: vi.fn(),
-    tickerMessages: [],
-    addTickerMessage: vi.fn(),
-    deleteTickerMessage: vi.fn(),
-    updateTickerMessage: vi.fn(),
+    refreshData: vi.fn()
   })
 }));
 
@@ -56,19 +69,10 @@ const mockUser = {
   role: 'admin',
 };
 
-const mockSettings = {
-  school_name: 'בית ספר בדיקה',
-  logo_url: 'test-logo.png',
-};
-
 describe('AdminPanel Route Mapping', () => {
   const defaultProps = {
     user: mockUser as any,
-    classes: [],
-    settings: mockSettings as any,
-    onAddPoints: vi.fn(),
     onLogout: vi.fn(),
-    onRefreshData: vi.fn(),
     onViewDashboard: vi.fn(),
     isAdmin: true,
   };

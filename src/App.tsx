@@ -12,7 +12,12 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
-import { useCompetitionData } from './hooks/useCompetitionData';
+import { useCampaign } from './hooks/useCampaign';
+import { useClasses } from './hooks/useClasses';
+import { useTicker } from './hooks/useTicker';
+import { useLogs } from './hooks/useLogs';
+import { useCampaignRole } from './hooks/useCampaignRole';
+import { useCompetitionMutations } from './hooks/useCompetitionMutations';
 import { useAuthPermissions } from './services/useAuthPermissions';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
@@ -21,24 +26,26 @@ import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
 
 const LanguageSync: React.FC = () => {
-    const { settings } = useCompetitionData();
+    const { settings: campaignLanguage } = useCampaign({
+        settingsSelector: s => s.language
+    });
     const { setLanguage, language } = useLanguage();
 
     useEffect(() => {
-        if (settings?.language && settings.language !== language) {
-            setLanguage(settings.language);
+        if (campaignLanguage && campaignLanguage !== language) {
+            setLanguage(campaignLanguage);
         }
-    }, [settings?.language, language, setLanguage]);
+    }, [campaignLanguage, language, setLanguage]);
 
     return null;
 };
 
 const CampaignContext: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useLanguage();
-    const { isLoadingCampaign, isCampaignError, campaignFetchError, currentCampaign } = useCompetitionData();
+    const { campaign, isLoadingCampaign, isCampaignError, campaignFetchError } = useCampaign();
 
     if (isLoadingCampaign) return <LoadingScreen message={t('loading_campaign_data')} />;
-    if (isCampaignError || !currentCampaign) return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
+    if (isCampaignError || !campaign) return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
 
     return (
         <>
@@ -53,29 +60,33 @@ const DashboardRoute = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { slug } = useParams();
-    const { classes, settings, tickerMessages, currentCampaign, campaignRole, updateCommentary } = useCompetitionData();
-
-    // Dashboard is public - anyone can view the leaderboard
-    // Management functions are protected within the Dashboard component
+    
+    const { campaign, settings } = useCampaign();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+    const { classes } = useClasses(campaign?.id);
+    const { tickerMessages } = useTicker(campaign?.id);
+    const { updateCommentary } = useCompetitionMutations(campaign?.id);
 
     return (
         <CampaignContext>
-            <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('score_board')} />
-            <Dashboard
-                classes={classes}
-                commentary={settings.current_commentary || ''}
-                tickerMessages={tickerMessages}
-                settings={settings}
-                onLoginClick={() => navigate(`/login/${slug}`)}
-                user={user}
-                userRole={campaignRole}
-                isSuperUser={isSuperUser(user?.role)}
-                isCampaignActive={currentCampaign?.is_active}
-                onSwitchCampaign={() => navigate('/')}
-                onManagePoints={() => navigate(`/vote/${slug}`)}
-                onManageSchool={() => navigate(`/admin/${slug}`)}
-                onUpdateCommentary={updateCommentary}
-            />
+            <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('score_board')} />
+            {settings && (
+                <Dashboard
+                    classes={classes}
+                    commentary={settings.current_commentary || ''}
+                    tickerMessages={tickerMessages}
+                    settings={settings}
+                    onLoginClick={() => navigate(`/login/${slug}`)}
+                    user={user}
+                    userRole={campaignRole}
+                    isSuperUser={isSuperUser(user?.role)}
+                    isCampaignActive={campaign?.is_active}
+                    onSwitchCampaign={() => navigate('/')}
+                    onManagePoints={() => navigate(`/vote/${slug}`)}
+                    onManageSchool={() => navigate(`/admin/${slug}`)}
+                    onUpdateCommentary={updateCommentary}
+                />
+            )}
         </CampaignContext>
     );
 };
@@ -85,25 +96,25 @@ const AdminRoute = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { slug } = useParams();
-    const { classes, settings, currentCampaign, addPoints, refreshData, campaignRole } = useCompetitionData();
+    
+    const { campaign, settings } = useCampaign();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { isCampaignSuper, isSuper } = useAuthPermissions();
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
     return (
         <CampaignContext>
-            <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('manage')} />
-            <AdminPanel
-                user={user}
-                classes={classes}
-                settings={settings}
-                onAddPoints={addPoints}
-                onLogout={async () => { await logout(); navigate('/'); }}
-                onRefreshData={refreshData}
-                onViewDashboard={() => navigate(`/comp/${slug}`)}
-                isSuperAdmin={isSuper || isCampaignSuper}
-                campaignRole={campaignRole}
-            />
+            <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('manage')} />
+            {settings && (
+                <AdminPanel
+                    user={user}
+                    onLogout={async () => { await logout(); navigate('/'); }}
+                    onViewDashboard={() => navigate(`/comp/${slug}`)}
+                    isSuperAdmin={isSuper || isCampaignSuper}
+                    campaignRole={campaignRole}
+                />
+            )}
         </CampaignContext>
     );
 };
@@ -113,13 +124,15 @@ const VoteRoute = () => {
     const { user, logout } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
-    const { settings, currentCampaign, campaignRole } = useCompetitionData();
+    
+    const { campaign, settings } = useCampaign();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
 
     if (!user) return <Navigate to={`/login/${slug}`} replace />;
 
     return (
         <CampaignContext>
-            <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('enter_points')} />
+            <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('enter_points')} />
             <LiteTeacherView
                 user={user}
                 userRole={campaignRole}
@@ -134,8 +147,10 @@ const LoginRoute = () => {
     const { user, login, authLoading, loginError, savedEmail } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
-    const { settings, isLoadingCampaign, currentCampaign } = useCompetitionData();
-    const { canAccessAdmin, isTeacher, isSuper, campaignRole } = useAuthPermissions();
+    
+    const { campaign, settings, isLoadingCampaign } = useCampaign();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+    const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
 
     useEffect(() => {
         if (user && !authLoading) {
@@ -163,7 +178,7 @@ const LoginRoute = () => {
     if (slug && user && campaignRole === null) {
         return (
             <>
-                <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('error')} />
+                <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('error')} />
                 <ErrorScreen message={t('competition_access_denied')} />
             </>
         );
@@ -171,7 +186,7 @@ const LoginRoute = () => {
 
     return (
         <>
-            <DynamicTitle settings={settings} campaign={currentCampaign} pageName={t('login_title')} />
+            <DynamicTitle settings={slug ? settings : undefined} campaign={campaign} pageName={t('login_title')} />
             <LiteLogin
                 onLogin={login}
                 loading={authLoading}

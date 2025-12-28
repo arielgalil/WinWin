@@ -14,7 +14,8 @@ import {
     XIcon
 } from './Icons';
 import { useAuth } from '../../hooks/useAuth';
-import { useCompetitionData } from '../../hooks/useCompetitionData';
+import { useCampaign } from '../../hooks/useCampaign';
+import { useCampaignRole } from '../../hooks/useCampaignRole';
 import { isSuperUser as checkSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DebugConsole } from './DebugConsole';
@@ -27,11 +28,13 @@ interface VersionFooterProps {
         onToggle: () => void;
     };
     className?: string;
+    onAdminClick?: () => void;
 }
 
 export const VersionFooter: React.FC<VersionFooterProps> = ({
     musicState,
-    className = ''
+    className = '',
+    onAdminClick
 }) => {
     const { t } = useLanguage();
     const { user, logout: handleLogout } = useAuth();
@@ -58,7 +61,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
         }
     }, []);
 
-    const { campaignRole } = useCompetitionData(fallbackSlug);
+    const { campaignId } = useCampaign({ slugOverride: fallbackSlug });
+    const { campaignRole } = useCampaignRole(campaignId, user?.id);
 
     const [isLowPerf, setIsLowPerf] = useState(localStorage.getItem('winwin_low_perf') === 'true');
     const [isDebugOpen, setIsDebugOpen] = useState(false);

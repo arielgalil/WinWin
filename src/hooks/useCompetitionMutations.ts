@@ -82,6 +82,14 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     else invalidate();
   }, [campaignId, invalidate]);
 
+  const updateTabTimestamp = useCallback(async (tab: 'settings' | 'users' | 'goals' | 'classes' | 'logs') => {
+    if (!campaignId) return;
+    const column = `${tab}_updated_at`;
+    const { error } = await supabase.from('app_settings').update({ [column]: new Date().toISOString() }).eq('campaign_id', campaignId);
+    if (error) console.error(`Timestamp update failed for ${tab}`, error);
+    else invalidate();
+  }, [campaignId, invalidate]);
+
   return {
     addPoints,
     updateCommentary,
@@ -90,6 +98,7 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     updateClassTarget,
     updateSettingsGoals,
     toggleFreeze,
+    updateTabTimestamp,
     refreshData: async () => {
       if (!campaignId) return;
       await queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
