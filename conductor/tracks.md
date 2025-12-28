@@ -6,6 +6,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+## [x] Track: מנגנון עדכון מרחוק של מסכים ללא מגע יד אדם
+*Link: [./conductor/archive/remote_kiosk_update_20251228/](./conductor/archive/remote_kiosk_update_20251228/)*
+
+---
+
 ## [x] Track: אופטימיזציה של ניהול המצב (State Management Refactor)
 *Link: [./conductor/archive/state_optimization_20251228/](./conductor/archive/state_optimization_20251228/)*
 
@@ -38,8 +43,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Types and Constants Refinement
 *Link: [./conductor/archive/types_refinement_20251226/](./conductor/archive/types_refinement_20251226/)*
-
----
-
-## [~] Track: מנגנון עדכון מרחוק של מסכים ללא מגע יד אדם
-*Link: [./conductor/tracks/remote_kiosk_update_20251228/](./conductor/tracks/remote_kiosk_update_20251228/)*
