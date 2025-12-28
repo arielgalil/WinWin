@@ -3,17 +3,17 @@
 ## Phase 1: Service Worker Integration & State [checkpoint: ]
 Set up the mechanism to capture update events and manage the update status.
 
-- [~] Task: Create a new hook `src/hooks/useAutoUpdate.ts` to manage the PWA update logic.
-- [ ] Task: Implement Service Worker registration listeners (`onNeedRefresh`) within the hook.
-- [ ] Task: Write unit tests for `useAutoUpdate` (mocking service worker events).
+- [x] Task: Create a new hook `src/hooks/useAutoUpdate.ts` to manage the PWA update logic. 957493a
+- [x] Task: Implement Service Worker registration listeners (`onNeedRefresh`) within the hook. 957493a
+- [x] Task: Write unit tests for `useAutoUpdate` (mocking service worker events). 957493a
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Service Worker Integration & State' (Protocol in workflow.md)
 
 ## Phase 2: Idle Timer Logic [checkpoint: ]
 Implement the "wait-for-idle" logic before triggering the refresh.
 
-- [ ] Task: Add idle timer functionality to `useAutoUpdate.ts` using `setTimeout` and event listeners (mousemove, touchstart).
-- [ ] Task: Implement the auto-refresh call (`window.location.reload()`) upon timer expiration.
-- [ ] Task: Write tests to verify the timer resets on interaction and triggers after the idle period.
+- [x] Task: Add idle timer functionality to `useAutoUpdate.ts` using `setTimeout` and event listeners (mousemove, touchstart). 957493a
+- [x] Task: Implement the auto-refresh call (`window.location.reload()`) upon timer expiration. 957493a
+- [x] Task: Write tests to verify the timer resets on interaction and triggers after the idle period. 957493a
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Idle Timer Logic' (Protocol in workflow.md)
 
 ## Phase 3: Global Integration & Logging [checkpoint: ]
