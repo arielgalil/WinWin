@@ -24,6 +24,7 @@ import { isSuperUser } from './config';
 import { useTheme } from './hooks/useTheme';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
+import { useAutoUpdate } from './hooks/useAutoUpdate';
 
 const LanguageSync: React.FC = () => {
     const { settings: campaignLanguage } = useCampaign({
@@ -222,6 +223,7 @@ const App: React.FC = () => {
     const { t } = useLanguage();
     const { authLoading } = useAuth();
     const { theme } = useTheme();
+    useAutoUpdate();
 
     return (
         <RouteErrorBoundary>

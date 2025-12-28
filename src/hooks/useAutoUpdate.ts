@@ -16,19 +16,21 @@ export const useAutoUpdate = () => {
 
     useEffect(() => {
         if (needRefresh) {
-            console.log('[PWA] New content available. Waiting for idle period (60s)...');
+            console.log('[Kiosk-Update] New version detected. Preparing automatic refresh...');
+            console.log('[Kiosk-Update] The application will refresh after 60 seconds of idle time.');
             
             let timer: ReturnType<typeof setTimeout>;
 
             const startTimer = () => {
                 timer = setTimeout(() => {
-                    console.log('[PWA] Idle period reached. Forcing refresh...');
+                    console.log('[Kiosk-Update] Idle period reached. Forcing page refresh to synchronize version...');
                     updateServiceWorker(true);
                 }, 60000); // 60 seconds
             };
 
             const resetTimer = () => {
                 if (timer) {
+                    console.log('[Kiosk-Update] User interaction detected. Resetting idle timer.');
                     clearTimeout(timer);
                     startTimer();
                 }
