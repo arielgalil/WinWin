@@ -19,9 +19,9 @@ Implement the "wait-for-idle" logic before triggering the refresh.
 ## Phase 3: Global Integration & Logging [checkpoint: ]
 Enable the mechanism globally and add monitoring.
 
-- [ ] Task: Integrate `useAutoUpdate` hook into the root `App.tsx` or a global provider.
-- [ ] Task: Add descriptive logging for the update lifecycle (Detection -> Idle Wait -> Refresh).
-- [ ] Task: Verify that the mechanism doesn't interfere with existing PWA prompts (if any).
+- [x] Task: Integrate `useAutoUpdate` hook into the root `App.tsx` or a global provider. 38404c4
+- [x] Task: Add descriptive logging for the update lifecycle (Detection -> Idle Wait -> Refresh). 38404c4
+- [x] Task: Verify that the mechanism doesn't interfere with existing PWA prompts (if any). 38404c4
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Global Integration & Logging' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification [checkpoint: ]
