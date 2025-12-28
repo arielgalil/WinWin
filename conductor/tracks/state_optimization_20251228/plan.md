@@ -19,14 +19,14 @@ Decompose the monolithic `useCompetitionData` into specialized, atomic hooks wit
 - [x] Task: Create `src/hooks/useCampaignRole.ts` (Permissions). 1e83fc6
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Atomic React Query Hooks' (Protocol in workflow.md) da20d5b
 
-## Phase 3: Global Migration & Scoreboard Refactor
+## Phase 3: Global Migration & Scoreboard Refactor [checkpoint: db79450]
 Migrate all components, including the Dashboard (Scoreboard), to the new atomic hooks.
 
 - [x] Task: Refactor `Dashboard.tsx` and its sub-components to use atomic hooks. 4f632c2
 - [x] Task: Refactor `AdminPanel.tsx` and its tabs to use atomic hooks. 4f632c2
 - [x] Task: Refactor `LiteTeacherView.tsx` and `CampaignSelector.tsx`. 4f632c2
 - [x] Task: Remove or deprecate the original `useCompetitionData.ts`. 4f632c2
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Global Migration & Scoreboard Refactor' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Global Migration & Scoreboard Refactor' (Protocol in workflow.md)
 
 ## Phase 4: Performance Audit & Cleanup
 Verify re-render reductions and finalize the state management structure.
