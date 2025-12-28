@@ -260,7 +260,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 border-b border-[var(--border-main)]">
                   <div className="flex items-center gap-5">
                     <div 
-                      className="p-3.5 rounded-2xl bg-[var(--bg-surface)] shadow-sm border border-[var(--border-main)] transition-colors"
+                      className="p-3.5 rounded-2xl bg-[var(--bg-surface)] shadow-sm border border-[var(--border-main)] transition-colors flex items-center justify-center"
                       style={{ color: headerConfig?.colorVar }}
                     >
                       {headerConfig && <headerConfig.icon className="w-8 h-8" />}

@@ -22,7 +22,7 @@ export const AdminSectionCard: React.FC<AdminSectionCardProps> = ({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
                 <div className="flex items-center gap-4">
                     {icon && (
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                             {icon}
                         </div>
                     )}
