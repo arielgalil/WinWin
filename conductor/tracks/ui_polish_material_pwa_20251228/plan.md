@@ -19,9 +19,9 @@
 ## Phase 2: Icon Migration Setup & Audit
 *Goal: Prepare for the full transition to Google Material Symbols.*
 
-- [ ] Task: Install & Configure Material Symbols
-    - [ ] Identify the best way to include Material Symbols (e.g., via font-face or a React library matching our tech stack).
-    - [ ] Add the dependency or asset to the project.
+- [x] Task: Install & Configure Material Symbols [c9d4725]
+    - [x] Identify the best way to include Material Symbols (e.g., via font-face or a React library matching our tech stack).
+    - [x] Add the dependency or asset to the project.
 - [ ] Task: Full Icon Audit
     - [ ] Search the codebase for all `lucide-react` imports.
     - [ ] Map each Lucide icon to its closest Material Symbol equivalent.
