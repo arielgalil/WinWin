@@ -93,14 +93,14 @@
 ## Phase 3: Full Icon Replacement (TDD)
 *Goal: Replace Lucide with Material Symbols application-wide.*
 
-- [ ] Task: Replace Icons in UI Components
-    - [ ] Write a test/check to ensure no `lucide-react` imports remain.
-    - [ ] Sequentially replace icons in `src/components/ui/`.
-    - [ ] Sequentially replace icons in `src/components/admin/`.
-    - [ ] Sequentially replace icons in `src/components/dashboard/`.
-- [ ] Task: Cleanup Lucide
-    - [ ] Remove `lucide-react` from `package.json`.
-    - [ ] Ensure the app builds without errors.
+- [x] Task: Replace Icons in UI Components [e6cc53b]
+    - [x] Write a test/check to ensure no `lucide-react` imports remain.
+    - [x] Sequentially replace icons in `src/components/ui/`.
+    - [x] Sequentially replace icons in `src/components/admin/`.
+    - [x] Sequentially replace icons in `src/components/dashboard/`.
+- [x] Task: Cleanup Lucide [ae00994]
+    - [x] Remove `lucide-react` from `package.json`.
+    - [x] Ensure the app builds without errors.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Full Icon Replacement' (Protocol in workflow.md)
 
 ## Phase 4: Modal UI Enhancements (TDD)

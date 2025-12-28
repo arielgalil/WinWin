@@ -1,130 +1,78 @@
+import React from 'react';
 
+interface IconProps {
+  className?: string;
+}
 
+const MaterialIcon = ({ name, className = '', filled = false }: { name: string; className?: string; filled?: boolean }) => (
+  <span 
+    className={`material-symbols-rounded ${filled ? 'icon-filled' : ''} ${className}`}
+    style={{ fontSize: 'inherit' }}
+    aria-hidden="true"
+  >
+    {name}
+  </span>
+);
 
-import {
-  Trophy,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Users,
-  Award,
-  Lock,
-  Plus,
-  RefreshCw,
-  School,
-  LogOut,
-  Sparkles,
-  Crown,
-  Medal,
-  Star,
-  Trash2,
-  Upload,
-  Edit2,
-  Check,
-  X,
-  Download,
-  AlertTriangle,
-  ShieldAlert,
-  Layers,
-  List,
-  Search,
-  Menu,
-  Copy,
-  Share2,
-  Play,
-  Pause,
-  Sun,
-  Moon,
-  Home,
-  User,
-  Database,
-  RotateCcw,
-  RotateCw,
-  Save,
-  ArrowRight,
-  Target,
-  Map,
-  Compass,
-  Footprints,
-  Send,
-  Link,
-  Settings,
-  Calculator,
-  DollarSign,
-  Sprout,
-  Key,
-  ChevronRight,
-  Music,
-  Volume2,
-  VolumeX,
-  Zap,
-  CheckCircle,
-  AlertCircle,
-  Info,
-  Clock,
-  WifiOff,
-  Wifi
-} from 'lucide-react';
-
-export const TrophyIcon = ({ className }: { className?: string }) => <Trophy className={className} />;
-export const TrendUpIcon = ({ className }: { className?: string }) => <TrendingUp className={className} />;
-export const TrendDownIcon = ({ className }: { className?: string }) => <TrendingDown className={className} />;
-export const TrendSameIcon = ({ className }: { className?: string }) => <Minus className={className} />;
-export const UsersIcon = ({ className }: { className?: string }) => <Users className={className} />;
-export const AwardIcon = ({ className }: { className?: string }) => <Award className={className} />;
-export const LockIcon = ({ className }: { className?: string }) => <Lock className={className} />;
-export const PlusIcon = ({ className }: { className?: string }) => <Plus className={className} />;
-export const RefreshIcon = ({ className }: { className?: string }) => <RefreshCw className={className} />;
-export const SchoolIcon = ({ className }: { className?: string }) => <School className={className} />;
-export const LogoutIcon = ({ className }: { className?: string }) => <LogOut className={className} />;
-export const SparklesIcon = ({ className }: { className?: string }) => <Sparkles className={className} />;
-export const CrownIcon = ({ className }: { className?: string }) => <Crown className={className} />;
-export const MedalIcon = ({ className }: { className?: string }) => <Medal className={className} />;
-export const StarIcon = ({ className }: { className?: string }) => <Star className={className} />;
-export const TrashIcon = ({ className }: { className?: string }) => <Trash2 className={className} />;
-export const UploadIcon = ({ className }: { className?: string }) => <Upload className={className} />;
-export const DownloadIcon = ({ className }: { className?: string }) => <Download className={className} />;
-export const EditIcon = ({ className }: { className?: string }) => <Edit2 className={className} />;
-export const CheckIcon = ({ className }: { className?: string }) => <Check className={className} />;
-export const XIcon = ({ className }: { className?: string }) => <X className={className} />;
-export const AlertIcon = ({ className }: { className?: string }) => <AlertTriangle className={className} />;
-export const CheckCircleIcon = ({ className }: { className?: string }) => <CheckCircle className={className} />;
-export const AlertCircleIcon = ({ className }: { className?: string }) => <AlertCircle className={className} />;
-export const InfoIcon = ({ className }: { className?: string }) => <Info className={className} />;
-export const LayersIcon = ({ className }: { className?: string }) => <Layers className={className} />;
-export const ListIcon = ({ className }: { className?: string }) => <List className={className} />;
-export const SearchIcon = ({ className }: { className?: string }) => <Search className={className} />;
-export const MenuIcon = ({ className }: { className?: string }) => <Menu className={className} />;
-export const CopyIcon = ({ className }: { className?: string }) => <Copy className={className} />;
-export const ShareIcon = ({ className }: { className?: string }) => <Share2 className={className} />;
-export const PlayIcon = ({ className }: { className?: string }) => <Play className={className} />;
-export const PauseIcon = ({ className }: { className?: string }) => <Pause className={className} />;
-export const SunIcon = ({ className }: { className?: string }) => <Sun className={className} />;
-export const MoonIcon = ({ className }: { className?: string }) => <Moon className={className} />;
-export const HomeIcon = ({ className }: { className?: string }) => <Home className={className} />;
-export const UserIcon = ({ className }: { className?: string }) => <User className={className} />;
-export const DatabaseIcon = ({ className }: { className?: string }) => <Database className={className} />;
-export const UndoIcon = ({ className }: { className?: string }) => <RotateCcw className={className} />;
-export const RedoIcon = ({ className }: { className?: string }) => <RotateCw className={className} />;
-export const SaveIcon = ({ className }: { className?: string }) => <Save className={className} />;
-export const ArrowRightIcon = ({ className }: { className?: string }) => <ArrowRight className={className} />;
-export const TargetIcon = ({ className }: { className?: string }) => <Target className={className} />;
-export const MapIcon = ({ className }: { className?: string }) => <Map className={className} />;
-export const CompassIcon = ({ className }: { className?: string }) => <Compass className={className} />;
-export const FootprintsIcon = ({ className }: { className?: string }) => <Footprints className={className} />;
-export const SendIcon = ({ className }: { className?: string }) => <Send className={className} />;
-export const LinkIcon = ({ className }: { className?: string }) => <Link className={className} />;
-export const SettingsIcon = ({ className }: { className?: string }) => <Settings className={className} />;
-export const CalculatorIcon = ({ className }: { className?: string }) => <Calculator className={className} />;
-export const DollarSignIcon = ({ className }: { className?: string }) => <DollarSign className={className} />;
-export const SproutIcon = ({ className }: { className?: string }) => <Sprout className={className} />;
-export const KeyIcon = ({ className }: { className?: string }) => <Key className={className} />;
-export const ShieldAlertIcon = ({ className }: { className?: string }) => <ShieldAlert className={className} />;
-export const ChevronRightIcon = ({ className }: { className?: string }) => <ChevronRight className={className} />;
-export const MusicIcon = ({ className }: { className?: string }) => <Music className={className} />;
-export const Volume2Icon = ({ className }: { className?: string }) => <Volume2 className={className} />;
-export const VolumeXIcon = ({ className }: { className?: string }) => <VolumeX className={className} />;
-export const ZapIcon = ({ className }: { className?: string }) => <Zap className={className} />;
-export const ClockIcon = ({ className }: { className?: string }) => <Clock className={className} />;
-export const WifiOffIcon = ({ className }: { className?: string }) => <WifiOff className={className} />;
-export const WifiIcon = ({ className }: { className?: string }) => <Wifi className={className} />;
+export const TrophyIcon = ({ className }: IconProps) => <MaterialIcon name="trophy" className={className} filled />;
+export const TrendUpIcon = ({ className }: IconProps) => <MaterialIcon name="trending_up" className={className} />;
+export const TrendDownIcon = ({ className }: IconProps) => <MaterialIcon name="trending_down" className={className} />;
+export const TrendSameIcon = ({ className }: IconProps) => <MaterialIcon name="remove" className={className} />;
+export const UsersIcon = ({ className }: IconProps) => <MaterialIcon name="groups" className={className} />;
+export const AwardIcon = ({ className }: IconProps) => <MaterialIcon name="workspace_premium" className={className} />;
+export const LockIcon = ({ className }: IconProps) => <MaterialIcon name="lock" className={className} />;
+export const PlusIcon = ({ className }: IconProps) => <MaterialIcon name="add" className={className} />;
+export const RefreshIcon = ({ className }: IconProps) => <MaterialIcon name="refresh" className={className} />;
+export const SchoolIcon = ({ className }: IconProps) => <MaterialIcon name="school" className={className} />;
+export const LogoutIcon = ({ className }: IconProps) => <MaterialIcon name="logout" className={className} />;
+export const SparklesIcon = ({ className }: IconProps) => <MaterialIcon name="sparkles" className={className} filled />;
+export const CrownIcon = ({ className }: IconProps) => <MaterialIcon name="crown" className={className} filled />;
+export const MedalIcon = ({ className }: IconProps) => <MaterialIcon name="medal" className={className} />;
+export const StarIcon = ({ className }: IconProps) => <MaterialIcon name="star" className={className} filled />;
+export const TrashIcon = ({ className }: IconProps) => <MaterialIcon name="delete" className={className} />;
+export const UploadIcon = ({ className }: IconProps) => <MaterialIcon name="upload" className={className} />;
+export const DownloadIcon = ({ className }: IconProps) => <MaterialIcon name="download" className={className} />;
+export const EditIcon = ({ className }: IconProps) => <MaterialIcon name="edit" className={className} />;
+export const CheckIcon = ({ className }: IconProps) => <MaterialIcon name="check" className={className} />;
+export const XIcon = ({ className }: IconProps) => <MaterialIcon name="close" className={className} />;
+export const AlertIcon = ({ className }: IconProps) => <MaterialIcon name="warning" className={className} />;
+export const CheckCircleIcon = ({ className }: IconProps) => <MaterialIcon name="check_circle" className={className} filled />;
+export const AlertCircleIcon = ({ className }: IconProps) => <MaterialIcon name="error" className={className} filled />;
+export const InfoIcon = ({ className }: IconProps) => <MaterialIcon name="info" className={className} />;
+export const LayersIcon = ({ className }: IconProps) => <MaterialIcon name="layers" className={className} />;
+export const ListIcon = ({ className }: IconProps) => <MaterialIcon name="format_list_bulleted" className={className} />;
+export const SearchIcon = ({ className }: IconProps) => <MaterialIcon name="search" className={className} />;
+export const MenuIcon = ({ className }: IconProps) => <MaterialIcon name="menu" className={className} />;
+export const CopyIcon = ({ className }: IconProps) => <MaterialIcon name="content_copy" className={className} />;
+export const ShareIcon = ({ className }: IconProps) => <MaterialIcon name="share" className={className} />;
+export const PlayIcon = ({ className }: IconProps) => <MaterialIcon name="play_arrow" className={className} filled />;
+export const PauseIcon = ({ className }: IconProps) => <MaterialIcon name="pause" className={className} filled />;
+export const SunIcon = ({ className }: IconProps) => <MaterialIcon name="light_mode" className={className} />;
+export const MoonIcon = ({ className }: IconProps) => <MaterialIcon name="dark_mode" className={className} />;
+export const HomeIcon = ({ className }: IconProps) => <MaterialIcon name="home" className={className} filled />;
+export const UserIcon = ({ className }: IconProps) => <MaterialIcon name="person" className={className} filled />;
+export const DatabaseIcon = ({ className }: IconProps) => <MaterialIcon name="database" className={className} />;
+export const UndoIcon = ({ className }: IconProps) => <MaterialIcon name="undo" className={className} />;
+export const RedoIcon = ({ className }: IconProps) => <MaterialIcon name="redo" className={className} />;
+export const SaveIcon = ({ className }: IconProps) => <MaterialIcon name="save" className={className} filled />;
+export const ArrowRightIcon = ({ className }: IconProps) => <MaterialIcon name="arrow_forward" className={className} />;
+export const TargetIcon = ({ className }: IconProps) => <MaterialIcon name="target" className={className} />;
+export const MapIcon = ({ className }: IconProps) => <MaterialIcon name="map" className={className} />;
+export const CompassIcon = ({ className }: IconProps) => <MaterialIcon name="explore" className={className} />;
+export const FootprintsIcon = ({ className }: IconProps) => <MaterialIcon name="footprints" className={className} />;
+export const SendIcon = ({ className }: IconProps) => <MaterialIcon name="send" className={className} />;
+export const LinkIcon = ({ className }: IconProps) => <MaterialIcon name="link" className={className} />;
+export const SettingsIcon = ({ className }: IconProps) => <MaterialIcon name="settings" className={className} />;
+export const CalculatorIcon = ({ className }: IconProps) => <MaterialIcon name="calculate" className={className} />;
+export const DollarSignIcon = ({ className }: IconProps) => <MaterialIcon name="attach_money" className={className} />;
+export const SproutIcon = ({ className }: IconProps) => <MaterialIcon name="eco" className={className} />;
+export const KeyIcon = ({ className }: IconProps) => <MaterialIcon name="key" className={className} />;
+export const ShieldAlertIcon = ({ className }: IconProps) => <MaterialIcon name="shield_alert" className={className} />;
+export const ChevronRightIcon = ({ className }: IconProps) => <MaterialIcon name="chevron_right" className={className} />;
+export const MusicIcon = ({ className }: IconProps) => <MaterialIcon name="music_note" className={className} />;
+export const Volume2Icon = ({ className }: IconProps) => <MaterialIcon name="volume_up" className={className} />;
+export const VolumeXIcon = ({ className }: IconProps) => <MaterialIcon name="volume_off" className={className} />;
+export const ZapIcon = ({ className }: IconProps) => <MaterialIcon name="bolt" className={className} filled />;
+export const ClockIcon = ({ className }: IconProps) => <MaterialIcon name="schedule" className={className} />;
+export const WifiOffIcon = ({ className }: IconProps) => <MaterialIcon name="wifi_off" className={className} />;
+export const WifiIcon = ({ className }: IconProps) => <MaterialIcon name="wifi" className={className} />;
