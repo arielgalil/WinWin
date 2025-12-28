@@ -6,9 +6,9 @@
 - [x] Task: Optimize `public/favicon.svg` [f5e5c6b]
     - [x] Analyze the current `favicon.svg` to identify why it's 7.9MB (likely embedded data/metadata).
     - [x] Optimize/Simplify the SVG to reduce size below 2MB.
-- [ ] Task: Audit and Standardize PWA Assets
-    - [ ] Verify `public/pwa-192x192.png` and `public/pwa-512x512.png` exist and are correctly sized.
-    - [ ] Ensure a maskable icon is present.
+- [x] Task: Audit and Standardize PWA Assets [f5e5c6b]
+    - [x] Verify `public/pwa-192x192.png` and `public/pwa-512x512.png` exist and are correctly sized.
+    - [x] Ensure a maskable icon is present.
 - [ ] Task: Update Web Manifest and Vite Config
     - [ ] Update `manifest` in `vite.config.ts` (or `public/manifest.json`) to correctly reference all icon sizes.
     - [ ] Verify `workbox` configuration in `vite.config.ts`.
