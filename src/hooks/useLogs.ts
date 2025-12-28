@@ -26,6 +26,7 @@ export const useLogs = (campaignId: string | undefined) => {
     getNextPageParam: (lastPage, allPages) => 
       lastPage.length === 25 ? allPages.length * 25 : undefined,
     enabled: !!campaignId,
+    staleTime: 1000 * 30, // 30 seconds
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['logs', campaignId] });

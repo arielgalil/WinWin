@@ -1,7 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 
-export const useCampaignRole = (campaignId: string | undefined, userId: string | undefined) => {
+interface UseCampaignRoleOptions<T = string | null | undefined> {
+  select?: (data: string | null | undefined) => T;
+}
+
+export const useCampaignRole = <T = string | null | undefined>(
+  campaignId: string | undefined, 
+  userId: string | undefined,
+  options: UseCampaignRoleOptions<T> = {}
+) => {
+  const { select } = options;
   const { data: campaignRole, isLoading: isLoadingRole, isError, error } = useQuery({
     queryKey: ['role', campaignId, userId],
     queryFn: async () => {
@@ -29,10 +38,11 @@ export const useCampaignRole = (campaignId: string | undefined, userId: string |
     enabled: !!campaignId && !!userId,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
+    select: select as any,
   });
 
   return {
-    campaignRole,
+    campaignRole: campaignRole as T,
     isLoadingRole,
     isError,
     error

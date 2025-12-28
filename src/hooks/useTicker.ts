@@ -2,10 +2,18 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 import { TickerMessage } from '../types';
 
-export const useTicker = (campaignId: string | undefined) => {
+interface UseTickerOptions<T = TickerMessage[]> {
+  select?: (data: TickerMessage[]) => T;
+}
+
+export const useTicker = <T = TickerMessage[]>(
+  campaignId: string | undefined,
+  options: UseTickerOptions<T> = {}
+) => {
+  const { select } = options;
   const queryClient = useQueryClient();
 
-  const { data: tickerMessages = [], isLoading, isError, error } = useQuery({
+  const { data: tickerMessages = [] as any, isLoading, isError, error } = useQuery({
     queryKey: ['ticker', campaignId],
     queryFn: async () => {
       if (!campaignId) return [];
@@ -23,6 +31,7 @@ export const useTicker = (campaignId: string | undefined) => {
     },
     enabled: !!campaignId,
     staleTime: 1000 * 60 * 5,
+    select: select as any,
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['ticker', campaignId] });
@@ -47,7 +56,7 @@ export const useTicker = (campaignId: string | undefined) => {
   };
 
   return {
-    tickerMessages,
+    tickerMessages: tickerMessages as T,
     isLoading,
     isError,
     error,
