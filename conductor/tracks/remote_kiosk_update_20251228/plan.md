@@ -6,7 +6,7 @@ Set up the mechanism to capture update events and manage the update status.
 - [x] Task: Create a new hook `src/hooks/useAutoUpdate.ts` to manage the PWA update logic. 957493a
 - [x] Task: Implement Service Worker registration listeners (`onNeedRefresh`) within the hook. 957493a
 - [x] Task: Write unit tests for `useAutoUpdate` (mocking service worker events). 957493a
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Service Worker Integration & State' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Service Worker Integration & State' (Protocol in workflow.md) 957493a
 
 ## Phase 2: Idle Timer Logic [checkpoint: ]
 Implement the "wait-for-idle" logic before triggering the refresh.
@@ -14,7 +14,7 @@ Implement the "wait-for-idle" logic before triggering the refresh.
 - [x] Task: Add idle timer functionality to `useAutoUpdate.ts` using `setTimeout` and event listeners (mousemove, touchstart). 957493a
 - [x] Task: Implement the auto-refresh call (`window.location.reload()`) upon timer expiration. 957493a
 - [x] Task: Write tests to verify the timer resets on interaction and triggers after the idle period. 957493a
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Idle Timer Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Idle Timer Logic' (Protocol in workflow.md) 957493a
 
 ## Phase 3: Global Integration & Logging [checkpoint: ]
 Enable the mechanism globally and add monitoring.
@@ -22,10 +22,10 @@ Enable the mechanism globally and add monitoring.
 - [x] Task: Integrate `useAutoUpdate` hook into the root `App.tsx` or a global provider. 38404c4
 - [x] Task: Add descriptive logging for the update lifecycle (Detection -> Idle Wait -> Refresh). 38404c4
 - [x] Task: Verify that the mechanism doesn't interfere with existing PWA prompts (if any). 38404c4
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Global Integration & Logging' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Global Integration & Logging' (Protocol in workflow.md) 38404c4
 
 ## Phase 4: Final Verification [checkpoint: ]
 Ensure the end-to-end flow works in a production-like build.
 
-- [ ] Task: Perform a local build and simulate a service worker update to verify the auto-refresh.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md)
+- [x] Task: Perform a local build and simulate a service worker update to verify the auto-refresh. c72e55b
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md) c72e55b
