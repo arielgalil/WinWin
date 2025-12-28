@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useCompetitionData } from '../../hooks/useCompetitionData';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 
 const MotionDiv = motion.div as any;
 

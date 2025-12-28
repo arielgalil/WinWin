@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HashRouter } from 'react-router-dom';
 import { LanguageProvider } from './LanguageContext';
 import { AuthProvider } from './AuthContext';
-import { ThemeProvider } from './ThemeContext';
 import { ToastProvider } from '../hooks/useToast';
 
 // Senior Dev Note: Configured for long-running dashboard displays (TVs)
@@ -27,15 +26,13 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
     return (
         <QueryClientProvider client={queryClient}>
             <LanguageProvider>
-                <ThemeProvider>
-                    <AuthProvider>
-                        <ToastProvider>
-                            <HashRouter>
-                                {children}
-                            </HashRouter>
-                        </ToastProvider>
-                    </AuthProvider>
-                </ThemeProvider>
+                <AuthProvider>
+                    <ToastProvider>
+                        <HashRouter>
+                            {children}
+                        </HashRouter>
+                    </ToastProvider>
+                </AuthProvider>
             </LanguageProvider>
         </QueryClientProvider>
     );

@@ -16,7 +16,7 @@ import { useCompetitionData } from './hooks/useCompetitionData';
 import { useAuthPermissions } from './services/useAuthPermissions';
 import { useLanguage } from './hooks/useLanguage';
 import { isSuperUser } from './config';
-import { useTheme } from './contexts/ThemeContext';
+import { useTheme } from './hooks/useTheme';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
 

@@ -4,11 +4,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
-import { ThemeProvider } from '../../contexts/ThemeContext';
 import { ToastProvider } from '../../hooks/useToast';
 import * as sharingUtils from '../../utils/sharingUtils';
 
 // Mock dependencies
+vi.mock('../../hooks/useTheme', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: vi.fn(), setTheme: vi.fn() })
+}));
+
 vi.mock('../../hooks/useLanguage', () => ({
   useLanguage: () => ({ 
     t: (key: string) => key, 
@@ -96,13 +99,11 @@ describe('AdminPanel Sharing', () => {
   it('renders a share button in the header', () => {
     render(
       <BrowserRouter>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <AdminPanel {...defaultProps} />
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
       </BrowserRouter>
     );
     
@@ -115,13 +116,11 @@ describe('AdminPanel Sharing', () => {
     
     render(
       <BrowserRouter>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <AdminPanel {...defaultProps} />
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
       </BrowserRouter>
     );
     

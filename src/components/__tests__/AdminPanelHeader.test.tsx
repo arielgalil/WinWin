@@ -5,9 +5,12 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { ToastProvider } from '../../hooks/useToast';
-import { ThemeProvider } from '../../contexts/ThemeContext';
 
 // Mock dependencies
+vi.mock('../../hooks/useTheme', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: vi.fn(), setTheme: vi.fn() })
+}));
+
 vi.mock('../../hooks/useLanguage', () => ({
   useLanguage: () => ({ 
     t: (key: string) => key, 
@@ -82,13 +85,11 @@ describe('AdminPanel Header Improvements', () => {
   it('displays "מנהל תחרות" instead of "Administrator"', () => {
     render(
       <BrowserRouter>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <AdminPanel {...defaultProps} />
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
       </BrowserRouter>
     );
     // Should find Hebrew version
@@ -100,13 +101,11 @@ describe('AdminPanel Header Improvements', () => {
   it('displays the competition name instead of "Admin Console"', () => {
     render(
       <BrowserRouter>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <AdminPanel {...defaultProps} />
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
       </BrowserRouter>
     );
     // "תחרות בדיקה" comes from currentCampaign.name
@@ -117,13 +116,11 @@ describe('AdminPanel Header Improvements', () => {
   it('renders a non-clickable logo', () => {
     const { container } = render(
       <BrowserRouter>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <AdminPanel {...defaultProps} />
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <AdminPanel {...defaultProps} />
+          </LanguageProvider>
+        </ToastProvider>
       </BrowserRouter>
     );
     

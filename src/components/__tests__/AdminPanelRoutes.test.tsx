@@ -5,9 +5,12 @@ import React from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from '../../contexts/LanguageContext';
 import { ToastProvider } from '../../hooks/useToast';
-import { ThemeProvider } from '../../contexts/ThemeContext';
 
 // Mock dependencies
+vi.mock('../../hooks/useTheme', () => ({
+  useTheme: () => ({ theme: 'light', toggleTheme: vi.fn(), setTheme: vi.fn() })
+}));
+
 vi.mock('../../hooks/useLanguage', () => ({
   useLanguage: () => ({ 
     t: (key: string) => key, 
@@ -73,15 +76,13 @@ describe('AdminPanel Route Mapping', () => {
   it('maps legacy "school" tab to "settings"', () => {
     render(
       <MemoryRouter initialEntries={['/admin/test-slug/school']}>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <Routes>
-                <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
-              </Routes>
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <Routes>
+              <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
+            </Routes>
+          </LanguageProvider>
+        </ToastProvider>
       </MemoryRouter>
     );
     
@@ -92,15 +93,13 @@ describe('AdminPanel Route Mapping', () => {
   it('uses "settings" directly', () => {
     render(
       <MemoryRouter initialEntries={['/admin/test-slug/settings']}>
-        <ThemeProvider>
-          <ToastProvider>
-            <LanguageProvider>
-              <Routes>
-                <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
-              </Routes>
-            </LanguageProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <LanguageProvider>
+            <Routes>
+              <Route path="/admin/:slug/:tab" element={<AdminPanel {...defaultProps} />} />
+            </Routes>
+          </LanguageProvider>
+        </ToastProvider>
       </MemoryRouter>
     );
     

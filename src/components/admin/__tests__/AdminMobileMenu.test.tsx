@@ -13,7 +13,7 @@ vi.mock('../../../hooks/useCompetitionData', () => ({
 }));
 
 const mockToggleTheme = vi.fn();
-vi.mock('../../../contexts/ThemeContext', () => ({
+vi.mock('../../../hooks/useTheme', () => ({
   useTheme: () => ({ theme: 'light', toggleTheme: mockToggleTheme })
 }));
 

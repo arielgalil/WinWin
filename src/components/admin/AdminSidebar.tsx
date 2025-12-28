@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIcon, MoonIcon } from '../ui/Icons';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 
 interface AdminSidebarProps {
   visibleNavItems: any[];

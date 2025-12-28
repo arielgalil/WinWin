@@ -5,7 +5,9 @@ import { UsersManager } from '../admin/UsersManager';
 import { ClassesManager } from '../admin/ClassesManager';
 import { MessagesManager } from '../admin/MessagesManager';
 import { LanguageProvider } from '../../contexts/LanguageContext';
-import { ThemeProvider } from '../../contexts/ThemeContext';
+vi.mock('../../hooks/useTheme', () => ({
+    useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() })
+}));
 import { SaveNotificationProvider } from '../../contexts/SaveNotificationContext';
 import { ToastProvider } from '../../hooks/useToast';
 import { BrowserRouter } from 'react-router-dom';
@@ -35,7 +37,6 @@ vi.mock('../../supabaseClient', () => ({
 
 const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <BrowserRouter>
-    <ThemeProvider>
       <LanguageProvider>
         <SaveNotificationProvider>
           <ToastProvider>
@@ -43,7 +44,6 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
           </ToastProvider>
         </SaveNotificationProvider>
       </LanguageProvider>
-    </ThemeProvider>
   </BrowserRouter>
 );
 

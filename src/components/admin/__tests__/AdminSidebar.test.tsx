@@ -9,7 +9,7 @@ vi.mock('../../../hooks/useLanguage', () => ({
 }));
 
 const mockToggleTheme = vi.fn();
-vi.mock('../../../contexts/ThemeContext', () => ({
+vi.mock('../../../hooks/useTheme', () => ({
   useTheme: () => ({ theme: 'dark', toggleTheme: mockToggleTheme })
 }));
 
