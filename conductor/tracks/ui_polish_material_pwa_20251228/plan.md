@@ -9,9 +9,9 @@
 - [x] Task: Audit and Standardize PWA Assets [f5e5c6b]
     - [x] Verify `public/pwa-192x192.png` and `public/pwa-512x512.png` exist and are correctly sized.
     - [x] Ensure a maskable icon is present.
-- [ ] Task: Update Web Manifest and Vite Config
-    - [ ] Update `manifest` in `vite.config.ts` (or `public/manifest.json`) to correctly reference all icon sizes.
-    - [ ] Verify `workbox` configuration in `vite.config.ts`.
+- [x] Task: Update Web Manifest and Vite Config [1243907]
+    - [x] Update `manifest` in `vite.config.ts` (or `public/manifest.json`) to correctly reference all icon sizes.
+    - [x] Verify `workbox` configuration in `vite.config.ts`.
 - [ ] Task: Build Verification
     - [ ] Run `npm run build` to confirm the Workbox error is resolved.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: PWA & Asset Optimization' (Protocol in workflow.md)
