@@ -105,7 +105,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               {showCancel && (
                 <button
                   onClick={onCancel}
-                  className="flex-1 py-3 rounded-[var(--radius-main)] bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
+                  className="flex-1 py-3 rounded-[var(--radius-main)] bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
                 >
                   {finalCancelText}
                 </button>

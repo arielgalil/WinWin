@@ -27,9 +27,9 @@ describe('ConfirmationModal Hover States', () => {
     expect(confirmButton).toHaveClass('hover:bg-red-600');
   });
 
-  it('should have hover:bg-gray-100 on cancel button', () => {
+  it('should have hover:bg-gray-200 on cancel button', () => {
     render(<ConfirmationModal {...defaultProps} />);
     const cancelButton = screen.getByText('cancel');
-    expect(cancelButton).toHaveClass('hover:bg-gray-100');
+    expect(cancelButton).toHaveClass('hover:bg-gray-200');
   });
 });
