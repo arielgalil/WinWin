@@ -26,7 +26,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     competitionName,
     classes = []
 }) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
     const lastCompletedIndexRef = useRef<number>(-1);
     const prevScoreRef = useRef(totalScore);
@@ -176,20 +176,20 @@ const shoutoutMessage = useMemo(() => {
         if (!topGroups || topGroups.length === 0) return null;
 
         const names = topGroups.length > 1
-            ? `${topGroups.slice(0, -1).join(', ')} ו-${topGroups[topGroups.length - 1]}`
+            ? `${topGroups.slice(0, -1).join(', ')} ${language === 'he' ? 'ו-' : '& '}${topGroups[topGroups.length - 1]}`
             : topGroups[0];
 
         // Very short messages for top groups approaching goal
         const templates = [
-            `${names} בוערים!`,
-            `${names} מובילים!`,
-            `${names} קובעים!`,
-            `${names} מתקדמים!`,
-            `${names} מנצחים!`
+            t('groups_on_fire', language, { names }),
+            t('groups_leading', language, { names }),
+            t('groups_deciding', language, { names }),
+            t('groups_advancing', language, { names }),
+            t('groups_winning', language, { names })
         ];
 
         return templates[Math.floor(Math.random() * templates.length)];
-    }, [classes]);
+    }, [classes, language]);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -279,7 +279,7 @@ const shoutoutMessage = useMemo(() => {
                                 <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
                                     <AnimatedCounter value={percentDisplay} />
                                 </h3>
-                                <span className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-black text-white/90 pb-1"> משלב {displayIndex + 1}!</span>
+                                <span className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-black text-white/90 pb-1"> {t('from_stage', language, { stage: displayIndex + 1 })}</span>
 </div>
                         </div>
                     </div>
@@ -288,11 +288,11 @@ const shoutoutMessage = useMemo(() => {
                     <div className="flex flex-col justify-center items-start text-right">
                         {isCompleted && displayIndex === sortedGoals.length - 1 ? (
                             <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base font-black text-white drop-shadow-lg animate-bounce py-2" dir="rtl">
-                                הגעתם יחד לשיא! {celebrationEmoji}
+                                {t('reached_peak', language, { emoji: celebrationEmoji })}
                             </div>
                         ) : (
                             <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm font-black text-white/90 mb-1 brightness-125" dir="rtl">
-                                {t('more_points')} <span className="text-xs xs:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">{missingPoints.toLocaleString()}</span> {t('points_short')} ליעד!
+                                {t('more_points', language)} <span className="text-xs xs:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">{missingPoints.toLocaleString()}</span> {t('points_short', language)} {t('to_label', language)}!
                             </div>
                         )}
 

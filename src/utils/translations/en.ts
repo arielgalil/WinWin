@@ -25,6 +25,40 @@ export const en = {
     logs_copied: "Logs copied to clipboard!",
     debug_tip: "Tip: If there's a red error when updating points, copy the logs and send them for fixing.",
     copied_to_clipboard: "Copied to clipboard! 📋",
+    last_saved: "Last saved",
+    not_saved_recently: "Not saved recently",
+    saved_at: "Saved at %{time}",
+    today: "Today",
+    yesterday: "Yesterday",
+    file_empty_error: "The file is empty",
+    all_campaigns: "All Campaigns",
+    dashboard: "Dashboard",
+    admin_panel: "Admin Panel",
+    super_admin_title: "🌱 Sprout Competition System - Super Admin Panel",
+
+    // Sharing
+    share_title: "🌱 Sprout Competition - %{institution} - %{campaign}",
+    share_leaderboard: "Leaderboard 🏆",
+    share_scoring: "Scoring Interface 🧮",
+    share_admin: "Management ⚙️",
+    share_closing: "Have an %{adj} and growing competition!",
+    share_adj_1: "empowering",
+    share_adj_2: "fruitful",
+    share_adj_3: "full of appreciation",
+
+    // Mission Meter
+    groups_on_fire: "%{names} are on fire!",
+    groups_leading: "%{names} are leading!",
+    groups_deciding: "%{names} are setting the pace!",
+    groups_advancing: "%{names} are advancing!",
+    groups_winning: "%{names} are winning!",
+    from_stage: "From stage %{stage}!",
+    reached_peak: "You reached the peak together! %{emoji}",
+
+    // Excel
+    col_student_name: "Student Name",
+    col_grade: "Grade",
+    col_parallel: "Class Number",
 
     // Navigation / Tabs
     tab_points: "Points & Class Status",

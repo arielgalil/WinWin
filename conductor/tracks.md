@@ -46,5 +46,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: UI Polish: Modal button hover effects, Material Icons migration, and PWA build fix
-*Link: [./conductor/tracks/ui_polish_material_pwa_20251228/](./conductor/tracks/ui_polish_material_pwa_20251228/)*
+## [~] Track: Bug Fix: UI Regressions (Crash, Icons, Animations)
+*Link: [./conductor/tracks/bugfix_ui_regression_20251228/](./conductor/tracks/bugfix_ui_regression_20251228/)*
+

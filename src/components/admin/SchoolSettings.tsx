@@ -52,6 +52,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     const [newPresetLabel, setNewPresetLabel] = useState('');
     const [newPresetValue, setNewPresetValue] = useState('');
 
+    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
     // Sync props to state
     useEffect(() => {
         if (settings && Object.keys(settings).length > 0) {
@@ -63,6 +65,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     const updateForm = (updates: Partial<AppSettings>) => {
         setFormData(prev => ({ ...prev, ...updates }));
         setHasChanges(true);
+        setMessage(null);
     };
 
     const handleSaveSettings = async (e?: React.FormEvent) => {
@@ -77,6 +80,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         }
 
         setIsSaving(true);
+        setMessage(null);
 
         try {
             if (!window.navigator.onLine) {
@@ -110,17 +114,18 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
             if (error) throw error;
 
-            showToast(t('settings_saved_success'), 'success');
+            setMessage({ type: 'success', text: t('settings_saved_success') });
             setHasChanges(false);
             triggerSave('settings');
 
             if (onRefresh) {
                 await onRefresh();
             }
+            setTimeout(() => setMessage(null), 3000);
 
         } catch (err: any) {
             console.error("Critical Save Error:", err);
-            showToast(t('save_error', { message: err.message || t('run_sql_code_check') }), 'error');
+            setMessage({ type: 'error', text: t('save_error', { message: err.message || t('run_sql_code_check') }) });
         } finally {
             setIsSaving(false);
         }
@@ -493,7 +498,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
 
             </form>
 
-            {hasChanges && (
+            {(hasChanges || message) && (
                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] max-w-md w-full px-4 animate-in slide-in-from-bottom-10">
                     <AnimatePresence>
                         <MotionDiv
@@ -502,14 +507,24 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             exit={{ y: 20, opacity: 0 }}
                             className="bg-[var(--bg-card)] text-[var(--text-main)] p-3 rounded-[var(--radius-main)] shadow-2xl flex items-center justify-between gap-4 border border-[var(--border-main)]"
                         >
-                            <span className="text-[var(--fs-base)] font-[var(--fw-bold)] pl-2">{t('unsaved_changes')}</span>
+                            <div className="flex-1 px-2">
+                                {message ? (
+                                    <span className={`text-[var(--fs-base)] font-[var(--fw-bold)] ${message.type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                        {message.text}
+                                    </span>
+                                ) : (
+                                    <span className="text-[var(--fs-base)] font-[var(--fw-bold)]">{t('unsaved_changes')}</span>
+                                )}
+                            </div>
                             <div className="flex gap-2">
-                                <button
-                                    onClick={() => setFormData(settings)}
-                                    className="px-4 py-2 rounded-[var(--radius-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-muted)]"
-                                >
-                                    {t('cancel' as any)}
-                                </button>
+                                {!message && (
+                                    <button
+                                        onClick={() => setFormData(settings)}
+                                        className="px-4 py-2 rounded-[var(--radius-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-muted)]"
+                                    >
+                                        {t('cancel' as any)}
+                                    </button>
+                                )}
                                 <button
                                     onClick={handleSaveSettings}
                                     disabled={isSaving}

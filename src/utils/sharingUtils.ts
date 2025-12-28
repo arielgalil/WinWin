@@ -1,17 +1,13 @@
 import { Campaign } from '../types';
+import { t, Language } from './i18n';
 
 interface ShareMessageOptions {
   role?: string | null;
   campaign: Campaign;
   institutionName: string;
   origin: string;
+  language?: Language;
 }
-
-const encouragingClosings = [
-  'מעצימה',
-  'פוריה',
-  'מלאת פרגונים'
-];
 
 /**
  * Generates a role-based message for sharing the competition links.
@@ -23,7 +19,8 @@ export const generateRoleBasedShareMessage = ({
   role,
   campaign,
   institutionName,
-  origin
+  origin,
+  language = 'he'
 }: ShareMessageOptions): string => {
   const normalizedRole = role?.toLowerCase().trim();
   const isAdmin = normalizedRole === 'admin' || normalizedRole === 'superuser' || normalizedRole === 'super_user' || normalizedRole === 'competition_admin';
@@ -32,17 +29,22 @@ export const generateRoleBasedShareMessage = ({
   const scoringLink = `${origin}/#/vote/${campaign.slug}`;
   const adminLink = `${origin}/#/admin/${campaign.slug}`;
 
-  const closing = encouragingClosings[Math.floor(Math.random() * encouragingClosings.length)];
+  const adjs = [
+    t('share_adj_1', language),
+    t('share_adj_2', language),
+    t('share_adj_3', language)
+  ];
+  const closing = adjs[Math.floor(Math.random() * adjs.length)];
 
-  let message = `🌱 תחרות מצמיחה - ${institutionName} - ${campaign.name}\n`;
-  message += `* לוח התוצאות 🏆 - ${dashboardLink}\n`;
-  message += `* הזנת ניקוד 🧮 - ${scoringLink}\n`;
+  let message = t('share_title', language, { institution: institutionName, campaign: campaign.name }) + '\n';
+  message += `* ${t('share_leaderboard', language)} - ${dashboardLink}\n`;
+  message += `* ${t('share_scoring', language)} - ${scoringLink}\n`;
 
   if (isAdmin) {
-    message += `* ניהול תחרות ⚙️ - ${adminLink}\n`;
+    message += `* ${t('share_admin', language)} - ${adminLink}\n`;
   }
 
-  message += `שתהיה תחרות ${closing} ומצמיחה!`;
+  message += t('share_closing', language, { adj: closing });
 
   return message;
 };

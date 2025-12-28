@@ -204,7 +204,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 if (!data || data.length < 5) throw new Error(t('invalid_excel_file'));
 
                 let headerRowIndex = -1;
-                const requiredCols = ["שם התלמיד", "שכבה"];
+                const colNameStudent = t('col_student_name');
+                const colNameGrade = t('col_grade');
+                const colNameParallel = t('col_parallel');
+                const requiredCols = [colNameStudent, colNameGrade];
 
                 for (let i = 0; i < Math.min(20, data.length); i++) {
                     const rowStr = JSON.stringify(data[i]);
@@ -222,7 +225,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                     if (typeof cell === 'string') colMap[cell.trim()] = idx;
                 });
 
-                if (colMap['שם התלמיד'] === undefined || colMap['שכבה'] === undefined) throw new Error(t('missing_cols_error'));
+                if (colMap[colNameStudent] === undefined || colMap[colNameGrade] === undefined) throw new Error(t('missing_cols_error'));
 
                 setImportStatus(t('header_detected_row', { row: headerRowIndex + 1 }));
 
@@ -230,9 +233,9 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 for (let i = headerRowIndex + 1; i < data.length; i++) {
                     const row = data[i];
                     if (!row || row.length === 0) continue;
-                    const name = row[colMap['שם התלמיד']];
-                    const grade = row[colMap['שכבה']];
-                    const parallel = colMap['מקבילה'] !== undefined ? row[colMap['מקבילה']] : '';
+                    const name = row[colMap[colNameStudent]];
+                    const grade = row[colMap[colNameGrade]];
+                    const parallel = colMap[colNameParallel] !== undefined ? row[colMap[colNameParallel]] : '';
                     if (name && grade) {
                         const groupName = `${grade}${parallel || ''}`.trim();
                         if (!groupsToCreate.has(groupName)) groupsToCreate.set(groupName, []);

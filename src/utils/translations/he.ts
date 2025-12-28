@@ -28,6 +28,40 @@ export const he = {
     logs_copied: "הלוגים הועתקו ללוח!",
     debug_tip: "טיפ: אם יש שגיאה אדומה בעדכון ניקוד, העתק את הלוגיקה ושלח אותה לתיקון.",
     copied_to_clipboard: "הועתק ללוח! 📋",
+    last_saved: "נשמר לאחרונה",
+    not_saved_recently: "לא נשמר לאחרונה",
+    saved_at: "נשמר ב-%{time}",
+    today: "היום",
+    yesterday: "אתמול",
+    file_empty_error: "הקובץ ריק",
+    all_campaigns: "כל התחרויות",
+    dashboard: "לוח תחרות",
+    admin_panel: "ניהול תחרות",
+    super_admin_title: "🌱 מערכת תחרויות מצמיחה - פאנל משתמש על",
+    
+    // Sharing
+    share_title: "🌱 תחרות מצמיחה - %{institution} - %{campaign}",
+    share_leaderboard: "לוח התוצאות 🏆",
+    share_scoring: "הזנת ניקוד 🧮",
+    share_admin: "ניהול תחרות ⚙️",
+    share_closing: "שתהיה תחרות %{adj} ומצמיחה!",
+    share_adj_1: "מעצימה",
+    share_adj_2: "פוריה",
+    share_adj_3: "מלאת פרגונים",
+
+    // Mission Meter
+    groups_on_fire: "%{names} בוערים!",
+    groups_leading: "%{names} מובילים!",
+    groups_deciding: "%{names} קובעים!",
+    groups_advancing: "%{names} מתקדמים!",
+    groups_winning: "%{names} מנצחים!",
+    from_stage: "משלב %{stage}!",
+    reached_peak: "הגעתם יחד לשיא! %{emoji}",
+
+    // Excel
+    col_student_name: "שם התלמיד",
+    col_grade: "שכבה",
+    col_parallel: "מקבילה",
     
 // Navigation / Tabs
     tab_points: "ניקוד ומצב קבוצתי",

@@ -305,7 +305,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                     className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                                                 >
                                                     <SproutIcon className="w-3 h-3" />
-                                                    כל התחרויות
+                                                    {t('all_campaigns')}
                                                 </button>
 
                                                 <div className="border-t border-white/10 my-1" />
@@ -317,7 +317,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                                                     >
                                                         <TrophyIcon className="w-3 h-3" />
-                                                        לוח תחרות
+                                                        {t('dashboard')}
                                                     </button>
                                                 )}
 
@@ -339,7 +339,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                                                     >
                                                         <SettingsIcon className="w-3 h-3" />
-                                                        ניהול תחרות
+                                                        {t('admin_panel')}
                                                     </button>
                                                 )}
 

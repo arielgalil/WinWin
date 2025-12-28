@@ -63,7 +63,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                     className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                 >
                     <span className="w-3 h-3 flex items-center justify-center">🌱</span>
-                    כל התחרויות
+                    {t('all_campaigns')}
                 </button>
 
                 <div className="border-t border-white/10 my-1" />
@@ -75,7 +75,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">🏆</span>
-                        לוח תחרות
+                        {t('dashboard')}
                     </button>
                 )}
 
@@ -97,7 +97,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                         className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">⚙️</span>
-                        ניהול תחרות
+                        {t('admin_panel')}
                     </button>
                 )}
 

@@ -128,12 +128,13 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     if (!campaign) return;
     
     try {
-      const message = generateRoleBasedShareMessage({
-        role: campaignRole || user.role,
-        campaign: campaign,
-        institutionName: settings?.school_name || '',
-        origin: window.location.origin
-      });
+    const message = generateRoleBasedShareMessage({
+      role: campaignRole,
+      campaign: currentCampaign,
+      institutionName: settings.school_name || t('educational_institution'),
+      origin: window.location.origin,
+      language: language
+    });
       
       await navigator.clipboard.writeText(message);
       showToast(t('copied_to_clipboard'), 'success');

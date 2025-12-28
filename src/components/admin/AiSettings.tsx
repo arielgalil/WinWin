@@ -243,12 +243,12 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
             {createPortal(
                 <AnimatePresence>
                     {(hasChanges || message) && (
-                        <div className={`fixed bottom-10 z-[200] w-auto pointer-events-none ${isRTL ? 'right-10 md:right-16' : 'left-10 md:left-16'}`}>
+                        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] max-w-md w-full px-4 animate-in slide-in-from-bottom-10 pointer-events-none">
                             <MotionDiv
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 exit={{ y: 20, opacity: 0 }}
-                                className="bg-[var(--bg-card)] border border-[var(--border-main)] p-2 rounded-xl shadow-2xl flex items-center gap-4 pointer-events-auto min-w-[300px]"
+                                className="bg-[var(--bg-card)] border border-[var(--border-main)] p-2 rounded-xl shadow-2xl flex items-center gap-4 pointer-events-auto w-full"
                             >
                                 <div className="flex-1 px-4">
                                     {message ? (

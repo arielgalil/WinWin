@@ -1,4 +1,6 @@
-export const formatLastSaved = (dateString: string | null, language: 'he' | 'en' = 'he'): string => {
+import { t, Language } from './i18n';
+
+export const formatLastSaved = (dateString: string | null, language: Language = 'he'): string => {
   if (!dateString) return '';
   
   const date = new Date(dateString);
@@ -10,9 +12,9 @@ export const formatLastSaved = (dateString: string | null, language: 'he' | 'en'
   
   let datePart: string;
   if (inputDate.getTime() === today.getTime()) {
-    datePart = language === 'he' ? 'היום' : 'Today';
+    datePart = t('today', language);
   } else if (inputDate.getTime() === yesterday.getTime()) {
-    datePart = language === 'he' ? 'אתמול' : 'Yesterday';
+    datePart = t('yesterday', language);
   } else {
     datePart = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
   }
