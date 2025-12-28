@@ -16,11 +16,11 @@ export const FormattedNumber: React.FC<FormattedNumberProps> = ({ value, classNa
   const showMinus = isNegative;
 
   // Render format: [Sign][Number] inside an LTR container.
-  // This ensures standard math notation (-100) even in RTL layout.
+  // This ensures standard math notation (-100) regardless of page direction.
   
   return (
-    <span className={`inline-block font-mono tracking-tight ${className}`} dir="rtl">
-      {absVal}{showMinus ? '-' : (showPlus ? '+' : '')}
+    <span className={`inline-block font-mono tracking-tight ${className}`} dir="ltr">
+      {showMinus ? '-' : (showPlus ? '+' : '')}{absVal}
     </span>
   );
 };

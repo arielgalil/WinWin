@@ -59,13 +59,13 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                                 <select
                                     value={selectedClassId}
                                     onChange={(e) => setSelectedClassId(e.target.value)}
-                                    className="block w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-lg font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-[var(--bg-hover)]"
+                                    className="block w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-lg font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-[var(--bg-hover)] ltr:pr-10 rtl:pl-10"
                                 >
                                     {[...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')).map(c => (
                                         <option key={c.id} value={c.id} className="bg-[var(--bg-card)] text-[var(--text-main)]">{c.name}</option>
                                     ))}
                                 </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)]">
+                                <div className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] ltr:right-3 rtl:left-3">
                                     ▼
                                 </div>
                             </div>
