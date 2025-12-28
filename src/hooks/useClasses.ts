@@ -2,15 +2,40 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient';
 import { ClassRoom } from '../types';
 
-export const useClasses = (campaignId: string | undefined) => {
-  const { data: classes = [] } = useQuery({
+interface UseClassesOptions<T = ClassRoom[]> {
+  select?: (data: ClassRoom[]) => T;
+}
+
+export const useClasses = <T = ClassRoom[]>(
+  campaignId: string | undefined, 
+  options: UseClassesOptions<T> = {}
+) => {
+  const { select } = options;
+
+  const { data: classes = [] as any, isLoading, isError, error } = useQuery({
     queryKey: ['classes', campaignId],
     queryFn: async () => {
-      const { data: clsData, error: clsError } = await supabase.from('classes').select('*').eq('campaign_id', campaignId);
-      if (clsError) console.error("Classes fetch error:", clsError);
+      if (!campaignId) return [];
+
+      const { data: clsData, error: clsError } = await supabase
+        .from('classes')
+        .select('*')
+        .eq('campaign_id', campaignId);
       
-      const { data: stuData, error: stuError } = await supabase.from('students').select('*').eq('campaign_id', campaignId);
-      if (stuError) console.error("Students fetch error:", stuError);
+      if (clsError) {
+        console.error("Classes fetch error:", clsError);
+        throw clsError;
+      }
+      
+      const { data: stuData, error: stuError } = await supabase
+        .from('students')
+        .select('*')
+        .eq('campaign_id', campaignId);
+      
+      if (stuError) {
+        console.error("Students fetch error:", stuError);
+        throw stuError;
+      }
 
       return (clsData || []).map(cls => ({ 
         ...cls, 
@@ -18,9 +43,15 @@ export const useClasses = (campaignId: string | undefined) => {
       })) as ClassRoom[];
     },
     enabled: !!campaignId,
-    refetchInterval: 1000 * 15, // 15 seconds (reduced from 3 seconds)
-    staleTime: 1000 * 10, // 10 seconds
+    refetchInterval: 1000 * 15,
+    staleTime: 1000 * 10,
+    select: select as any,
   });
 
-  return { classes };
+  return { 
+    classes: classes as T,
+    isLoading,
+    isError,
+    error
+  };
 };
