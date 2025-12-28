@@ -1,12 +1,16 @@
 import React, { useState, useMemo, Suspense } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
-import { ClassRoom, UserProfile, AppSettings, TickerMessage } from '../types';
+import { UserProfile, TickerMessage } from '../types';
 import { SettingsIcon, UsersIcon, TargetIcon, RefreshIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './ui/Logo';
 import { AdminSidebar } from './admin/AdminSidebar';
 import { AdminMobileMenu } from './admin/AdminMobileMenu';
-import { useCompetitionData } from '../hooks/useCompetitionData';
+import { useCampaign } from '../hooks/useCampaign';
+import { useClasses } from '../hooks/useClasses';
+import { useTicker } from '../hooks/useTicker';
+import { useLogs } from '../hooks/useLogs';
+import { useCompetitionMutations } from '../hooks/useCompetitionMutations';
 import { FrozenOverlay } from './ui/FrozenOverlay';
 import { isAdmin as checkIsAdmin, isSuperUser as checkIsSuperUser } from '../config';
 import { VersionFooter } from './ui/VersionFooter';
@@ -40,11 +44,7 @@ const preloadComponent = (importFunc: () => Promise<any>) => {
 
 interface AdminPanelProps {
   user: UserProfile;
-  classes: ClassRoom[];
-  settings: AppSettings;
-  onAddPoints: (payload: any) => Promise<any>;
   onLogout: () => void;
-  onRefreshData: () => void;
   onViewDashboard: () => void;
   isSuperAdmin?: boolean;
   initialTab?: 'points' | 'settings';
@@ -64,7 +64,7 @@ const LoadingTab = () => {
 };
 
 const AdminPanelInner: React.FC<AdminPanelProps> = ({
-  user, classes, settings, onLogout, onViewDashboard, isSuperAdmin, initialTab, campaignRole
+  user, onLogout, onViewDashboard, isSuperAdmin, initialTab, campaignRole
 }) => {
   const { t, language } = useLanguage();
   const { showToast } = useToast();
@@ -72,6 +72,12 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const navigate = useNavigate();
   const { notifications, dismiss } = useSaveNotification();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { campaign, settings } = useCampaign();
+  const { classes } = useClasses(campaign?.id);
+  const { tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage } = useTicker(campaign?.id);
+  const { logs, fetchNextPage: loadMoreLogs } = useLogs(campaign?.id);
+  const { deleteLog, updateLog, updateClassTarget, updateSettingsGoals, updateTabTimestamp, refreshData } = useCompetitionMutations(campaign?.id);
 
   const isAdmin = checkIsAdmin(user.role, campaignRole);
   const isSuper = checkIsSuperUser(user.role) || checkIsSuperUser(campaignRole);
@@ -86,13 +92,12 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const activeNotification = notifications.get(activeTab);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { logs, loadMoreLogs, deleteLog, updateLog, currentCampaign, updateClassTarget, updateSettingsGoals, updateTabTimestamp, refreshData, tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage } = useCompetitionData();
 
   const handleUpdateTickerMessage = async (id: string, updates: Partial<TickerMessage>) => {
     await updateTickerMessage({ id, ...updates });
   };
 
-  const totalInstitutionScore = useMemo(() => classes.reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
+  const totalInstitutionScore = useMemo(() => (classes || []).reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
 
   const handleTabChange = (tab: TabType) => {
     navigate(`/admin/${slug}/${tab}`);
@@ -120,13 +125,13 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   };
 
   const handleShare = async () => {
-    if (!currentCampaign) return;
+    if (!campaign) return;
     
     try {
       const message = generateRoleBasedShareMessage({
         role: campaignRole || user.role,
-        campaign: currentCampaign,
-        institutionName: settings.school_name,
+        campaign: campaign,
+        institutionName: settings?.school_name || '',
         origin: window.location.origin
       });
       
@@ -165,9 +170,11 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     return true;
   });
 
+  if (!settings || !campaign) return <LoadingTab />;
+
   return (
     <div className="relative h-screen w-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-200 overflow-hidden">
-      <FrozenOverlay isFrozen={!currentCampaign?.is_active && !isSuperAdmin} />
+      <FrozenOverlay isFrozen={!campaign?.is_active && !isSuperAdmin} />
       <div className="flex flex-col h-full w-full overflow-hidden relative z-10 admin-view bg-[var(--bg-page)]">
         <AdminMobileMenu
           isOpen={isMobileMenuOpen}
@@ -191,7 +198,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
             </div>
             <div className="hidden sm:block">
               <h1 className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)] leading-none tracking-tight">{settings.school_name}</h1>
-              <p className="text-[var(--fs-sm)] text-[var(--text-muted)] font-[var(--fw-medium)] tracking-widest uppercase mt-1 opacity-80">{currentCampaign?.name || 'Admin Console'}</p>
+              <p className="text-[var(--fs-sm)] text-[var(--text-muted)] font-[var(--fw-medium)] tracking-widest uppercase mt-1 opacity-80">{campaign?.name || 'Admin Console'}</p>
             </div>
           </div>
 
@@ -299,20 +306,20 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                           <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
                           <MyClassStatus
                             classId={user.class_id || (classes.length > 0 ? classes[0].id : '')}
-                            classes={classes}
+                            classes={classes || []}
                             isAdmin={isAdmin}
                           />
                         </div>
                       )}
                       {activeTab === 'goals' && isAdmin && (
-                        <GoalsManagement settings={settings} classes={classes} totalInstitutionScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals as any} onUpdateClassTarget={updateClassTarget as any} />
+                        <GoalsManagement settings={settings} classes={classes || []} totalInstitutionScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals as any} onUpdateClassTarget={updateClassTarget as any} />
                       )}
 
                       {activeTab === 'data-management' && isAdmin && (
                         <div className="space-y-8">
-                          <UsersManager classes={classes} currentCampaign={currentCampaign} currentUser={user} onRefresh={refreshData as any} settings={settings} onSave={() => updateTabTimestamp('users')} />
-                          <ClassesManager classes={classes} settings={settings} user={user} onRefresh={refreshData as any} onSave={() => updateTabTimestamp('classes')} />
-                          <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} />
+                          <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData as any} settings={settings} onSave={() => updateTabTimestamp('users')} />
+                          <ClassesManager classes={classes || []} settings={settings} user={user} onRefresh={refreshData as any} onSave={() => updateTabTimestamp('classes')} />
+                          <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData as any} />
                         </div>
                       )}
                       {activeTab === 'logs' && (

@@ -3,9 +3,9 @@ import React, { useMemo, memo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MedalIcon, TrendUpIcon, StarIcon } from '../ui/Icons';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
-import { useCompetitionData } from '../../hooks/useCompetitionData';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
 import { useLanguage } from '../../hooks/useLanguage';
+import { AppSettings } from '../../types';
 
 const MotionDiv = motion.div as any;
 
@@ -23,11 +23,11 @@ interface EnrichedStudent {
 interface StudentLeaderboardProps {
     topStudents: EnrichedStudent[];
     arenaStudents: EnrichedStudent[];
+    settings: AppSettings;
 }
 
-export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ topStudents, arenaStudents }) => {
+export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ topStudents, arenaStudents, settings }) => {
     const { t } = useLanguage();
-    const { settings } = useCompetitionData();
     const [activeTab, setActiveTab] = useState<'momentum' | 'top'>('momentum');
     const [isPaused, setIsPaused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);

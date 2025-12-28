@@ -1,10 +1,12 @@
 import { useAuth } from '../hooks/useAuth';
-import { useCompetitionData } from '../hooks/useCompetitionData';
+import { useCampaign } from '../hooks/useCampaign';
+import { useCampaignRole } from '../hooks/useCampaignRole';
 import { isSuperUser } from '../config';
 
 export const useAuthPermissions = () => {
     const { user } = useAuth();
-    const { campaignRole } = useCompetitionData();
+    const { campaign } = useCampaign();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
 
     // Enhanced security: Explicit role checking with fallback to deny
     const userRole = user?.role?.toLowerCase().trim();

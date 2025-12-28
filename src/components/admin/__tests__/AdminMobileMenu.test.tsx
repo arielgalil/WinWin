@@ -8,10 +8,6 @@ vi.mock('../../../hooks/useLanguage', () => ({
   useLanguage: () => ({ t: (key: string) => key, dir: 'rtl' })
 }));
 
-vi.mock('../../../hooks/useCompetitionData', () => ({
-  useCompetitionData: () => ({ campaignRole: 'admin' })
-}));
-
 const mockToggleTheme = vi.fn();
 vi.mock('../../../hooks/useTheme', () => ({
   useTheme: () => ({ theme: 'light', toggleTheme: mockToggleTheme })

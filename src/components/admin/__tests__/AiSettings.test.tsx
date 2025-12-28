@@ -4,13 +4,6 @@ import { vi, describe, it, expect } from 'vitest';
 import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 
-// Mock dependencies
-vi.mock('../../../hooks/useCompetitionData', () => ({
-  useCompetitionData: () => ({
-    updateSettings: vi.fn(),
-  }),
-}));
-
 describe('AiSettings', () => {
   it('renders without crashing', () => {
     render(

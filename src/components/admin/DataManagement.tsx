@@ -3,7 +3,6 @@ import { AppSettings } from '../../types';
 import { DatabaseIcon, DownloadIcon, UploadIcon, AlertIcon, CheckIcon, RefreshIcon, UsersIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase } from '../../supabaseClient';
-import { useCompetitionData } from '../../hooks/useCompetitionData';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
@@ -12,11 +11,11 @@ import { useConfirmation } from '../../hooks/useConfirmation';
 interface DataManagementProps {
     settings: AppSettings;
     onSave?: () => Promise<void>;
+    onRefresh: () => Promise<void>;
 }
 
-export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave }) => {
+export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave, onRefresh }) => {
     const { t } = useLanguage();
-    const { refreshData } = useCompetitionData();
     const { triggerSave } = useSaveNotification();
 
     const [isExporting, setIsExporting] = useState(false);
@@ -168,7 +167,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                     triggerSave('data-management');
                     if (onSave) await onSave();
                     setStatusMsg({ type: 'success', text: t('reset_success') });
-                    refreshData();
+                    onRefresh();
                 } catch (err: any) {
                     setStatusMsg({ type: 'error', text: t('reset_error', { error: err.message }) });
                 } finally {

@@ -1,6 +1,5 @@
-
 import React, { useMemo, useState } from 'react';
-import { ClassRoom, AppSettings, TickerMessage, UserProfile } from '../types';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { Podium } from './dashboard/Podium';
 import { ClassTicker } from './dashboard/ClassTicker';
@@ -15,44 +14,42 @@ import { calculateClassStats, calculateStudentStats } from '../utils/rankingUtil
 import { ShareableLeaderboard } from './dashboard/ShareableLeaderboard';
 import { VersionFooter } from './ui/VersionFooter';
 import { DashboardErrorBoundary } from './ui/ErrorBoundaries';
+import { useCampaign } from '../hooks/useCampaign';
+import { useClasses } from '../hooks/useClasses';
+import { useTicker } from '../hooks/useTicker';
+import { useCompetitionMutations } from '../hooks/useCompetitionMutations';
+import { useAuth } from '../hooks/useAuth';
+import { useCampaignRole } from '../hooks/useCampaignRole';
+import { useLanguage } from '../hooks/useLanguage';
+import { isSuperUser as checkIsSuperUser } from '../config';
 
-interface DashboardProps {
-    classes: ClassRoom[];
-    commentary: string;
-    tickerMessages: TickerMessage[];
-    settings: AppSettings;
-    onLoginClick: () => void;
-    user?: UserProfile | null;
-    userRole?: 'admin' | 'teacher' | 'superuser' | null;
-    isSuperUser?: boolean;
-    onSuperUserClick?: () => void;
-    onSwitchCampaign?: () => void;
-    isCampaignActive?: boolean;
-    onManagePoints?: () => void;
-    onManageSchool?: () => void;
-    onUpdateCommentary?: (text: string) => void;
-}
+export const Dashboard: React.FC = () => {
+    const { campaign, settings } = useCampaign();
+    const { classes } = useClasses(campaign?.id);
+    const { tickerMessages } = useTicker(campaign?.id);
+    const { updateCommentary } = useCompetitionMutations(campaign?.id);
+    const { user } = useAuth();
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+    const { t } = useLanguage();
+    const navigate = useNavigate();
+    const { slug } = useParams();
 
-export const Dashboard: React.FC<DashboardProps> = ({
-    classes,
-    commentary,
-    tickerMessages,
-    settings,
-    isSuperUser,
-    isCampaignActive = true,
-    onUpdateCommentary
-}) => {
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
-        calculateClassStats(classes),
+        calculateClassStats(classes || []),
         [classes]);
 
     const { studentsWithStats, top10Students, arenaStudents } = useMemo(() =>
-        calculateStudentStats(classes),
+        calculateStudentStats(classes || []),
         [classes]);
 
+    if (!settings || !campaign) return null;
+
+    const isSuperUser = checkIsSuperUser(user?.role);
+    const isCampaignActive = campaign.is_active;
     const isFrozen = (!isCampaignActive || !!settings.is_frozen) && !isSuperUser;
+    const commentary = settings.current_commentary || '';
 
     const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
@@ -61,10 +58,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
         settings.goals_config || [],
         settings,
         isFrozen,
-        onUpdateCommentary
+        updateCommentary
     );
-
-
 
     return (
         <DashboardErrorBoundary>
@@ -115,7 +110,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 legacyTargetScore={settings.target_score}
                                 legacyImageUrl={settings.logo_url}
                                 competitionName={settings.competition_name}
-                                classes={classes}
+                                classes={classes || []}
                             />
                         </div>
 
@@ -123,6 +118,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <StudentLeaderboard
                                 topStudents={top10Students}
                                 arenaStudents={arenaStudents}
+                                settings={settings}
                             />
                         </div>
 
@@ -134,9 +130,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                     </div>
                 </div>
-                <VersionFooter musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }} />
+                <VersionFooter 
+                    musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }} 
+                    onAdminClick={() => navigate(`/login/${slug}`)}
+                />
             </div>
                 </GradientBackground>
-            </DashboardErrorBoundary>
-        );
+        </DashboardErrorBoundary>
+    );
 };

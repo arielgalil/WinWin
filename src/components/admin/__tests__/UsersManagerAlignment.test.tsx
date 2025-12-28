@@ -10,10 +10,6 @@ vi.mock('../../../hooks/useLanguage', () => ({
   useLanguage: () => ({ t: (key: string) => key, language: 'he', dir: 'rtl' })
 }));
 
-vi.mock('../../../hooks/useCompetitionData', () => ({
-  useCompetitionData: () => ({ campaignRole: 'admin' })
-}));
-
 vi.mock('../../../hooks/useToast', () => ({
   useToast: () => ({ showToast: vi.fn() })
 }));

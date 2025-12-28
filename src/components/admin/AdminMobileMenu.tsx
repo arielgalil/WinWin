@@ -4,7 +4,6 @@ import { MenuIcon, XIcon, TrophyIcon, RefreshIcon, LogoutIcon, PauseIcon, SunIco
 import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useCompetitionData } from '../../hooks/useCompetitionData';
 import { useTheme } from '../../hooks/useTheme';
 
 const MotionDiv = motion.div as any;
@@ -46,8 +45,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
 }) => {
   const { t, dir } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { campaignRole: hookRole } = useCompetitionData();
-  const campaignRole = propRole || hookRole;
+  const campaignRole = propRole;
   const isAnySuperUser = isSuperUser(user.role) || isSuperUser(campaignRole);
   const isRTL = dir === 'rtl';
 

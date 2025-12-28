@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthPermissions } from '../../services/useAuthPermissions';
-import { useCompetitionData } from '../../hooks/useCompetitionData';
+import { useCampaign } from '../../hooks/useCampaign';
 import { useParams } from 'react-router-dom';
 
 // Mock dependencies
@@ -16,8 +16,8 @@ vi.mock('../../services/useAuthPermissions', () => ({
     useAuthPermissions: vi.fn(),
 }));
 
-vi.mock('../../hooks/useCompetitionData', () => ({
-    useCompetitionData: vi.fn(),
+vi.mock('../../hooks/useCampaign', () => ({
+    useCampaign: vi.fn(),
 }));
 
 vi.mock('react-router-dom', () => ({
@@ -50,7 +50,7 @@ describe('ProtectedRoute', () => {
     it('renders LoadingScreen if campaign data is loading', () => {
         vi.mocked(useAuth).mockReturnValue({ user: { id: '1' } } as any);
         vi.mocked(useAuthPermissions).mockReturnValue({} as any);
-        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: true } as any);
+        vi.mocked(useCampaign).mockReturnValue({ isLoadingCampaign: true } as any);
         vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
@@ -67,7 +67,7 @@ describe('ProtectedRoute', () => {
     it('redirects to login if user is not authenticated', () => {
         vi.mocked(useAuth).mockReturnValue({ user: null } as any);
         vi.mocked(useAuthPermissions).mockReturnValue({} as any);
-        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useCampaign).mockReturnValue({ isLoadingCampaign: false } as any);
         vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
@@ -85,7 +85,7 @@ describe('ProtectedRoute', () => {
             canAccessAdmin: false,
             canAccessVote: false,
         } as any);
-        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useCampaign).mockReturnValue({ isLoadingCampaign: false } as any);
         vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(
@@ -104,7 +104,7 @@ describe('ProtectedRoute', () => {
         vi.mocked(useAuthPermissions).mockReturnValue({
             canAccessAdmin: true,
         } as any);
-        vi.mocked(useCompetitionData).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useCampaign).mockReturnValue({ isLoadingCampaign: false } as any);
         vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
 
         render(

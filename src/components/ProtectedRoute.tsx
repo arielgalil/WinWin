@@ -7,7 +7,7 @@ import { useLanguage } from '../hooks/useLanguage';
 
 import { LoadingScreen } from './ui/LoadingScreen';
 import { useParams } from 'react-router-dom';
-import { useCompetitionData } from '../hooks/useCompetitionData';
+import { useCampaign } from '../hooks/useCampaign';
 
 interface ProtectedRouteProps {
     allowedRoles: string[];
@@ -22,7 +22,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
     const { user } = useAuth();
     const { slug } = useParams();
-    const { isLoadingCampaign } = useCompetitionData();
+    const { isLoadingCampaign } = useCampaign();
     const { canAccessAdmin, canAccessVote } = useAuthPermissions();
     const { t } = useLanguage();
 
