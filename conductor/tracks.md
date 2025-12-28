@@ -6,6 +6,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+## [x] Track: PWA Implementation
+*Link: [./conductor/archive/pwa_implementation_20251227/](./conductor/archive/pwa_implementation_20251227/)*
+
+---
+
 ## [x] Track: Standardize Delete Modals
 *Link: [./conductor/archive/standardize_delete_modals_20251225/](./conductor/archive/standardize_delete_modals_20251225/)*
 
@@ -31,5 +36,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: PWA Implementation
-*Link: [./conductor/tracks/pwa_implementation_20251227/](./conductor/tracks/pwa_implementation_20251227/)*
+## [~] Track: אופטימיזציה של ניהול המצב (State Management Refactor)
+*Link: [./conductor/tracks/state_optimization_20251228/](./conductor/tracks/state_optimization_20251228/)*

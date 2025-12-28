@@ -95,6 +95,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **Unified Routing Security:** Generic ProtectedRoute infrastructure for consistent and reliable permission checks across the platform.
 *   **AI Integration:** Leverages Google Gemini to provide intelligent settings management and potentially automated feedback or analysis.
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
+*   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
 
 ## Aesthetic & UX Strategy
 *   **Maintain Established Identity:** The platform will strictly adhere to its current vibrant and high-energy visual style, utilizing existing animations, gradients, and UI patterns.
