@@ -1,10 +1,16 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { Campaign } from '../types';
+import { Campaign, AppSettings } from '../types';
 import { logger } from '../utils/logger';
 
-export const useCampaign = (slugOverride?: string) => {
+interface UseCampaignOptions<T = AppSettings> {
+  slugOverride?: string;
+  settingsSelector?: (settings: AppSettings) => T;
+}
+
+export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}) => {
+  const { slugOverride, settingsSelector } = options;
   const queryClient = useQueryClient();
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
@@ -20,16 +26,37 @@ export const useCampaign = (slugOverride?: string) => {
       return data as Campaign;
     },
     enabled: !!slug,
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    refetchInterval: 1000 * 60 * 5, // 5 minutes (reduced from 5 seconds)
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 5,
+  });
+
+  const campaignId = campaign?.id;
+
+  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+    queryKey: ['settings', campaignId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('app_settings').select('*').eq('campaign_id', campaignId).single();
+      if (error) {
+        logger.error("Settings fetch error", { component: 'useCampaign', action: 'fetchSettings', data: error });
+        throw error;
+      }
+      return data as AppSettings;
+    },
+    enabled: !!campaignId,
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 2,
+    select: settingsSelector,
   });
 
   return {
     campaign,
-    campaignId: campaign?.id,
+    campaignId,
+    settings,
     isLoadingCampaign,
+    isLoadingSettings,
     isCampaignError,
     campaignFetchError,
-    refreshCampaign: () => queryClient.refetchQueries({ queryKey: ['campaign', slug] })
+    refreshCampaign: () => queryClient.refetchQueries({ queryKey: ['campaign', slug] }),
+    refreshSettings: () => queryClient.refetchQueries({ queryKey: ['settings', campaignId] }),
   };
 };
