@@ -23,7 +23,12 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
         logger.error("Campaign fetch error", { component: 'useCampaign', action: 'fetch', data: error });
         throw error;
       }
-      return data as Campaign;
+      const campaign = data as Campaign;
+      // If the campaign doesn't have its own logo, use the institution's logo
+      if (!campaign.logo_url && campaign.institution?.logo_url) {
+        campaign.logo_url = campaign.institution.logo_url;
+      }
+      return campaign;
     },
     enabled: !!slug,
     staleTime: 1000 * 60 * 10,

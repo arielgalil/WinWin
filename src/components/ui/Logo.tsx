@@ -17,17 +17,16 @@ export const Logo: React.FC<LogoProps> = ({
     fallbackIcon = 'trophy',
     padding = "p-1.5"
 }) => {
+  const [error, setError] = React.useState(false);
+
   return (
     <div className={`rounded-full bg-white shadow-md flex items-center justify-center overflow-hidden border border-white/30 shrink-0 ${className}`}>
-      {src ? (
+      {src && !error ? (
         <img 
             src={src} 
             alt={alt} 
             className={`w-full h-full object-contain ${padding}`} 
-            onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.classList.add('bg-slate-100');
-            }} 
+            onError={() => setError(true)} 
         />
       ) : (
         <div className="flex items-center justify-center w-full h-full text-slate-400 bg-slate-50">

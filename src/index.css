@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;700;800;900&family=Heebo:wght@300;400;500;700;800;900&display=swap');
+
 @import "tailwindcss";
 
 :root {
@@ -18,7 +20,7 @@
   --fw-bold: 700;
 
   /* FONT FAMILY */
-  --font-family: 'Heebo', sans-serif;
+  --font-family: 'Noto Sans Hebrew', 'Heebo', sans-serif;
 
   /* LOGICAL LAYOUT PROPERTIES (RTL AWARE) */
   --padding-inline: 1.5rem;
@@ -131,17 +133,21 @@
 }
 
 /* GLOBAL RESET */
-html, body {
+html, body, #root {
   background-color: var(--bg-page);
   color: var(--text-main);
   transition: var(--transition-smooth);
-  font-family: var(--font-family) !important;
+  font-family: 'Noto Sans Hebrew', 'Heebo', sans-serif !important;
   @apply antialiased;
+}
+
+* {
+  font-family: 'Noto Sans Hebrew', 'Heebo', sans-serif !important;
 }
 
 /* ADMIN PANEL - CLEAN CASCADE */
 .admin-view {
-  font-family: var(--font-family);
+  font-family: 'Noto Sans Hebrew', 'Heebo', sans-serif !important;
 }
 
 .light .admin-view, :root.light .admin-view {

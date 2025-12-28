@@ -419,27 +419,30 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('min_points_label')}</label>
                             <input
                                 type="text"
+                                dir="ltr"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
                             <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('max_points_label')}</label>
                             <input
                                 type="text"
+                                dir="ltr"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
                             <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('points_step_label')}</label>
                             <input
                                 type="text"
+                                dir="ltr"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
                             />
                         </div>
                     </div>

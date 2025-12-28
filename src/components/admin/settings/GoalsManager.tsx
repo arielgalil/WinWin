@@ -212,149 +212,153 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                     </div>
                 </div>
 
-                <div className="grid grid-cols-[0.85fr_0.68fr_0.68fr_2.04fr] gap-x-4 gap-y-2 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-[0.85fr_0.68fr_0.68fr_2.04fr] gap-x-4 gap-y-6 items-start">
 
-                    <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1">
-                        {t('stage_name_label_with_index', { index: editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1) })}<span className="text-red-500 mr-0.5">*</span>:
-                    </label>
-
-                    <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1">
-                        {t('start_label')}:
-                    </label>
-
-                    <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1">
-                        {t('end_score_label')}<span className="text-red-500 mr-0.5">*</span>:
-                    </label>
-
-                    <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1">
-                        {t('end_prize_label')}:
-                    </label>
-
-                    {/* Row 2: Inputs */}
-                    <div className="relative">
-                        <input
-                            type="text"
-                            value={formState.name}
-                            maxLength={30}
-                            placeholder={t('stage_name_placeholder')}
-                            onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
-                            className={`w-full px-3 py-2 rounded-lg border bg-[var(--bg-input)] text-[var(--text-main)] text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)]'}`}
-                        />
-                        <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
-                            {!formState.name && (
-                                <span className="text-[9px] font-bold text-red-500 flex items-center gap-1">
-                                    <span>⚠️</span>
-                                    <span>{t('required_field')}</span>
-                                </span>
-                            )}
-                            <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-500' : 'text-[var(--text-muted)]'}`}>
-                                {formState.name?.length || 0}/30
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 h-[38px]">
-                        <div className="flex-1 flex items-center justify-center bg-[var(--bg-surface)] rounded-lg border border-[var(--border-main)] h-full overflow-hidden shadow-inner">
-                            <span className="text-[var(--text-main)] font-mono font-bold text-sm truncate px-1">{formatNumberWithCommas(minScoreAllowed)}</span>
-                        </div>
-                        <span className="text-gray-400 font-black text-xl pb-0.5">←</span>
-                    </div>
-
-                    <div className="relative">
-                        <div className={`flex items-center rounded-lg border transition-all h-[38px] bg-[var(--bg-input)] shadow-sm ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)] focus-within:ring-2 focus-within:ring-indigo-500'}`}>
+                    <div className="space-y-2">
+                        <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1 block">
+                            {t('stage_name_label_with_index', { index: editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1) })}<span className="text-red-500 mr-0.5">*</span>:
+                        </label>
+                        <div className="relative">
                             <input
                                 type="text"
-                                value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
-                                placeholder={t('target_placeholder')}
-                                onChange={e => {
-                                    const val = parseFormattedNumber(e.target.value);
-                                    setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
-                                }}
-                                className="flex-1 bg-transparent border-none text-[var(--text-main)] font-mono font-bold text-sm outline-none placeholder:text-[var(--text-muted)] placeholder:text-xs placeholder:font-sans placeholder:font-normal text-center px-2 h-full w-full"
+                                value={formState.name}
+                                maxLength={30}
+                                placeholder={t('stage_name_placeholder')}
+                                onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
+                                className={`w-full px-3 py-2 rounded-lg border bg-[var(--bg-input)] text-[var(--text-main)] text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)]'}`}
                             />
-                        </div>
-                        <div className="absolute top-full left-0 right-0 z-10 pt-1 flex flex-col items-start px-1">
-                            {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
-                                <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
-                                    <span>⚠️</span>
-                                    <span>{t('score_too_low')}</span>
+                            <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
+                                {!formState.name && (
+                                    <span className="text-[9px] font-bold text-red-500 flex items-center gap-1">
+                                        <span>⚠️</span>
+                                        <span>{t('required_field')}</span>
+                                    </span>
+                                )}
+                                <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-500' : 'text-[var(--text-muted)]'}`}>
+                                    {formState.name?.length || 0}/30
                                 </span>
-                            )}
-                            {pointsNeeded > 0 && (
-                                <div className="text-[9px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-500/20 inline-flex gap-0.5 items-center" dir="ltr">
-                                    <span>{formatNumberWithCommas(pointsNeeded)}</span>
-                                    <span>+</span>
-                                </div>
-                            )}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-4 bg-[var(--bg-surface)] rounded-xl p-3 border border-[var(--border-main)] min-h-[105px] items-stretch shadow-sm">
-                        <div className="w-[80px] h-[80px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group self-center">
-                            {formState.image_type === 'upload' && formState.image_value ? (
-                                <img src={formState.image_value} className="w-full h-full object-cover" />
-                            ) : (
-                                <span className="text-4xl text-[var(--text-main)]">{formState.image_value || '🏆'}</span>
-                            )}
+                    <div className="space-y-2">
+                        <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                            {t('start_label')}:
+                        </label>
+                        <div className="flex items-center gap-2 h-[38px]">
+                            <div className="flex-1 flex items-center justify-center bg-[var(--bg-surface)] rounded-lg border border-[var(--border-main)] h-full overflow-hidden shadow-inner">
+                                <span className="text-[var(--text-main)] font-mono font-bold text-sm truncate px-1">{formatNumberWithCommas(minScoreAllowed)}</span>
+                            </div>
+                            <span className="text-gray-400 font-black text-xl pb-0.5">←</span>
                         </div>
+                    </div>
 
-                        <div className="flex flex-col justify-between flex-1 py-1">
-                            <div className="flex gap-3">
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setFormState(prev => ({ ...prev, image_type: 'emoji' }));
+                    <div className="space-y-2">
+                        <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                            {t('end_score_label')}<span className="text-red-500 mr-0.5">*</span>:
+                        </label>
+                        <div className="relative">
+                            <div className={`flex items-center rounded-lg border transition-all h-[38px] bg-[var(--bg-input)] shadow-sm ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)] focus-within:ring-2 focus-within:ring-indigo-500'}`}>
+                                <input
+                                    type="text"
+                                    dir="ltr"
+                                    value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
+                                    placeholder={t('target_placeholder')}
+                                    onChange={e => {
+                                        const val = parseFormattedNumber(e.target.value);
+                                        setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
                                     }}
-                                    className="flex items-center gap-2 group cursor-pointer"
-                                >
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
-                                        {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                    className="flex-1 bg-transparent border-none text-[var(--text-main)] font-mono font-bold text-sm outline-none placeholder:text-[var(--text-muted)] placeholder:text-xs placeholder:font-sans placeholder:font-normal text-center px-2 h-full w-full"
+                                />
+                            </div>
+                            <div className="absolute top-full left-0 right-0 z-10 pt-1 flex flex-col items-start px-1">
+                                {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
+                                    <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
+                                        <span>⚠️</span>
+                                        <span>{t('score_too_low')}</span>
+                                    </span>
+                                )}
+                                {pointsNeeded > 0 && (
+                                    <div className="text-[9px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-500/20 inline-flex gap-0.5 items-center" dir="ltr">
+                                        <span>{formatNumberWithCommas(pointsNeeded)}</span>
+                                        <span>+</span>
                                     </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('emoji')}</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setFormState(prev => ({ ...prev, image_type: 'upload' }));
-                                    }}
-                                    className="flex items-center gap-2 group cursor-pointer"
-                                >
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
-                                        {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
-                                    </div>
-                                    <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('image')}</span>
-                                </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                            {t('end_prize_label')}:
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-4 bg-[var(--bg-surface)] rounded-xl p-3 border border-[var(--border-main)] min-h-[105px] items-stretch shadow-sm">
+                            <div className="w-[80px] h-[80px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group mx-auto sm:mx-0">
+                                {formState.image_type === 'upload' && formState.image_value ? (
+                                    <img src={formState.image_value} className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-4xl text-[var(--text-main)]">{formState.image_value || '🏆'}</span>
+                                )}
                             </div>
 
-                            {formState.image_type === 'emoji' ? (
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setIsEmojiModalOpen(true);
-                                    }}
-                                    className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
-                                >
-                                    <span>{t('insert_emoji')}</span>
-                                    <span className="text-sm">🍦</span>
-                                </button>
-                            ) : (
-                                <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
-                                    {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
-                                    <span>{isGoalUploading ? t('uploading') : t('upload_file')}</span>
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
-                                </label>
-                            )}
+                            <div className="flex flex-col justify-between flex-1 py-1">
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setFormState(prev => ({ ...prev, image_type: 'emoji' }));
+                                        }}
+                                        className="flex items-center gap-2 group cursor-pointer"
+                                    >
+                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
+                                            {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                        </div>
+                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('emoji')}</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setFormState(prev => ({ ...prev, image_type: 'upload' }));
+                                        }}
+                                        className="flex items-center gap-2 group cursor-pointer"
+                                    >
+                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
+                                            {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                        </div>
+                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('image')}</span>
+                                    </button>
+                                </div>
+
+                                {formState.image_type === 'emoji' ? (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setIsEmojiModalOpen(true);
+                                        }}
+                                        className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
+                                    >
+                                        <span>{t('insert_emoji')}</span>
+                                        <span className="text-sm">🍦</span>
+                                    </button>
+                                ) : (
+                                    <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
+                                        {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
+                                        <span>{isGoalUploading ? t('uploading') : t('upload_file')}</span>
+                                        <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
+                                    </label>
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="col-span-3 h-0" />
-                    <div className="flex flex-col gap-2">
+                    <div className="md:col-span-3 h-0 hidden md:block" />
+                    <div className="flex flex-col gap-2 w-full md:mt-0 mt-4">
                         <button
                             onClick={handleSaveGoal}
                             disabled={!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
