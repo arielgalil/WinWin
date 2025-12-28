@@ -46,6 +46,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Bug Fix: UI Regressions (Crash, Icons, Animations)
-*Link: [./conductor/tracks/bugfix_ui_regression_20251228/](./conductor/tracks/bugfix_ui_regression_20251228/)*
+---
+
+## [~] Track: UI Polish: Fix Icon Vertical Alignment
+*Link: [./conductor/tracks/ui_polish_alignment_20251228/](./conductor/tracks/ui_polish_alignment_20251228/)*
+
 

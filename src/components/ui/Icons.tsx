@@ -33,7 +33,7 @@ const MaterialIcon = ({ name, className = '', filled = false }: { name: string; 
 
   return (
     <span 
-      className={`material-symbols-rounded ${filled ? 'icon-filled' : ''} flex items-center justify-center shrink-0 ${className}`}
+      className={`material-symbols-rounded ${filled ? 'icon-filled' : ''} inline-flex items-center justify-center shrink-0 overflow-hidden ${className}`}
       style={{ 
         fontSize,
         width: '1em', 
