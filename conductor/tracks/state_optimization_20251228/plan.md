@@ -12,11 +12,11 @@ Focus on setting up Zustand and migrating the theme state to eliminate one Conte
 ## Phase 2: Atomic React Query Hooks
 Decompose the monolithic `useCompetitionData` into specialized, atomic hooks with performance-optimized configurations.
 
-- [ ] Task: Create `src/hooks/useCampaign.ts` (Campaign & Settings) with `select` optimization.
-- [ ] Task: Create `src/hooks/useClasses.ts` (Classes & Students) with `select` optimization for specific class/student slices.
-- [ ] Task: Create `src/hooks/useTicker.ts` (Ticker Messages).
-- [ ] Task: Create `src/hooks/useLogs.ts` (Infinite Logs).
-- [ ] Task: Create `src/hooks/useCampaignRole.ts` (Permissions).
+- [x] Task: Create `src/hooks/useCampaign.ts` (Campaign & Settings) with `select` optimization. d1b8587
+- [x] Task: Create `src/hooks/useClasses.ts` (Classes & Students) with `select` optimization for specific class/student slices. 4fc7c1c
+- [x] Task: Create `src/hooks/useTicker.ts` (Ticker Messages). 53ba479
+- [x] Task: Create `src/hooks/useLogs.ts` (Infinite Logs). 2e60c31
+- [x] Task: Create `src/hooks/useCampaignRole.ts` (Permissions). 1e83fc6
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Atomic React Query Hooks' (Protocol in workflow.md)
 
 ## Phase 3: Global Migration & Scoreboard Refactor
