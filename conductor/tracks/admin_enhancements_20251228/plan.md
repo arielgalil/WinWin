@@ -17,17 +17,17 @@ Address layout issues and formatting errors in data-heavy views.
 - [x] Task: Write tests for number formatting and score component logic. b02ee7f
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: RTL & Data Display Fixes' (Protocol in workflow.md)
 
-## Phase 3: Manager Tab Enhancements [checkpoint: ]
+## Phase 3: Manager Tab Enhancements [checkpoint: 6d34a81]
 Improve usability in the Data Management and Goal Management sections.
 
-- [ ] Task: Add download icons to all export cards in the Data Management & Backup section.
-- [ ] Task: Fix the mobile layout for "Add Institutional Goal" to prevent overflow (stacking layout).
-- [ ] Task: Ensure the "End Prize" section is fully visible on small screens.
-- [ ] Task: Verify mobile responsiveness using Safari dev tools.
+- [x] Task: Add download icons to all export cards in the Data Management & Backup section. 6d34a81
+- [x] Task: Fix the mobile layout for "Add Institutional Goal" to prevent overflow (stacking layout). 6d34a81
+- [x] Task: Ensure the "End Prize" section is fully visible on small screens. 6d34a81
+- [x] Task: Verify mobile responsiveness using Safari dev tools. 6d34a81
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Manager Tab Enhancements' (Protocol in workflow.md)
 
-## Phase 4: Final Polish & Audit [checkpoint: ]
+## Phase 4: Final Polish & Audit [checkpoint: 6d34a81]
 Ensure consistency across the entire admin experience.
 
-- [ ] Task: Final audit of RTL alignment across all tabs in the Admin Panel.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Audit' (Protocol in workflow.md)
+- [x] Task: Final audit of RTL alignment across all tabs in the Admin Panel. 6d34a81
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Audit' (Protocol in workflow.md)
