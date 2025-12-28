@@ -103,9 +103,7 @@
     - [x] Ensure the app builds without errors.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Full Icon Replacement' [4283668]
 
-## Phase 4: Modal UI Enhancements (TDD)
-*Goal: Improve interactivity for destructive/cancel actions.*
-
+## Phase 4: Modal UI Enhancements [checkpoint: c2540c5]
 - [x] Task: Enhance Button Components [260dbdf]
     - [x] Identify the standard button component or classes used in modals. (Identified in `src/components/ui/ConfirmationModal.tsx`)
     - [x] Write tests for the existence of hover states on these specific buttons. (Verified via `src/components/ui/__tests__/ConfirmationModalHover.test.tsx`)
