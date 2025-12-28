@@ -95,6 +95,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **Centralized Access Control:** Dedicated internal services for managing user permissions and routing safety.
 *   **Unified Routing Security:** Generic ProtectedRoute infrastructure for consistent and reliable permission checks across the platform.
 *   **AI Integration:** Leverages Google Gemini to provide intelligent settings management and potentially automated feedback or analysis.
+*   **Professional Identity:** Enhanced Admin Panel with dynamic Institution Logos, detailed user profiles, and high-fidelity Hebrew typography.
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
 *   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
 *   **Automated Remote Updates:** Headless update mechanism that automatically refreshes unmanaged kiosk displays after an idle period when a new version is detected.

@@ -46,5 +46,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: UI/UX Polish & Admin Enhancements
-*Link: [./conductor/tracks/admin_enhancements_20251228/](./conductor/tracks/admin_enhancements_20251228/)*
+## [~] Track: UI Polish: Modal button hover effects, Material Icons migration, and PWA build fix
+*Link: [./conductor/tracks/ui_polish_material_pwa_20251228/](./conductor/tracks/ui_polish_material_pwa_20251228/)*
