@@ -16,7 +16,7 @@
     - [x] Run `npm run build` to confirm the Workbox error is resolved.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: PWA & Asset Optimization' [0f9d731]
 
-## Phase 2: Icon Migration Setup & Audit
+## Phase 2: Icon Migration Setup & Audit [checkpoint: e6cc53b]
 *Goal: Prepare for the full transition to Google Material Symbols.*
 
 - [x] Task: Install & Configure Material Symbols [c9d4725]
@@ -88,7 +88,7 @@
         - Clock -> schedule
         - WifiOff -> wifi_off
         - Wifi -> wifi
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Icon Migration Setup & Audit' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Icon Migration Setup & Audit' [e6cc53b]
 
 ## Phase 3: Full Icon Replacement (TDD)
 *Goal: Replace Lucide with Material Symbols application-wide.*
