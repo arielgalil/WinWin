@@ -22,9 +22,72 @@
 - [x] Task: Install & Configure Material Symbols [c9d4725]
     - [x] Identify the best way to include Material Symbols (e.g., via font-face or a React library matching our tech stack).
     - [x] Add the dependency or asset to the project.
-- [ ] Task: Full Icon Audit
-    - [ ] Search the codebase for all `lucide-react` imports.
-    - [ ] Map each Lucide icon to its closest Material Symbol equivalent.
+- [x] Task: Full Icon Audit [f2f6eb5]
+    - [x] Search the codebase for all `lucide-react` imports.
+    - [x] Map each Lucide icon to its closest Material Symbol equivalent.
+    - [x] Mapping:
+        - Trophy -> trophy
+        - TrendingUp -> trending_up
+        - TrendingDown -> trending_down
+        - Minus -> remove
+        - Users -> groups
+        - Award -> workspace_premium
+        - Lock -> lock
+        - Plus -> add
+        - RefreshCw -> refresh
+        - School -> school
+        - LogOut -> logout
+        - Sparkles -> sparkles
+        - Crown -> crown
+        - Medal -> medal
+        - Star -> star
+        - Trash2 -> delete
+        - Upload -> upload
+        - Edit2 -> edit
+        - Check -> check
+        - X -> close
+        - Download -> download
+        - AlertTriangle -> warning
+        - ShieldAlert -> shield_alert
+        - Layers -> layers
+        - List -> format_list_bulleted
+        - Search -> search
+        - Menu -> menu
+        - Copy -> content_copy
+        - Share2 -> share
+        - Play -> play_arrow
+        - Pause -> pause
+        - Sun -> light_mode
+        - Moon -> dark_mode
+        - Home -> home
+        - User -> person
+        - Database -> database
+        - RotateCcw -> undo
+        - RotateCw -> redo
+        - Save -> save
+        - ArrowRight -> arrow_forward
+        - Target -> target
+        - Map -> map
+        - Compass -> explore
+        - Footprints -> footprints
+        - Send -> send
+        - Link -> link
+        - Settings -> settings
+        - Calculator -> calculate
+        - DollarSign -> attach_money
+        - Sprout -> eco
+        - Key -> key
+        - ChevronRight -> chevron_right
+        - Music -> music_note
+        - Volume2 -> volume_up
+        - VolumeX -> volume_off
+        - Zap -> bolt
+        - CheckCircle -> check_circle
+        - AlertCircle -> error
+        - Info -> info
+        - Clock -> schedule
+        - WifiOff -> wifi_off
+        - Wifi -> wifi
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Icon Migration Setup & Audit' (Protocol in workflow.md)
 
 ## Phase 3: Full Icon Replacement (TDD)
