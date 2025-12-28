@@ -11,10 +11,10 @@ Enhance the Admin header with missing identity and profile information.
 ## Phase 2: RTL & Data Display Fixes [checkpoint: ]
 Address layout issues and formatting errors in data-heavy views.
 
-- [ ] Task: Fix the dropdown arrow alignment in the Group Selection component for RTL.
-- [ ] Task: Refactor Goal progress display to use a consistent `Current / Total` format that handles RTL correctly.
-- [ ] Task: Audit and refactor all score/point displays to use a unified `ScoreDisplay` component.
-- [ ] Task: Write tests for number formatting and score component logic.
+- [x] Task: Fix the dropdown arrow alignment in the Group Selection component for RTL. 273f8cc
+- [x] Task: Refactor Goal progress display to use a consistent `Current / Total` format that handles RTL correctly. 273f8cc
+- [x] Task: Audit and refactor all score/point displays to use a unified `ScoreDisplay` component. 273f8cc
+- [x] Task: Write tests for number formatting and score component logic. b02ee7f
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: RTL & Data Display Fixes' (Protocol in workflow.md)
 
 ## Phase 3: Manager Tab Enhancements [checkpoint: ]

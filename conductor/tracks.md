@@ -43,3 +43,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Types and Constants Refinement
 *Link: [./conductor/archive/types_refinement_20251226/](./conductor/archive/types_refinement_20251226/)*
+
+---
+
+## [~] Track: UI/UX Polish & Admin Enhancements
+*Link: [./conductor/tracks/admin_enhancements_20251228/](./conductor/tracks/admin_enhancements_20251228/)*

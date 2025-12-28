@@ -95,7 +95,12 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
                                         <div className="flex flex-col gap-1.5 min-w-[120px]">
                                             <div className="flex justify-between text-[10px] font-bold">
                                                 <span className="text-indigo-600 dark:text-indigo-400">{Math.round(progress)}%</span>
-                                                <span className="text-[var(--text-muted)] font-normal"><FormattedNumber value={targetNum} /> / <FormattedNumber value={currentScore} /></span>
+                                                {/* dir="ltr" ensures visually we see: [Total] / [Current] as requested */}
+                                                <span className="text-[var(--text-muted)] font-normal inline-flex gap-1 items-center" dir="ltr">
+                                                    <FormattedNumber value={targetNum} />
+                                                    <span>/</span>
+                                                    <FormattedNumber value={currentScore} />
+                                                </span>
                                             </div>
                                             <div className="h-1.5 w-full bg-[var(--bg-surface)] rounded-full overflow-hidden">
                                                 <MotionDiv className="h-full bg-indigo-500" initial={{ width: 0 }} animate={{ width: `${progress}%` }} />
