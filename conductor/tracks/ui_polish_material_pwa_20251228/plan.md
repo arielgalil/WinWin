@@ -108,6 +108,6 @@
     - [x] Identify the standard button component or classes used in modals. (Identified in `src/components/ui/ConfirmationModal.tsx`)
     - [x] Write tests for the existence of hover states on these specific buttons. (Verified via `src/components/ui/__tests__/ConfirmationModalHover.test.tsx`)
     - [x] Implement hover background colors in Tailwind (e.g., `hover:bg-red-600` for delete, `hover:bg-gray-100` for cancel).
-- [ ] Task: Apply to Confirmation Modals
-    - [ ] Verify the hover effect works in all instances of the standardized confirmation modal.
+- [x] Task: Apply to Confirmation Modals [982bce6]
+    - [x] Verify the hover effect works in all instances of the standardized confirmation modal.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Modal UI Enhancements' (Protocol in workflow.md)
