@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { isSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
+import { Logo } from '../ui/Logo';
 
 const MotionDiv = motion.div as any;
 
@@ -24,6 +25,7 @@ interface AdminMobileMenuProps {
   campaignRole?: 'admin' | 'teacher' | 'superuser' | null;
   isFrozen?: boolean;
   onToggleFreeze?: (val: boolean) => void;
+  logoUrl?: string | null;
 }
 
 export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
@@ -41,7 +43,8 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   onLogout,
   campaignRole: propRole,
   isFrozen,
-  onToggleFreeze
+  onToggleFreeze,
+  logoUrl
 }) => {
   const { t, dir } = useLanguage();
   const { theme, toggleTheme } = useTheme();
@@ -85,14 +88,14 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                       >
                           {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                       </button>
+                      <Logo src={logoUrl} className="w-10 h-10 border border-indigo-500/20" fallbackIcon="school" padding="p-1" />
                   </div>
   
                   <div className="flex items-center gap-3 dir-rtl">
                       <div className="text-left">
                           <p className="text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] leading-tight">{user.full_name}</p>
                           <p className="text-indigo-600 dark:text-indigo-400 text-[var(--fs-sm)] uppercase font-[var(--fw-bold)] tracking-wide">
-                              {getRoleLabel()}
-                              {userClassName && ` | ${userClassName}`}
+                              {userClassName}
                           </p>
                       </div>
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center font-[var(--fw-bold)] text-white shadow-md border border-[var(--border-subtle)] text-[var(--fs-base)] ${isAnySuperUser ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}`}>
