@@ -95,7 +95,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 onClick={onConfirm}
                 className={`flex-1 py-3 rounded-[var(--radius-main)] font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
                   isDanger
-                    ? 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 border border-gray-200 dark:border-white/10'
+                    ? 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white border border-gray-200 dark:border-white/10'
                     : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/20'
                 }`}
               >
@@ -105,7 +105,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               {showCancel && (
                 <button
                   onClick={onCancel}
-                  className="flex-1 py-3 rounded-[var(--radius-main)] bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
+                  className="flex-1 py-3 rounded-[var(--radius-main)] bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/10"
                 >
                   {finalCancelText}
                 </button>
