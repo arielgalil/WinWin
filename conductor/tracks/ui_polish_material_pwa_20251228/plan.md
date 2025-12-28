@@ -90,7 +90,7 @@
         - Wifi -> wifi
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Icon Migration Setup & Audit' [e6cc53b]
 
-## Phase 3: Full Icon Replacement (TDD)
+## Phase 3: Full Icon Replacement (TDD) [checkpoint: 4283668]
 *Goal: Replace Lucide with Material Symbols application-wide.*
 
 - [x] Task: Replace Icons in UI Components [e6cc53b]
@@ -101,7 +101,7 @@
 - [x] Task: Cleanup Lucide [ae00994]
     - [x] Remove `lucide-react` from `package.json`.
     - [x] Ensure the app builds without errors.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Full Icon Replacement' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Full Icon Replacement' [4283668]
 
 ## Phase 4: Modal UI Enhancements (TDD)
 *Goal: Improve interactivity for destructive/cancel actions.*
