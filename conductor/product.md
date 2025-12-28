@@ -70,6 +70,7 @@
 ## Technical Constraints & Guardrails
 * **Existing Module:** The Public Scoreboard code is strictly "Out of Bounds" for refactoring unless requested.
 * **UI Focus:** Development efforts are focused on stabilizing and enhancing the **Admin Panel** and the **Teacher Input Interface** (Mobile-first, WCAG AAA).
+* **Performance Architecture:** Employs atomic state management (Zustand) and granular data fetching (React Query with selectors) to ensure responsiveness on low-end mobile devices during real-time updates.
 
 ---
 

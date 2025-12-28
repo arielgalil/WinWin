@@ -8,7 +8,9 @@
     - [Tailwind CSS 4](https://tailwindcss.com/) — Utility-first CSS framework for rapid UI development.
     - [Framer Motion 12](https://www.framer.com/motion/) — Powering the platform's high-energy animations.
     - [Lucide React](https://lucide.dev/) — The primary icon set.
-- **State Management & Data Fetching:** [TanStack Query 5 (React Query)](https://tanstack.com/query/latest) — Manages server-state and caching with Supabase.
+- **State Management & Data Fetching:** 
+    - [TanStack Query 5 (React Query)](https://tanstack.com/query/latest) — Manages server-state and caching with Supabase.
+    - [Zustand 5](https://zustand-demo.pmnd.rs/) — Atomic, high-performance client-side global state management.
 - **PWA & Offline Support:** 
     - [Vite PWA Plugin](https://vite-pwa-org.netlify.app/) — Manages service worker generation and web manifest.
     - [Workbox](https://developer.chrome.com/docs/workbox/) — Powering offline asset caching and background synchronization.

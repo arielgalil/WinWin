@@ -6,6 +6,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+## [x] Track: אופטימיזציה של ניהול המצב (State Management Refactor)
+*Link: [./conductor/archive/state_optimization_20251228/](./conductor/archive/state_optimization_20251228/)*
+
+---
+
 ## [x] Track: PWA Implementation
 *Link: [./conductor/archive/pwa_implementation_20251227/](./conductor/archive/pwa_implementation_20251227/)*
 
@@ -36,5 +41,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: אופטימיזציה של ניהול המצב (State Management Refactor)
-*Link: [./conductor/tracks/state_optimization_20251228/](./conductor/tracks/state_optimization_20251228/)*
+## [~] Track: מנגנון עדכון מרחוק של מסכים ללא מגע יד אדם
+*Link: [./conductor/tracks/remote_kiosk_update_20251228/](./conductor/tracks/remote_kiosk_update_20251228/)*
