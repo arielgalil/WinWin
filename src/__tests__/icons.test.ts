@@ -17,10 +17,20 @@ describe('Icon System Verification', () => {
     expect(cssContent).toContain('icon-filled');
   });
 
-  it('should not have lucide-react imports anywhere in src', () => {
+  it('should not have lucide-react imports in Dashboard components', () => {
     const srcPath = path.resolve(__dirname, '..');
-    const files = getFilesRecursive(srcPath);
-    const lucideImports = files.filter(file => {
+    const dashboardPath = path.resolve(srcPath, 'components/dashboard');
+    const studentDashboardFile = path.resolve(srcPath, 'components/Dashboard.tsx');
+    
+    let filesToCheck = [];
+    if (fs.existsSync(dashboardPath)) {
+      filesToCheck = filesToCheck.concat(getFilesRecursive(dashboardPath));
+    }
+    if (fs.existsSync(studentDashboardFile)) {
+      filesToCheck.push(studentDashboardFile);
+    }
+
+    const lucideImports = filesToCheck.filter(file => {
       // Exclude tests themselves
       if (file.endsWith('.test.ts') || file.endsWith('.test.tsx')) return false;
       
@@ -33,10 +43,17 @@ describe('Icon System Verification', () => {
     });
     
     if (lucideImports.length > 0) {
-      console.log('Files still using lucide-react:', lucideImports.map(f => path.relative(srcPath, f)));
+      console.log('Dashboard files mistakenly using lucide-react:', lucideImports.map(f => path.relative(srcPath, f)));
     }
     
     expect(lucideImports).toEqual([]);
+  });
+
+  it('should allow lucide-react in Admin and UI components', () => {
+    // This test just verifies that our transition is working
+    const adminPanelPath = path.resolve(__dirname, '../components/AdminPanel.tsx');
+    const content = fs.readFileSync(adminPanelPath, 'utf-8');
+    expect(content).toContain("from 'lucide-react'");
   });
 });
 

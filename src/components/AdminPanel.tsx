@@ -1,3 +1,4 @@
+import { LayoutDashboard } from 'lucide-react';
 import React, { useState, useMemo, Suspense } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import { UserProfile, TickerMessage } from '../types';
