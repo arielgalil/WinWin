@@ -34,9 +34,9 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Identify the component rendering the "Stars of the Yeshiva" (likely in `src/components/dashboard/`).
     - [x] Write tests for group color application.
     - [x] Update the styling to apply the group's color as a background to the group name.
-- [ ] Task: Unified Leading Column Component
-    - [ ] Locate the current crown and circle icon implementation.
-    - [ ] Create a new unified component (e.g., `LeaderIcon.tsx`) that wraps both icons.
-    - [ ] Synchronize animations (Framer Motion or CSS) to ensure they move as one.
-    - [ ] Replace existing separate icons with the new unified component.
+- [x] Task: Unified Leading Column Component aef0bd5
+    - [x] Locate the current crown and circle icon implementation.
+    - [x] Create a new unified component (e.g., `LeaderIcon.tsx`) that wraps both icons.
+    - [x] Synchronize animations (Framer Motion or CSS) to ensure they move as one.
+    - [x] Replace existing separate icons with the new unified component.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Polish & Component Refactoring' (Protocol in workflow.md)
