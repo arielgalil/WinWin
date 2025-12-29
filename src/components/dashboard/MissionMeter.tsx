@@ -204,7 +204,7 @@ const shoutoutMessage = useMemo(() => {
             {/* Header */}
             <div className="flex justify-between items-center shrink-0 z-10 w-full px-5 h-11 bg-white/10 border-b border-white/10 backdrop-blur-md">
                 <div className="flex items-center min-w-0">
-                    <div className={`p-1 rounded-full border ml-2 backdrop-blur-sm transition-all duration-500 shrink-0
+                    <div className={`p-1 rounded-full border ml-2 backdrop-blur-sm transition-all duration-500 shrink-0 flex items-center justify-center
                     ${isCelebrationMode
                             ? 'bg-yellow-500 border-yellow-300 shadow-[0_0_20px_rgba(234,179,8,0.8)]'
                             : 'bg-orange-500/10 border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.3)]'

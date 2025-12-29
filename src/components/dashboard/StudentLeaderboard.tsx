@@ -85,7 +85,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
             >
                 <div className="flex justify-between items-center shrink-0 px-5 h-11 bg-white/20 border-b border-white/20 backdrop-blur-md">
                     <h2 className="text-sm font-black text-white flex items-center">
-                        <div className={`p-1 rounded-[var(--radius-main)] border ml-2.5 transition-all duration-500
+                        <div className={`p-1 rounded-[var(--radius-main)] border ml-2.5 transition-all duration-500 flex items-center justify-center
                     ${isMomentumMode
                                 ? 'bg-yellow-500/10 border-yellow-500/20'
                                 : 'bg-pink-500/10 border-pink-500/20'

@@ -50,8 +50,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: UI Polish: Fix Icon Vertical Alignment in Headers
-*Link: [./conductor/tracks/ui_polish_header_alignment_20251228/](./conductor/tracks/ui_polish_header_alignment_20251228/)*
+---
+
+## [~] Track: Bug Fix: Dashboard Icons Alignment & Styling
+*Link: [./conductor/tracks/bugfix_dashboard_icons_20251228/](./conductor/tracks/bugfix_dashboard_icons_20251228/)*
+
 
 
 
