@@ -50,9 +50,8 @@ describe('Icon System Verification', () => {
   });
 
   it('should allow lucide-react in Admin and UI components', () => {
-    // This test just verifies that our transition is working
-    const adminPanelPath = path.resolve(__dirname, '../components/AdminPanel.tsx');
-    const content = fs.readFileSync(adminPanelPath, 'utf-8');
+    const adminLayoutPath = path.resolve(__dirname, '../components/AdminLayout.tsx');
+    const content = fs.readFileSync(adminLayoutPath, 'utf-8');
     expect(content).toContain("from 'lucide-react'");
   });
 });
