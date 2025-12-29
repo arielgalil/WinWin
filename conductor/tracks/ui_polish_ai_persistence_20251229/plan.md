@@ -30,10 +30,10 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Text Formatting & Ticker Improvements' (Protocol in workflow.md) a24a851
 
 ## Phase 3: UI Polish & Component Refactoring
-- [ ] Task: Momentum/Stars Group Coloring
-    - [ ] Identify the component rendering the "Stars of the Yeshiva" (likely in `src/components/dashboard/`).
-    - [ ] Write tests for group color application.
-    - [ ] Update the styling to apply the group's color as a background to the group name.
+- [x] Task: Momentum/Stars Group Coloring 120da0d
+    - [x] Identify the component rendering the "Stars of the Yeshiva" (likely in `src/components/dashboard/`).
+    - [x] Write tests for group color application.
+    - [x] Update the styling to apply the group's color as a background to the group name.
 - [ ] Task: Unified Leading Column Component
     - [ ] Locate the current crown and circle icon implementation.
     - [ ] Create a new unified component (e.g., `LeaderIcon.tsx`) that wraps both icons.
