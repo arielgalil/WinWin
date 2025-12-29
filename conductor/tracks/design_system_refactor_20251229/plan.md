@@ -26,7 +26,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Design Tokens' (Protocol in workflow.md)
 
-## Phase 2: Core Component Migration
+## Phase 2: Core Component Migration [checkpoint: fb447e2]
 - [x] Task: Implement Base Components (TDD) 05c1d70
     - [ ] Write tests for new Shadcn-based `Button` and `Input`.
     - [ ] Implement `Button` and `Input` with RTL support and 44px touch targets.
