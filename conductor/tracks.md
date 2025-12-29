@@ -36,28 +36,19 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: Admin UI Polish & Score Formatting
-*Link: [./conductor/tracks/admin_ui_polish_20251225/](./conductor/tracks/admin_ui_polish_20251225/)*
+## [x] Track: Bug Fix: UI Regressions (Crash, Icons, Animations)
+*Link: [./conductor/tracks/bugfix_ui_regression_20251228/](./conductor/tracks/bugfix_ui_regression_20251228/)*
 
 ---
 
-## [x] Track: Types and Constants Refinement
-*Link: [./conductor/archive/types_refinement_20251226/](./conductor/archive/types_refinement_20251226/)*
+## [x] Track: UI Polish: Fix Icon Vertical Alignment in Headers
+*Link: [./conductor/tracks/ui_polish_header_alignment_20251228/](./conductor/tracks/ui_polish_header_alignment_20251228/)*
 
 ---
 
----
-
----
-
----
-
----
-
----
-
-## [~] Track: Refactor: Unified Dashboard Card Header
+## [x] Track: Refactor: Unified Dashboard Card Header
 *Link: [./conductor/tracks/refactor_dashboard_headers_20251228/](./conductor/tracks/refactor_dashboard_headers_20251228/)*
+
 
 
 

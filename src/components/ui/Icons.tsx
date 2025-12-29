@@ -9,7 +9,10 @@ const MaterialIcon = ({ name, className = '', filled = false }: { name: string; 
   // This ensures the font-icon scales similarly to an SVG
   let fontSize = '24px'; // Default for icons
   
+  if (className.includes('w-2') || className.includes('h-2')) fontSize = '8px';
+  if (className.includes('w-2.5') || className.includes('h-2.5')) fontSize = '10px';
   if (className.includes('w-3') || className.includes('h-3')) fontSize = '12px';
+  if (className.includes('w-3.5') || className.includes('h-3.5')) fontSize = '14px';
   if (className.includes('w-4') || className.includes('h-4')) fontSize = '16px';
   if (className.includes('w-5') || className.includes('h-5')) fontSize = '20px';
   if (className.includes('w-6') || className.includes('h-6')) fontSize = '24px';
