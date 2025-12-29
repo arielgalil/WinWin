@@ -29,7 +29,7 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Ensure consistent spacing between bulleted items.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Text Formatting & Ticker Improvements' (Protocol in workflow.md) a24a851
 
-## Phase 3: UI Polish & Component Refactoring
+## Phase 3: UI Polish & Component Refactoring [checkpoint: 8125da3]
 - [x] Task: Momentum/Stars Group Coloring 120da0d
     - [x] Identify the component rendering the "Stars of the Yeshiva" (likely in `src/components/dashboard/`).
     - [x] Write tests for group color application.
