@@ -93,89 +93,157 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
           progressBg = 'bg-yellow-500';
         }
     
-                    const cardBgClass = cls.color && cls.color.startsWith('bg-') 
+                        const isBgColor = cls.color && cls.color.startsWith('bg-');
     
-                        ? `${cls.color}/80 hover:${cls.color}/90` 
+                        const bgLayerClass = isHighlighted 
     
-                        : `bg-white/10 hover:bg-white/20`;
+                            ? 'bg-white/30' 
     
-        
+                            : isBgColor ? cls.color : 'bg-white/10';
     
-            return (
+                        
     
-              <div
+                        // Opacity: If colored, start at 80% (less transparent), hover to 90%. If fallback white, keep it as defined in bgLayerClass.
     
-                key={uniqueKey}
+                        const opacityClass = !isHighlighted && isBgColor ? 'opacity-80 group-hover:opacity-90' : '';
     
-                style={{
+                    
     
-                  width: CARD_WIDTH,
+                        return (
     
-                  marginRight: MARGIN_RIGHT,
+                          <div
     
-                  borderColor: isHighlighted ? '#facc15' : undefined
+                            key={uniqueKey}
     
-                }}
+                            style={{
     
-                className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+                              width: CARD_WIDTH,
     
-                    ${isHighlighted
+                              marginRight: MARGIN_RIGHT,
     
-                    ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
+                              borderColor: isHighlighted ? '#facc15' : undefined
     
-                    : `${cardBgClass} border-white/20`
+                            }}
     
-                  }
+                            className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
     
-                  `}
+                                ${isHighlighted
     
-              >        {/* Upper Section: Rank + Name + Status Icon */}
-        <div className="flex items-center justify-between p-2 pb-0 shrink-0">
-          <div className={`w-5 h-5 rounded-full flex items-center justify-center border text-[9px] font-black shrink-0 shadow-lg
-                ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :
-              displayRank === 2 ? 'bg-slate-300 text-slate-900 border-white/50' :
-                displayRank === 3 ? 'bg-orange-500 text-white border-orange-300' :
-                  'bg-white/10 text-white border-white/10'}`}>
-            {displayRank}
-          </div>
-          <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-sm leading-none">
-            {cls.name}
-          </h3>
-          <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${statusBg} ${statusBorder} ${statusColor} transition-all duration-500 shadow-lg`}>
-            <StatusIcon className={`w-2.5 h-2.5 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
-          </div>
-        </div>
-
-        {/* Middle Section: Score (larger font) */}
-        <div className="flex-1 flex items-center justify-center px-2 py-0">
-          <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
-            <FormattedNumber value={currentScore} />
-          </div>
-        </div>
-
-        {/* Lower Section: Progress Bar + Percentage (conditional) */}
-        <div className="shrink-0 relative">
-          {hasTarget && targetScore > 0 && (
-            <>
-              <div className="absolute bottom-2 left-2 z-20">
-                <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded-[var(--radius-main)] backdrop-blur-sm border border-white/5 text-outline-sm`}>
-                  {Math.round(progress)}%
-                </span>
-              </div>
-              <div className="w-full h-1 bg-white/5 overflow-hidden">
-                <MotionDiv
-                  className={`h-full ${progressBg} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                />
-              </div>
-            </>
-          )}
-        </div>
-        <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg} rounded-[var(--radius-container)]`} />
-      </div>
-    );
+                                ? 'scale-[1.05] shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
+    
+                                : 'border-white/20'
+    
+                              }
+    
+                              `}
+    
+                          >
+    
+                            {/* Background Layer */}
+    
+                            <div className={`absolute inset-0 transition-opacity duration-300 ${bgLayerClass} ${opacityClass}`} />
+    
+                    
+    
+                            {/* Content Wrapper */}
+    
+                            <div className="relative z-10 flex flex-col h-full">
+    
+                                {/* Upper Section: Rank + Name + Status Icon */}
+    
+                                <div className="flex items-center justify-between p-2 pb-0 shrink-0">
+    
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border text-[9px] font-black shrink-0 shadow-lg
+    
+                                        ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :
+    
+                                    displayRank === 2 ? 'bg-slate-300 text-slate-900 border-white/50' :
+    
+                                        displayRank === 3 ? 'bg-orange-500 text-white border-orange-300' :
+    
+                                        'bg-white/10 text-white border-white/10'}`}>
+    
+                                    {displayRank}
+    
+                                </div>
+    
+                                <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-sm leading-none">
+    
+                                    {cls.name}
+    
+                                </h3>
+    
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${statusBg} ${statusBorder} ${statusColor} transition-all duration-500 shadow-lg`}>
+    
+                                    <StatusIcon className={`w-2.5 h-2.5 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
+    
+                                </div>
+    
+                                </div>
+    
+                    
+    
+                                {/* Middle Section: Score (larger font) */}
+    
+                                <div className="flex-1 flex items-center justify-center px-2 py-0">
+    
+                                <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
+    
+                                    <FormattedNumber value={currentScore} />
+    
+                                </div>
+    
+                                </div>
+    
+                    
+    
+                                {/* Lower Section: Progress Bar + Percentage (conditional) */}
+    
+                                <div className="shrink-0 relative">
+    
+                                {hasTarget && targetScore > 0 && (
+    
+                                    <>
+    
+                                    <div className="absolute bottom-2 left-2 z-20">
+    
+                                        <span className={`text-[8px] font-black ${statusColor} bg-black/30 px-1 py-0.5 rounded-[var(--radius-main)] backdrop-blur-sm border border-white/5 text-outline-sm`}>
+    
+                                        {Math.round(progress)}%
+    
+                                        </span>
+    
+                                    </div>
+    
+                                    <div className="w-full h-1 bg-white/5 overflow-hidden">
+    
+                                        <MotionDiv
+    
+                                        className={`h-full ${progressBg} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}
+    
+                                        initial={{ width: 0 }}
+    
+                                        animate={{ width: `${progress}%` }}
+    
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+    
+                                        />
+    
+                                    </div>
+    
+                                    </>
+    
+                                )}
+    
+                                </div>
+    
+                            </div>
+    
+                            <div className={`absolute inset-0 opacity-5 pointer-events-none ${progressBg} rounded-[var(--radius-container)]`} />
+    
+                          </div>
+    
+                        );
   };
 
   return (
