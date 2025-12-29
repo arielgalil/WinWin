@@ -8,7 +8,7 @@ import { Menu, X, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2,
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { formatLastSaved } from '@/utils/dateUtils';
-import { SaveNotificationBadge } from '@/contexts/SaveNotificationContext';
+import { SaveNotificationBadge } from '@/components/ui/SaveNotificationBadge';
 import { Campaign, Settings as AppSettings } from '@/types';
 import { SettingsIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
 import { VersionFooter } from './ui/VersionFooter'; // Corrected import

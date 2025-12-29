@@ -7,7 +7,8 @@ import { useTheme } from '@/hooks/useTheme';
 import { Settings, Users, Target, CalculatorIcon, ClockIcon } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { VersionFooter } from '../ui/VersionFooter';
-import { SaveNotificationBadge, useSaveNotification } from '@/contexts/SaveNotificationContext';
+import { SaveNotificationBadge } from '@/components/ui/SaveNotificationBadge';
+import { useSaveNotification } from '@/contexts/SaveNotificationContext';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
@@ -50,8 +51,10 @@ vi.mock('../ui/Logo', () => ({
 vi.mock('../ui/VersionFooter', () => ({
   VersionFooter: vi.fn(() => <div data-testid="mock-version-footer">Mock Version Footer</div>),
 }));
-vi.mock('@/contexts/SaveNotificationContext', () => ({
+vi.mock('@/components/ui/SaveNotificationBadge', () => ({
   SaveNotificationBadge: vi.fn(() => null),
+}));
+vi.mock('@/contexts/SaveNotificationContext', () => ({
   useSaveNotification: vi.fn(() => ({ notifications: new Map(), dismiss: vi.fn() })),
 }));
 
