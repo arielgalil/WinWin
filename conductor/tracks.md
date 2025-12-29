@@ -52,8 +52,14 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Bug Fix: Dashboard Icons Alignment & Styling
-*Link: [./conductor/tracks/bugfix_dashboard_icons_20251228/](./conductor/tracks/bugfix_dashboard_icons_20251228/)*
+---
+
+---
+
+## [~] Track: Refactor: Unified Dashboard Card Header
+*Link: [./conductor/tracks/refactor_dashboard_headers_20251228/](./conductor/tracks/refactor_dashboard_headers_20251228/)*
+
+
 
 
 

@@ -5,6 +5,7 @@ import { TrophyIcon, CompassIcon, FootprintsIcon, MapIcon, TargetIcon, ListIcon 
 import { motion } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { useLanguage } from '../../hooks/useLanguage';
+import { DashboardCardHeader } from './DashboardCardHeader';
 
 const MotionDiv = motion.div as any;
 
@@ -162,12 +163,13 @@ return (
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-sm font-black text-white flex items-center shrink-0 px-5 h-11 bg-white/20 border-b border-white/20 backdrop-blur-md">
-        <div className="p-1.5 bg-blue-500/10 border border-blue-500/30 rounded-full ml-2 backdrop-blur-sm shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-          <ListIcon className="w-3.5 h-3.5 text-blue-400" />
-        </div>
-        {t('tab_my_class')}
-      </h2>
+      <DashboardCardHeader
+        title={t('tab_my_class')}
+        icon={<ListIcon className="w-3.5 h-3.5" />}
+        iconColorClass="text-blue-400"
+        iconBgClass="bg-blue-500/10"
+        borderColorClass="border-blue-500/30"
+      />
 
       <div className="flex-1 flex items-center overflow-hidden relative w-full mask-gradient">
         <div

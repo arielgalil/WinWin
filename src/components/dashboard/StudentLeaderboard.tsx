@@ -6,6 +6,7 @@ import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
 import { useLanguage } from '../../hooks/useLanguage';
 import { AppSettings } from '../../types';
+import { DashboardCardHeader } from './DashboardCardHeader';
 
 const MotionDiv = motion.div as any;
 
@@ -83,39 +84,33 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <div className="flex justify-between items-center shrink-0 px-5 h-11 bg-white/20 border-b border-white/20 backdrop-blur-md">
-                    <h2 className="text-sm font-black text-white flex items-center">
-                        <div className={`p-1 rounded-[var(--radius-main)] border ml-2.5 transition-all duration-500 flex items-center justify-center
-                    ${isMomentumMode
-                                ? 'bg-yellow-500/10 border-yellow-500/20'
-                                : 'bg-pink-500/10 border-pink-500/20'
-                            }`}>
-                            {isMomentumMode
-                                ? <StarIcon className="w-3.5 h-3.5 text-yellow-400" />
-                                : <MedalIcon className="w-3.5 h-3.5 text-pink-400" />
-                            }
+                <DashboardCardHeader
+                    title={isMomentumMode ? t('stars_momentum') : t('student_stars', { instType })}
+                    icon={isMomentumMode ? <StarIcon className="w-3.5 h-3.5" /> : <MedalIcon className="w-3.5 h-3.5" />}
+                    iconColorClass={isMomentumMode ? 'text-yellow-400' : 'text-pink-400'}
+                    iconBgClass={isMomentumMode ? 'bg-yellow-500/10' : 'bg-pink-500/10'}
+                    borderColorClass={isMomentumMode ? 'border-yellow-500/20' : 'border-pink-500/20'}
+                    rightContent={
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => handleTabClick('momentum')}
+                                className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                                role="tab"
+                                aria-selected={activeTab === 'momentum'}
+                                aria-controls="momentum-panel"
+                                aria-label={t('stars_momentum')}
+                            />
+                            <button
+                                onClick={() => handleTabClick('top')}
+                                className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'top' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                                role="tab"
+                                aria-selected={activeTab === 'top'}
+                                aria-controls="top-panel"
+                                aria-label={t('student_stars', { instType })}
+                            />
                         </div>
-                        <span>{isMomentumMode ? t('stars_momentum') : t('student_stars', { instType })}</span>
-                    </h2>
-                    <div className="flex items-center gap-1">
-                        <button 
-                            onClick={() => handleTabClick('momentum')} 
-                            className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
-                            role="tab"
-                            aria-selected={activeTab === 'momentum'}
-                            aria-controls="momentum-panel"
-                            aria-label={t('stars_momentum')}
-                        />
-                        <button 
-                            onClick={() => handleTabClick('top')} 
-                            className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'top' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
-                            role="tab"
-                            aria-selected={activeTab === 'top'}
-                            aria-controls="top-panel"
-                            aria-label={t('student_stars', { instType })}
-                        />
-                    </div>
-                </div>
+                    }
+                />
 
                 <div className="flex-1 flex flex-col min-h-0 p-2 lg:p-2.5 gap-2">
                     <div ref={listContainerRef} className="space-y-1.5 relative flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} >

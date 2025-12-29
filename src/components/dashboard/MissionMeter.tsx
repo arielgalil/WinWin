@@ -5,6 +5,7 @@ import { TargetIcon } from '../ui/Icons';
 import { CompetitionGoal, ClassRoom } from '../../types';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useLanguage } from '../../hooks/useLanguage';
+import { DashboardCardHeader } from './DashboardCardHeader';
 
 const MotionPath = motion.path as any;
 const MotionCircle = motion.circle as any;
@@ -201,28 +202,22 @@ const shoutoutMessage = useMemo(() => {
                 : 'bg-slate-900/50'
             }
     `}>
-            {/* Header */}
-            <div className="flex justify-between items-center shrink-0 z-10 w-full px-5 h-11 bg-white/10 border-b border-white/10 backdrop-blur-md">
-                <div className="flex items-center min-w-0">
-                    <div className={`p-1 rounded-full border ml-2 backdrop-blur-sm transition-all duration-500 shrink-0 flex items-center justify-center
-                    ${isCelebrationMode
-                            ? 'bg-yellow-500 border-yellow-300 shadow-[0_0_20px_rgba(234,179,8,0.8)]'
-                            : 'bg-orange-500/10 border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.3)]'
-                        }`}>
-                        <TargetIcon className={`w-3 h-3 ${isCelebrationMode ? 'text-black' : 'text-orange-400'}`} />
-                    </div>
-                    <h2 className="text-base font-black text-white truncate uppercase tracking-tight" dir="rtl">
-                        {headerText}
-                    </h2>
-                </div>
-                {sortedGoals.length > 1 && (
+            <DashboardCardHeader
+                title={headerText}
+                icon={<TargetIcon className={`w-3 h-3 ${isCelebrationMode ? 'text-black' : 'text-orange-400'}`} />}
+                iconColorClass={isCelebrationMode ? 'text-black' : 'text-orange-400'}
+                iconBgClass={isCelebrationMode
+                    ? 'bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.8)]'
+                    : 'bg-orange-500/10 shadow-[0_0_15px_rgba(249,115,22,0.3)]'}
+                borderColorClass={isCelebrationMode ? 'border-yellow-300' : 'border-orange-500/30'}
+                rightContent={sortedGoals.length > 1 && (
                     <div className="flex gap-1">
                         {sortedGoals.map((_, idx) => (
                             <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${idx < activeIndex || (idx === activeIndex && isCompleted) ? 'bg-green-500' : idx === activeIndex ? 'bg-yellow-400 scale-125 shadow-[0_0_8px_#facc15]' : 'bg-slate-600'}`} />
                         ))}
                     </div>
                 )}
-            </div>
+            />
 
             <div className="flex-1 flex flex-col p-2 sm:p-3 lg:p-4 gap-3 sm:gap-4 min-h-0">
 
