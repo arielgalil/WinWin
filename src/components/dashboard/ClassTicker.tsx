@@ -73,42 +73,45 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     const progress = hasTarget ? Math.min(100, (currentScore / targetScore) * 100) : 0;
     const isGoalReached = hasTarget && currentScore >= targetScore;
 
-    // Use group-related icon instead of progress-based
-    const StatusIcon = getGroupIcon(cls);
-
-    let statusColor = 'text-cyan-400';
-    let statusBg = 'bg-cyan-500/10';
-    let statusBorder = 'border-cyan-500/30';
-    let progressBg = 'bg-cyan-500';
-
-    if (isGoalReached) {
-      statusColor = 'text-emerald-400';
-      statusBg = 'bg-emerald-500/20';
-      statusBorder = 'border-emerald-500/40';
-      progressBg = 'bg-emerald-500';
-    } else if (progress > 75) {
-      statusColor = 'text-yellow-400';
-      statusBg = 'bg-yellow-500/10';
-      statusBorder = 'border-yellow-500/30';
-      progressBg = 'bg-yellow-500';
-    }
-
-return (
-      <div
-        key={uniqueKey}
-        style={{
-          width: CARD_WIDTH,
-          marginRight: MARGIN_RIGHT,
-          borderColor: isHighlighted ? '#facc15' : undefined
-        }}
-        className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
-            ${isHighlighted
-            ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
-            : `bg-white/10 hover:bg-white/15 border-white/20`
-          }
-          `}
-      >
-        {/* Upper Section: Rank + Name + Status Icon */}
+        // Use group-related icon instead of progress-based
+        const StatusIcon = getGroupIcon(cls);
+    
+        let statusColor = 'text-cyan-400';
+        let statusBg = 'bg-cyan-500/10';
+        let statusBorder = 'border-cyan-500/30';
+        let progressBg = 'bg-cyan-500';
+    
+        if (isGoalReached) {
+          statusColor = 'text-emerald-400';
+          statusBg = 'bg-emerald-500/20';
+          statusBorder = 'border-emerald-500/40';
+          progressBg = 'bg-emerald-500';
+        } else if (progress > 75) {
+          statusColor = 'text-yellow-400';
+          statusBg = 'bg-yellow-500/10';
+          statusBorder = 'border-yellow-500/30';
+          progressBg = 'bg-yellow-500';
+        }
+    
+        const cardBgClass = cls.color && cls.color.startsWith('bg-') 
+            ? `${cls.color} bg-opacity-10 hover:bg-opacity-20` 
+            : `bg-white/10 hover:bg-white/15`;
+    
+        return (
+          <div
+            key={uniqueKey}
+            style={{
+              width: CARD_WIDTH,
+              marginRight: MARGIN_RIGHT,
+              borderColor: isHighlighted ? '#facc15' : undefined
+            }}
+            className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+                ${isHighlighted
+                ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
+                : `${cardBgClass} border-white/20`
+              }
+              `}
+          >        {/* Upper Section: Rank + Name + Status Icon */}
         <div className="flex items-center justify-between p-2 pb-0 shrink-0">
           <div className={`w-5 h-5 rounded-full flex items-center justify-center border text-[9px] font-black shrink-0 shadow-lg
                 ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :

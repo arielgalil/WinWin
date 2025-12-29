@@ -41,4 +41,6 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Replace existing separate icons with the new unified component.
     - [x] Fix: LeaderIcon size regression (crown too small) and movement separation. f2d5a2a
     - [x] Fix: Missing background color for group tags in Momentum/Stars view. (Verified implementation is correct; potentially data issue if persisting)
+    - [ ] Fix: Podium animation not smooth (Rebuild animation).
+    - [ ] Fix: Missing delicate background color for group cards in 'Class Status' ticker.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Polish & Component Refactoring' (Protocol in workflow.md)
