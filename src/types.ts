@@ -113,6 +113,8 @@ export interface AppSettings {
   gemini_api_key?: string;
   language?: 'he' | 'en';
   is_frozen?: boolean;
+  ai_summary?: string | null;
+  ai_summary_updated_at?: string | null;
   settings_updated_at?: string;
   users_updated_at?: string;
   goals_updated_at?: string;

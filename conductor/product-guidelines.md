@@ -21,7 +21,7 @@
     - **Focus Management:** Implement focus trapping within modals to ensure keyboard navigation remains logical.
 
 ## 5. Visual Identity & Consistency
-- **Icons:** Use **Lucide React** icons exclusively.
+- **Icons:** Use **Google Material Symbols** exclusively.
 - **Imagery:** Prohibit the use of non-vector (raster) illustrations to maintain a clean, crisp, and professional look across all resolutions.
 - **Theme:** Full support for System, Light, and Dark modes.
 - **State Feedback:**

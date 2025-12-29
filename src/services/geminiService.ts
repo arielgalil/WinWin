@@ -136,21 +136,51 @@ export const generateFillerMessages = async (schoolName: string, competitionName
     }
 };
 
-export const generateAdminSummary = async (logs: ActionLog[], lang: Language = 'he'): Promise<string> => {
-    // Clean logs to remove IDs and internal data that might confuse the AI or end up in the summary
-    const cleanedLogs = logs.slice(0, 25).map(log => ({
-        timestamp: log.created_at,
-        event: log.description,
-        points: log.points,
-        performer: log.teacher_name || 'System',
-        note: log.note || ''
-    }));
+export const generateAdminSummary = async (
+  logs: ActionLog[],
+  settings: AppSettings,
+  lang: Language = 'he',
+  campaignId: string
+): Promise<string> => {
+  const threshold = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  if (settings.ai_summary && settings.ai_summary_updated_at) {
+    const lastUpdate = new Date(settings.ai_summary_updated_at).getTime();
+    const now = new Date().getTime();
+    if (now - lastUpdate < threshold) {
+      return settings.ai_summary;
+    }
+  }
 
-    const prompt = t('ai_prompt_summarize', lang, { data: JSON.stringify(cleanedLogs) });
-    
-    return await callGeminiFunction({
-        prompt,
-        systemInstruction: t('ai_instruction_admin', lang),
-        model: 'gemini-2.0-flash'
-    }, lang);
+  // Clean logs to remove IDs and internal data that might confuse the AI or end up in the summary
+  const cleanedLogs = logs.slice(0, 25).map(log => ({
+      timestamp: log.created_at,
+      event: log.description,
+      points: log.points,
+      performer: log.teacher_name || 'System',
+      note: log.note || ''
+  }));
+
+  const prompt = t('ai_prompt_summarize', lang, { data: JSON.stringify(cleanedLogs) });
+
+  const summary = await callGeminiFunction({
+      prompt,
+      systemInstruction: t('ai_instruction_admin', lang),
+      model: 'gemini-2.0-flash'
+  }, lang);
+
+  if (summary && campaignId) {
+    const { error } = await supabase
+      .from('app_settings')
+      .update({
+        ai_summary: summary,
+        ai_summary_updated_at: new Date().toISOString(),
+      })
+      .eq('campaign_id', campaignId);
+
+    if (error) {
+      console.error('Failed to save AI summary', error);
+    }
+  }
+
+  return summary;
 };

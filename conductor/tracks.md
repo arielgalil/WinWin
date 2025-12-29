@@ -49,6 +49,11 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Refactor: Unified Dashboard Card Header
 *Link: [./conductor/tracks/refactor_dashboard_headers_20251228/](./conductor/tracks/refactor_dashboard_headers_20251228/)*
 
+---
+
+## [~] Track: UI Polish and AI Summary Persistence
+*Link: [./conductor/tracks/ui_polish_ai_persistence_20251229/](./conductor/tracks/ui_polish_ai_persistence_20251229/)*
+
 
 
 

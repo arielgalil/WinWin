@@ -77,7 +77,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   const { classes } = useClasses(campaign?.id);
   const { tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage } = useTicker(campaign?.id);
   const { logs, fetchNextPage: loadMoreLogs } = useLogs(campaign?.id);
-  const { deleteLog, updateLog, updateClassTarget, updateSettingsGoals, updateTabTimestamp, refreshData } = useCompetitionMutations(campaign?.id);
+  const { deleteLog, updateLog, updateClassTarget, updateSettingsGoals, updateTabTimestamp, refreshData, updateAiSummary } = useCompetitionMutations(campaign?.id);
 
   const isAdmin = checkIsAdmin(user.role, campaignRole);
   const isSuper = checkIsSuperUser(user.role) || checkIsSuperUser(campaignRole);
@@ -325,7 +325,17 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                         </div>
                       )}
                       {activeTab === 'logs' && (
-                        <ActionLogPanel logs={logs} onLoadMore={loadMoreLogs} onDelete={deleteLog} onUpdate={(id, description, points) => updateLog({ id, description, points })} currentUser={user} settings={settings} isAdmin={isAdmin} onSave={() => updateTabTimestamp('logs')} />
+                        <ActionLogPanel 
+                          logs={logs} 
+                          onLoadMore={loadMoreLogs} 
+                          onDelete={deleteLog} 
+                          onUpdate={(id, description, points) => updateLog({ id, description, points })} 
+                          onUpdateSummary={updateAiSummary}
+                          currentUser={user} 
+                          settings={settings} 
+                          isAdmin={isAdmin} 
+                          onSave={() => updateTabTimestamp('logs')} 
+                        />
                       )}
                     </MotionDiv>
                   </AnimatePresence>

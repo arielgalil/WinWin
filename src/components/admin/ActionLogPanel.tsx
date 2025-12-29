@@ -20,6 +20,7 @@ interface ActionLogPanelProps {
     onLoadMore: () => void;
     onDelete: (id: string) => Promise<void>;
     onUpdate: (id: string, description: string, points: number) => Promise<void>;
+    onUpdateSummary?: (text: string) => Promise<void>;
     currentUser?: UserProfile;
     settings: AppSettings;
     isAdmin: boolean;
@@ -31,14 +32,16 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     onLoadMore,
     onDelete,
     onUpdate,
+    onUpdateSummary,
     currentUser,
+    settings,
     isAdmin,
     onSave
 }) => {
     const { t, language, isRTL } = useLanguage();
     const { triggerSave } = useSaveNotification();
 
-    const [summary, setSummary] = useState<string | null>(null);
+    const [summary, setSummary] = useState<string | null>(settings.ai_summary || null);
     const [isLoadingAI, setIsLoadingAI] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
     const [editingLogId, setEditingLogId] = useState<string | null>(null);
@@ -64,9 +67,16 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         return () => observer.disconnect();
     }, [logs.length, onLoadMore]);
 
-    // Auto-generate summary on mount if logs exist and summary is empty
+    // Update local summary state when settings change (e.g. from another client)
     useEffect(() => {
-        if (logs.length > 0 && !summary && !isLoadingAI) {
+        if (settings.ai_summary) {
+            setSummary(settings.ai_summary);
+        }
+    }, [settings.ai_summary]);
+
+    // Auto-generate summary on mount if logs exist AND NO summary exists in settings
+    useEffect(() => {
+        if (logs.length > 0 && !settings.ai_summary && !isLoadingAI) {
             handleGenerateSummary();
         }
     }, [logs.length]);
@@ -81,8 +91,11 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         setIsLoadingAI(true);
         setIsCopied(false);
         try {
-            const result = await generateAdminSummary(logs, language);
+            const result = await generateAdminSummary(logs, settings, language, settings.campaignId || '');
             setSummary(result);
+            if (onUpdateSummary) {
+                await onUpdateSummary(result);
+            }
             triggerSave('logs');
             if (onSave) await onSave();
         } catch (error: any) {
@@ -231,7 +244,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input value={editForm.desc || ''} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-50 shadow-sm" />
                                                     ) : (
                                                         <span className="text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] line-clamp-1 opacity-90">{log.description}</span>
                                                     )}
@@ -295,6 +308,11 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             </button>
                             <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner relative">
                                 {renderFormattedSummary(summary || '')}
+                                {settings.ai_summary_updated_at && summary && !isLoadingAI && (
+                                    <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] text-[var(--fs-xs)] text-[var(--text-muted)] text-center italic">
+                                        {t('last_updated')}: {new Date(settings.ai_summary_updated_at).toLocaleString(language === 'he' ? 'he-IL' : 'en-US')}
+                                    </div>
+                                )}
                             </div>
                         </AdminSectionCard>
                     </div>

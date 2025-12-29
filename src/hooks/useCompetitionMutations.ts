@@ -90,6 +90,16 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     else invalidate();
   }, [campaignId, invalidate]);
 
+  const updateAiSummary = useCallback(async (text: string) => {
+    if (!campaignId) return;
+    const { error } = await supabase.from('app_settings').update({ 
+      ai_summary: text,
+      ai_summary_updated_at: new Date().toISOString()
+    }).eq('campaign_id', campaignId);
+    if (error) console.error("AI Summary update failed", error);
+    else invalidate();
+  }, [campaignId, invalidate]);
+
   return {
     addPoints,
     updateCommentary,
@@ -99,6 +109,7 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     updateSettingsGoals,
     toggleFreeze,
     updateTabTimestamp,
+    updateAiSummary,
     refreshData: async () => {
       if (!campaignId) return;
       await queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
