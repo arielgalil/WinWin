@@ -204,8 +204,8 @@ test('AdminLayout mobile header handles theme toggle', () => {
     </AdminLayout>
   );
 
-  const themeToggleButton = screen.getByRole('button', { name: 'Toggle theme' });
-  fireEvent.click(themeToggleButton);
+  const themeToggleButtons = screen.getAllByRole('button', { name: 'Toggle theme' });
+  fireEvent.click(themeToggleButtons[0]);
   expect(toggleTheme).toHaveBeenCalled();
 });
 

@@ -260,6 +260,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
               >
                 <Share2 className="h-5 w-5" />
               </Button>
+
+              <Button
+                variant="ghost" size="icon"
+                onClick={toggleTheme}
+                title={t('toggle_theme')}
+                aria-label={t('toggle_theme')}
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
             </div>
 
             <div className="w-px h-6 bg-border" />
@@ -273,7 +282,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 </p>
               </div>
               <div className={cn(
-                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-offset-2 ring-primary bg-gradient-to-br",
+                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-offset-2 ring-primary border-2 border-primary/30 bg-gradient-to-br",
                 campaignRole === 'superuser' ? 'from-amber-400 to-orange-500' : 'from-primary to-accent'
               )}>
                 {userInitials}
