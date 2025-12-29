@@ -117,7 +117,16 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                         <AnimatePresence mode="wait">
                             <MotionDiv key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="space-y-1.5 pb-2" >
                                 {displayList.map((student, idx) => (
-                                    <div key={student.id} className={`relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border transition-all duration-300 ${isMomentumMode ? 'bg-white/10 border-yellow-500/20' : idx === 0 ? 'bg-white/20 border-pink-500/40 shadow-lg shadow-pink-500/10' : 'bg-white/10 border-white/20 hover:bg-white/15'}`} >
+                                    <div 
+                                        key={student.id} 
+                                        className={`relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border transition-all duration-300 ${
+                                            isMomentumMode 
+                                                ? `${student.classColor && student.classColor.startsWith('bg-') ? `${student.classColor}/10` : 'bg-white/10'} border-yellow-500/20 shadow-lg shadow-yellow-500/5` 
+                                                : idx === 0 
+                                                    ? 'bg-white/20 border-pink-500/40 shadow-lg shadow-pink-500/10' 
+                                                    : 'bg-white/10 border-white/20 hover:bg-white/15'
+                                        }`} 
+                                    >
                                         <div className={`w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 ml-2.5 ${isMomentumMode ? 'bg-yellow-500 text-black' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
                                             {isMomentumMode ? <TrendUpIcon className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> : student.rank}
                                         </div>
@@ -125,8 +134,8 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                                                 <span className="font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] text-white truncate leading-none">{student.name}</span>
                                                 <div 
-                                                    className={`flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 ${student.classColor && student.classColor.startsWith('bg-') ? student.classColor : ''}`}
-                                                    style={student.classColor && !student.classColor.startsWith('bg-') ? { backgroundColor: student.classColor } : undefined}
+                                                    className={`flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 backdrop-blur-sm ${student.classColor && student.classColor.startsWith('bg-') ? `${student.classColor}/20` : ''}`}
+                                                    style={student.classColor && !student.classColor.startsWith('bg-') ? { backgroundColor: `${student.classColor}33` } : undefined}
                                                 >
                                                     {student.className}
                                                 </div>

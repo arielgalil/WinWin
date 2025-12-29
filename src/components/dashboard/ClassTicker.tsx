@@ -93,25 +93,43 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
           progressBg = 'bg-yellow-500';
         }
     
-        const cardBgClass = cls.color && cls.color.startsWith('bg-') 
-            ? `${cls.color} bg-opacity-10 hover:bg-opacity-20` 
-            : `bg-white/10 hover:bg-white/15`;
+            const cardBgClass = cls.color && cls.color.startsWith('bg-') 
     
-        return (
-          <div
-            key={uniqueKey}
-            style={{
-              width: CARD_WIDTH,
-              marginRight: MARGIN_RIGHT,
-              borderColor: isHighlighted ? '#facc15' : undefined
-            }}
-            className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
-                ${isHighlighted
-                ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
-                : `${cardBgClass} border-white/20`
-              }
-              `}
-          >        {/* Upper Section: Rank + Name + Status Icon */}
+                ? `${cls.color}/10 hover:${cls.color}/20` 
+    
+                : `bg-white/10 hover:bg-white/20`;
+    
+        
+    
+            return (
+    
+              <div
+    
+                key={uniqueKey}
+    
+                style={{
+    
+                  width: CARD_WIDTH,
+    
+                  marginRight: MARGIN_RIGHT,
+    
+                  borderColor: isHighlighted ? '#facc15' : undefined
+    
+                }}
+    
+                className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+    
+                    ${isHighlighted
+    
+                    ? 'scale-[1.05] bg-white/30 shadow-[0_0_40px_rgba(255,255,255,0.25)] z-10 border-white/50'
+    
+                    : `${cardBgClass} border-white/20`
+    
+                  }
+    
+                  `}
+    
+              >        {/* Upper Section: Rank + Name + Status Icon */}
         <div className="flex items-center justify-between p-2 pb-0 shrink-0">
           <div className={`w-5 h-5 rounded-full flex items-center justify-center border text-[9px] font-black shrink-0 shadow-lg
                 ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :
