@@ -149,7 +149,7 @@ export const he = {
     upload_file_button: "העלאת קובץ",
     music_settings_desc: "הגדרות מוזיקת רקע",
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
-    tip_atmosphere_desc: "💡 **טיפ:** בחרו מוזיקה קצבית ומעוררת השראה כדי להגביר את רמת האנרגיה בתחרות!",
+    tip_atmosphere_desc: "בחרו מוזיקה קצבית ומעוררת השראה כדי להגביר את רמת האנרגיה בתחרות!",
     visual_design_desc: "התאמת צבעים ועיצוב המערכת",
     brand_palette: "פלטת המותג",
     typography_colors: "צבעי טיפוגרפיה",

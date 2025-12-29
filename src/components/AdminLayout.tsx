@@ -189,9 +189,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 "p-4 border-b border-border h-16 flex-row items-center gap-3",
                 dir === 'rtl' ? "pr-12" : "pl-12"
               )}>
-                <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 border border-primary/20">
-                  <Settings className="h-6 w-6" />
-                </div>
                 <SheetTitle className="text-xl font-bold text-foreground truncate">{t('admin_panel' as any)}</SheetTitle>
               </SheetHeader>
               <nav className="flex-1 flex flex-col gap-2 p-4">

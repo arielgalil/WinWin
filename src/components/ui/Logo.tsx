@@ -20,7 +20,7 @@ export const Logo: React.FC<LogoProps> = ({
   const [error, setError] = React.useState(false);
 
   return (
-    <div className={`rounded-full bg-white shadow-md flex items-center justify-center overflow-hidden border border-white/30 shrink-0 ${className}`}>
+    <div className={`rounded-full bg-white dark:bg-slate-900 shadow-md flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 shrink-0 ${className}`}>
       {src && !error ? (
         <img 
             src={src} 
@@ -29,7 +29,7 @@ export const Logo: React.FC<LogoProps> = ({
             onError={() => setError(true)} 
         />
       ) : (
-        <div className="flex items-center justify-center w-full h-full text-slate-400 bg-slate-50">
+        <div className="flex items-center justify-center w-full h-full text-slate-400 bg-slate-50 dark:bg-slate-950">
             {fallbackIcon === 'trophy' ? (
                 <TrophyIcon className="w-1/2 h-1/2 text-amber-500" />
             ) : (

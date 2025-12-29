@@ -12,6 +12,7 @@ import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
+import { AdminButton } from '../ui/AdminButton';
 
 const MotionDiv = motion.div as any;
 
@@ -91,7 +92,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         setIsLoadingAI(true);
         setIsCopied(false);
         try {
-            const result = await generateAdminSummary(logs, settings, language, settings.campaignId || '');
+            const result = await generateAdminSummary(logs, settings, language, settings.campaign_id || '');
             setSummary(result);
             if (onUpdateSummary) {
                 await onUpdateSummary(result);
@@ -236,7 +237,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[var(--fs-sm)] font-[var(--fw-bold)] text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[var(--fs-sm)] font-[var(--fw-bold)] text-white shadow-sm shrink-0 ${isMine ? 'bg-cyan-700 dark:bg-cyan-600' : 'bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-300'}`}>
                                                             {getInitials(log.teacher_name)}
                                                         </div>
                                                         <span className={`text-[var(--fs-sm)] font-[var(--fw-bold)] whitespace-nowrap ${isMine ? 'text-cyan-700 dark:text-cyan-400' : 'text-[var(--text-main)]'}`}>{isMine ? t('me') : log.teacher_name || t('system')}</span>
@@ -244,14 +245,14 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                 </td>
                                                 <td className="p-4">
                                                     {isEditing ? (
-                                                        <input value={editForm.desc || ''} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-50 shadow-sm" />
+                                                        <input value={editForm.desc || ''} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm" />
                                                     ) : (
                                                         <span className="text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] line-clamp-1 opacity-90">{log.description}</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
-                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-center font-[var(--fw-bold)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" />
+                                                        <input type="text" value={formatNumberWithCommas(editForm.points || 0)} onChange={e => setEditForm(prev => ({ ...prev, points: parseFormattedNumber(e.target.value) }))} className="w-20 px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-center font-[var(--fw-bold)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm" />
                                                     ) : (
                                                         <span className={`text-[var(--fs-base)] font-[var(--fw-bold)] tabular-nums ${log.points > 0 ? 'text-[var(--status-success-text)]' : 'text-[var(--status-error-text)]'}`}>
                                                             <FormattedNumber value={log.points} forceSign={true} />
@@ -263,13 +264,13 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                         <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
-                                                                    <button onClick={() => handleUpdate(log.id)} disabled={isProcessing} className="p-2 bg-[var(--status-success-bg)] text-[var(--status-success-text)] border border-[var(--status-success-text)]/20 rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><SaveIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => setEditingLogId(null)} className="p-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm"><XIcon className="w-4 h-4" /></button>
+                                                                    <AdminButton onClick={() => handleUpdate(log.id)} isLoading={isProcessing} variant="success" size="sm" className="w-10 h-10 px-0" icon={<SaveIcon className="w-4 h-4" />} />
+                                                                    <AdminButton onClick={() => setEditingLogId(null)} variant="secondary" size="sm" className="w-10 h-10 px-0" icon={<XIcon className="w-4 h-4" />} />
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <button onClick={() => startEditing(log)} className="p-2 text-[var(--text-muted)] hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm" title={t('edit_action')}><EditIcon className="w-4 h-4" /></button>
-                                                                    <button onClick={() => handleToggleCancel(log)} className={`p-2 rounded-[var(--radius-main)] transition-all min-h-[44px] min-w-[44px] flex items-center justify-center shadow-sm ${isCancelled ? 'bg-[var(--status-success-bg)] text-[var(--status-success-text)]' : 'text-[var(--text-muted)] hover:bg-[var(--status-error-bg)] hover:text-[var(--status-error-text)]'}`} title={isCancelled ? t('restore_action') : t('cancel_action')}>{isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />}</button>
+                                                                    <AdminButton onClick={() => startEditing(log)} variant="ghost" size="sm" className="w-10 h-10 px-0" icon={<EditIcon className="w-4 h-4" />} title={t('edit_action')} />
+                                                                    <AdminButton onClick={() => handleToggleCancel(log)} variant={isCancelled ? 'success' : 'ghost'} size="sm" className="w-10 h-10 px-0" icon={isCancelled ? <UndoIcon className="w-4 h-4" /> : <TrashIcon className="w-4 h-4" />} title={isCancelled ? t('restore_action') : t('cancel_action')} />
                                                                 </>
                                                             )}
                                                         </div>
@@ -292,25 +293,31 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
                             className="flex flex-col h-[600px]"
                             rightAction={summary && (
-                                <button onClick={handleCopySummary} className={`p-2 rounded-[var(--radius-main)] flex items-center gap-2 text-[var(--fs-sm)] font-[var(--fw-bold)] min-h-[44px] border transition-all ${isCopied ? 'bg-green-100 text-green-700 border-green-200' : 'bg-[var(--bg-card)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]'}`}>
-                                    {isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
+                                <AdminButton
+                                    onClick={handleCopySummary}
+                                    variant={isCopied ? 'success' : 'secondary'}
+                                    size="sm"
+                                    icon={isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
+                                >
                                     {isCopied ? t('copied') : t('copy')}
-                                </button>
+                                </AdminButton>
                             )}
                         >
-                            <button 
+                            <AdminButton 
                                 onClick={handleGenerateSummary} 
-                                disabled={isLoadingAI} 
-                                className="mb-6 w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-[var(--fw-bold)] py-4 rounded-[var(--radius-main)] flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                                isLoading={isLoadingAI} 
+                                variant="primary"
+                                size="lg"
+                                className="mb-6 w-full py-4"
+                                icon={<SparklesIcon className="w-5 h-5" />}
                             >
-                                {isLoadingAI ? <RefreshIcon className="w-5 h-5 animate-spin" /> : <SparklesIcon className="w-5 h-5" />}
-                                <span>{isLoadingAI ? t('analyzing_data') : t('generate_new_analysis')}</span>
-                            </button>
+                                {t('generate_new_analysis')}
+                            </AdminButton>
                             <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner relative">
                                 {renderFormattedSummary(summary || '')}
                                 {settings.ai_summary_updated_at && summary && !isLoadingAI && (
                                     <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] text-[var(--fs-xs)] text-[var(--text-muted)] text-center italic">
-                                        {t('last_updated')}: {new Date(settings.ai_summary_updated_at).toLocaleString(language === 'he' ? 'he-IL' : 'en-US')}
+                                        {t('last_update' as any)}: {new Date(settings.ai_summary_updated_at).toLocaleString(language === 'he' ? 'he-IL' : 'en-US')}
                                     </div>
                                 )}
                             </div>

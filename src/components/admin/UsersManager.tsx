@@ -5,6 +5,7 @@ import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
+import { AdminButton } from '../ui/AdminButton';
 import { supabase, createTempClient } from '../../supabaseClient';
 import { isSuperUser } from '../../config';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -248,14 +249,15 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                 description={t('team_mgmt_subtitle')}
                 icon={<UsersIcon className="w-6 h-6" />}
                 rightAction={
-                    <button
+                    <AdminButton
                         onClick={() => fileInputRef.current?.click()}
-                        disabled={isBulkImporting}
-                        className="group relative flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-blue-500/10 hover:bg-slate-200 dark:hover:bg-blue-500/20 text-blue-900 dark:text-blue-400 hover:text-blue-950 dark:hover:text-blue-300 rounded-[var(--radius-main)] transition-all font-bold text-xs border border-gray-300 dark:border-blue-500/20 active:scale-95 disabled:opacity-50 shadow-sm"
+                        variant="secondary"
+                        size="md"
+                        isLoading={isBulkImporting}
+                        icon={<UploadIcon className="w-4 h-4" />}
                     >
-                        {isBulkImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />}
                         {t('import_from_excel')}
-                    </button>
+                    </AdminButton>
                 }
             >
                 <input
@@ -323,14 +325,16 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             </select>
                         </div>
                         <div className="flex items-end">
-                            <button
+                            <AdminButton
                                 type="submit"
-                                disabled={!!userCreationStatus}
-                                className="w-full h-[42px] bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                variant="primary"
+                                size="md"
+                                isLoading={!!userCreationStatus}
+                                icon={<PlusIcon className="w-4 h-4" />}
+                                className="w-full h-[42px]"
                             >
-                                {userCreationStatus ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <PlusIcon className="w-4 h-4" />}
                                 {t('add_join_user_button')}
-                            </button>
+                            </AdminButton>
                         </div>
                     </form>
                     {userCreationStatus && (
@@ -417,8 +421,24 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                     actions={(u) => (
                         editingUserId === u.id ? (
                             <div className="flex gap-2">
-                                <button onClick={() => saveUserChanges(u.id)} className="p-2 bg-green-100 dark:bg-green-500/10 text-green-900 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-500/20 rounded-[var(--radius-main)] transition-colors border border-green-300" title={t('save')}><CheckIcon className="w-4 h-4" /></button>
-                                <button onClick={() => setEditingUserId(null)} className="p-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] transition-colors hover:bg-[var(--bg-hover)]" title={t('cancel')}><XIcon className="w-4 h-4" /></button>
+                                <AdminButton 
+                                    onClick={() => saveUserChanges(u.id)} 
+                                    variant="success" 
+                                    size="sm" 
+                                    className="w-10 h-10 px-0" 
+                                    title={t('save')}
+                                >
+                                    <CheckIcon className="w-4 h-4" />
+                                </AdminButton>
+                                <AdminButton 
+                                    onClick={() => setEditingUserId(null)} 
+                                    variant="secondary" 
+                                    size="sm" 
+                                    className="w-10 h-10 px-0" 
+                                    title={t('cancel')}
+                                >
+                                    <XIcon className="w-4 h-4" />
+                                </AdminButton>
                             </div>
                         ) : (
                             (!isSuperUser(u.role) || isSuperUser(currentUser?.role)) ? (

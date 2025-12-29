@@ -3,7 +3,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { ClassRoom, AppSettings, ScorePreset, TickerMessage } from '../../types';
-import { RefreshIcon, XIcon, UploadIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon, SparklesIcon, PlusIcon } from '../ui/Icons';
+import { XIcon, UploadIcon, StarIcon, SunIcon, MoonIcon, SaveIcon, MusicIcon, Volume2Icon, SparklesIcon, PlusIcon } from '../ui/Icons';
 import { supabase } from '../../supabaseClient';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
+import { AdminButton } from '../ui/AdminButton';
 
 const MotionDiv = motion.div as any;
 
@@ -255,11 +256,24 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         placeholder="https://image-url.com/logo.png"
                                     />
                                     <div className="flex gap-3">
-                                        <label className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-card)] text-[var(--text-main)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm">
-                                            {isUploading ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
-                                            {isUploading ? t('saving') : t('upload_file_button')}
-                                            <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={isUploading} />
-                                        </label>
+                                        <AdminButton
+                                            type="button"
+                                            variant="secondary"
+                                            size="md"
+                                            isLoading={isUploading}
+                                            icon={<UploadIcon className="w-4 h-4" />}
+                                            onClick={() => (document.getElementById('logo-upload-input') as HTMLInputElement)?.click()}
+                                        >
+                                            {t('upload_file_button')}
+                                            <input 
+                                                id="logo-upload-input"
+                                                type="file" 
+                                                className="hidden" 
+                                                accept="image/*" 
+                                                onChange={handleLogoUpload} 
+                                                disabled={isUploading} 
+                                            />
+                                        </AdminButton>
                                     </div>
                                 </div>
                             </div>
@@ -327,7 +341,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 </div>
                                 <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-[var(--radius-main)]">
                                     <p className="text-[var(--fs-sm)] text-blue-600 dark:text-blue-400 font-[var(--fw-medium)] leading-relaxed">
-                                        {t('tip_atmosphere_desc')}
+                                        💡 <strong>{t('tip_atmosphere_title' as any)}</strong> {t('tip_atmosphere_desc' as any).replace('💡 **טיפ:**', '').replace(/\*\*/g, '').trim()}
                                     </p>
                                 </div>
                             </div>
@@ -421,33 +435,33 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('min_points_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('min_points_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
                                 value={formatNumberWithCommas(formData.min_points ?? -100)}
                                 onChange={e => updateForm({ min_points: parseFormattedNumber(e.target.value) || -100 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('max_points_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('max_points_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
                                 value={formatNumberWithCommas(formData.max_points ?? 1000)}
                                 onChange={e => updateForm({ max_points: parseFormattedNumber(e.target.value) || 1000 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('points_step_label')}</label>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('points_step_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
                                 value={formatNumberWithCommas(formData.points_step ?? 5)}
                                 onChange={e => updateForm({ points_step: parseFormattedNumber(e.target.value) || 5 })}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-left shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
                             />
                         </div>
                     </div>
@@ -487,10 +501,16 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 />
                             </div>
                             <div className="sm:pt-5 pt-2 flex items-end">
-                                <button type="button" onClick={handleAddPreset} className="bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] py-2.5 px-6 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-lg shadow-indigo-500/20 flex items-center gap-2 w-full sm:w-auto justify-center text-[var(--fs-sm)]">
-                                    <PlusIcon className="w-4 h-4" />
+                                <AdminButton
+                                    type="button"
+                                    variant="primary"
+                                    size="md"
+                                    onClick={handleAddPreset}
+                                    icon={<PlusIcon className="w-4 h-4" />}
+                                    className="w-full sm:w-auto"
+                                >
                                     {t('add')}
-                                </button>
+                                </AdminButton>
                             </div>
                         </div>
                     </div>
@@ -518,21 +538,23 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             </div>
                             <div className="flex gap-2">
                                 {!message && (
-                                    <button
+                                    <AdminButton
+                                        variant="ghost"
+                                        size="md"
                                         onClick={() => setFormData(settings)}
-                                        className="px-4 py-2 rounded-[var(--radius-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] hover:bg-[var(--bg-hover)] transition-colors text-[var(--text-muted)]"
                                     >
                                         {t('cancel' as any)}
-                                    </button>
+                                    </AdminButton>
                                 )}
-                                <button
+                                <AdminButton
+                                    variant="primary"
+                                    size="md"
                                     onClick={handleSaveSettings}
-                                    disabled={isSaving}
-                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-[var(--radius-main)] flex items-center gap-2 font-[var(--fw-bold)] text-[var(--fs-sm)] disabled:opacity-50 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                                    isLoading={isSaving}
+                                    icon={<SaveIcon className="w-4 h-4" />}
                                 >
-                                    {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
-                                    {isSaving ? t('saving') : t('save')}
-                                </button>
+                                    {t('save')}
+                                </AdminButton>
                             </div>
                         </MotionDiv>
                     </AnimatePresence>

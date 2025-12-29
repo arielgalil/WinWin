@@ -131,7 +131,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     const getNavButtonClass = () => `
         shrink-0 outline-none focus:outline-none focus:ring-0
         hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]
-        transition-all duration-300 hover:text-white/100
+        transition-all duration-300 hover:text-foreground
     `;
 
     const getNavButtonStyle = () => ({
@@ -150,7 +150,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         {/* 1. Branding (Right Side) */}
                         <button 
                             onClick={() => navigate('/')}
-                            className={`flex items-center gap-1.5 ml-3 h-5 border-l border-white/10 pl-3 sm:gap-2 text-white/90 hover:text-white/100 ${getNavButtonClass()}`}
+                            className={`flex items-center gap-1.5 ml-3 h-5 border-l border-foreground/10 pl-3 sm:gap-2 text-foreground/90 hover:text-foreground ${getNavButtonClass()}`}
                             title={t('nav_home')}
                             style={getNavButtonStyle()}
                         >
@@ -165,7 +165,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 <button 
                                     onClick={() => navigate(`/comp/${fallbackSlug}`)} 
                                     title={t('score_board')} 
-                                    className={`w-7 h-7 flex items-center justify-center ${isBoardActive ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${isBoardActive ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
                                     <TrophyIcon className="w-4 h-4" />
@@ -176,7 +176,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 <button 
                                     onClick={() => navigate(isAdmin ? `/admin/${fallbackSlug}/points` : `/vote/${fallbackSlug}`)} 
                                     title={t('enter_points')} 
-                                    className={`w-7 h-7 flex items-center justify-center ${isVoteActive ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${isVoteActive ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
                                     <CalculatorIcon className="w-4 h-4" />
@@ -187,20 +187,20 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 <button 
                                     onClick={() => navigate(`/admin/${fallbackSlug}/settings`)} 
                                     title={t('manage')} 
-                                    className={`w-7 h-7 flex items-center justify-center ${isManageActive ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${isManageActive ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
                                     <SettingsIcon className="w-4 h-4" />
                                 </button>
                             )}
 
-                            <div className="w-px h-4 bg-white/10 mx-1.5" />
+                            <div className="w-px h-4 bg-foreground/10 mx-1.5" />
 
                             {/* 3. Utility Icons (Music, TV Mode, Debug, Super) */}
                             {musicState && (
                                 <button 
                                     onClick={musicState.onToggle} 
-                                    className={`w-7 h-7 flex items-center justify-center ${musicState.isPlaying ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${musicState.isPlaying ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     title={t('music')}
                                     style={getNavButtonStyle()}
                                 >
@@ -211,7 +211,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             {isBoardActive && (
                                 <button 
                                     onClick={() => setIsLowPerf(!isLowPerf)} 
-                                    className={`w-7 h-7 flex items-center justify-center ${isLowPerf ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${isLowPerf ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     title={t('tv_mode')}
                                     style={getNavButtonStyle()}
                                 >
@@ -222,7 +222,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             {isSuperUser && (
                                 <button 
                                     onClick={() => navigate('/super')} 
-                                    className={`w-7 h-7 flex items-center justify-center ${fallbackPath === '/super' ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                    className={`w-7 h-7 flex items-center justify-center ${fallbackPath === '/super' ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                     title={t('system_admin')}
                                     style={getNavButtonStyle()}
                                 >
@@ -232,7 +232,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
 
                             <button 
                                 onClick={() => setIsDebugOpen(!isDebugOpen)} 
-                                className={`w-7 h-7 flex items-center justify-center ${isDebugOpen ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                className={`w-7 h-7 flex items-center justify-center ${isDebugOpen ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                 title={t('debug')}
                                 style={getNavButtonStyle()}
                             >
@@ -241,12 +241,12 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </div>
 
                         {/* 4. Auth Section (Left Side) */}
-                        <div className="mr-2 flex items-center border-r border-white/10 pr-2">
+                        <div className="mr-2 flex items-center border-r border-foreground/10 pr-2">
                             {!user ? (
 <button
                                         onClick={() => navigate('/login')}
                                         title={t('login_title')}
-                                        className={`w-7 h-7 flex items-center justify-center ${fallbackPath.includes('/login') ? 'text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-white/60 opacity-80'} ${getNavButtonClass()}`}
+                                        className={`w-7 h-7 flex items-center justify-center ${fallbackPath.includes('/login') ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
                                         style={getNavButtonStyle()}
                                     >
                                         <LockIcon className="w-4 h-4" />
@@ -256,7 +256,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     <button
                                         onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                                         title={user.full_name}
-                                        className="w-5 h-5 rounded-full bg-transparent border-[1.5px] border-white flex items-center justify-center text-[8px] font-extrabold text-white transition-all shrink-0 outline-none focus:outline-none text-white/80 opacity-80 hover:text-white hover:opacity-100 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] hover:scale-110 focus:ring-0"
+                                        className="w-5 h-5 rounded-full bg-transparent border-[1.5px] border-foreground flex items-center justify-center text-[8px] font-extrabold text-foreground transition-all shrink-0 outline-none focus:outline-none opacity-80 hover:opacity-100 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] hover:scale-110 focus:ring-0"
                                         style={{
                                             transition: 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
                                         }}

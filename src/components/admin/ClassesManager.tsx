@@ -5,6 +5,7 @@ import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
+import { AdminButton } from '../ui/AdminButton';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -299,7 +300,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                 icon={<UsersIcon className="w-6 h-6" />}
                 rightAction={
                     <div className="flex items-center gap-3">
-                        <button
+                        <AdminButton
                             onClick={() => {
                                 const input = document.createElement('input');
                                 input.type = 'file';
@@ -308,19 +309,21 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 input.click();
                             }}
                             disabled={isImporting}
-                            className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-[var(--fw-bold)] rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm"
+                            variant="secondary"
+                            size="md"
+                            icon={<UploadIcon className="w-4 h-4" />}
                         >
-                            {isImporting ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <UploadIcon className="w-4 h-4" />}
                             {t('smart_import')}
-                        </button>
+                        </AdminButton>
 
-                        <button
+                        <AdminButton
                             onClick={() => setIsAddingClass(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-[var(--fs-sm)]"
+                            variant="primary"
+                            size="md"
+                            icon={<PlusIcon className="w-4 h-4" />}
                         >
-                            <PlusIcon className="w-4 h-4" />
                             {t('add_new_group')}
-                        </button>
+                        </AdminButton>
                     </div>
                 }
             >
@@ -360,8 +363,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-auto pt-2 justify-end">
-                                    <button onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }} className="px-6 bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] text-[var(--text-muted)] font-[var(--fw-bold)] py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] text-[var(--fs-xs)] transition-all shadow-sm">{t('cancel')}</button>
-                                    <button onClick={editingClass ? handleUpdateClass : handleAddClass} className="px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] py-2.5 rounded-[var(--radius-main)] text-[var(--fs-xs)] shadow-lg shadow-indigo-500/20 transition-all active:scale-95">{t('save')}</button>
+                                    <AdminButton variant="secondary" size="sm" onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }}>
+                                        {t('cancel')}
+                                    </AdminButton>
+                                    <AdminButton variant="primary" size="sm" onClick={editingClass ? handleUpdateClass : handleAddClass}>
+                                        {t('save')}
+                                    </AdminButton>
                                 </div>
                             </MotionDiv>
                         )}
@@ -461,7 +468,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                                 placeholder={t('new_student_placeholder')} 
                                                 className="flex-1 px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" 
                                             />
-                                            <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] px-6 py-2.5 rounded-[var(--radius-main)] shadow-md transition-all text-[var(--fs-sm)]">{t('add')}</button>
+                                            <AdminButton type="submit" variant="primary" size="md">{t('add')}</AdminButton>
                                         </div>
                                     </form>
                                 </div>
@@ -488,12 +495,13 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             </div>
 
                             <div className="p-4 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] flex justify-end shrink-0">
-                                <button 
+                                <AdminButton 
                                     onClick={() => setView('list')} 
-                                    className="px-6 py-2 bg-[var(--bg-card)] border border-[var(--border-main)] text-[var(--text-main)] font-[var(--fw-bold)] rounded-[var(--radius-main)] hover:bg-[var(--bg-hover)] transition-all text-[var(--fs-sm)] shadow-sm"
+                                    variant="secondary"
+                                    size="md"
                                 >
                                     {t('close_window')}
-                                </button>
+                                </AdminButton>
                             </div>
                         </MotionDiv>
                     </div>
