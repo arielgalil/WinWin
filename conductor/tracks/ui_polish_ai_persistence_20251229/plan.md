@@ -18,7 +18,7 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Ensure the UI displays the "last updated" time.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: AI Summary Persistence & Backend Integration' (Protocol in workflow.md)
 
-## Phase 2: Text Formatting & Ticker Improvements
+## Phase 2: Text Formatting & Ticker Improvements [checkpoint: a24a851]
 - [x] Task: Fix Placeholder Replacement Logic 0dfe05f
     - [x] Identify all instances of `% {emoji}`, `% {stage}`, and `% {names}` in the codebase (likely in `useTicker.ts` or message generators).
     - [x] Write unit tests for the replacement utility function.
@@ -27,7 +27,7 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Write tests for the ticker message formatter.
     - [x] Implement logic to replace `*` with `•` (bullet points) or appropriate separators.
     - [x] Ensure consistent spacing between bulleted items.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Text Formatting & Ticker Improvements' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Text Formatting & Ticker Improvements' (Protocol in workflow.md) a24a851
 
 ## Phase 3: UI Polish & Component Refactoring
 - [ ] Task: Momentum/Stars Group Coloring
