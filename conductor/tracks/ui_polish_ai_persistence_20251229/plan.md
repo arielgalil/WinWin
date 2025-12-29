@@ -48,11 +48,12 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
 ## Phase 4: Admin Panel & Footer Refinements (User Feedback)
 - [x] Task: Implement Collapsible Desktop Sidebar
     - [x] Add `isCollapsed` state to `AdminLayout`.
-    - [x] Add toggle button to sidebar footer.
+    - [x] Implement collapse toggle using the Hamburger Menu (3 horizontal lines) in the desktop header.
     - [x] Adjust width (w-64 -> w-16) and hide labels when collapsed.
 - [x] Task: Fix Avatar Styling & Initials
-    - [x] Update initials logic to support 2 characters (split by space).
-    - [x] Ensure visible ring/border around the avatar.
-- [x] Task: Polish Version Footer
+    - [x] Update initials logic to support 2 characters (split by space) e.g. "משתמש על" -> "מע".
+    - [x] Ensure visible ring/border around the avatar and correct RTL positioning (left side of header).
+- [x] Task: Polish Version Footer & Translations
     - [x] Remove border, shadow, and background from the navigation pill to make it fully transparent.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Admin Panel & Footer Refinements' (Protocol in workflow.md)
+    - [x] Fix missing translation for `return_to_dashboard` in the sidebar.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Admin Panel & Footer Refinements' (Protocol in workflow.md) [checkpoint: b1a71c0]
