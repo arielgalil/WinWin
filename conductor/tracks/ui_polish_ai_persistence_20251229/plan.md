@@ -16,7 +16,7 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Write tests for the summary display component.
     - [x] Add a "Regenerate" button to the AI summary section.
     - [x] Ensure the UI displays the "last updated" time.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: AI Summary Persistence & Backend Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: AI Summary Persistence & Backend Integration' (Protocol in workflow.md)
 
 ## Phase 2: Text Formatting & Ticker Improvements [checkpoint: a24a851]
 - [x] Task: Fix Placeholder Replacement Logic 0dfe05f
