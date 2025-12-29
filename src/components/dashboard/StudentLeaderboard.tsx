@@ -121,7 +121,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                         key={student.id} 
                                         className={`relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border transition-all duration-300 ${
                                             isMomentumMode 
-                                                ? `${student.classColor && student.classColor.startsWith('bg-') ? `${student.classColor}/10` : 'bg-white/10'} border-yellow-500/20 shadow-lg shadow-yellow-500/5` 
+                                                ? 'bg-white/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5' 
                                                 : idx === 0 
                                                     ? 'bg-white/20 border-pink-500/40 shadow-lg shadow-pink-500/10' 
                                                     : 'bg-white/10 border-white/20 hover:bg-white/15'
