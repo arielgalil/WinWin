@@ -6,7 +6,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
 - [x] Task: Configure Shadcn/UI for Tailwind 4 f8efe90
     - [ ] Install Shadcn/UI dependencies and initialize.
     - [ ] Update `tailwind.config.ts` or CSS variables for Tailwind 4 compatibility.
-- [~] Task: Define Brand-Infused Design Tokens
+- [x] Task: Define Brand-Infused Design Tokens c4c542e
     - [ ] Configure `globals.css` with Shadcn base (slate/zinc).
     - [ ] Override `--primary`, `--accent`, and `--ring` variables to match WinWin cyan/purple tones.     
     - [ ] Verify Noto Sans Hebrew is the default font for all UI components.- [ ] Task: Admin-Specific Lucide Icon Integration
