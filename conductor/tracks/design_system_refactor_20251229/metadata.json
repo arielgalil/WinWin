@@ -1,0 +1,8 @@
+{
+  "track_id": "design_system_refactor_20251229",
+  "type": "refactor",
+  "status": "new",
+  "created_at": "2025-12-29T13:53:00Z",
+  "updated_at": "2025-12-29T13:53:00Z",
+  "description": "טראק 4: איחוד ממשק ומערכת עיצוב (Design System Refactor) המתבסס על הטמעת Shadcn/UI ב-Admin Panel ובניית Design Tokens אחידים (אייקונים של Material Symbols, טיפוגרפיה וריווחים) עבור לוח התחרות, הכל תוך שמירה על הסטאק המודרני של React 19 ו-Tailwind 4 והקפדה על החזון הויזואלי ה\"High-energy\" של פלטפורמת WinWin."
+}
