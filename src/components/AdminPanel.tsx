@@ -130,7 +130,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     try {
     const message = generateRoleBasedShareMessage({
       role: campaignRole,
-      campaign: currentCampaign,
+      campaign: campaign,
       institutionName: settings.school_name || t('educational_institution'),
       origin: window.location.origin,
       language: language

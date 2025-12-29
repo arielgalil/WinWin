@@ -141,7 +141,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
                                         return <strong key={i} className="text-yellow-400 font-black">{content}</strong>;
                                     }
-                                    return part;
+                                    return part.replace(/\s*\*\s*/g, ' • ');
                                 })}
                             </span>
                         </MotionDiv>

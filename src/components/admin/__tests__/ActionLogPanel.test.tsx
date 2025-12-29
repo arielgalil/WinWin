@@ -51,6 +51,7 @@ const mockSettings: AppSettings = {
   logo_url: null,
   ai_summary: null,
   ai_summary_updated_at: null,
+  campaignId: 'campaign-id-123',
 };
 
 describe('ActionLogPanel', () => {
@@ -99,6 +100,11 @@ describe('ActionLogPanel', () => {
   });
 
   it('should generate a new AI summary if none exists in settings', async () => {
+    let resolveSummary: (value: string) => void = () => {};
+    (geminiService.generateAdminSummary as vi.Mock).mockImplementation(() => new Promise(resolve => {
+        resolveSummary = resolve;
+    }));
+
     act(() => {
       render(<ActionLogPanel {...defaultProps} />);
     });
@@ -107,6 +113,11 @@ describe('ActionLogPanel', () => {
     // The selector 'div > span' targets the span inside the flex container of the loading state
     const analyzingDataElement = await screen.findByText('analyzing_data', { selector: 'div > span' });
     expect(analyzingDataElement).toBeInTheDocument();
+
+    // Resolve the promise to finish loading
+    await act(async () => {
+      resolveSummary('Generated AI Summary');
+    });
 
     await waitFor(() => {
       expect(geminiService.generateAdminSummary).toHaveBeenCalledWith(
@@ -126,6 +137,11 @@ describe('ActionLogPanel', () => {
       ai_summary_updated_at: oldDate.toISOString(),
     };
 
+    let resolveSummary: (value: string) => void = () => {};
+    (geminiService.generateAdminSummary as vi.Mock).mockImplementation(() => new Promise(resolve => {
+        resolveSummary = resolve;
+    }));
+
     act(() => {
         render(<ActionLogPanel {...defaultProps} settings={settingsWithOldSummary} />);
     });
@@ -135,13 +151,18 @@ describe('ActionLogPanel', () => {
     expect(geminiService.generateAdminSummary).not.toHaveBeenCalled();
 
     // Click the regenerate button
-    act(() => { 
+    await act(async () => { 
       fireEvent.click(screen.getByRole('button', { name: 'generate_new_analysis' }));
     });
 
     // Check for loading state
     const analyzingDataElement = await screen.findByText('analyzing_data', { selector: 'div > span' });
     expect(analyzingDataElement).toBeInTheDocument();
+
+    // Resolve the promise
+    await act(async () => {
+      resolveSummary('Generated AI Summary');
+    });
 
     await waitFor(() => {
       expect(geminiService.generateAdminSummary).toHaveBeenCalledWith(

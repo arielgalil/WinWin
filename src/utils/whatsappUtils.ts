@@ -34,8 +34,8 @@ export const parseFormattedText = (text: string) => {
     if (!text) return [];
     
     // Split by both ** and * patterns
-    // We prioritize ** first, then *
-    const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+    // We prioritize ** first, then * (strict: no spaces around content)
+    const parts = text.split(/(\*\*.*?\*\*|\*(?=\S).*?(?<=\S)\*)/g);
     
     return parts;
 };
