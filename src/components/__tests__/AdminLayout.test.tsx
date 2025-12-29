@@ -32,6 +32,9 @@ vi.mock('@/hooks/useLanguage', () => ({
       if (key === 'tab_points') return 'Points';
       if (key === 'tab_logs') return 'Logs';
       if (key === 'toggle_theme') return 'Toggle theme';
+      if (key === 'admin_panel') return 'Admin Panel';
+      if (key === 'collapse') return 'collapse';
+      if (key === 'expand') return 'expand';
       return key;
     },
     language: 'en'
@@ -100,6 +103,9 @@ beforeEach(() => {
       if (key === 'tab_points') return 'Points';
       if (key === 'tab_logs') return 'Logs';
       if (key === 'toggle_theme') return 'Toggle theme';
+      if (key === 'admin_panel') return 'Admin Panel';
+      if (key === 'collapse') return 'collapse';
+      if (key === 'expand') return 'expand';
       return key;
     },
     language: 'en'
@@ -136,7 +142,7 @@ test('AdminLayout renders children and desktop sidebar', () => {
   );
   
   expect(screen.getByTestId('child-content')).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'WinWin Admin', level: 1 })).toBeDefined();
+  expect(screen.getByRole('heading', { name: /Admin Panel|admin_panel/i, level: 1 })).toBeDefined();
   expect(screen.getByText('Test User')).toBeDefined();
   expect(screen.getByRole('button', { name: 'Settings' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Test School' })).toBeDefined();
@@ -169,7 +175,7 @@ test('AdminLayout mobile header opens and closes sidebar', async () => {
   fireEvent.click(menuButton);
 
   await waitFor(() => {
-    expect(screen.getByRole('heading', { name: 'WinWin Admin', level: 2 })).toBeVisible();
+    expect(screen.getByRole('heading', { name: /Admin Panel|admin_panel/i })).toBeVisible();
   });
   
   const closeButton = screen.getByRole('button', { name: 'Close' });
@@ -258,16 +264,16 @@ test('AdminLayout desktop sidebar collapses and expands', async () => {
   );
 
   // Initially visible
-  expect(screen.getByText('WinWin Admin')).toBeVisible();
+  expect(screen.getByText(/Admin Panel|admin_panel/i)).toBeVisible();
 
   // Find toggle button - now in the header with a Menu icon
   // It has a title derived from t('collapse') which we mocked
   const toggleBtn = screen.getByTitle('collapse');
   fireEvent.click(toggleBtn);
 
-  // After click, "WinWin Admin" should be hidden or removed from the DOM
+  // After click, "Admin Panel" should be hidden or removed from the DOM
   await waitFor(() => {
-    expect(screen.queryByText('WinWin Admin')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Admin Panel|admin_panel/i)).not.toBeInTheDocument();
   });
 
   // Click again to expand (title should now be 'expand')
@@ -275,6 +281,6 @@ test('AdminLayout desktop sidebar collapses and expands', async () => {
   fireEvent.click(expandBtn);
 
   await waitFor(() => {
-    expect(screen.getByText('WinWin Admin')).toBeVisible();
+    expect(screen.getByText(/Admin Panel|admin_panel/i)).toBeVisible();
   });
 });

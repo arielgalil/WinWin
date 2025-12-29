@@ -120,9 +120,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
         )}
       >
         <div className={cn("p-4 border-b h-16 flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
-          <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-9 h-9 shrink-0" fallbackIcon="school" />
+          <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+            <Settings className="h-6 w-6" />
+          </div>
           {!isCollapsed && (
-            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden">WinWin Admin</h1>
+            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden">{t('admin_panel' as any)}</h1>
           )}
         </div>
         
@@ -178,8 +180,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             </SheetTrigger>
             <SheetContent side="left" className={cn("w-72 p-0 flex flex-col", dir === 'rtl' ? "data-[state=open]:right-0 data-[state=open]:left-auto" : "data-[state=open]:left-0 data-[state=open]:right-auto")}>
               <SheetHeader className="p-4 border-b h-16 flex-row items-center gap-3">
-                <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-9 h-9" fallbackIcon="school" />
-                <SheetTitle className="text-xl font-bold">WinWin Admin</SheetTitle>
+                <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                  <Settings className="h-6 w-6" />
+                </div>
+                <SheetTitle className="text-xl font-bold">{t('admin_panel' as any)}</SheetTitle>
               </SheetHeader>
               <nav className="flex-1 flex flex-col gap-2 p-4">
                 {visibleNavItems.map((item, index) =>
