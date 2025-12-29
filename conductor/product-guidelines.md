@@ -21,7 +21,7 @@
     - **Focus Management:** Implement focus trapping within modals to ensure keyboard navigation remains logical.
 
 ## 5. Visual Identity & Consistency
-- **Icons:** Use **Google Material Symbols** exclusively.
+- **Icons:** Use Google Material Symbols for student-facing UI. Use Lucide React icons for the Admin Panel.
 - **Imagery:** Prohibit the use of non-vector (raster) illustrations to maintain a clean, crisp, and professional look across all resolutions.
 - **Theme:** Full support for System, Light, and Dark modes.
 - **State Feedback:**

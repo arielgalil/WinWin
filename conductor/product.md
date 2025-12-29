@@ -55,8 +55,9 @@
 * **Purpose:** Total control over the competition lifecycle and data.
 * **Requirements:**
     * **Data Grids:** Advanced tables with filtering, sorting, and bulk actions (e.g., "Add 50 points to selected students").
-        *   **CRUD Operations:** Create/Edit/Delete groups and students with strict validation and **enforced delete safety protocols**.
+        *   **CRUD Operations:** Create/Edit/Delete groups and students with strict validation and **enforced delete safety protocols** using modern Shadcn/UI components.
         *   **Audit Logs:** Ability to see who gave points to whom and when.
+        *   **Responsive Navigation:** Features a fully responsive Shadcn Sidebar, adapting to desktop and mobile views with RTL compatibility.
         *   **Responsiveness:** Must be fully functional on Desktop and Mobile (using specific RTL button layouts and destructive action safety gaps defined in Guidelines).
     *   **Quick Actions:** Role-based "Share" utility in header and mobile menu for easy distribution of competition links.
 
@@ -69,8 +70,8 @@
 
 ## Technical Constraints & Guardrails
 * **Existing Module:** The Public Scoreboard code is strictly "Out of Bounds" for refactoring unless requested.
-* **UI Focus:** Development efforts are focused on stabilizing and enhancing the **Admin Panel** and the **Teacher Input Interface** (Mobile-first, WCAG AAA).
-* **Performance Architecture:** Employs atomic state management (Zustand) and granular data fetching (React Query with selectors) to ensure responsiveness on low-end mobile devices during real-time updates.
+*   **UI Focus:** Development efforts are focused on stabilizing and enhancing the **Admin Panel** and the **Teacher Input Interface** (Mobile-first, WCAG AAA). The Admin Panel now utilizes a modern **Shadcn/UI** design system for a professional and consistent user experience.
+*   **Performance Architecture:** Employs atomic state management (Zustand) and granular data fetching (React Query with selectors) to ensure responsiveness on low-end mobile devices during real-time updates. Enhancements ensure WCAG AAA compliance for new components.
 
 ---
 

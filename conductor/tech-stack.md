@@ -7,8 +7,9 @@
 - **Styling:**
     - [Tailwind CSS 4](https://tailwindcss.com/) — Utility-first CSS framework for rapid UI development.
     - [Framer Motion 12](https://www.framer.com/motion/) — Powering the platform's high-energy animations.
+    - [Shadcn/UI](https://ui.shadcn.com/) — A collection of re-usable components built with Radix UI and Tailwind CSS, used for the Admin Panel.
     - **Typography:** [Noto Sans Hebrew](https://fonts.google.com/specimen/Noto+Sans+Hebrew) — Primary font for optimized RTL readability.
-    - [Google Material Symbols](https://fonts.google.com/icons) — The primary icon set.
+    - [Google Material Symbols](https://fonts.google.com/icons) / [Lucide React](https://lucide.dev/) — Iconography: Material Symbols for student-facing UI, Lucide React for Admin Panel.
 - **State Management & Data Fetching:** 
     - [TanStack Query 5 (React Query)](https://tanstack.com/query/latest) — Manages server-state and caching with Supabase.
     - [Zustand 5](https://zustand-demo.pmnd.rs/) — Atomic, high-performance client-side global state management.
