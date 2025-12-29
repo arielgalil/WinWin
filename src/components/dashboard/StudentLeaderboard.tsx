@@ -124,7 +124,10 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                                                 <span className="font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] text-white truncate leading-none">{student.name}</span>
-                                                <div className="flex items-center text-xs text-white/50 bg-white/5 px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap">
+                                                <div 
+                                                    className="flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20"
+                                                    style={{ backgroundColor: student.classColor }}
+                                                >
                                                     {student.className}
                                                 </div>
                                             </div>
