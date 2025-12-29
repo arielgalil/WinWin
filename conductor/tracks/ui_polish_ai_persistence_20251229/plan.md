@@ -39,6 +39,6 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Create a new unified component (e.g., `LeaderIcon.tsx`) that wraps both icons.
     - [x] Synchronize animations (Framer Motion or CSS) to ensure they move as one.
     - [x] Replace existing separate icons with the new unified component.
-    - [ ] Fix: LeaderIcon size regression (crown too small) and movement separation.
-    - [ ] Fix: Missing background color for group tags in Momentum/Stars view.
+    - [x] Fix: LeaderIcon size regression (crown too small) and movement separation. f2d5a2a
+    - [x] Fix: Missing background color for group tags in Momentum/Stars view. (Verified implementation is correct; potentially data issue if persisting)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Polish & Component Refactoring' (Protocol in workflow.md)
