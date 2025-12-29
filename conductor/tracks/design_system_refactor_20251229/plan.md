@@ -30,7 +30,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
 - [x] Task: Implement Base Components (TDD) 05c1d70
     - [ ] Write tests for new Shadcn-based `Button` and `Input`.
     - [ ] Implement `Button` and `Input` with RTL support and 44px touch targets.
-- [~] Task: Implement Surface Components
+- [x] Task: Implement Surface Components 4a0ee1b
     - [ ] Implement `Card`, `Badge`, and `Separator`.
     - [ ] Ensure subtle brand infusion (e.g., light cyan/purple tints) is applied.
 - [ ] Task: Implement Overlay Components
