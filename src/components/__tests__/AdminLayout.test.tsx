@@ -260,17 +260,19 @@ test('AdminLayout desktop sidebar collapses and expands', async () => {
   // Initially visible
   expect(screen.getByText('WinWin Admin')).toBeVisible();
 
-  // Find toggle button
-  const toggleBtn = screen.getByTestId('sidebar-toggle');
+  // Find toggle button - now in the header with a Menu icon
+  // It has a title derived from t('collapse') which we mocked
+  const toggleBtn = screen.getByTitle('collapse');
   fireEvent.click(toggleBtn);
 
-  // After click, "WinWin Admin" should be hidden or removed
+  // After click, "WinWin Admin" should be hidden or removed from the DOM
   await waitFor(() => {
     expect(screen.queryByText('WinWin Admin')).not.toBeInTheDocument();
   });
 
-  // Click again to expand
-  fireEvent.click(toggleBtn);
+  // Click again to expand (title should now be 'expand')
+  const expandBtn = screen.getByTitle('expand');
+  fireEvent.click(expandBtn);
 
   await waitFor(() => {
     expect(screen.getByText('WinWin Admin')).toBeVisible();

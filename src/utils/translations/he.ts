@@ -92,6 +92,7 @@ export const he = {
     role_super_user: "משתמש על",
     role_admin: "מנהל תחרות",
     role_teacher: "מורה",
+    return_to_dashboard: "חזרה ללוח",
     view_leaderboard: "מעבר ללוח התוצאות",
     freeze_board: "הקפאת הלוח בלייב",
     unfreeze_board: "שחרור הקפאת לוח",

@@ -163,21 +163,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             <LogOut className="h-5 w-5 shrink-0" />
             {!isCollapsed && <span>{t('logout')}</span>}
           </Button>
-          
-          <div className="pt-2 mt-2 border-t border-border">
-             <Button
-              variant="ghost"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="w-full justify-center h-8 text-muted-foreground hover:text-foreground"
-              data-testid="sidebar-toggle"
-            >
-              {dir === 'rtl' ? (
-                isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />
-              ) : (
-                isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
         </div>
       </aside>
 
@@ -236,9 +221,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
         {/* Main Content Header */}
         <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 z-30 backdrop-blur-md transition-colors duration-200">
           <div className="flex items-center gap-4">
-            <div className="shrink-0">
-              <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-10 h-10 border-2 border-primary/20 shadow-sm" fallbackIcon="school" padding="p-1" />
-            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="hover:bg-accent/50 transition-colors"
+              title={isCollapsed ? t('expand' as any) : t('collapse' as any)}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-foreground leading-none tracking-tight">{settings?.school_name || "Admin Panel"}</h1>
               <p className="text-sm text-muted-foreground font-medium tracking-widest uppercase mt-1 opacity-80">{campaign?.name || 'Admin Console'}</p>

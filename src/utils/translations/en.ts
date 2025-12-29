@@ -90,6 +90,7 @@ export const en = {
     role_super_user: "Super User (Global Admin)",
     role_admin: "Competition Manager (Admin)",
     role_teacher: "Teacher",
+    return_to_dashboard: "Return to Dashboard",
     view_leaderboard: "View Leaderboard",
     freeze_board: "Freeze Board Live",
     unfreeze_board: "Unfreeze Board",
