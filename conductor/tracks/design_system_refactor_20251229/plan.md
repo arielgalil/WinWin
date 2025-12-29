@@ -9,7 +9,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
 - [x] Task: Define Brand-Infused Design Tokens c4c542e
     - [ ] Configure `globals.css` with Shadcn base (slate/zinc).
     - [ ] Override `--primary`, `--accent`, and `--ring` variables to match WinWin cyan/purple tones.     
-    - [ ] Verify Noto Sans Hebrew is the default font for all UI components.- [~] Task: Admin-Specific Lucide Icon Integration
+    - [ ] Verify Noto Sans Hebrew is the default font for all UI components.- [x] Task: Admin-Specific Lucide Icon Integration 9fcf97e
     - [ ] Set up Lucide React for the Admin Panel.
     - [ ] Verify that Dashboard components remain unaffected (using Material Symbols).
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Design Tokens' (Protocol in workflow.md)
