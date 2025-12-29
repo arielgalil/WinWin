@@ -2,6 +2,7 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { ClassRoom } from '../../types';
+import { LeaderIcon } from './LeaderIcon';
 import { CrownIcon } from '../ui/Icons';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -45,13 +46,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
           if (rank === 1) {
             height = 'h-[65%]';
             barStyle = 'bg-gradient-to-b from-yellow-500/40 to-transparent border-t-2 border-yellow-400/50 shadow-[0_0_50px_rgba(234,179,8,0.1)]';
-            badge = (
-              <MotionDiv animate={{ y: [-3, 0, -3] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-yellow-500/20 border border-yellow-400/40 flex items-center justify-center backdrop-blur-md">
-                  <CrownIcon className="w-8 h-8 md:w-10 md:h-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]" />
-                </div>
-              </MotionDiv>
-            );
+            badge = <LeaderIcon />;
           } else if (rank === 2) {
             height = 'h-[50%]';
             barStyle = 'bg-gradient-to-b from-slate-400/40 to-transparent border-t-2 border-slate-300/50';

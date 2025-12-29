@@ -3,6 +3,7 @@ import React from 'react';
 import { AppSettings, ClassRoom, Student } from '../../types';
 import { TrophyIcon, CrownIcon, MedalIcon } from '../ui/Icons';
 import { useLanguage } from '../../hooks/useLanguage';
+import { LeaderIcon } from './LeaderIcon';
 
 interface ShareableLeaderboardProps {
     id: string;
@@ -127,7 +128,7 @@ export const ShareableLeaderboard: React.FC<ShareableLeaderboardProps> = ({
                                 barStyle = 'bg-gradient-to-b from-yellow-500/60 to-yellow-900/10 border-t-4 border-yellow-400 shadow-[0_0_40px_rgba(250,204,21,0.2)]';
                                 rankBadge = (
                                     <div className="mb-3">
-                                        <CrownIcon className="w-12 h-12 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]" />
+                                        <LeaderIcon animated={false} className="w-16 h-16" />
                                     </div>
                                 );
                             } else if (idx === 2) { // 3rd Place
