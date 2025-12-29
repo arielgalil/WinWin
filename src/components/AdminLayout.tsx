@@ -120,9 +120,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
         )}
       >
         <div className={cn("p-4 border-b border-border h-16 flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
-          <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 border border-primary/20">
-            <Settings className="h-6 w-6" />
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hover:bg-accent/50 transition-colors shrink-0"
+            title={isCollapsed ? t('expand' as any) : t('collapse' as any)}
+          >
+            <Menu className="h-6 w-6 text-foreground" />
+          </Button>
           {!isCollapsed && (
             <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden text-foreground">{t('admin_panel' as any)}</h1>
           )}
@@ -228,16 +234,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             <div className="shrink-0">
               <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-10 h-10 border-2 border-primary/20 shadow-sm" fallbackIcon="school" padding="p-1" />
             </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hover:bg-accent/50 transition-colors shrink-0"
-              title={isCollapsed ? t('expand' as any) : t('collapse' as any)}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
 
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-foreground leading-none tracking-tight">{settings?.school_name || "Admin Panel"}</h1>
