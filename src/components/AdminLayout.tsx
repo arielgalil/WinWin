@@ -111,20 +111,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
   }, [user.full_name]);
 
   return (
-    <div className="flex min-h-screen bg-background" dir={dir}>
+    <div className="flex min-h-screen bg-background text-foreground" dir={dir}>
       {/* Desktop Sidebar */}
       <aside 
         className={cn(
-          "hidden lg:flex flex-col border-r bg-card sticky top-0 h-screen transition-all duration-300 ease-in-out",
+          "hidden lg:flex flex-col border-r border-border bg-card sticky top-0 h-screen transition-all duration-300 ease-in-out",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
-        <div className={cn("p-4 border-b h-16 flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
-          <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+        <div className={cn("p-4 border-b border-border h-16 flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
+          <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 border border-primary/20">
             <Settings className="h-6 w-6" />
           </div>
           {!isCollapsed && (
-            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden">{t('admin_panel' as any)}</h1>
+            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden text-foreground">{t('admin_panel' as any)}</h1>
           )}
         </div>
         
@@ -146,11 +146,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           )}
         </nav>
 
-        <div className="p-4 border-t flex flex-col gap-2">
+        <div className="p-4 border-t border-border flex flex-col gap-2">
           <Button 
             variant="ghost" 
             onClick={onViewDashboard} 
-            className={cn("w-full h-11 text-base", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            className={cn("w-full h-11 text-base text-foreground hover:bg-accent/50", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
             title={isCollapsed ? t('return_to_dashboard') : undefined}
           >
             <ArrowLeft className="h-5 w-5 shrink-0" />
@@ -159,7 +159,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           <Button 
             variant="ghost" 
             onClick={onLogout} 
-            className={cn("w-full h-11 text-base text-destructive hover:text-destructive", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            className={cn("w-full h-11 text-base text-destructive hover:text-destructive hover:bg-destructive/10", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
             title={isCollapsed ? t('logout') : undefined}
           >
             <LogOut className="h-5 w-5 shrink-0" />
@@ -170,20 +170,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header and Sidebar */}
-        <header className="lg:hidden flex items-center justify-between h-16 px-4 border-b bg-background sticky top-0 z-40">
+        <header className="lg:hidden flex items-center justify-between h-16 px-4 border-b border-border bg-background sticky top-0 z-40">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open sidebar">
+              <Button variant="ghost" size="icon" aria-label="Open sidebar" className="text-foreground">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Open sidebar</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className={cn("w-72 p-0 flex flex-col", dir === 'rtl' ? "data-[state=open]:right-0 data-[state=open]:left-auto" : "data-[state=open]:left-0 data-[state=open]:right-auto")}>
-              <SheetHeader className="p-4 border-b h-16 flex-row items-center gap-3">
-                <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+            <SheetContent side="left" className={cn("w-72 p-0 flex flex-col bg-card border-border", dir === 'rtl' ? "data-[state=open]:right-0 data-[state=open]:left-auto" : "data-[state=open]:left-0 data-[state=open]:right-auto")}>
+              <SheetHeader className="p-4 border-b border-border h-16 flex-row items-center gap-3">
+                <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 border border-primary/20">
                   <Settings className="h-6 w-6" />
                 </div>
-                <SheetTitle className="text-xl font-bold">{t('admin_panel' as any)}</SheetTitle>
+                <SheetTitle className="text-xl font-bold text-foreground">{t('admin_panel' as any)}</SheetTitle>
               </SheetHeader>
               <nav className="flex-1 flex flex-col gap-2 p-4">
                 {visibleNavItems.map((item, index) =>
@@ -196,12 +196,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                   )
                 )}
               </nav>
-              <div className="p-4 border-t">
-                <Button variant="ghost" onClick={onViewDashboard} className="w-full justify-start gap-3 h-11 text-base">
+              <div className="p-4 border-t border-border">
+                <Button variant="ghost" onClick={onViewDashboard} className="w-full justify-start gap-3 h-11 text-base text-foreground">
                   <ArrowLeft className="h-5 w-5" />
                   {t('return_to_dashboard')}
                 </Button>
-                <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 h-11 text-base text-destructive hover:text-destructive">
+                <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 h-11 text-base text-destructive hover:bg-destructive/10">
                   <LogOut className="h-5 w-5" />
                   {t('logout')}
                 </Button>
@@ -210,21 +210,25 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           </Sheet>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={onManualRefresh} disabled={isRefreshing} title={t('refresh')}>
+            <Button variant="ghost" size="icon" onClick={onManualRefresh} disabled={isRefreshing} title={t('refresh')} className="text-foreground">
               <RefreshCw className={cn("h-5 w-5", isRefreshing && "animate-spin")} />
             </Button>
-            <Button variant="ghost" size="icon" onClick={onShare} title={t('copy_link')}>
+            <Button variant="ghost" size="icon" onClick={onShare} title={t('copy_link')} className="text-foreground">
               <Share2 className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('toggle_theme')} aria-label={t('toggle_theme')}>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('toggle_theme')} aria-label={t('toggle_theme')} className="text-foreground">
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
           </div>
         </header>
 
         {/* Main Content Header */}
-        <header className="hidden md:flex h-16 bg-[var(--bg-card)]/80 border-b border-[var(--border-main)] items-center justify-between px-6 z-30 backdrop-blur-md transition-colors duration-200">
+        <header className="hidden md:flex h-16 bg-card/80 border-b border-border items-center justify-between px-6 z-30 backdrop-blur-md transition-colors duration-200">
           <div className="flex items-center gap-4">
+            <div className="shrink-0">
+              <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-10 h-10 border-2 border-primary/20 shadow-sm" fallbackIcon="school" padding="p-1" />
+            </div>
+
             <Button
               variant="ghost"
               size="icon"
@@ -234,10 +238,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             >
               <Menu className="h-6 w-6" />
             </Button>
-            
-            <div className="shrink-0">
-              <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-10 h-10 border-2 border-primary/20 shadow-sm" fallbackIcon="school" padding="p-1" />
-            </div>
 
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-foreground leading-none tracking-tight">{settings?.school_name || "Admin Panel"}</h1>
