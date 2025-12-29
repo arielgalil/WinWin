@@ -138,6 +138,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                                 >
                                                     {/* Background Layer */}
                                                     <div 
+                                                        data-testid="group-tag-bg"
                                                         className={`absolute inset-0 ${student.classColor && student.classColor.startsWith('bg-') ? student.classColor : ''}`}
                                                         style={{ 
                                                             opacity: 0.5,

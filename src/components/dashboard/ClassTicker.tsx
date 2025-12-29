@@ -95,27 +95,27 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                         const isBgColor = cls.color && cls.color.startsWith('bg-');
     
-                        const bgLayerClass = isHighlighted 
+                            const bgLayerClass = isHighlighted 
     
-                            ? 'bg-white/30' 
+                                ? 'bg-white/30' 
     
-                            : isBgColor ? cls.color : 'bg-white/10';
+                                : isBgColor ? cls.color : 'bg-white/10';
+    
+                            
+    
+                            // Opacity: 50% transparency for both tags and cards as requested.
+    
+                            const opacityClass = !isHighlighted && isBgColor ? 'opacity-50 group-hover:opacity-70' : '';
     
                         
     
-                        // Opacity: If colored, start at 80% (less transparent), hover to 90%. If fallback white, keep it as defined in bgLayerClass.
+                            return (
     
-                        const opacityClass = !isHighlighted && isBgColor ? 'opacity-80 group-hover:opacity-90' : '';
+                              <div
     
-                    
+                                key={uniqueKey}
     
-                        return (
-    
-                          <div
-    
-                            key={uniqueKey}
-    
-                            style={{
+                                style={{
     
                               width: CARD_WIDTH,
     
