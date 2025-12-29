@@ -5,23 +5,47 @@ import { CrownIcon } from '../ui/Icons';
 interface LeaderIconProps {
   animated?: boolean;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const MotionDiv = motion.div as any;
 
 export const LeaderIcon: React.FC<LeaderIconProps> = memo(({ 
   animated = true, 
-  className = ''
+  className = '',
+  size = 'md'
 }) => {
-  // Default size if not provided in className
-  const sizeClass = (className.includes('w-') || className.includes('h-')) ? '' : 'w-12 h-12 md:w-16 md:h-16';
+  // Map sizes to Container Dimensions and Icon Font Sizes (Material Icons use text size)
+  let containerClass = '';
+  let iconSizeClass = '';
+
+  switch (size) {
+    case 'sm':
+      containerClass = 'w-8 h-8';
+      iconSizeClass = 'text-xl';
+      break;
+    case 'lg': // Matches ShareableLeaderboard roughly (w-16 was used, let's standardize)
+      containerClass = 'w-20 h-20'; 
+      iconSizeClass = 'text-5xl';
+      break;
+    case 'md':
+    default:
+      containerClass = 'w-12 h-12 md:w-16 md:h-16';
+      iconSizeClass = 'text-3xl md:text-5xl';
+      break;
+  }
+
+  // Allow className to override dimensions if provided
+  if (className.includes('w-') || className.includes('h-')) {
+    containerClass = '';
+  }
 
   const content = (
     <div 
         data-testid="leader-icon-circle"
-        className="rounded-full bg-yellow-500/20 border border-yellow-400/40 flex items-center justify-center backdrop-blur-md w-full h-full"
+        className="rounded-full bg-yellow-500/20 border border-yellow-400/40 flex items-center justify-center backdrop-blur-md w-full h-full shadow-[0_0_15px_rgba(234,179,8,0.3)]"
     >
-      <CrownIcon className="w-[66%] h-[66%] text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]" />
+      <CrownIcon className={`${iconSizeClass} text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)]`} />
     </div>
   );
 
@@ -29,9 +53,9 @@ export const LeaderIcon: React.FC<LeaderIconProps> = memo(({
     return (
       <MotionDiv
         data-testid="leader-icon-container"
-        className={`relative flex items-center justify-center ${sizeClass} ${className}`}
-        animate={{ y: [-3, 0, -3] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className={`relative flex items-center justify-center ${containerClass} ${className}`}
+        animate={{ y: [-4, 0, -4] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       >
         {content}
       </MotionDiv>
@@ -41,7 +65,7 @@ export const LeaderIcon: React.FC<LeaderIconProps> = memo(({
   return (
     <div 
         data-testid="leader-icon-container" 
-        className={`relative flex items-center justify-center ${sizeClass} ${className}`}
+        className={`relative flex items-center justify-center ${containerClass} ${className}`}
     >
       {content}
     </div>
