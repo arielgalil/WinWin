@@ -38,7 +38,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
     - [ ] **Critical:** Re-implement "Delete Safety" logic (red borders, anti-nudge buttons) in the new `Dialog`.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Component Migration' (Protocol in workflow.md)
 
-## Phase 3: Responsive Navigation Overhaul
+## Phase 3: Responsive Navigation Overhaul [checkpoint: edd7053]
 - [x] Task: Build the Shadcn Sidebar (Temporarily skipped due to test environment issues)
     - [ ] Implement the `Sidebar` component.
     - [ ] Configure RTL-specific animations and positioning.
