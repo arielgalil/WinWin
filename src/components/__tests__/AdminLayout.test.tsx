@@ -232,7 +232,47 @@ test('AdminLayout main content area has high-energy gradient class', () => {
   );
   
   const mainContent = screen.getByRole('main');
-  // Expect a class indicating a high-energy gradient or similar visual cue
-  // This will fail until the class is actually applied in AdminLayout.tsx
   expect(mainContent.className).toContain('bg-gradient-high-energy');
+});
+
+test('AdminLayout desktop sidebar collapses and expands', async () => {
+  render(
+    <AdminLayout
+      user={mockUser}
+      campaignRole="admin"
+      activeTab="settings"
+      onTabChange={vi.fn()}
+      onViewDashboard={vi.fn()}
+      onLogout={vi.fn()}
+      onShare={vi.fn()}
+      onManualRefresh={vi.fn()}
+      isRefreshing={false}
+      campaign={mockCampaign}
+      settings={mockSettings}
+      headerConfig={mockHeaderConfig}
+      activeNotification={null}
+      dismissNotification={vi.fn()}
+    >
+      <div data-testid="child-content">Test Child Content</div>
+    </AdminLayout>
+  );
+
+  // Initially visible
+  expect(screen.getByText('WinWin Admin')).toBeVisible();
+
+  // Find toggle button
+  const toggleBtn = screen.getByTestId('sidebar-toggle');
+  fireEvent.click(toggleBtn);
+
+  // After click, "WinWin Admin" should be hidden or removed
+  await waitFor(() => {
+    expect(screen.queryByText('WinWin Admin')).not.toBeInTheDocument();
+  });
+
+  // Click again to expand
+  fireEvent.click(toggleBtn);
+
+  await waitFor(() => {
+    expect(screen.getByText('WinWin Admin')).toBeVisible();
+  });
 });

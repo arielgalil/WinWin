@@ -4,7 +4,7 @@ import { UserProfile } from '@/types';
 import { Button } from './ui/button';
 import { Logo } from './ui/Logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { Menu, X, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2, RefreshCw } from 'lucide-react';
+import { Menu, X, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2, RefreshCw, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { formatLastSaved } from '@/utils/dateUtils';
@@ -40,14 +40,19 @@ interface AdminLayoutProps {
   dismissNotification: (tab: string) => void;
 }
 
-const NavLink: React.FC<{ item: NavItem; isActive: boolean; onClick: () => void }> = ({ item, isActive, onClick }) => (
+const NavLink: React.FC<{ item: NavItem; isActive: boolean; onClick: () => void; isCollapsed: boolean }> = ({ item, isActive, onClick, isCollapsed }) => (
   <Button
     variant={isActive ? 'secondary' : 'ghost'}
     onClick={onClick}
-    className={cn('w-full justify-start gap-3 h-11 text-base', isActive && 'font-bold')}
+    className={cn(
+      'w-full h-11 text-base transition-all duration-200',
+      isActive && 'font-bold',
+      isCollapsed ? 'justify-center px-0' : 'justify-start gap-3'
+    )}
+    title={isCollapsed ? item.label : undefined}
   >
-    <item.icon className="h-5 w-5" />
-    {item.label}
+    <item.icon className="h-5 w-5 shrink-0" />
+    {!isCollapsed && <span>{item.label}</span>}
   </Button>
 );
 
@@ -55,6 +60,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
   const { t, dir, language } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -87,7 +93,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
       if (item.adminOnly && !isAdmin) return false;
       return true;
     });
-  }, [campaignRole, t]); // Added t dependency to navItems definition
+  }, [campaignRole, t]);
 
   const userRoleLabel = useMemo(() => {
     if (campaignRole === 'superuser') return t('role_super_user');
@@ -95,38 +101,87 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
     return t('role_teacher');
   }, [campaignRole, t]);
 
+  const userInitials = useMemo(() => {
+    const name = user.full_name?.trim() || 'U';
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }, [user.full_name]);
+
   return (
     <div className="flex min-h-screen bg-background" dir={dir}>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 border-r bg-card sticky top-0 h-screen">
-        <div className="p-4 border-b h-16 flex items-center gap-3">
-          <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-9 h-9" fallbackIcon="school" />
-          <h1 className="text-xl font-bold">WinWin Admin</h1>
+      <aside 
+        className={cn(
+          "hidden lg:flex flex-col border-r bg-card sticky top-0 h-screen transition-all duration-300 ease-in-out",
+          isCollapsed ? "w-16" : "w-64"
+        )}
+      >
+        <div className={cn("p-4 border-b h-16 flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
+          <Logo src={campaign?.institution?.logo_url || campaign?.logo_url || settings?.logo_url} className="w-9 h-9 shrink-0" fallbackIcon="school" />
+          {!isCollapsed && (
+            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden">WinWin Admin</h1>
+          )}
         </div>
-        <nav className="flex-1 flex flex-col gap-2 p-4">
+        
+        <nav className="flex-1 flex flex-col gap-2 p-4 overflow-x-hidden">
           {visibleNavItems.map((item, index) =>
             item.divider ? (
               <div key={`desktop-divider-${index}`} className="py-2">
                 <hr className="border-border" />
               </div>
             ) : (
-              <NavLink key={item.id} item={item} isActive={activeTab === item.id} onClick={() => onTabChange(item.id)} />
+              <NavLink 
+                key={item.id} 
+                item={item} 
+                isActive={activeTab === item.id} 
+                onClick={() => onTabChange(item.id)}
+                isCollapsed={isCollapsed}
+              />
             )
           )}
         </nav>
-        <div className="p-4 border-t">
-          <Button variant="ghost" onClick={onViewDashboard} className="w-full justify-start gap-3 h-11 text-base">
-            <ArrowLeft className="h-5 w-5" />
-            {t('return_to_dashboard')}
+
+        <div className="p-4 border-t flex flex-col gap-2">
+          <Button 
+            variant="ghost" 
+            onClick={onViewDashboard} 
+            className={cn("w-full h-11 text-base", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            title={isCollapsed ? t('return_to_dashboard') : undefined}
+          >
+            <ArrowLeft className="h-5 w-5 shrink-0" />
+            {!isCollapsed && <span>{t('return_to_dashboard')}</span>}
           </Button>
-          <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 h-11 text-base text-destructive hover:text-destructive">
-            <LogOut className="h-5 w-5" />
-            {t('logout')}
+          <Button 
+            variant="ghost" 
+            onClick={onLogout} 
+            className={cn("w-full h-11 text-base text-destructive hover:text-destructive", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            title={isCollapsed ? t('logout') : undefined}
+          >
+            <LogOut className="h-5 w-5 shrink-0" />
+            {!isCollapsed && <span>{t('logout')}</span>}
           </Button>
+          
+          <div className="pt-2 mt-2 border-t border-border">
+             <Button
+              variant="ghost"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="w-full justify-center h-8 text-muted-foreground hover:text-foreground"
+              data-testid="sidebar-toggle"
+            >
+              {dir === 'rtl' ? (
+                isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />
+              ) : (
+                isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header and Sidebar */}
         <header className="lg:hidden flex items-center justify-between h-16 px-4 border-b bg-background sticky top-0 z-40">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -148,7 +203,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                       <hr className="border-border" />
                     </div>
                   ) : (
-                    <NavLink key={item.id} item={item} isActive={activeTab === item.id} onClick={() => { onTabChange(item.id); setIsMobileMenuOpen(false); }} />
+                    <NavLink key={item.id} item={item} isActive={activeTab === item.id} onClick={() => { onTabChange(item.id); setIsMobileMenuOpen(false); }} isCollapsed={false} />
                   )
                 )}
               </nav>
@@ -222,10 +277,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 </p>
               </div>
               <div className={cn(
-                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-base ring-2 ring-card bg-gradient-to-br",
+                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-offset-2 ring-primary bg-gradient-to-br",
                 campaignRole === 'superuser' ? 'from-amber-400 to-orange-500' : 'from-primary to-accent'
               )}>
-                {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                {userInitials}
               </div>
             </div>
           </div>

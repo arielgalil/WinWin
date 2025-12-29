@@ -145,7 +145,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
             {/* Footer Container: Transparent with exactly 4px (py-1) vertical padding */}
             <footer className={`w-full bg-transparent py-1 shrink-0 z-50 ${className}`}>
                 <div className="max-w-[1920px] mx-auto flex justify-center px-4">
-                    <nav className="bg-zinc-900/60 backdrop-blur-xl border border-white/30 h-9 flex items-center px-4 rounded-full shadow-2xl hover:bg-zinc-900/80 transition-all">
+                    <nav className="bg-transparent border-0 h-9 flex items-center px-4 rounded-full shadow-none transition-all">
 
                         {/* 1. Branding (Right Side) */}
                         <button 
