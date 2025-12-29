@@ -2,7 +2,7 @@
 
 This plan addresses AI summary persistence, text placeholder fixes, ticker formatting, and UI synchronization for the leading column.
 
-## Phase 1: AI Summary Persistence & Backend Integration
+## Phase 1: AI Summary Persistence & Backend Integration [checkpoint: 43942a5]
 - [x] Task: Update Database Schema for AI Summaries
     - [x] Create migration/SQL to add `ai_summary` column to the appropriate table (e.g., `campaigns` or a new `summaries` table).
     - [x] Add `ai_summary_updated_at` timestamp.
