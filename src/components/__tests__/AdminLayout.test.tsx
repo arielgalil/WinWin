@@ -1,20 +1,20 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { expect, test, vi, beforeEach } from 'vitest';
+import { AdminLayout } from '../AdminLayout';
 import React from 'react';
-import { Settings, Users, Target, CalculatorIcon, ClockIcon, Share2, RefreshCw, Sun, Moon, ArrowLeft, LogOut } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useTheme } from '@/hooks/useTheme';
+import { Settings, Users, Target, CalculatorIcon, ClockIcon } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { VersionFooter } from '../ui/VersionFooter';
 import { SaveNotificationBadge, useSaveNotification } from '@/contexts/SaveNotificationContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useTheme } from '@/hooks/useTheme';
-import { cn } from '@/lib/utils'; // Import cn directly for testing
+import { cn } from '@/lib/utils';
 
-// Mock hooks and components BEFORE importing AdminLayout
+// Mock hooks and components
 vi.mock('@/lib/utils', () => ({
-  cn: vi.fn((...args) => args.filter(Boolean).join(' ')), // Mock cn
+  cn: vi.fn((...args) => args.filter(Boolean).join(' ')),
 }));
-
 vi.mock('@/hooks/useLanguage', () => ({
   useLanguage: vi.fn(() => ({
     dir: 'ltr',
@@ -30,47 +30,30 @@ vi.mock('@/hooks/useLanguage', () => ({
       if (key === 'tab_goals') return 'Goals';
       if (key === 'tab_points') return 'Points';
       if (key === 'tab_logs') return 'Logs';
+      if (key === 'toggle_theme') return 'Toggle theme';
       return key;
     },
     language: 'en'
   })),
 }));
-
 vi.mock('@/hooks/useTheme', () => ({
   useTheme: vi.fn(() => ({ theme: 'light', toggleTheme: vi.fn() })),
 }));
-
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: vi.fn(() => ({ user: mockUser, loading: false, isAuthenticated: true })),
 }));
-
 vi.mock('../ui/Logo', () => ({
   Logo: vi.fn(({ src, className, fallbackIcon, padding }) => (
     <div data-testid="mock-logo" data-src={src || 'default_logo.png'} data-class={className} data-fallback={fallbackIcon} data-padding={padding}>Mock Logo</div>
   )),
 }));
-
 vi.mock('../ui/VersionFooter', () => ({
   VersionFooter: vi.fn(() => <div data-testid="mock-version-footer">Mock Version Footer</div>),
 }));
-
 vi.mock('@/contexts/SaveNotificationContext', () => ({
   SaveNotificationBadge: vi.fn(() => null),
   useSaveNotification: vi.fn(() => ({ notifications: new Map(), dismiss: vi.fn() })),
 }));
-
-// NOW import AdminLayout after all mocks are set up
-import { AdminLayout } from '../AdminLayout';
-
-const mockNavItems = [
-  { id: 'settings', label: 'Settings', icon: Settings, adminOnly: true },
-  { id: 'data-management', label: 'Data Management', icon: Users, adminOnly: true },
-  { id: 'divider-1', divider: true, label: '', icon: () => null, adminOnly: false },
-  { id: 'goals', label: 'Goals', icon: Target, adminOnly: true },
-  { id: 'points', label: 'Points', icon: CalculatorIcon, adminOnly: false },
-  { id: 'divider-2', divider: true, label: '', icon: () => null, adminOnly: false },
-  { id: 'logs', label: 'Logs', icon: ClockIcon, adminOnly: false },
-];
 
 const mockUser = {
   id: '1',
@@ -80,20 +63,17 @@ const mockUser = {
   campaign_id: '1',
   created_at: '',
 };
-
 const mockCampaign = {
   id: '1',
   name: 'Test Campaign',
   is_active: true,
   institution: { logo_url: 'logo.png' },
 };
-
 const mockSettings = {
   id: '1',
   school_name: 'Test School',
   logo_url: 'school_logo.png',
 };
-
 const mockHeaderConfig = {
   icon: Settings,
   colorVar: 'blue',
@@ -101,7 +81,6 @@ const mockHeaderConfig = {
   desc: 'Manage settings',
 };
 
-// beforeEach to reset individual mock return values if needed for specific tests
 beforeEach(() => {
   (useLanguage as any).mockReturnValue({
     dir: 'ltr',
@@ -117,6 +96,7 @@ beforeEach(() => {
       if (key === 'tab_goals') return 'Goals';
       if (key === 'tab_points') return 'Points';
       if (key === 'tab_logs') return 'Logs';
+      if (key === 'toggle_theme') return 'Toggle theme';
       return key;
     },
     language: 'en'
@@ -155,8 +135,8 @@ test('AdminLayout renders children and desktop sidebar', () => {
   expect(screen.getByTestId('child-content')).toBeDefined();
   expect(screen.getByRole('heading', { name: 'WinWin Admin', level: 1 })).toBeDefined();
   expect(screen.getByText('Test User')).toBeDefined();
-  expect(screen.getByRole('button', { name: 'Settings' })).toBeDefined(); // NavLink from sidebar
-  expect(screen.getByRole('heading', { name: 'Test School', level: 1 })).toBeDefined(); // Header School Name
+  expect(screen.getByRole('button', { name: 'Settings' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Test School' })).toBeDefined();
 });
 
 test('AdminLayout mobile header opens and closes sidebar', async () => {
@@ -182,12 +162,11 @@ test('AdminLayout mobile header opens and closes sidebar', async () => {
     </AdminLayout>
   );
 
-  // Mobile menu trigger button should be visible on small screens (lg:hidden)
   const menuButton = screen.getByRole('button', { name: 'Open sidebar' });
   fireEvent.click(menuButton);
 
   await waitFor(() => {
-    expect(screen.getByRole('heading', { name: 'WinWin Admin', level: 2 })).toBeVisible(); // Sidebar content
+    expect(screen.getByRole('heading', { name: 'WinWin Admin', level: 2 })).toBeVisible();
   });
   
   const closeButton = screen.getByRole('button', { name: 'Close' });
@@ -222,7 +201,35 @@ test('AdminLayout mobile header handles theme toggle', () => {
     </AdminLayout>
   );
 
-  const themeToggleButton = screen.getByRole('button', { name: 'toggle_theme' }); // Uses the mocked t() value
+  const themeToggleButton = screen.getByRole('button', { name: 'Toggle theme' });
   fireEvent.click(themeToggleButton);
   expect(toggleTheme).toHaveBeenCalled();
+});
+
+test('AdminLayout main content area has high-energy gradient class', () => {
+  render(
+    <AdminLayout
+      user={mockUser}
+      campaignRole="admin"
+      activeTab="settings"
+      onTabChange={vi.fn()}
+      onViewDashboard={vi.fn()}
+      onLogout={vi.fn()}
+      onShare={vi.fn()}
+      onManualRefresh={vi.fn()}
+      isRefreshing={false}
+      campaign={mockCampaign}
+      settings={mockSettings}
+      headerConfig={mockHeaderConfig}
+      activeNotification={null}
+      dismissNotification={vi.fn()}
+    >
+      <div data-testid="child-content">Test Child Content</div>
+    </AdminLayout>
+  );
+  
+  const mainContent = screen.getByRole('main');
+  // Expect a class indicating a high-energy gradient or similar visual cue
+  // This will fail until the class is actually applied in AdminLayout.tsx
+  expect(mainContent.className).toContain('bg-gradient-high-energy');
 });

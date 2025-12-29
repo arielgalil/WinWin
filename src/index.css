@@ -77,6 +77,14 @@
   }
 }
 
+@tailwind utilities;
+
+@layer utilities {
+  .bg-gradient-high-energy {
+    background: linear-gradient(to bottom right, #06b6d41a, #a855f71a); /* subtle cyan and purple */
+  }
+}
+
 :root {
   --background: 0 0% 100%;
   --foreground: 224 71.4% 4.1%;
