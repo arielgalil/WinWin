@@ -34,13 +34,13 @@ This plan addresses AI summary persistence, text placeholder fixes, ticker forma
     - [x] Identify the component rendering the "Stars of the Yeshiva" (likely in `src/components/dashboard/`).
     - [x] Write tests for group color application.
     - [x] Update the styling to apply the group's color as a background to the group name.
-- [~] Task: Unified Leading Column Component
+- [x] Task: Unified Leading Column Component
     - [x] Locate the current crown and circle icon implementation.
     - [x] Create a new unified component (e.g., `LeaderIcon.tsx`) that wraps both icons.
     - [x] Synchronize animations (Framer Motion or CSS) to ensure they move as one.
     - [x] Replace existing separate icons with the new unified component.
     - [x] Fix: LeaderIcon size regression (crown too small) and movement separation. f2d5a2a
     - [x] Fix: Missing background color for group tags in Momentum/Stars view. (Verified implementation is correct; potentially data issue if persisting)
-    - [ ] Fix: Podium animation not smooth (Rebuild animation).
-    - [ ] Fix: Missing delicate background color for group cards in 'Class Status' ticker.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Polish & Component Refactoring' (Protocol in workflow.md)
+    - [x] Fix: Podium animation not smooth (Rebuild animation).
+    - [x] Fix: Missing delicate background color for group cards in 'Class Status' ticker.
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Polish & Component Refactoring' (Protocol in workflow.md)
