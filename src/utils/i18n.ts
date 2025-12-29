@@ -19,7 +19,8 @@ export const t = (key: TranslationKey, lang: Language = 'he', params?: Record<st
     
     if (params) {
         Object.entries(params).forEach(([k, v]) => {
-            text = text.replace(new RegExp(`%\\{${k}\\}`, 'g'), String(v));
+            const placeholder = `%{${k}}`;
+            text = text.split(placeholder).join(String(v));
         });
     }
     
