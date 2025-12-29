@@ -33,7 +33,7 @@ This plan overhauls the Admin Panel using Shadcn/UI and Lucide icons, while stan
 - [x] Task: Implement Surface Components 4a0ee1b
     - [ ] Implement `Card`, `Badge`, and `Separator`.
     - [ ] Ensure subtle brand infusion (e.g., light cyan/purple tints) is applied.
-- [ ] Task: Implement Overlay Components
+- [~] Task: Implement Overlay Components
     - [ ] Implement `Dialog` (Modal) and `DropdownMenu`.
     - [ ] **Critical:** Re-implement "Delete Safety" logic (red borders, anti-nudge buttons) in the new `Dialog`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Component Migration' (Protocol in workflow.md)
