@@ -54,7 +54,7 @@ describe('StudentLeaderboard Group Coloring', () => {
         );
 
         const groupBadge = screen.getByText('Class A');
-        // We expect the style to have backgroundColor: #ff000033 (transparent)
-        expect(groupBadge).toHaveStyle({ backgroundColor: '#ff000033' });
+        // We expect the style to have backgroundColor: #ff000080 (50% transparent)
+        expect(groupBadge).toHaveStyle({ backgroundColor: '#ff000080' });
     });
 });

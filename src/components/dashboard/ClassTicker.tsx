@@ -93,11 +93,11 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
           progressBg = 'bg-yellow-500';
         }
     
-            const cardBgClass = cls.color && cls.color.startsWith('bg-') 
+                const cardBgClass = cls.color && cls.color.startsWith('bg-') 
     
-                ? `${cls.color}/10 hover:${cls.color}/20` 
+                    ? `${cls.color}/50 hover:${cls.color}/70` 
     
-                : `bg-white/10 hover:bg-white/20`;
+                    : `bg-white/10 hover:bg-white/20`;
     
         
     
