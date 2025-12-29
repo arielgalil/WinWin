@@ -46,7 +46,11 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
           if (rank === 1) {
             height = 'h-[65%]';
             barStyle = 'bg-gradient-to-b from-yellow-500/40 to-transparent border-t-2 border-yellow-400/50 shadow-[0_0_50px_rgba(234,179,8,0.1)]';
-            badge = <LeaderIcon />;
+            badge = (
+              <MotionDiv animate={{ y: [-4, 0, -4] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                <LeaderIcon />
+              </MotionDiv>
+            );
           } else if (rank === 2) {
             height = 'h-[50%]';
             barStyle = 'bg-gradient-to-b from-slate-400/40 to-transparent border-t-2 border-slate-300/50';
