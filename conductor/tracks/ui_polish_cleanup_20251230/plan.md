@@ -1,10 +1,10 @@
 # Plan: UI Polish and Layout Cleanup
 
-## Phase 1: Layout Cleanup & Redundancy Removal
+## Phase 1: Layout Cleanup & Redundancy Removal [checkpoint: a764a0e]
 - [x] Task: Remove duplicate section in "Scoring and Group Management" tab
     - [x] Write tests to verify the presence of only one management container
     - [x] Remove the redundant bottom half of the tab in `AdminPanel.tsx` or its subcomponents
-- [ ] Task: Conductor - User Manual Verification 'Layout Cleanup & Redundancy Removal' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Layout Cleanup & Redundancy Removal' (Protocol in workflow.md)
 
 ## Phase 2: Footer Rebuild
 - [ ] Task: Redesign Footer component for uniform spacing
