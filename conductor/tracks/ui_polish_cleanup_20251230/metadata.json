@@ -1,0 +1,8 @@
+{
+  "track_id": "ui_polish_cleanup_20251230",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2025-12-30T16:13:00Z",
+  "updated_at": "2025-12-30T16:13:00Z",
+  "description": "(1) Reduce all uneven spacing in the footer and also remove the lines in the footer. (2) Add a visualization of the title and background in the \"Sample Title\" visual design on a rectangle with the same background as the selected background with the following settings: Brand Palette: Primary Color and Secondary Color. (3) The \"Insert Emoji\" button inside an existing target edit modal should open the emoji selection modal above the edit modal. (3) The entire second part of the \"Scoring and Group Management\" tab should be removed, it is unnecessary duplication."
+}

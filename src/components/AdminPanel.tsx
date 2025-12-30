@@ -24,7 +24,6 @@ const UsersManager = React.lazy(() => import('./admin/UsersManager').then(module
 const SchoolSettings = React.lazy(() => import('./admin/SchoolSettings').then(module => ({ default: module.SchoolSettings })));
 const ClassesManager = React.lazy(() => import('./admin/ClassesManager').then(module => ({ default: module.ClassesManager })));
 const ActionLogPanel = React.lazy(() => import('./admin/ActionLogPanel').then(module => ({ default: module.ActionLogPanel })));
-const MyClassStatus = React.lazy(() => import('./admin/MyClassStatus').then(module => ({ default: module.MyClassStatus })));
 const DataManagement = React.lazy(() => import('./admin/DataManagement').then(module => ({ default: module.DataManagement })));
 const GoalsManagement = React.lazy(() => import('./admin/GoalsManagement').then(module => ({ default: module.GoalsManagement })));
 const AiSettings = React.lazy(() => import('./admin/AiSettings').then(module => ({ default: module.AiSettings })));
@@ -176,11 +175,6 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 {activeTab === 'points' && (
                   <div className="space-y-8">
                     <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
-                    <MyClassStatus
-                      classId={user.class_id || (classes.length > 0 ? classes[0].id : '')}
-                      classes={classes || []}
-                      isAdmin={isAdmin}
-                    />
                   </div>
                 )}
                 {activeTab === 'goals' && isAdmin && (
