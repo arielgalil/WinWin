@@ -16,7 +16,7 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Login Page Context & Styling' (Protocol in workflow.md)
 
-## Phase 2: UI Polish - General Admin & Dashboard
+## Phase 2: UI Polish - General Admin & Dashboard [checkpoint: cf1c1a1]
 
 -   [x] Task: Write failing tests for prize emoji size. (3ec0c32)
 -   [x] Task: Implement prize emoji size increase. (3ec0c32)
