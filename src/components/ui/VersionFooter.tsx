@@ -288,7 +288,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 </div>
                                                 <button
                                                     onClick={() => setIsProfileMenuOpen(false)}
-                                                    className="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white/100 hover:bg-white/10 rounded transition-colors flex-shrink-0 ml-2"
+                                                    className="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white/100 hover:bg-white/10 rounded transition-colors flex-shrink-0 ms-2"
                                                     title="Close"
                                                 >
                                                     <XIcon className="w-3 h-3" />
@@ -300,7 +300,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {/* All Competitions */}
                                                 <button
                                                     onClick={() => navigate('/')}
-                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                 >
                                                     <SproutIcon className="w-4 h-4" />
                                                     {t('all_campaigns')}
@@ -312,7 +312,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {fallbackSlug && (
                                                     <button
                                                         onClick={() => navigate(`/comp/${fallbackSlug}`)}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         <TrophyIcon className="w-4 h-4" />
                                                         {t('dashboard')}
@@ -323,7 +323,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {user && fallbackSlug && (
                                                     <button
                                                         onClick={() => navigate(isAdmin ? `/admin/${fallbackSlug}/points` : `/vote/${fallbackSlug}`)}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         <CalculatorIcon className="w-4 h-4" />
                                                         {t('enter_points')}
@@ -334,7 +334,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {user && fallbackSlug && isAdmin && (
                                                     <button
                                                         onClick={() => navigate(`/admin/${fallbackSlug}/settings`)}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         <SettingsIcon className="w-4 h-4" />
                                                         {t('admin_panel')}
@@ -347,7 +347,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {musicState && (
                                                     <button
                                                         onClick={musicState.onToggle}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         {musicState.isPlaying ? <Volume2Icon className="w-4 h-4" /> : <VolumeXIcon className="w-4 h-4" />}
                                                         {t('music')}
@@ -358,7 +358,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {isBoardActive && (
                                                     <button
                                                         onClick={() => setIsLowPerf(!isLowPerf)}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         <ZapIcon className="w-4 h-4" />
                                                         {t('tv_mode')}
@@ -368,7 +368,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {/* Debug Console */}
                                                 <button
                                                     onClick={() => setIsDebugOpen(!isDebugOpen)}
-                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                 >
                                                     <ShieldAlertIcon className="w-4 h-4" />
                                                     {t('debug')}
@@ -378,7 +378,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {isSuperUser && (
                                                     <button
                                                         onClick={() => navigate('/super')}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                                                     >
                                                         <CrownIcon className="w-4 h-4" />
                                                         {t('system_admin')}
@@ -390,7 +390,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                 {/* Logout */}
                                                 <button
                                                     onClick={handleLogout}
-                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded text-xs transition-colors text-right"
+                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded text-xs transition-colors text-start"
                                                 >
                                                     <LogoutIcon className="w-4 h-4" />
                                                     {t('logout') || 'התנתק'}

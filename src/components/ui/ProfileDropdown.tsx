@@ -48,7 +48,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 </div>
                 <button
                     onClick={onClose}
-                    className="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white/100 hover:bg-white/10 rounded transition-colors flex-shrink-0 ml-2"
+                    className="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white/100 hover:bg-white/10 rounded transition-colors flex-shrink-0 ms-2"
                     title="Close"
                 >
                     <XIcon className="w-3 h-3" />
@@ -60,7 +60,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {/* All Competitions */}
                 <button
                     onClick={() => navigate('/')}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                 >
                     <span className="w-3 h-3 flex items-center justify-center">🌱</span>
                     {t('all_campaigns')}
@@ -72,7 +72,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {fallbackSlug && (
                     <button
                         onClick={() => navigate(`/comp/${fallbackSlug}`)}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">🏆</span>
                         {t('dashboard')}
@@ -83,7 +83,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {user && fallbackSlug && (
                     <button
                         onClick={() => navigate(isAdmin ? `/admin/${fallbackSlug}/points` : `/vote/${fallbackSlug}`)}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">🧮</span>
                         {t('enter_points')}
@@ -94,7 +94,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {user && fallbackSlug && isAdmin && (
                     <button
                         onClick={() => navigate(`/admin/${fallbackSlug}/settings`)}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">⚙️</span>
                         {t('admin_panel')}
@@ -107,7 +107,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {musicState && (
                     <button
                         onClick={musicState.onToggle}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">
                             {musicState.isPlaying ? '🔊' : '🔇'}
@@ -119,7 +119,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {/* TV Mode */}
                 <button
                     onClick={() => {}}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                 >
                     <span className="w-3 h-3 flex items-center justify-center">⚡</span>
                     {t('tv_mode')}
@@ -128,7 +128,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {/* Debug Console */}
                 <button
                     onClick={() => {}}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                 >
                     <span className="w-3 h-3 flex items-center justify-center">🛡️</span>
                     {t('debug')}
@@ -138,7 +138,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {isSuperUser && (
                     <button
                         onClick={() => navigate('/super')}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-right"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
                     >
                         <span className="w-3 h-3 flex items-center justify-center">👑</span>
                         {t('system_admin')}
@@ -150,7 +150,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 {/* Logout */}
                 <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded text-xs transition-colors text-right"
+                    className="w-full flex items-center gap-2 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded text-xs transition-colors text-start"
                 >
                     <span className="w-3 h-3 flex items-center justify-center">🚪</span>
                     {t('logout') || 'התנתק'}

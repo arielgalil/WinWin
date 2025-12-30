@@ -21,13 +21,13 @@ export const ClassListHeader: React.FC<ClassListHeaderProps> = ({
     <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center mb-6">
       <div className="flex flex-col sm:flex-row gap-3 flex-1 min-w-0">
         <div className="relative flex-1 sm:max-w-md">
-          <SearchIcon className="absolute rtl:right-3 ltr:left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <SearchIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
             placeholder={t('search_classes_placeholder')}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm rtl:pr-10 ltr:pl-10 text-sm"
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ps-10 text-sm"
           />
         </div>
       </div>

@@ -59,13 +59,13 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                                 <select
                                     value={selectedClassId}
                                     onChange={(e) => setSelectedClassId(e.target.value)}
-                                    className="block w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-lg font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-[var(--bg-hover)] ltr:pr-10 rtl:pl-10"
+                                    className="block w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-lg font-bold text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer hover:bg-[var(--bg-hover)] pe-10"
                                 >
                                     {[...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')).map(c => (
                                         <option key={c.id} value={c.id} className="bg-[var(--bg-card)] text-[var(--text-main)]">{c.name}</option>
                                     ))}
                                 </select>
-                                <div className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] ltr:right-3 rtl:left-3">
+                                <div className="absolute top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] end-3">
                                     ▼
                                 </div>
                             </div>
@@ -90,9 +90,9 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                     placeholder={t('search_student_placeholder')}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-muted)]/50 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm rtl:pr-10 ltr:pl-10 text-sm"
+                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] placeholder:text-[var(--text-muted)]/50 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ps-10 text-sm"
                 />
-                <div className="absolute top-1/2 -translate-y-1/2 rtl:right-3 ltr:left-3 text-[var(--text-muted)] pointer-events-none">
+                <div className="absolute top-1/2 -translate-y-1/2 start-3 text-[var(--text-muted)] pointer-events-none">
                     <SearchIcon className="w-5 h-5" />
                 </div>
             </div>
@@ -100,9 +100,9 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
             <div className="bg-[var(--bg-card)] rounded-[var(--radius-container)] border border-[var(--border-main)] overflow-hidden shadow-sm">
                 <div className="grid grid-cols-12 bg-[var(--bg-surface)] text-[var(--text-muted)] text-[10px] font-bold uppercase p-4 border-b border-[var(--border-main)] tracking-widest">
                     <div className="col-span-2 md:col-span-1 text-center">{t('rank_label')}</div>
-                    <div className="col-span-6 md:col-span-7 rtl:pr-2 ltr:pl-2">{t('student_name_label')}</div>
+                    <div className="col-span-6 md:col-span-7 ps-2">{t('student_name_label')}</div>
                     <div className="col-span-2 text-center">{t('trend_label')}</div>
-                    <div className="col-span-2 rtl:text-left rtl:pl-2 ltr:text-right ltr:pr-2">{t('points_label')}</div>
+                    <div className="col-span-2 text-end pe-2">{t('points_label')}</div>
                 </div>
 
                 <div className="divide-y divide-[var(--border-subtle)]">
@@ -118,7 +118,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                                     {student.rank}
                                 </div>
                             </div>
-                            <div className="col-span-6 md:col-span-7 rtl:pr-2 ltr:pl-2 font-semibold text-[var(--text-main)] text-base truncate">
+                            <div className="col-span-6 md:col-span-7 ps-2 font-semibold text-[var(--text-main)] text-base truncate">
                                 {student.name}
                             </div>
                             <div className="col-span-2 flex justify-center">
@@ -126,7 +126,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
                                 {student.trend === 'down' && <TrendUpIcon className="w-5 h-5 text-red-500 rotate-180" />}
                                 {student.trend === 'same' && <TrendSameIcon className="w-5 h-5 text-gray-400" />}
                             </div>
-                            <div className="col-span-2 rtl:text-left rtl:pl-2 ltr:text-right ltr:pr-2 font-bold text-lg text-indigo-600 dark:text-indigo-400 tabular-nums">
+                            <div className="col-span-2 text-end pe-2 font-bold text-lg text-indigo-600 dark:text-indigo-400 tabular-nums">
                                 {student.score.toLocaleString()}
                             </div>
                         </div>

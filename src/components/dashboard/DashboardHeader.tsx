@@ -108,7 +108,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             fallbackIcon="trophy"
                             padding="p-1"
                         />
-                        <div className="min-w-0 flex flex-col justify-center rtl:text-right ltr:text-left">
+                        <div className="min-w-0 flex flex-col justify-center text-start">
                             <h1
                                 className="text-base md:text-lg lg:text-[clamp(1rem,1.3vw,1.2rem)] font-black tracking-tight whitespace-nowrap overflow-hidden text-ellipsis leading-tight text-white"
                                 style={{ color: settings.header_text_color_1 || '#ffffff' }}
@@ -151,7 +151,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     </AnimatePresence>
 
                     {chunks.length > 1 && (
-                        <div className="absolute rtl:right-3 ltr:left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
+                        <div className="absolute end-3 top-1/2 -translate-y-1/2 flex flex-col gap-1">
                             {chunks.map((_, idx) => (
                                 <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === chunkIdx ? 'bg-white h-2.5 shadow-[0_0_5px_white]' : 'bg-white/20'}`} />
                             ))}
@@ -160,7 +160,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </div>
 
                 {/* 3. Global Score (Left) */}
-                <div className="order-2 lg:order-3 flex items-center justify-end rtl:mr-auto ltr:ml-auto gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
+                <div className="order-2 lg:order-3 flex items-center justify-end ms-auto gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
                         <div className="flex items-center gap-2 text-[12px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>

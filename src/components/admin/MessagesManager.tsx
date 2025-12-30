@@ -136,7 +136,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                     placeholder={t('write_encouraging_msg')}
                                     className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none"
                                 />
-                                <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[9px] font-bold ${newMessage.length >= 140 ? 'text-red-500' : 'text-[var(--text-muted)] opacity-80'}`}>
+                                <div className={`absolute bottom-2 end-3 text-[9px] font-bold ${newMessage.length >= 140 ? 'text-red-500' : 'text-[var(--text-muted)] opacity-80'}`}>
                                     {newMessage.length}/150
                                 </div>
                             </div>
@@ -196,7 +196,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                             </div>
                                         </div>
 
-                                        <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'border-r pr-4' : 'border-l pl-4'} border-[var(--border-subtle)]`}>
+                                        <div className="flex items-center gap-2 shrink-0 border-s ps-4 border-[var(--border-subtle)]">
                                             <AdminRowActions
                                                 onDelete={() => {
                                                     openConfirmation({
@@ -238,7 +238,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                         className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] text-[var(--fs-base)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none font-[var(--fw-bold)]"
                         autoFocus
                     />
-                    <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[10px] font-bold ${editText.length >= 140 ? 'text-red-500' : 'text-[var(--text-muted)] opacity-80'}`}>
+                    <div className={`absolute bottom-2 end-3 text-[10px] font-bold ${editText.length >= 140 ? 'text-red-500' : 'text-[var(--text-muted)] opacity-80'}`}>
                         {editText.length}/150
                     </div>
                 </div>

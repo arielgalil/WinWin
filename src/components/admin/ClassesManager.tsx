@@ -544,12 +544,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     <div className="relative flex-[2]">
                                         <label className="block text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
                                         <div className="relative">
-                                            <SearchIcon className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+                                            <SearchIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                                             <input 
                                                 value={searchTerm} 
                                                 onChange={e => setSearchTerm(e.target.value)} 
                                                 placeholder={t('search_student_placeholder')} 
-                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 ltr:pl-10 rtl:pr-10 placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" 
+                                                className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 ps-10 placeholder:text-[var(--text-muted)] opacity-60 shadow-inner" 
                                             />
                                         </div>
                                     </div>

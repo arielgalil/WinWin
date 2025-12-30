@@ -150,9 +150,9 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                                 value={geminiApiKey}
                                 onChange={e => setGeminiApiKey(e.target.value)}
                                 placeholder={t('ai_api_key_placeholder')}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono ltr:pl-12 rtl:pr-12 shadow-sm"
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono ps-12 shadow-sm"
                             />
-                            <KeyIcon className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50 pointer-events-none" />
+                            <KeyIcon className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50 pointer-events-none" />
                         </div>
                         <p className="text-[var(--fs-sm)] text-[var(--text-muted)] italic mt-2 opacity-70">{t('ai_test_connection_desc')}</p>
                     </div>

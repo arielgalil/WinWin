@@ -186,8 +186,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             </SheetTrigger>
             <SheetContent side="left" className={cn("w-72 p-0 flex flex-col bg-card border-border", dir === 'rtl' ? "data-[state=open]:right-0 data-[state=open]:left-auto" : "data-[state=open]:left-0 data-[state=open]:right-auto")}>
               <SheetHeader className={cn(
-                "p-4 border-b border-border h-16 flex-row items-center gap-3",
-                dir === 'rtl' ? "pr-12" : "pl-12"
+                "p-4 border-b border-border h-16 flex-row items-center gap-3 ps-12"
               )}>
                 <SheetTitle className="text-xl font-bold text-foreground truncate">{t('admin_panel' as any)}</SheetTitle>
               </SheetHeader>
@@ -277,7 +276,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             <div className="w-px h-6 bg-border" />
 
             {/* Profile Section */}
-            <div className="flex items-center gap-3 pl-2">
+            <div className="flex items-center gap-3 ps-2">
               <div className="text-right">
                 <p className="text-sm sm:text-base font-medium text-foreground leading-none">{user.full_name}</p>
                 <p className="text-[10px] sm:text-sm font-medium text-primary uppercase tracking-wide mt-1 opacity-80">

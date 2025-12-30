@@ -58,7 +58,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 onClick={() => onTabChange(item.id)}
                 onMouseEnter={() => onTabHover?.(item.id)}
                 aria-current={activeTab === item.id ? 'page' : undefined}
-                className={`w-full text-right py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative hover:scale-105 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 hover:shadow-md active:scale-95 transform ${activeTab === item.id
+                className={`w-full text-start py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative hover:scale-105 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 hover:shadow-md active:scale-95 transform ${activeTab === item.id
                   ? 'bg-[var(--bg-active)] font-semibold shadow-sm'
                   : 'text-[var(--text-secondary)] font-medium'
                   }`}
@@ -68,13 +68,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   className="w-5 h-5 transition-colors" 
                   style={activeTab === item.id ? { color: item.colorVar || 'var(--primary-base)' } : { color: 'var(--text-muted)' }}
                 />
-                <div className="flex flex-col text-right leading-tight">
+                <div className="flex flex-col text-start leading-tight">
                   <span className="text-[var(--fs-base)]">{t(`tab_${item.id.replace(/-/g, '_')}` as any)}</span>
                   {item.subtitle && <span className="text-[var(--fs-sm)] opacity-60 font-[var(--fw-regular)]">{item.subtitle}</span>}
                 </div>
                 {activeTab === item.id && (
                   <div 
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full" 
+                    className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-e-full" 
                     style={{ backgroundColor: item.colorVar || 'var(--primary-base)' }}
                   />
                 )}
