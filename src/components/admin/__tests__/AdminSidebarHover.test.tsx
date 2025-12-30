@@ -32,9 +32,7 @@ describe('AdminSidebar Hover Effect', () => {
 
         const navButton = screen.getByRole('button', { name: /tab_settings/i });
         
-        // We expect some transition-transform or scale/translate hover classes
-        // Proposed: hover:translate-x-1 (or -translate-x-1 for RTL)
-        // Since it's RTL (text-right), maybe translate-x-[-4px]
-        expect(navButton.className).toContain('hover:translate-x-[-4px]');
+        // We expect a scale effect now as per user feedback
+        expect(navButton.className).toContain('hover:scale-105');
     });
 });

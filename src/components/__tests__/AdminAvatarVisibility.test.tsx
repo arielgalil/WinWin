@@ -9,7 +9,7 @@ vi.mock('@/hooks/useLanguage', () => ({
 }));
 
 vi.mock('@/hooks/useTheme', () => ({
-    useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() })
+    useTheme: () => ({ theme: 'dark', toggleTheme: vi.fn() })
 }));
 
 vi.mock('@/hooks/useAuth', () => ({
@@ -25,7 +25,7 @@ vi.mock('@/hooks/useCampaignRole', () => ({
 }));
 
 describe('AdminLayout Avatar Visibility', () => {
-    it('avatar has visible border and background in light mode', () => {
+    it('avatar has visible border and background in dark mode', () => {
         const props: any = {
             children: <div />,
             user: { full_name: 'Test User' },
@@ -50,5 +50,8 @@ describe('AdminLayout Avatar Visibility', () => {
         
         // Ensure it has a background that is visible
         expect(avatar.className).toContain('bg-gradient-to-br');
+        
+        // Ensure it has white text for contrast
+        expect(avatar.className).toContain('text-white');
     });
 });

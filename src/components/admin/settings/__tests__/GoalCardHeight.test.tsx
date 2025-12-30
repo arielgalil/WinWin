@@ -34,11 +34,10 @@ const mockSettings: AppSettings = {
 };
 
 describe('GoalCard Progress Bar Height', () => {
-    it('uses a reduced height for the progress bar', () => {
+    it('uses a thicker height for the progress bar', () => {
         render(<GoalsManager settings={mockSettings} onUpdateSettings={vi.fn()} totalScore={50} />);
 
-        // The progress bar container has classes: w-full bg-[var(--bg-surface)] h-2 rounded-full overflow-hidden border border-[var(--border-subtle)]
-        // We want to find it and check it doesn't have h-2 but has something smaller like h-1 or h-1.5 or h-[6px]
+        // The progress bar container has classes: w-full bg-[var(--bg-surface)] ... rounded-full overflow-hidden border border-[var(--border-subtle)]
         
         // Find all divs and filter by classes
         const divs = document.querySelectorAll('div');
@@ -50,8 +49,7 @@ describe('GoalCard Progress Bar Height', () => {
         );
 
         expect(progressBar).toBeDefined();
-        // Expect height to be reduced. Let's say h-1.
-        expect(progressBar?.className).toContain('h-1');
-        expect(progressBar?.className).not.toContain('h-2');
+        // Expect height to be thicker. Let's say h-3 or h-4.
+        expect(progressBar?.className).toContain('h-3');
     });
 });

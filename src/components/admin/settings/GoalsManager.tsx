@@ -66,7 +66,7 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
             </div>
 
             <div className="space-y-1.5 pt-1">
-                <div className="w-full bg-[var(--bg-surface)] h-1 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                <div className="w-full bg-[var(--bg-surface)] h-3 rounded-full overflow-hidden border border-[var(--border-subtle)]">
                     <div className={`h-full transition-all duration-1000 ${isCompleted ? 'bg-green-500' : isActive ? 'bg-amber-400' : 'bg-gray-400 dark:bg-gray-600'} opacity-90`} style={{ width: `${percent}%` }} />
                 </div>
                 <div className="flex justify-between text-[9px] font-bold text-[var(--text-muted)] tracking-wide px-1">
