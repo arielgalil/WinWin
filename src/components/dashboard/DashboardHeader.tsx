@@ -115,7 +115,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             >
                                 {settings.competition_name}
                             </h1>
-                            <p className="text-white font-bold text-sm md:text-base tracking-tight truncate leading-none text-slate-400">
+                            <p 
+                                className="font-bold text-sm md:text-base tracking-tight truncate leading-none text-slate-400"
+                                style={{ color: settings.header_text_color_2 || 'rgba(203, 213, 225, 1)' }}
+                            >
                                 {settings.school_name}
                             </p>
                         </div>

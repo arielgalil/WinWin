@@ -384,6 +384,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                 primaryColor={formData.primary_color || '#4c1d95'}
                                 secondaryColor={formData.secondary_color || '#0f172a'}
                                 brightness={formData.background_brightness ?? 50}
+                                textColor1={formData.header_text_color_1 || '#ffffff'}
+                                textColor2={formData.header_text_color_2 || '#ffffff'}
                                 title={formData.competition_name || settings.competition_name || t('sample_title' as any)}
                             />
                         </div>
@@ -395,14 +397,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <div className="space-y-2">
                                         <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('primary_color')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.primary_color || '#1877F2'} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <input type="color" value={formData.primary_color || '#1877F2'} onInput={e => updateForm({ primary_color: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.primary_color}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('secondary_color')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.secondary_color || '#050505'} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <input type="color" value={formData.secondary_color || '#050505'} onInput={e => updateForm({ secondary_color: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.secondary_color}</span>
                                         </div>
                                     </div>
@@ -421,6 +423,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         min="0"
                                         max="100"
                                         value={formData.background_brightness || 50}
+                                        onInput={e => updateForm({ background_brightness: Number((e.target as HTMLInputElement).value) })}
                                         onChange={e => updateForm({ background_brightness: Number(e.target.value) })}
                                         className="flex-1 h-1.5 bg-[var(--bg-card)] rounded-full appearance-none cursor-pointer accent-indigo-600 border border-[var(--border-subtle)]"
                                     />
@@ -436,14 +439,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <div className="space-y-2">
                                         <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_1_label')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.header_text_color_1 || '#ffffff'} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <input type="color" value={formData.header_text_color_1 || '#ffffff'} onInput={e => updateForm({ header_text_color_1: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_1}</span>
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_2_label')}</label>
                                         <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.header_text_color_2 || '#ffffff'} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
+                                            <input type="color" value={formData.header_text_color_2 || '#ffffff'} onInput={e => updateForm({ header_text_color_2: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
                                             <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_2}</span>
                                         </div>
                                     </div>
