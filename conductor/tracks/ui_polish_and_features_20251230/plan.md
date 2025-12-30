@@ -32,7 +32,7 @@
 -   [x] Task: Implement light mode avatar visibility fix. (3ec0c32)
 -   [x] Task: Write failing tests for AI keyword button centering. (3ec0c32)
 -   [x] Task: Implement AI keyword button centering. (3ec0c32)
--   [x] Task: Conductor - User Manual Verification 'Phase 2: UI Polish - General Admin & Dashboard' (Protocol in workflow.md)
+-   [x] Task: Conductor - User Manual Verification 'Phase 2: UI Polish - General Admin & Dashboard' (Protocol in workflow.md) (ed6dcab)
 
 
 ## Phase 3: Functional Enhancements & Cleanup
