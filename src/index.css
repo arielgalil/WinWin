@@ -79,12 +79,35 @@
 
 @tailwind utilities;
 
-@layer utilities {
-  .bg-gradient-high-energy {
-    background: linear-gradient(to bottom right, #06b6d41a, #a855f71a); /* subtle cyan and purple */
-  }
-}
+ @layer utilities {
+   .bg-gradient-high-energy {
+     background: linear-gradient(to bottom right, #06b6d41a, #a855f71a); /* subtle cyan and purple */    
+   }
 
+   /* UI Interaction Restrictions */
+   .no-select {
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     user-select: none;
+   }
+
+   .no-drag {
+     -webkit-user-drag: none;
+     -khtml-user-drag: none;
+     -moz-user-drag: none;
+     -o-user-drag: none;
+     user-drag: none;
+   }
+ }
+
+ /* Global Icon & Media Protection */
+ img, 
+ .material-symbols-rounded,
+ .lucide,
+ svg {
+   @apply no-select no-drag;
+ }
 :root {
   --background: 0 0% 100%;
   --foreground: 224 71.4% 4.1%;
@@ -112,13 +135,19 @@
   --radius-container: 1rem;
   --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* TYPOGRAPHY - Simplified 4 Levels */
-  --fs-sm: 0.8125rem;   /* 13px - Muted info */
-  --fs-base: 0.9375rem; /* 15px - Default reading */
-  --fs-lg: 1.125rem;    /* 18px - Subheaders / Cards */
-  --fs-xl: 1.5rem;      /* 24px - Section Titles */
-
-  /* TYPOGRAPHY - 3 Weights */
+     /* TYPOGRAPHY - 5-Level Modular Scale (Responsive Clamps) */
+     --fs-h1: clamp(1.75rem, 5vw, 2.5rem);    /* 28px - 40px: Main Headings */
+     --fs-h2: clamp(1.5rem, 4vw, 2rem);       /* 24px - 32px: Sub-headings */
+     --fs-h3: clamp(1.25rem, 3vw, 1.5rem);    /* 20px - 24px: Sub-sub-headings */
+     --fs-body: clamp(1rem, 2vw, 1.125rem);   /* 16px - 18px: Default reading */
+     --fs-small: clamp(0.75rem, 1.5vw, 0.875rem); /* 12px - 14px: Muted/Caption */
+  
+     /* DEPRECATED - Migrating to 5-level scale */
+     --fs-sm: var(--fs-small);
+     --fs-base: var(--fs-body);
+     --fs-lg: var(--fs-h3);
+     --fs-xl: var(--fs-h2);
+    /* TYPOGRAPHY - 3 Weights */
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-bold: 700;
