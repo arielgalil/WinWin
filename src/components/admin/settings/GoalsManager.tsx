@@ -95,7 +95,7 @@ const EmojiPicker: React.FC<{
                 {trigger}
             </PopoverTrigger>
             <PopoverContent 
-                className="w-72 p-4 bg-[var(--bg-card)] border-[var(--border-main)] shadow-2xl rounded-2xl z-[100]" 
+                className="w-72 p-4 bg-[var(--bg-card)] border-[var(--border-main)] shadow-2xl rounded-2xl z-[600]" 
                 side="top" 
                 align="center"
             >
