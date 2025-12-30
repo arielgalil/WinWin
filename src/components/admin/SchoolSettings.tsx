@@ -14,6 +14,7 @@ import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
 import { BackgroundMusic } from '../dashboard/BackgroundMusic';
 import { BrandingPreview } from './settings/BrandingPreview';
+import { VisualDesignSection } from './settings/VisualDesignSection';
 
 const MotionDiv = motion.div as any;
 
@@ -372,95 +373,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 </AdminSectionCard>
 
                 {/* 3. Visual Design */}
-                <AdminSectionCard
-                    title={t('visual_design')}
-                    description={t('visual_design_desc')}
-                    icon={<SparklesIcon className="w-6 h-6" />}
-                >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="md:col-span-2">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-4">{t('live_preview' as any)}</label>
-                            <BrandingPreview 
-                                primaryColor={formData.primary_color || '#4c1d95'}
-                                secondaryColor={formData.secondary_color || '#0f172a'}
-                                brightness={formData.background_brightness ?? 50}
-                                textColor1={formData.header_text_color_1 || '#ffffff'}
-                                textColor2={formData.header_text_color_2 || '#ffffff'}
-                                title={formData.competition_name || settings.competition_name || t('sample_title' as any)}
-                            />
-                        </div>
-                        
-                        <div className="space-y-6">
-                            <div className="p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] space-y-4 shadow-inner">
-                                <h4 className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('brand_palette')}</h4>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('primary_color')}</label>
-                                        <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.primary_color || '#1877F2'} onInput={e => updateForm({ primary_color: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ primary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.primary_color}</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('secondary_color')}</label>
-                                        <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.secondary_color || '#050505'} onInput={e => updateForm({ secondary_color: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ secondary_color: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.secondary_color}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center px-1">
-                                    <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('lighting_effect')}</label>
-                                    <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-600">{formData.background_brightness || 50}%</span>
-                                </div>
-                                <div className="flex items-center gap-4 bg-[var(--bg-surface)] p-4 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
-                                    <MoonIcon className="w-4 h-4 text-[var(--text-muted)]" />
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={formData.background_brightness || 50}
-                                        onInput={e => updateForm({ background_brightness: Number((e.target as HTMLInputElement).value) })}
-                                        onChange={e => updateForm({ background_brightness: Number(e.target.value) })}
-                                        className="flex-1 h-1.5 bg-[var(--bg-card)] rounded-full appearance-none cursor-pointer accent-indigo-600 border border-[var(--border-subtle)]"
-                                    />
-                                    <SunIcon className="w-4 h-4 text-amber-500" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-6">
-                            <div className="p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] space-y-4 shadow-inner">
-                                <h4 className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('typography_colors')}</h4>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_1_label')}</label>
-                                        <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.header_text_color_1 || '#ffffff'} onInput={e => updateForm({ header_text_color_1: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ header_text_color_1: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_1}</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_2_label')}</label>
-                                        <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                            <input type="color" value={formData.header_text_color_2 || '#ffffff'} onInput={e => updateForm({ header_text_color_2: (e.target as HTMLInputElement).value })} onChange={e => updateForm({ header_text_color_2: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                                            <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{formData.header_text_color_2}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-200 dark:border-pink-500/20 rounded-[var(--radius-main)]">
-                                <p className="text-[var(--fs-sm)] text-pink-700 dark:text-pink-400 font-[var(--fw-medium)] leading-relaxed italic">
-                                    {t('contrast_test_tip')}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </AdminSectionCard>
-
+                <VisualDesignSection settings={formData} onUpdate={updateForm} />
 
                 {/* 4. Scoring Settings */}
                 <AdminSectionCard
