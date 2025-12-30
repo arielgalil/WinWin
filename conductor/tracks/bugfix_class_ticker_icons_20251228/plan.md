@@ -14,10 +14,10 @@ Fix issues in the `ClassTicker` component (bottom team tabs) where:
 - [x] Task: Audit `ClassTicker.tsx`
     - [x] Read file to identify icon rendering logic.
     - [x] Check `TrendUpIcon`, `TrendDownIcon`, `TrendSameIcon` usages. (Note: These icons are no longer used; replaced by Group Icons).
-- [x] Task: Implement Dynamic Sizing / CSS Fixes
+- [x] Task: Implement Dynamic Sizing / CSS Fixes [96deca3]
     - [x] Ensure all icon containers have consistent dimensions (e.g., `w-8 h-8`).
     - [x] Apply `flex items-center justify-center` to all containers (consistent with previous fixes).
     - [x] Use padding or responsive font-size to ensure icons don't overflow.
-- [x] Task: Wrap Naked Icons
+- [x] Task: Wrap Naked Icons [96deca3]
     - [x] Identify icons rendered without a wrapper.
     - [x] Wrap them in a standardized circular container.
