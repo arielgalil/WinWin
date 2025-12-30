@@ -13,7 +13,7 @@
     - [x] Remove all decorative lines and dividers
 - [x] Task: Conductor - User Manual Verification 'Footer Rebuild' (Protocol in workflow.md) [ce41977]
 
-## Phase 3: Emoji Workflow Improvement
+## Phase 3: Emoji Workflow Improvement [checkpoint: ba50627]
 - [x] Task: Convert Emoji Selection to Popover [4371736]
     - [ ] Write tests for the new Popover-based emoji trigger
     - [ ] Implement `Popover` from Shadcn/UI for the emoji picker in target modals
