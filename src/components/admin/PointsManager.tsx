@@ -55,12 +55,11 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   }, [toast, triggerSave, onSave]);
 
   return (
-    <div className="max-w-6xl mx-auto h-full flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       {/* Search and Filter Bar */}
       <AdminSectionCard
         title={t('tab_points')}
         icon={<SearchIcon className="w-6 h-6" />}
-        className="!p-6"
       >
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1">
@@ -96,7 +95,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
       {/* Grid Area */}
       <AdminSectionCard
         title={selectionLabel || t('students_label')}
-        className="flex-1 min-h-[400px] !p-6"
+        className="flex-1 min-h-[400px]"
       >
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {!searchTerm && currentClass && (

@@ -138,6 +138,7 @@ export const en = {
     upload_file_button: "Upload File",
     music_settings_desc: "Background audio settings",
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
+    tip_atmosphere_title: "Atmosphere Tip:",
     tip_atmosphere_desc: "💡 **Tip:** Choose upbeat music to increase competition energy!",
     visual_design_desc: "Colors and theme customization",
     brand_palette: "Brand Palette",

@@ -44,7 +44,11 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
       tag.src = "https://www.youtube.com/iframe_api";
       tag.async = true;
       const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      if (firstScriptTag && firstScriptTag.parentNode) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      } else {
+        document.head.appendChild(tag);
+      }
     }
 
     const initPlayer = () => {

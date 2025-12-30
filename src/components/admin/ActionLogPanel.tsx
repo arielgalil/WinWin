@@ -291,7 +291,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                         <AdminSectionCard
                             title={t('summary_ai_title')}
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
-                            className="flex flex-col h-[600px]"
+                            className="flex flex-col"
                             rightAction={summary && (
                                 <AdminButton
                                     onClick={handleCopySummary}
@@ -313,7 +313,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             >
                                 {t('generate_new_analysis')}
                             </AdminButton>
-                            <div className="bg-[var(--bg-surface)] rounded-xl p-6 flex-1 overflow-y-auto border border-[var(--border-main)] custom-scrollbar text-[var(--text-main)] shadow-inner relative">
+                            <div className="bg-[var(--bg-surface)] rounded-xl p-6 border border-[var(--border-main)] text-[var(--text-main)] shadow-inner relative min-h-[200px]">
                                 {renderFormattedSummary(summary || '')}
                                 {settings.ai_summary_updated_at && summary && !isLoadingAI && (
                                     <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] text-[var(--fs-xs)] text-[var(--text-muted)] text-center italic">

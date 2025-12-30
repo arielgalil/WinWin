@@ -3,7 +3,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { AppSettings, ScorePreset } from '../../types';
-import { UploadIcon, SaveIcon, StarIcon, MusicIcon, Volume2Icon, SparklesIcon, MoonIcon, SunIcon, XIcon, PlusIcon } from '../ui/Icons';
+import { UploadIcon, SaveIcon, StarIcon, MusicIcon, Volume2Icon, SparklesIcon, MoonIcon, SunIcon, XIcon, PlusIcon, PlayIcon, PauseIcon } from '../ui/Icons';
 import { supabase } from '../../supabaseClient';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../utils/stringUtils';
@@ -12,6 +12,7 @@ import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
+import { BackgroundMusic } from '../dashboard/BackgroundMusic';
 
 const MotionDiv = motion.div as any;
 
@@ -46,6 +47,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     });
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
+    const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
     const [isUploading, setIsUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
@@ -187,7 +189,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-8">
             <form onSubmit={handleSaveSettings} className="space-y-8">
                 <AdminSectionCard
                     title={t('details_logo')}
@@ -293,11 +295,30 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('youtube_link')}</label>
-                                    <input
-                                        value={formData.background_music_url || ''}
-                                        onChange={e => updateForm({ background_music_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] ltr:text-left shadow-inner"
-                                        placeholder={t('youtube_placeholder')}
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={formData.background_music_url || ''}
+                                            onChange={e => updateForm({ background_music_url: e.target.value })}
+                                            className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] ltr:text-left shadow-inner"
+                                            placeholder={t('youtube_placeholder')}
+                                        />
+                                        {formData.background_music_url && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsPreviewPlaying(!isPreviewPlaying)}
+                                                className={`px-4 rounded-[var(--radius-main)] border transition-all flex items-center justify-center gap-2 ${isPreviewPlaying ? 'bg-amber-500 border-amber-600 text-white shadow-lg scale-105' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-main)] hover:bg-[var(--bg-hover)]'}`}
+                                                title={isPreviewPlaying ? t('pause_preview' as any) : t('play_preview' as any)}
+                                            >
+                                                {isPreviewPlaying ? <PauseIcon className="w-5 h-5" /> : <PlayIcon className="w-5 h-5" />}
+                                                <span className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase hidden sm:inline">{isPreviewPlaying ? t('pause' as any) : t('preview' as any)}</span>
+                                            </button>
+                                        )}
+                                    </div>
+                                    <BackgroundMusic
+                                        url={formData.background_music_url}
+                                        mode={formData.background_music_mode}
+                                        volume={formData.background_music_volume}
+                                        isPlaying={isPreviewPlaying}
                                     />
                                 </div>
                                 <div className="flex items-center justify-between p-4 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
