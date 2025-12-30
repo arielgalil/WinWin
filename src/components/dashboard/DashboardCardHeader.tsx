@@ -20,11 +20,9 @@ export const DashboardCardHeader: React.FC<DashboardCardHeaderProps> = ({
     return (
         <div className="flex justify-between items-center shrink-0 px-5 h-11 bg-white/20 border-b border-white/20 backdrop-blur-md">
             <h2 className="text-sm font-black text-white flex items-center min-w-0">
-                <div className={`w-7 h-7 rounded-full border ml-3 flex items-center justify-center shrink-0 ${iconBgClass} ${borderColorClass}`}>
+                <div className={`w-7 h-7 rounded-full border ml-3 flex items-center justify-center shrink-0 ${iconBgClass} ${borderColorClass} ${iconColorClass}`}>
                     {/* Clone the icon to ensure it gets specific sizing if needed, or rely on parent sizing */}
-                    <div className={`${iconColorClass} flex items-center justify-center`}>
-                        {icon}
-                    </div>
+                    {icon}
                 </div>
                 <span className="truncate uppercase tracking-tight leading-none pt-0.5">{title}</span>
             </h2>
