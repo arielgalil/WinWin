@@ -44,8 +44,8 @@ const NavLink: React.FC<{ item: NavItem; isActive: boolean; onClick: () => void;
     variant={isActive ? 'secondary' : 'ghost'}
     onClick={onClick}
     className={cn(
-      'w-full h-11 text-base transition-all duration-200',
-      isActive && 'font-bold',
+      'w-full h-11 text-base transition-all duration-200 hover:scale-105 hover:bg-accent hover:shadow-sm active:scale-95',
+      isActive && 'font-bold shadow-sm',
       isCollapsed ? 'justify-center px-0' : 'justify-start gap-3'
     )}
     title={isCollapsed ? item.label : undefined}
@@ -155,7 +155,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           <Button 
             variant="ghost" 
             onClick={onViewDashboard} 
-            className={cn("w-full h-11 text-base text-foreground hover:bg-accent/50", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            className={cn("w-full h-11 text-base text-foreground hover:bg-accent/50 hover:scale-105 transition-all duration-200", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
             title={isCollapsed ? t('return_to_dashboard') : undefined}
           >
             <ArrowLeft className="h-5 w-5 shrink-0" />
@@ -164,7 +164,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           <Button 
             variant="ghost" 
             onClick={onLogout} 
-            className={cn("w-full h-11 text-base text-destructive hover:text-destructive hover:bg-destructive/10", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
+            className={cn("w-full h-11 text-base text-destructive hover:text-destructive hover:bg-destructive/10 hover:scale-105 transition-all duration-200", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
             title={isCollapsed ? t('logout') : undefined}
           >
             <LogOut className="h-5 w-5 shrink-0" />
@@ -284,7 +284,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 </p>
               </div>
               <div className={cn(
-                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-lg text-sm ring-2 ring-offset-2 ring-offset-background ring-primary border-2 border-white bg-gradient-to-br",
+                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold shadow-lg text-sm ring-2 ring-offset-2 ring-offset-background ring-primary border-2 bg-gradient-to-br transition-all duration-300",
+                theme === 'light' ? 'text-black border-black' : 'text-white border-white',
                 campaignRole === 'superuser' ? 'from-amber-400 to-orange-500' : 'from-primary to-accent'
               )}>
                 {userInitials}

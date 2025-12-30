@@ -30,7 +30,7 @@ vi.mock('@/hooks/useCampaignRole', () => ({
 }));
 
 describe('AdminLayout Avatar Visibility', () => {
-    it('avatar has high contrast in light mode', () => {
+    it('avatar has black border and text in light mode', () => {
         const props: any = {
             children: <div />,
             user: { full_name: 'Test User' },
@@ -48,11 +48,8 @@ describe('AdminLayout Avatar Visibility', () => {
 
         const avatar = screen.getByText('TU');
 
-        // In light mode, we want a strong ring and maybe a shadow
-        expect(avatar.className).toContain('ring-2');
+        expect(avatar.className).toContain('text-black');
+        expect(avatar.className).toContain('border-black');
         expect(avatar.className).toContain('shadow-lg');
-        
-        // We want to ensure it pops out
-        expect(avatar.className).toContain('ring-offset-2');
     });
 });
