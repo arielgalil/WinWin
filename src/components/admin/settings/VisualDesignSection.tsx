@@ -68,6 +68,7 @@ export const VisualDesignSection: React.FC<VisualDesignSectionProps> = ({ settin
                         textColor1={localState.header_text_color_1}
                         textColor2={localState.header_text_color_2}
                         title={settings.competition_name || t('sample_title')}
+                        subtitle={settings.school_name}
                     />
                 </div>
                 

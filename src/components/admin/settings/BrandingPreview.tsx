@@ -7,6 +7,7 @@ interface BrandingPreviewProps {
     secondaryColor: string;
     brightness: number;
     title: string;
+    subtitle?: string;
     textColor1?: string;
     textColor2?: string;
 }
@@ -16,6 +17,7 @@ export const BrandingPreview: React.FC<BrandingPreviewProps> = ({
     secondaryColor,
     brightness,
     title,
+    subtitle,
     textColor1 = '#ffffff',
     textColor2 = '#ffffff'
 }) => {
@@ -42,7 +44,7 @@ export const BrandingPreview: React.FC<BrandingPreviewProps> = ({
                             className="font-bold text-sm tracking-tight opacity-90"
                             style={{ color: textColor2 }}
                         >
-                            {t('educational_institution')}
+                            {subtitle || t('educational_institution')}
                         </p>
                         <div className="h-0.5 w-10 bg-white/20 rounded-full mt-2" />
                         <span className="text-white/60 text-[9px] font-bold uppercase tracking-widest mt-1">{t('preview' as any)}</span>
