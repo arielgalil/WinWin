@@ -145,12 +145,12 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
             {/* Footer Container: Transparent with exactly 4px (py-1) vertical padding */}
             <footer className={`w-full bg-transparent py-1 shrink-0 z-50 ${className}`}>
                 <div className="max-w-[1920px] mx-auto flex justify-center px-4">
-                    <nav className="bg-transparent border-0 h-9 flex items-center px-4 rounded-full shadow-none transition-all">
+                    <nav className="bg-transparent border-0 h-9 flex items-center gap-4 px-4 rounded-full shadow-none transition-all">
 
                         {/* 1. Branding (Right Side) */}
                         <button 
                             onClick={() => navigate('/')}
-                            className={`flex items-center gap-1.5 ml-3 h-5 border-l border-foreground/10 pl-3 sm:gap-2 text-foreground/90 hover:text-foreground ${getNavButtonClass()}`}
+                            className={`flex items-center gap-1.5 h-5 sm:gap-2 text-foreground/90 hover:text-foreground ${getNavButtonClass()}`}
                             title={t('nav_home')}
                             style={getNavButtonStyle()}
                         >
@@ -159,7 +159,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </button>
 
                         {/* 2. Main Navigation Icons */}
-                        <div className="flex items-center gap-0">
+                        <div className="flex items-center gap-4">
 
                             {fallbackSlug && (
                                 <button 
@@ -172,7 +172,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 </button>
                             )}
 
-{user && fallbackSlug && (
+                            {user && fallbackSlug && (
                                 <button 
                                     onClick={() => navigate(isAdmin ? `/admin/${fallbackSlug}/points` : `/vote/${fallbackSlug}`)} 
                                     title={t('enter_points')} 
@@ -193,8 +193,6 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     <SettingsIcon className="w-4 h-4" />
                                 </button>
                             )}
-
-                            <div className="w-px h-4 bg-foreground/10 mx-1.5" />
 
                             {/* 3. Utility Icons (Music, TV Mode, Debug, Super) */}
                             {musicState && (
@@ -241,16 +239,16 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </div>
 
                         {/* 4. Auth Section (Left Side) */}
-                        <div className="mr-2 flex items-center border-r border-foreground/10 pr-2">
+                        <div className="flex items-center gap-4">
                             {!user ? (
-<button
-                                        onClick={() => navigate('/login')}
-                                        title={t('login_title')}
-                                        className={`w-7 h-7 flex items-center justify-center ${fallbackPath.includes('/login') ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
-                                        style={getNavButtonStyle()}
-                                    >
-                                        <LockIcon className="w-4 h-4" />
-                                    </button>
+                                <button
+                                    onClick={() => navigate('/login')}
+                                    title={t('login_title')}
+                                    className={`w-7 h-7 flex items-center justify-center ${fallbackPath.includes('/login') ? 'text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100' : 'text-foreground/60 opacity-80'} ${getNavButtonClass()}`}
+                                    style={getNavButtonStyle()}
+                                >
+                                    <LockIcon className="w-4 h-4" />
+                                </button>
                             ) : (
                                 <div className="relative" ref={profileMenuRef}>
                                     <button
