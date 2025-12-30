@@ -13,6 +13,8 @@ import { useErrorFormatter } from '../../utils/errorUtils';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
+import { EditModal } from '../ui/EditModal';
+import { AdminButton } from '../ui/AdminButton';
 
 // Fix for framer-motion type mismatch
 const MotionDiv = motion.div as any;
@@ -43,20 +45,20 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
     const { modalConfig, openConfirmation } = useConfirmation();
 
     const placeholders = [
-        { label: t('placeholder_institution_name'), value: '[שם המוסד]' },
-        { label: t('placeholder_campaign_name'), value: '[שם המבצע]' },
-        { label: t('placeholder_institution_score'), value: '[ניקוד מוסדי]' },
-        { label: t('placeholder_target_name'), value: '[שם היעד]' },
-        { label: t('placeholder_target_score'), value: '[ניקוד היעד]' },
-        { label: t('placeholder_distance_from_target'), value: '[מרחק מהיעד]' },
-        { label: t('placeholder_group_1'), value: '[קבוצה ראשונה]' },
-        { label: t('placeholder_group_2'), value: '[קבוצה שניה]' },
-        { label: t('placeholder_group_3'), value: '[קבוצה שלישית]' },
-        { label: t('placeholder_place_1'), value: '[מקום ראשון]' },
-        { label: t('placeholder_place_2'), value: '[מקום שני]' },
-        { label: t('placeholder_place_3'), value: '[מקום שלישי]' },
-        { label: t('placeholder_random_participant'), value: '[משתתף אקראי]' },
-        { label: t('placeholder_random_group'), value: '[קבוצה אקראית]' },
+        { label: t('placeholder_institution_name'), value: t('tag_institution_name') },
+        { label: t('placeholder_campaign_name'), value: t('tag_campaign_name') },
+        { label: t('placeholder_institution_score'), value: t('tag_institution_score') },
+        { label: t('placeholder_target_name'), value: t('tag_target_name') },
+        { label: t('placeholder_target_score'), value: t('tag_target_score') },
+        { label: t('placeholder_distance_from_target'), value: t('tag_distance_from_target') },
+        { label: t('placeholder_group_1'), value: t('tag_group_1') },
+        { label: t('placeholder_group_2'), value: t('tag_group_2') },
+        { label: t('placeholder_group_3'), value: t('tag_group_3') },
+        { label: t('placeholder_place_1'), value: t('tag_place_1') },
+        { label: t('placeholder_place_2'), value: t('tag_place_2') },
+        { label: t('placeholder_place_3'), value: t('tag_place_3') },
+        { label: t('placeholder_random_participant'), value: t('tag_random_participant') },
+        { label: t('placeholder_random_group'), value: t('tag_random_group') },
     ];
 
     const insertPlaceholder = (ph: string) => {
@@ -178,46 +180,20 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                                         initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className={`group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all ${editingId === msg.id ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 shadow-md' : 'bg-[var(--bg-card)] border-[var(--border-subtle)] shadow-sm hover:border-[var(--border-main)] hover:bg-[var(--bg-hover)]'}`}
+                                        className="group p-4 rounded-[var(--radius-main)] border flex items-start justify-between gap-4 transition-all bg-[var(--bg-card)] border-[var(--border-subtle)] shadow-sm hover:border-[var(--border-main)] hover:bg-[var(--bg-hover)]"
                                     >
-                                        {/* Message Text Area */}
                                         <div className="flex-1 min-w-0">
-                                            {editingId === msg.id ? (
-                                                <div className="flex gap-2 items-center">
-                                                    <div className="relative flex-1">
-                                                        <textarea
-                                                            value={editText}
-                                                            onChange={e => setEditText(e.target.value)}
-                                                            maxLength={150}
-                                                            className="w-full px-3 py-2 rounded-[var(--radius-main)] border border-indigo-400 dark:border-white/10 bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-24 resize-none font-[var(--fw-bold)]"
-                                                            autoFocus
-                                                        />
-                                                        <div className={`absolute -top-5 ${isRTL ? 'left-0' : 'right-0'} text-[var(--fs-sm)] font-[var(--fw-bold)] ${editText.length >= 140 ? 'text-red-600' : 'text-[var(--text-muted)]'}`}>
-                                                            {editText.length}/150
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex gap-1 shrink-0">
-                                                        <button onClick={saveEdit} className="p-2 bg-green-100 dark:bg-green-500/10 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-500/20 rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-green-200 dark:hover:bg-green-500/20">
-                                                            <CheckIcon className="w-4 h-4" />
-                                                        </button>
-                                                        <button onClick={() => setEditingId(null)} className="p-2 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] transition-all active:scale-95 shadow-sm hover:bg-[var(--bg-hover)]">
-                                                            <XIcon className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center justify-between gap-4">
-                                                    <p className="text-[var(--text-main)] text-[var(--fs-base)] font-[var(--fw-bold)] leading-relaxed whitespace-pre-wrap break-words opacity-90">
-                                                        {msg.text}
-                                                    </p>
+                                            <div className="flex items-center justify-between gap-4">
+                                                <p className="text-[var(--text-main)] text-[var(--fs-base)] font-[var(--fw-bold)] leading-relaxed whitespace-pre-wrap break-words opacity-90">
+                                                    {msg.text}
+                                                </p>
 
-                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                        <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowUpIcon className="w-4 h-4" /></button>
-                                                        <span className="text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] min-w-[12px] text-center">{index + 1}</span>
-                                                        <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowDownIcon className="w-4 h-4" /></button>
-                                                    </div>
+                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                                    <button onClick={() => handleMove(index, 'up')} disabled={index === 0 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowUpIcon className="w-4 h-4" /></button>
+                                                    <span className="text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)] min-w-[12px] text-center">{index + 1}</span>
+                                                    <button onClick={() => handleMove(index, 'down')} disabled={index === messages.length - 1 || isReordering} className="p-3 text-[var(--text-muted)] hover:text-indigo-700 disabled:opacity-0 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"><ArrowDownIcon className="w-4 h-4" /></button>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
 
                                         <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'border-r pr-4' : 'border-l pl-4'} border-[var(--border-subtle)]`}>
@@ -246,6 +222,50 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
                 </div>
             </div>
         </AdminSectionCard>
+
+        {/* Message Edit Modal */}
+        <EditModal 
+            isOpen={!!editingId} 
+            onClose={() => { setEditingId(null); setEditText(''); }} 
+            title={t('edit_message')}
+        >
+            <form onSubmit={(e) => { e.preventDefault(); saveEdit(); }} className="space-y-6">
+                <div className="relative">
+                    <textarea
+                        value={editText}
+                        onChange={e => setEditText(e.target.value)}
+                        maxLength={150}
+                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] text-[var(--fs-base)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm h-32 resize-none font-[var(--fw-bold)]"
+                        autoFocus
+                    />
+                    <div className={`absolute bottom-2 ${isRTL ? 'left-3' : 'right-3'} text-[10px] font-bold ${editText.length >= 140 ? 'text-red-500' : 'text-[var(--text-muted)] opacity-80'}`}>
+                        {editText.length}/150
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap gap-x-1.5 gap-y-2 bg-[var(--bg-surface)] p-2 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
+                    {placeholders.map(ph => (
+                        <button
+                            key={ph.value}
+                            type="button"
+                            onClick={() => insertPlaceholder(ph.value)}
+                            className="group relative h-6 transition-all active:scale-95 bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] border border-[var(--border-main)] text-indigo-700 dark:text-indigo-400 rounded-full px-3 text-xs font-semibold shadow-sm"
+                        >
+                            {ph.label}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                    <AdminButton type="submit" variant="success" size="md" className="flex-1">
+                        {t('save')}
+                    </AdminButton>
+                    <AdminButton type="button" variant="secondary" size="md" onClick={() => { setEditingId(null); setEditText(''); }} className="flex-1">
+                        {t('cancel')}
+                    </AdminButton>
+                </div>
+            </form>
+        </EditModal>
     </div>
     );
 };

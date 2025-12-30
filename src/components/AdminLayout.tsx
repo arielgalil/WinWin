@@ -4,15 +4,14 @@ import { UserProfile } from '@/types';
 import { Button } from './ui/button';
 import { Logo } from './ui/Logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { Menu, X, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2, RefreshCw, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2, RefreshCw } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { formatLastSaved } from '@/utils/dateUtils';
 import { SaveNotificationBadge } from '@/components/ui/SaveNotificationBadge';
-import { Campaign, Settings as AppSettings } from '@/types';
-import { SettingsIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
+import { Campaign, AppSettings } from '@/types';
+import { CalculatorIcon, ClockIcon } from './ui/Icons';
 import { VersionFooter } from './ui/VersionFooter'; // Corrected import
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavItem {
   id: string;

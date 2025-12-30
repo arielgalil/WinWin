@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "winwinbyag"
-  }
+  },
+  "targets": {
+    "winwinbyag": {
+      "hosting": {
+        "main_site": [
+          "win2grow"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

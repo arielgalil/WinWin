@@ -6,6 +6,7 @@ import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
+import { EditModal } from '../ui/EditModal';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { parseExcelFile } from '../../utils/excelUtils';
@@ -55,10 +56,12 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
     const [isAddingClass, setIsAddingClass] = useState(false);
     const [editingClass, setEditingClass] = useState<ClassRoom | null>(null);
+    const [editingStudent, setEditingStudent] = useState<{id: string, name: string} | null>(null);
     const [newClassName, setNewClassName] = useState('');
     const [newClassColor, setNewClassColor] = useState('bg-blue-500');
 
     const [newStudentName, setNewStudentName] = useState('');
+    const [editStudentName, setEditStudentName] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [importStatus, setImportStatus] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState('');
@@ -169,6 +172,31 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
             await onRefresh();
         } catch (err: any) {
             showErrorModal(getErrorMessage(err, 'student_add_error'));
+        }
+    };
+
+    const handleUpdateStudent = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingStudent) return;
+
+        const cleanName = normalizeString(editStudentName);
+        if (!cleanName) return;
+
+        try {
+            const { error } = await supabase.from('students').update({
+                name: cleanName
+            }).eq('id', editingStudent.id);
+
+            if (error) throw error;
+
+            setEditStudentName('');
+            setEditingStudent(null);
+            showToast(t('changes_saved'), 'success');
+            triggerSave('data-management');
+            if (onSave) await onSave();
+            await onRefresh();
+        } catch (err: any) {
+            showErrorModal(getErrorMessage(err, 'student_update_error'));
         }
     };
 
@@ -336,10 +364,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
 
                 <div className="space-y-6">
                     <AnimatePresence>
-                        {(isAddingClass || editingClass) && (
+                        {isAddingClass && (
                             <MotionDiv initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-[var(--bg-surface)] p-6 rounded-[var(--radius-main)] border-2 border-dashed border-[var(--border-main)] flex flex-col gap-4 relative overflow-hidden group">
                                 <h3 className="text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] flex items-center gap-2 mb-2">
-                                    {editingClass ? t('edit_group') : t('add_new_group')}
+                                    {t('add_new_group')}
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-1">
@@ -363,10 +391,10 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-auto pt-2 justify-end">
-                                    <AdminButton variant="secondary" size="sm" onClick={() => { setIsAddingClass(false); setEditingClass(null); setNewClassName(''); }}>
+                                    <AdminButton variant="secondary" size="sm" onClick={() => { setIsAddingClass(false); setNewClassName(''); }}>
                                         {t('cancel')}
                                     </AdminButton>
-                                    <AdminButton variant="primary" size="sm" onClick={editingClass ? handleUpdateClass : handleAddClass}>
+                                    <AdminButton variant="primary" size="sm" onClick={handleAddClass}>
                                         {t('save')}
                                     </AdminButton>
                                 </div>
@@ -396,7 +424,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                 render: (cls) => (
                                     <div className="flex items-center gap-3">
                                         <span className="text-[var(--text-main)] opacity-80 font-[var(--fw-bold)] text-[var(--fs-sm)]">
-                                            {cls.students?.length || 0} {t('students_label')}
+                                            {t('students_count', { count: cls.students?.length || 0 })}
                                         </span>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
@@ -411,7 +439,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                         ]}
                         actions={(cls) => (
                             <AdminRowActions 
-                                onEdit={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); setIsAddingClass(true); }}
+                                onEdit={() => { setEditingClass(cls); setNewClassName(cls.name); setNewClassColor(cls.color || 'bg-blue-500'); }}
                                 onDelete={() => {
                                     openConfirmation({
                                         title: t('delete_group'),
@@ -426,6 +454,73 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                     />
                 </div>
             </AdminSectionCard>
+
+            {/* Class Edit Modal */}
+            <EditModal 
+                isOpen={!!editingClass} 
+                onClose={() => { setEditingClass(null); setNewClassName(''); }} 
+                title={t('edit_group')}
+            >
+                <form onSubmit={handleUpdateClass} className="space-y-6">
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_name_placeholder')}</label>
+                            <input 
+                                value={newClassName} 
+                                onChange={e => setNewClassName(e.target.value)} 
+                                placeholder={t('group_name_placeholder')} 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                autoFocus 
+                            />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_color_label')}</label>
+                            <div className="flex flex-wrap gap-2 p-3 bg-[var(--bg-card)] rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
+                                {AVAILABLE_COLORS.map(c => (
+                                    <button type="button" key={c} onClick={() => setNewClassColor(c)} className={`w-8 h-8 rounded-full ${c} ${newClassColor === c ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-[var(--bg-card)] scale-110' : 'opacity-60 hover:opacity-100 transition-all'}`} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                        <AdminButton type="submit" variant="success" size="md" className="flex-1">
+                            {t('save')}
+                        </AdminButton>
+                        <AdminButton type="button" variant="secondary" size="md" onClick={() => { setEditingClass(null); setNewClassName(''); }} className="flex-1">
+                            {t('cancel')}
+                        </AdminButton>
+                    </div>
+                </form>
+            </EditModal>
+
+            {/* Student Edit Modal */}
+            <EditModal 
+                isOpen={!!editingStudent} 
+                onClose={() => { setEditingStudent(null); setEditStudentName(''); }} 
+                title={t('edit_student')}
+            >
+                <form onSubmit={handleUpdateStudent} className="space-y-6">
+                    <div className="space-y-1">
+                        <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('student_name_label')}</label>
+                        <input 
+                            value={editStudentName} 
+                            onChange={e => setEditStudentName(e.target.value)} 
+                            placeholder={t('student_name_label')} 
+                            className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                            autoFocus 
+                        />
+                    </div>
+                    <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                        <AdminButton type="submit" variant="success" size="md" className="flex-1">
+                            {t('save')}
+                        </AdminButton>
+                        <AdminButton type="button" variant="secondary" size="md" onClick={() => { setEditingStudent(null); setEditStudentName(''); }} className="flex-1">
+                            {t('cancel')}
+                        </AdminButton>
+                    </div>
+                </form>
+            </EditModal>
 
             <AnimatePresence>
                 {view === 'students' && selectedClass && (
@@ -486,6 +581,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         ]}
                                         actions={(s) => (
                                             <AdminRowActions
+                                                onEdit={() => { setEditingStudent(s); setEditStudentName(s.name); }}
                                                 onDelete={() => handleDeleteStudent(s.id, s.name)}
                                                 deleteTitle={t('delete')}
                                             />

@@ -253,7 +253,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         value={formData.logo_url || ''}
                                         onChange={e => updateForm({ logo_url: e.target.value })}
                                         className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono shadow-sm"
-                                        placeholder="https://image-url.com/logo.png"
+                                        placeholder={t('logo_upload_placeholder' as any)}
                                     />
                                     <div className="flex gap-3">
                                         <AdminButton

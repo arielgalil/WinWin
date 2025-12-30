@@ -7,10 +7,13 @@ export const he = {
     back: "חזרה",
     save: "שמור",
     cancel: "ביטול",
+    ok: "אישור",
     logout: "יציאה מהחשבון",
     refresh: "רענון נתונים",
+    toggle_theme: "שינוי ערכת נושא",
     points_label: "ניקוד",
     updating: "מעדכן...",
+    uploading: "מעלה...",
     add_short: "הוסף",
     remove_short: "הפחת",
     for_label: "עבור",
@@ -162,6 +165,7 @@ export const he = {
     delete_preset_confirm: "האם אתה בטוח שברצונך למחוק את הכפתור \"%{label}\"",
     delete_keyword_title: "מחיקת מילת מפתח",
     delete_keyword_confirm: "האם אתה בטוח שברצונך למחוק את מילת המפתח \"%{kw}\"",
+    goal_score_error: "היעד חייב להיות גבוה מהניקוד הנוכחי (%{minScore})",
     delete_student: "מחק תלמיד",
     delete_group: "מחק קבוצה",
     delete_message: "מחק הודעה",
@@ -257,6 +261,44 @@ export const he = {
     error_missing_fields: "נא למלא את כל השדות",
     edit: "עריכה",
     delete: "מחיקה",
+    logo_upload_placeholder: "https://image-url.com/logo.png",
+    tag_institution_name: "[שם המוסד]",
+    tag_campaign_name: "[שם המבצע]",
+    tag_institution_score: "[ניקוד מוסדי]",
+    tag_target_name: "[שם היעד]",
+    tag_target_score: "[ניקוד היעד]",
+    tag_distance_from_target: "[מרחק מהיעד]",
+    tag_group_1: "[קבוצה ראשונה]",
+    tag_group_2: "[קבוצה שניה]",
+    tag_group_3: "[קבוצה שלישית]",
+    tag_place_1: "[מקום ראשון]",
+    tag_place_2: "[מקום שני]",
+    tag_place_3: "[מקום שלישי]",
+    tag_random_participant: "[משתתף אקראי]",
+    tag_random_group: "[קבוצה אקראית]",
+    ai_default_prompt_content: `
+אתה מנטור חינוכי נלהב המלווה מבצע בית-ספרי.
+      
+נתוני המצב בזמן אמת:
+1. פעולה אחרונה: [פעולה].
+2. מובילי הטבלה: [מובילים].
+3. יעד משותף (Mission Control): [יעד]
+4. מצב יעדים כיתתיים: [כיתות]
+
+המטרה: לעודד "קנאת סופרים תרבה חוכמה" (תחרות בונה) ולהתייחס למצב היעד המשותף או הכיתתי אם רלוונטי.
+כתוב משפט קצר (עד 15 מילים), אנרגטי ומפרגן בעברית.
+
+הנחיות קריטיות:
+1. אם אנחנו קרובים ליעד המשותף, תזכיר את זה בהתלהבות!
+2. אם כיתה השיגה יעד, פרגן לה.
+3. השתמש בשפה של "בנייה", "טיפוס", "צמיחה", "שותפות", "יחד", "התקדמות", "השראה" ועוד.
+4. הימנע משפה אלימה/כוחנית.
+5. תהיה שנון וקליל.
+`,
+    full_backup_desc: "JSON + מדיה",
+    structure_backup_desc: "קבוצות ותלמידים",
+    settings_backup_desc: "הגדרות תחרות",
+    staff_backup_desc: "צוות ותפקידים",
     // Events & AI
     shared_goal_reached: "יעד משותף נכבש!",
     total_label: "סה\"כ",
@@ -273,8 +315,10 @@ export const he = {
     group_label: "קבוצה",
     selected_student: "תלמיד נבחר",
     students_selected: "%{count} תלמידים נבחרו",
+    select_group_to_start: "בחר קבוצה כדי להתחיל",
     group_score_added: "נוסף ניקוד קבוצתי ל-%{className}",
     students_score_added: "נוסף ניקוד ל-%{count} תלמידים",
+    select_group_placeholder: "בחר קבוצה...",
     points_update_error: "שגיאה בעדכון ניקוד: %{error}",
     server_error: "תקלת שרת",
     
@@ -322,6 +366,7 @@ export const he = {
     student_leaderboard_title: "לוח תלמידים מובילים",
     stars_momentum: "כוכבים במומנטום",
     student_stars: "כוכבי ה%{instType}",
+    no_data_available: "אין נתונים זמינים",
     arena_title: "הזירה",
     no_data: "אין נתונים להצגה",
     stage: "שלב",
@@ -331,6 +376,7 @@ export const he = {
     more_points: "עוד",
     points_short: "נקו'",
     to_stage: "לשלב",
+    to_label: "ל-",
     cumulative_score: "ניקוד מצטבר",
     together: "יחד",
     last_update: "עדכון אחרון",
@@ -404,6 +450,7 @@ export const he = {
     user_details_updated: "פרטי משתמש עודכנו",
     confirm_delete_user: "האם אתה בטוח שברצונך להסיר את המשתמש מהתחרות?",
     user_deleted_success: "המשתמש הוסר בהצלחה מהתחרות",
+    edit_user_details: "עריכת פרטי משתמש",
     update_error_msg: "שגיאה בעדכון: %{error}",
     user_update_error: "שגיאה בעדכון משתמש",
     sync_pending: "ממתין לסנכרון...",
@@ -455,8 +502,16 @@ export const he = {
     header_detected_row: "זוהתה כותרת בשורה %{row}. מעבד נתונים...",
     creating_group_progress: "יוצר קבוצה: %{name}...",
     import_completed_summary: "ייבוא הושלם: נוספו %{groups} קבוצות ו-%{students} תלמידים.",
+    no_data_found: "לא נמצאו נתונים",
+    excel_empty_error: "קובץ האקסל ריק",
+    excel_import_success: "הייבוא הושלם בהצלחה!",
+    bulk_import_excel: "ייבוא המוני מאקסל",
+    import: "ייבוא",
+    drag_or_click_excel: "גרור קובץ אקסל לכאן או לחץ לבחירה",
+    excel_format_info: "וודאו שהקובץ כולל עמודות: שם התלמיד, שכבה",
     group_name_placeholder: "שם הקבוצה (למשל: כיתה ט'1)",
     group_color_label: "צבע קבוצה",
+    edit_student: "עריכת תלמיד",
     students_count: "%{count} תלמידים",
     student_total: "סה\"כ תלמידים",
     manage_students_tooltip: "נהל תלמידים",

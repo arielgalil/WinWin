@@ -54,7 +54,7 @@ describe('ClassesManager Buttons', () => {
     );
 
     // Find the student count text (use getAllByText because AdminTable renders both desktop and mobile versions)
-    const countElements = screen.getAllByText(/2 students_label/);
+    const countElements = screen.getAllByText(/students_count/);
     const cell = countElements[0].closest('td');
     
     // The button should be in the same cell

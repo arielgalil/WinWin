@@ -317,7 +317,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                 {renderFormattedSummary(summary || '')}
                                 {settings.ai_summary_updated_at && summary && !isLoadingAI && (
                                     <div className="mt-4 pt-4 border-t border-[var(--border-subtle)] text-[var(--fs-xs)] text-[var(--text-muted)] text-center italic">
-                                        {t('last_update' as any)}: {new Date(settings.ai_summary_updated_at).toLocaleString(language === 'he' ? 'he-IL' : 'en-US')}
+                                        {t('last_update')}: {new Date(settings.ai_summary_updated_at).toLocaleString(language === 'he' ? 'he-IL' : 'en-US')}
                                     </div>
                                 )}
                             </div>

@@ -18,26 +18,6 @@ interface AiSettingsProps {
     onRefresh?: () => Promise<void>;
 }
 
-const DEFAULT_PROMPT = `
-אתה מנטור חינוכי נלהב המלווה מבצע בית-ספרי.
-      
-נתוני המצב בזמן אמת:
-1. פעולה אחרונה: [פעולה].
-2. מובילי הטבלה: [מובילים].
-3. יעד משותף (Mission Control): [יעד]
-4. מצב יעדים כיתתיים: [כיתות]
-
-המטרה: לעודד "קנאת סופרים תרבה חוכמה" (תחרות בונה) ולהתייחס למצב היעד המשותף או הכיתתי אם רלוונטי.
-כתוב משפט קצר (עד 15 מילים), אנרגטי ומפרגן בעברית.
-
-הנחיות קריטיות:
-1. אם אנחנו קרובים ליעד המשותף, תזכיר את זה בהתלהבות!
-2. אם כיתה השיגה יעד, פרגן לה.
-3. השתמש בשפה של "בנייה", "טיפוס", "צמיחה", "שותפות", "יחד", "התקדמות", "השראה" ועוד.
-4. הימנע משפה אלימה/כוחנית.
-5. תהיה שנון וקליל.
-`;
-
 export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) => {
     const { t, language, isRTL } = useLanguage();
     const { triggerSave } = useSaveNotification();
@@ -58,6 +38,8 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
         setKeywords(settings.ai_keywords || []);
         setGeminiApiKey(settings.gemini_api_key || '');
     }, [settings]);
+
+    const defaultPrompt = t('ai_default_prompt_content' as any);
 
     const hasChanges = useMemo(() => {
         const initialPrompt = settings.ai_custom_prompt || '';
@@ -186,7 +168,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                     <div className="space-y-3">
                         <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('ai_default_prompt_label')}</label>
                         <textarea
-                            value={DEFAULT_PROMPT}
+                            value={defaultPrompt}
                             disabled
                             className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-surface)] text-[var(--text-muted)] text-[var(--fs-sm)] leading-relaxed resize-none font-[var(--fw-medium)] h-64 shadow-inner"
                         />

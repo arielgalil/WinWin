@@ -51,7 +51,7 @@ const mockSettings: AppSettings = {
   logo_url: null,
   ai_summary: null,
   ai_summary_updated_at: null,
-  campaignId: 'campaign-id-123',
+  campaign_id: 'campaign-id-123',
 };
 
 describe('ActionLogPanel', () => {
@@ -96,7 +96,7 @@ describe('ActionLogPanel', () => {
 
     expect(screen.getByText('Existing recent summary')).toBeInTheDocument();
     expect(geminiService.generateAdminSummary).not.toHaveBeenCalled();
-    expect(screen.getByText(/last_updated/)).toBeInTheDocument();
+    expect(screen.getByText(/last_update/)).toBeInTheDocument();
   });
 
   it('should generate a new AI summary if none exists in settings', async () => {
@@ -184,7 +184,7 @@ describe('ActionLogPanel', () => {
     expect(analyzingDataElement).toBeInTheDocument();
     
     // Expect the button to be disabled and also show 'analyzing_data' (which is the button text during loading)
-    expect(screen.getByRole('button', { name: 'analyzing_data' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'generate_new_analysis' })).toBeDisabled();
   });
 
   it('should display "last updated" time when summary is available', async () => {
@@ -200,7 +200,7 @@ describe('ActionLogPanel', () => {
         render(<ActionLogPanel {...defaultProps} settings={settingsWithRecentSummary} />);
     });
     
-    expect(screen.getByText(/last_updated/)).toBeInTheDocument();
+    expect(screen.getByText(/last_update/)).toBeInTheDocument();
   });
 
 });

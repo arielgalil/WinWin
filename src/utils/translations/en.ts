@@ -7,8 +7,10 @@ export const en = {
     back: "Back",
     save: "Save",
     cancel: "Cancel",
+    ok: "OK",
     logout: "Logout",
     refresh: "Refresh Data",
+    toggle_theme: "Toggle Theme",
     points_label: "Points",
     updating: "Updating...",
     uploading: "Uploading...",
@@ -260,6 +262,44 @@ export const en = {
     error_missing_fields: "Please fill all fields",
     edit: "Edit",
     delete: "Delete",
+    logo_upload_placeholder: "https://image-url.com/logo.png",
+    tag_institution_name: "[Institution Name]",
+    tag_campaign_name: "[Competition Name]",
+    tag_institution_score: "[Institution Score]",
+    tag_target_name: "[Target Name]",
+    tag_target_score: "[Target Score]",
+    tag_distance_from_target: "[Distance from Target]",
+    tag_group_1: "[First Group]",
+    tag_group_2: "[Second Group]",
+    tag_group_3: "[Third Group]",
+    tag_place_1: "[1st Place]",
+    tag_place_2: "[2nd Place]",
+    tag_place_3: "[3rd Place]",
+    tag_random_participant: "[Random Participant]",
+    tag_random_group: "[Random Group]",
+    ai_default_prompt_content: `
+You are an enthusiastic educational mentor guiding a school competition.
+      
+Real-time data:
+1. Last action: [Action].
+2. Leaderboard leaders: [Leaders].
+3. Shared goal (Mission Control): [Goal]
+4. Class goals status: [Classes]
+
+Goal: Encourage "Inspirational Competition" (constructive competition) and refer to the shared or class goal status if relevant.
+Write a short sentence (up to 15 words), energetic and appreciative in English.
+
+Critical guidelines:
+1. If we are close to the shared goal, mention it with excitement!
+2. If a class achieved a goal, appreciate them.
+3. Use language of "building", "climbing", "growth", "partnership", "together", "progress", "inspiration" and more.
+4. Avoid violent/aggressive language.
+5. Be witty and lighthearted.
+`,
+    full_backup_desc: "JSON + Media",
+    structure_backup_desc: "Groups & Students",
+    settings_backup_desc: "Competition Settings",
+    staff_backup_desc: "Staff & Roles",
     total_points_label: "Total Points",
     manage_action: "Manage",
     delete_action: "Delete",
@@ -291,8 +331,10 @@ export const en = {
     group_label: "Group",
     selected_student: "Selected Student",
     students_selected: "%{count} Students Selected",
+    select_group_to_start: "Select a group to start",
     group_score_added: "Group score added to %{className}",
     students_score_added: "Score added to %{count} students",
+    select_group_placeholder: "Select group...",
     points_update_error: "Update Error: %{error}",
     server_error: "Server Error",
 
@@ -339,6 +381,7 @@ export const en = {
     student_leaderboard_title: "Student Leaderboard",
     stars_momentum: "Stars in Momentum",
     student_stars: "%{instType} Stars",
+    no_data_available: "No data available",
     arena_title: "The Arena",
     no_data: "No data to display",
     stage: "Stage",
@@ -346,6 +389,7 @@ export const en = {
     goal_achieved: "Goal Achieved!",
     common_goal: "Common Goal",
     more_points: "More",
+    to_label: "to",
     cumulative_score: "Cumulative Score",
     together: "Together",
     last_update: "Last Update",
@@ -401,6 +445,7 @@ export const en = {
     confirm_delete_user: "Are you sure you want to remove this user from the competition?",
     user_details_updated: "User details updated",
     user_deleted_success: "User successfully removed from competition",
+    edit_user_details: "Edit User Details",
     update_error_msg: "Update error: %{error}",
     user_update_error: "User update error",
     sync_pending: "Sync pending...",
@@ -434,6 +479,7 @@ export const en = {
     add_group_button: "Add Group",
     edit_group: "Edit Group",
     add_new_group: "Add New Group",
+    edit_student: "Edit Student",
     group_added_success: "Group added successfully!",
     group_add_error: "Error adding group: %{error}",
     group_deleted_success: "Group deleted successfully",
@@ -450,6 +496,13 @@ export const en = {
     header_row_not_found: "Header row not found (required: 'Student Name', 'Grade')",
     missing_cols_error: "Missing columns in file",
     header_detected_row: "Header detected at row %{row}. Processing...",
+    no_data_found: "No data found",
+    excel_empty_error: "Excel file is empty",
+    excel_import_success: "Import completed successfully!",
+    bulk_import_excel: "Bulk Import from Excel",
+    import: "Import",
+    drag_or_click_excel: "Drag Excel file here or click to select",
+    excel_format_info: "Ensure file has columns: Student Name, Grade",
     reset_scores_warning: "Are you sure you want to reset all points to 0? Activity log will be kept.",
     reset_full_warning: "CRITICAL WARNING: This action will reset all points and delete all history permanently.",
     reset_data_title: "Reset Data",

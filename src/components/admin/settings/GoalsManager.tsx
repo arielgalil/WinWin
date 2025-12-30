@@ -7,6 +7,8 @@ import { FormattedNumber } from '../../ui/FormattedNumber';
 import { ConfirmationModal } from '../../ui/ConfirmationModal';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { useConfirmation } from '../../../hooks/useConfirmation';
+import { EditModal } from '../../ui/EditModal';
+import { AdminButton } from '../../ui/AdminButton';
 
 interface GoalsManagerProps {
     settings: AppSettings;
@@ -80,7 +82,6 @@ const quickEmojis = ['🏆', '🥇', '🥈', '🥉', '🎁', '💎', '🌟', '�
 
 export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSettings, totalScore }) => {
     const { t } = useLanguage();
-    const formRef = useRef<HTMLDivElement>(null);
     const [goals, setGoals] = useState<CompetitionGoal[]>(settings.goals_config || []);
     const [gridSize] = useState(settings.hex_grid_size || 30);
     const [formState, setFormState] = useState<Partial<CompetitionGoal>>({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
@@ -150,7 +151,8 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     };
 
     const resetForm = () => {
-        setEditingId(null); setFormError(null);
+        setEditingId(null); 
+        setFormError(null);
         setFormState({ name: '', target_score: undefined, image_type: 'emoji', image_value: '🏆' });
     };
 
@@ -179,7 +181,6 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         onEdit={() => { 
                             setEditingId(goal.id); 
                             setFormState(goal);
-                            setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
                         }} 
                         onDelete={() => openConfirmation({ 
                             title: t('delete_stage'), 
@@ -197,7 +198,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                 ))}
             </div>
 
-            <div ref={formRef} className="bg-[var(--bg-card)] p-6 rounded-xl border border-[var(--border-main)] shadow-sm">
+            <div className="bg-[var(--bg-card)] p-6 rounded-xl border border-[var(--border-main)] shadow-sm">
                 <div className="flex items-center justify-between mb-6 border-b border-[var(--border-subtle)] pb-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-[var(--bg-surface)] rounded-lg border border-[var(--border-main)] text-indigo-500">
@@ -205,7 +206,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-[var(--text-main)]">
-                                {editingId ? t('edit_goal_title') : t('add_goal_title')}
+                                {t('add_goal_title')}
                             </h3>
                             <p className="text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">{t('define_stages_desc')}</p>
                         </div>
@@ -216,28 +217,30 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
                     <div className="space-y-2">
                         <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider whitespace-nowrap px-1 block">
-                            {t('stage_name_label_with_index', { index: editingId ? (goals.findIndex(g => g.id === editingId) + 1) : (goals.length + 1) })}<span className="text-red-500 mr-0.5">*</span>:
+                            {t('stage_name_label_with_index', { index: goals.length + 1 })}<span className="text-red-500 mr-0.5">*</span>:
                         </label>
                         <div className="relative">
                             <input
                                 type="text"
-                                value={formState.name}
+                                value={editingId ? '' : formState.name}
                                 maxLength={30}
                                 placeholder={t('stage_name_placeholder')}
                                 onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
-                                className={`w-full px-3 py-2 rounded-lg border bg-[var(--bg-input)] text-[var(--text-main)] text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)]'}`}
+                                className={`w-full px-3 py-2 rounded-lg border bg-[var(--bg-input)] text-[var(--text-main)] text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name && !editingId ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)]'}`}
                             />
-                            <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
-                                {!formState.name && (
-                                    <span className="text-[9px] font-bold text-red-500 flex items-center gap-1">
-                                        <span>⚠️</span>
-                                        <span>{t('required_field')}</span>
+                            {!editingId && (
+                                <div className="absolute top-full right-0 left-0 pt-1 flex justify-between items-center px-1">
+                                    {!formState.name && (
+                                        <span className="text-[9px] font-bold text-red-500 flex items-center gap-1">
+                                            <span>⚠️</span>
+                                            <span>{t('required_field')}</span>
+                                        </span>
+                                    )}
+                                    <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-500' : 'text-[var(--text-muted)]'}`}>
+                                        {formState.name?.length || 0}/30
                                     </span>
-                                )}
-                                <span className={`text-[9px] font-bold mr-auto ${(formState.name?.length || 0) >= 30 ? 'text-red-500' : 'text-[var(--text-muted)]'}`}>
-                                    {formState.name?.length || 0}/30
-                                </span>
-                            </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -262,7 +265,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 <input
                                     type="text"
                                     dir="ltr"
-                                    value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
+                                    value={!editingId && formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
                                     placeholder={t('target_placeholder')}
                                     onChange={e => {
                                         const val = parseFormattedNumber(e.target.value);
@@ -272,13 +275,13 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 />
                             </div>
                             <div className="absolute top-full left-0 right-0 z-10 pt-1 flex flex-col items-start px-1">
-                                {formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
+                                {!editingId && formState.target_score !== undefined && formState.target_score <= minScoreAllowed && (
                                     <span className="text-[9px] font-bold text-red-400 flex items-center gap-1">
                                         <span>⚠️</span>
                                         <span>{t('score_too_low')}</span>
                                     </span>
                                 )}
-                                {pointsNeeded > 0 && (
+                                {!editingId && pointsNeeded > 0 && (
                                     <div className="text-[9px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-500/20 inline-flex gap-0.5 items-center" dir="ltr">
                                         <span>{formatNumberWithCommas(pointsNeeded)}</span>
                                         <span>+</span>
@@ -294,10 +297,10 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         </label>
                         <div className="flex flex-col sm:flex-row gap-4 bg-[var(--bg-surface)] rounded-xl p-3 border border-[var(--border-main)] min-h-[105px] items-stretch shadow-sm">
                             <div className="w-[80px] h-[80px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group mx-auto sm:mx-0">
-                                {formState.image_type === 'upload' && formState.image_value ? (
+                                {formState.image_type === 'upload' && formState.image_value && !editingId ? (
                                     <img src={formState.image_value} className="w-full h-full object-cover" />
                                 ) : (
-                                    <span className="text-4xl text-[var(--text-main)]">{formState.image_value || '🏆'}</span>
+                                    <span className="text-4xl text-[var(--text-main)]">{editingId ? '🏆' : (formState.image_value || '🏆')}</span>
                                 )}
                             </div>
 
@@ -305,53 +308,57 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 <div className="flex gap-3">
                                     <button
                                         type="button"
+                                        disabled={!!editingId}
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             setFormState(prev => ({ ...prev, image_type: 'emoji' }));
                                         }}
-                                        className="flex items-center gap-2 group cursor-pointer"
+                                        className="flex items-center gap-2 group cursor-pointer disabled:opacity-50"
                                     >
-                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
-                                            {formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${!editingId && formState.image_type === 'emoji' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
+                                            {!editingId && formState.image_type === 'emoji' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                         </div>
-                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('emoji')}</span>
+                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${!editingId && formState.image_type === 'emoji' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('emoji')}</span>
                                     </button>
                                     <button
                                         type="button"
+                                        disabled={!!editingId}
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
                                             setFormState(prev => ({ ...prev, image_type: 'upload' }));
                                         }}
-                                        className="flex items-center gap-2 group cursor-pointer"
+                                        className="flex items-center gap-2 group cursor-pointer disabled:opacity-50"
                                     >
-                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
-                                            {formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
+                                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${!editingId && formState.image_type === 'upload' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/20' : 'border-[var(--border-main)]'}`}>
+                                            {!editingId && formState.image_type === 'upload' && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />}
                                         </div>
-                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('image')}</span>
+                                        <span className={`text-[10px] font-bold tracking-wider transition-colors ${!editingId && formState.image_type === 'upload' ? 'text-indigo-600 dark:text-indigo-400' : 'text-[var(--text-muted)] group-hover:text-[var(--text-main)]'}`}>{t('image')}</span>
                                     </button>
                                 </div>
 
-                                {formState.image_type === 'emoji' ? (
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            setIsEmojiModalOpen(true);
-                                        }}
-                                        className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
-                                    >
-                                        <span>{t('insert_emoji')}</span>
-                                        <span className="text-sm">🍦</span>
-                                    </button>
-                                ) : (
-                                    <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
-                                        {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
-                                        <span>{isGoalUploading ? t('uploading') : t('upload_file')}</span>
-                                        <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
-                                    </label>
+                                {!editingId && (
+                                    formState.image_type === 'emoji' ? (
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setIsEmojiModalOpen(true);
+                                            }}
+                                            className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
+                                        >
+                                            <span>{t('insert_emoji')}</span>
+                                            <span className="text-sm">✨</span>
+                                        </button>
+                                    ) : (
+                                        <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
+                                            {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
+                                            <span>{isGoalUploading ? t('uploading') : t('upload_file')}</span>
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} disabled={isGoalUploading} />
+                                        </label>
+                                    )
                                 )}
                             </div>
                         </div>
@@ -359,31 +366,143 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
                     <div className="md:col-span-3 h-0 hidden md:block" />
                     <div className="flex flex-col gap-2 w-full md:mt-0 mt-4">
-                        <button
+                        <AdminButton
                             onClick={handleSaveGoal}
-                            disabled={!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
-                            className={`w-full py-2.5 rounded-lg font-bold text-sm text-white transition-all active:scale-[0.98] whitespace-nowrap shadow-md ${(!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed)
-                                ? 'bg-gray-400 dark:bg-gray-700 opacity-50 cursor-not-allowed'
-                                : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20'
-                                }`}
+                            disabled={editingId || !formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
+                            variant="primary"
+                            size="md"
+                            className="w-full py-2.5"
                         >
-                            {editingId ? t('update_stage_button') : t('add_stage_button')}
-                        </button>
-                        {editingId && (
-                            <button type="button" onClick={() => resetForm()} className="w-full text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors font-bold text-[10px] py-1 text-center">
-                                {t('cancel_edit')}
-                            </button>
-                        )}
+                            {t('add_stage_button')}
+                        </AdminButton>
                     </div>
 
                 </div>
 
-                {formError && (
+                {formError && !editingId && (
                     <div className="mt-4 text-[10px] text-red-500 dark:text-red-400 font-bold bg-red-50 dark:bg-red-500/10 p-2 rounded-lg border border-red-200 dark:border-red-500/20 animate-in fade-in slide-in-from-top-1 text-center">
                         ⚠️ {formError}
                     </div>
                 )}
             </div>
+
+            {/* Goal Edit Modal */}
+            <EditModal
+                isOpen={!!editingId}
+                onClose={resetForm}
+                title={t('edit_goal_title')}
+            >
+                <div className="space-y-6" dir="rtl">
+                    <div className="grid grid-cols-1 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                                {t('stage_name_label')}<span className="text-red-500 mr-0.5">*</span>:
+                            </label>
+                            <input
+                                type="text"
+                                value={formState.name}
+                                maxLength={30}
+                                placeholder={t('stage_name_placeholder')}
+                                onChange={e => setFormState(prev => ({ ...prev, name: e.target.value }))}
+                                className={`w-full px-4 py-3 rounded-lg border bg-[var(--bg-input)] text-[var(--text-main)] text-base outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm ${!formState.name ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)]'}`}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                                    {t('start_label')}:
+                                </label>
+                                <div className="flex items-center justify-center bg-[var(--bg-surface)] rounded-lg border border-[var(--border-main)] h-[46px] shadow-inner">
+                                    <span className="text-[var(--text-main)] font-mono font-bold text-base">{formatNumberWithCommas(minScoreAllowed)}</span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                                    {t('end_score_label')}<span className="text-red-500 mr-0.5">*</span>:
+                                </label>
+                                <div className={`flex items-center rounded-lg border transition-all h-[46px] bg-[var(--bg-input)] shadow-sm ${formState.target_score !== undefined && formState.target_score <= minScoreAllowed ? 'border-red-300 dark:border-red-500/30' : 'border-[var(--border-main)] focus-within:ring-2 focus-within:ring-indigo-500'}`}>
+                                    <input
+                                        type="text"
+                                        dir="ltr"
+                                        value={formState.target_score ? formatNumberWithCommas(formState.target_score) : ''}
+                                        placeholder={t('target_placeholder')}
+                                        onChange={e => {
+                                            const val = parseFormattedNumber(e.target.value);
+                                            setFormState(prev => ({ ...prev, target_score: isNaN(val) ? undefined : val }));
+                                        }}
+                                        className="flex-1 bg-transparent border-none text-[var(--text-main)] font-mono font-bold text-base outline-none text-center px-2 h-full"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-[var(--text-main)] font-bold text-[10px] uppercase tracking-wider px-1 block">
+                                {t('end_prize_label')}:
+                            </label>
+                            <div className="flex gap-4 bg-[var(--bg-surface)] rounded-xl p-4 border border-[var(--border-main)] shadow-sm">
+                                <div className="w-[100px] h-[100px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative">
+                                    {formState.image_type === 'upload' && formState.image_value ? (
+                                        <img src={formState.image_value} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-5xl">{formState.image_value || '🏆'}</span>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col justify-center flex-1 gap-3">
+                                    <div className="flex gap-4">
+                                        <button type="button" onClick={() => setFormState(prev => ({ ...prev, image_type: 'emoji' }))} className="flex items-center gap-2">
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formState.image_type === 'emoji' ? 'border-indigo-500' : 'border-[var(--border-main)]'}`}>
+                                                {formState.image_type === 'emoji' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
+                                            </div>
+                                            <span className="text-xs font-bold">{t('emoji')}</span>
+                                        </button>
+                                        <button type="button" onClick={() => setFormState(prev => ({ ...prev, image_type: 'upload' }))} className="flex items-center gap-2">
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formState.image_type === 'upload' ? 'border-indigo-500' : 'border-[var(--border-main)]'}`}>
+                                                {formState.image_type === 'upload' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
+                                            </div>
+                                            <span className="text-xs font-bold">{t('image')}</span>
+                                        </button>
+                                    </div>
+
+                                    {formState.image_type === 'emoji' ? (
+                                        <AdminButton type="button" variant="secondary" size="sm" onClick={() => setIsEmojiModalOpen(true)}>
+                                            {t('insert_emoji')}
+                                        </AdminButton>
+                                    ) : (
+                                        <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all active:scale-95">
+                                            <UploadIcon className="w-4 h-4" />
+                                            <span>{t('upload_file')}</span>
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleGoalImageUpload} />
+                                        </label>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {formError && (
+                        <div className="text-xs text-red-500 font-bold text-center">⚠️ {formError}</div>
+                    )}
+
+                    <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                        <AdminButton 
+                            onClick={handleSaveGoal} 
+                            disabled={!formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
+                            variant="success" 
+                            size="md" 
+                            className="flex-1"
+                        >
+                            {t('save')}
+                        </AdminButton>
+                        <AdminButton type="button" variant="secondary" size="md" onClick={resetForm} className="flex-1">
+                            {t('cancel')}
+                        </AdminButton>
+                    </div>
+                </div>
+            </EditModal>
 
             {/* Emoji Selection Modal */}
             {isEmojiModalOpen && (
@@ -394,7 +513,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                 <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg">
                                     <SparklesIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
-                                {t('prize_emoji_selection' as any)}
+                                {t('prize_emoji_selection')}
                             </h4>
                             <button type="button" onClick={(e) => { e.preventDefault(); setIsEmojiModalOpen(false); }} className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-2xl">&times;</button>
                         </div>

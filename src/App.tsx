@@ -13,14 +13,9 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { DynamicTitle } from './components/ui/DynamicTitle';
 import { useAuth } from './hooks/useAuth';
 import { useCampaign } from './hooks/useCampaign';
-import { useClasses } from './hooks/useClasses';
-import { useTicker } from './hooks/useTicker';
-import { useLogs } from './hooks/useLogs';
 import { useCampaignRole } from './hooks/useCampaignRole';
-import { useCompetitionMutations } from './hooks/useCompetitionMutations';
 import { useAuthPermissions } from './services/useAuthPermissions';
 import { useLanguage } from './hooks/useLanguage';
-import { isSuperUser } from './config';
 import { useTheme } from './hooks/useTheme';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
@@ -58,36 +53,12 @@ const CampaignContext: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
 const DashboardRoute = () => {
     const { t } = useLanguage();
-    const { user } = useAuth();
-    const navigate = useNavigate();
-    const { slug } = useParams();
-    
-    const { campaign, settings } = useCampaign();
-    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
-    const { classes } = useClasses(campaign?.id);
-    const { tickerMessages } = useTicker(campaign?.id);
-    const { updateCommentary } = useCompetitionMutations(campaign?.id);
+    const { settings, campaign } = useCampaign();
 
     return (
         <CampaignContext>
             <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('score_board')} />
-            {settings && (
-                <Dashboard
-                    classes={classes}
-                    commentary={settings.current_commentary || ''}
-                    tickerMessages={tickerMessages}
-                    settings={settings}
-                    onLoginClick={() => navigate(`/login/${slug}`)}
-                    user={user}
-                    userRole={campaignRole}
-                    isSuperUser={isSuperUser(user?.role)}
-                    isCampaignActive={campaign?.is_active}
-                    onSwitchCampaign={() => navigate('/')}
-                    onManagePoints={() => navigate(`/vote/${slug}`)}
-                    onManageSchool={() => navigate(`/admin/${slug}`)}
-                    onUpdateCommentary={updateCommentary}
-                />
-            )}
+            <Dashboard />
         </CampaignContext>
     );
 };
@@ -113,7 +84,7 @@ const AdminRoute = () => {
                     onLogout={async () => { await logout(); navigate('/'); }}
                     onViewDashboard={() => navigate(`/comp/${slug}`)}
                     isSuperAdmin={isSuper || isCampaignSuper}
-                    campaignRole={campaignRole}
+                    campaignRole={campaignRole as any}
                 />
             )}
         </CampaignContext>
@@ -136,7 +107,7 @@ const VoteRoute = () => {
             <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('enter_points')} />
             <LiteTeacherView
                 user={user}
-                userRole={campaignRole}
+                userRole={campaignRole as any}
                 onLogout={async () => { await logout(); navigate('/'); }}
             />
         </CampaignContext>

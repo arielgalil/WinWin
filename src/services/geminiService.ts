@@ -57,7 +57,7 @@ export const testGeminiConnection = async (overrideKey?: string, lang: Language 
     try {
         if (overrideKey) {
             const { GoogleGenAI } = await import("@google/genai");
-            const ai = new GoogleGenAI({ apiKey: overrideKey });
+            const ai = new GoogleGenAI({ apiKey: overrideKey }) as any;
             const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
             await model.generateContent("ping");
             return { success: true, message: t('ai_connection_success_provided_key', lang) };

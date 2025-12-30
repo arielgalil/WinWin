@@ -1,6 +1,6 @@
 import React, { useMemo, Suspense } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
-import { UserProfile, TickerMessage, Campaign, Settings } from '../types';
+import { UserProfile, TickerMessage } from '../types';
 import { SettingsIcon, UsersIcon, TargetIcon, RefreshIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCampaign } from '../hooks/useCampaign';
@@ -54,7 +54,7 @@ const LoadingTab = () => {
 
 
 const AdminPanelInner: React.FC<AdminPanelProps> = ({
-  user, onLogout, onViewDashboard, isSuperAdmin, initialTab, campaignRole
+  user, onLogout, onViewDashboard, isSuperAdmin, campaignRole
 }) => {
   const { t, language } = useLanguage();
   const { showToast } = useToast();
@@ -89,7 +89,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
   const totalInstitutionScore = useMemo(() => (classes || []).reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
 
-  const handleTabChange = (tab: TabType) => {
+  const handleTabChange = (tab: string) => {
     navigate(`/admin/${slug}/${tab}`);
   };
 
@@ -111,9 +111,9 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     
     try {
       const message = generateRoleBasedShareMessage({
-        role: campaignRole,
+        role: campaignRole as any,
         campaign: campaign,
-        institutionName: settings.school_name || t('educational_institution'),
+        institutionName: settings?.school_name || t('educational_institution'),
         origin: window.location.origin,
         language: language
       });
@@ -141,7 +141,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   return (
     <AdminLayout
       user={user}
-      campaignRole={campaignRole}
+      campaignRole={campaignRole as any}
       activeTab={activeTab}
       onTabChange={handleTabChange}
       onViewDashboard={onViewDashboard}

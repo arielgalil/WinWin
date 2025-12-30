@@ -67,13 +67,12 @@ describe('GoalsManager', () => {
         expect(editButton.className).toContain('text-green-600');
         expect(editButton.className).toContain('bg-green-50');
 
-        // Click and verify scroll
+        // Click and verify modal opens
         fireEvent.click(editButton);
         
-        // Check if scrollIntoView was called - wait for timeout
+        // Check if modal title is visible
         await waitFor(() => {
-            expect(scrollIntoViewMock).toHaveBeenCalled();
+            expect(screen.getByText('edit_goal_title')).toBeInTheDocument();
         });
-        expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
     });
 });

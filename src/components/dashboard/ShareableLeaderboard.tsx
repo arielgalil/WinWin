@@ -18,7 +18,7 @@ export const ShareableLeaderboard: React.FC<ShareableLeaderboardProps> = ({
     topClasses = [],
     top10Students = []
 }) => {
-    const { t, dir, lang } = useLanguage();
+    const { t, dir, language } = useLanguage();
     // Safe classes array logic to prevent crashes if array is empty
     const safeClasses: ClassRoom[] = [...(topClasses || [])];
     while (safeClasses.length < 3) {
@@ -97,7 +97,7 @@ export const ShareableLeaderboard: React.FC<ShareableLeaderboardProps> = ({
                 </div>
                 <div className="text-center bg-black/30 px-6 py-3 rounded-2xl border border-white/10 backdrop-blur-sm relative z-20">
                     <div className="text-slate-400 font-bold text-lg uppercase tracking-widest mb-1">{t('last_update')}</div>
-                    <div className="text-white font-mono text-2xl font-bold" dir="ltr">{new Date().toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US')}</div>
+                    <div className="text-white font-mono text-2xl font-bold" dir="ltr">{new Date().toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')}</div>
                 </div>
             </div>
 

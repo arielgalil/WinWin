@@ -15,8 +15,9 @@
     - **Never** use browser-native `window.alert` or `window.confirm`.
 ## 4. Modals
 - **Modals:**
-    - Required for **critical actions** (Deletion, Resetting data, etc.).
+    - Required for **critical and editing actions** (Deletion, Editing entities, Resetting data, etc.).
     - **Destructive Actions:** Must feature a red container border and "Anti-Nudge" buttons (Delete and Cancel must be visually equal in weight/color to force conscious decision-making).
+    - **Editing Actions:** Must feature a green container border and a "Save" button using `variant="success"`.
     - **Labels:** Buttons must be explicit and descriptive: "Delete [Student Name]" (Red) vs. "Cancel" (Gray).
     - **Focus Management:** Implement focus trapping within modals to ensure keyboard navigation remains logical.
 

@@ -15,8 +15,10 @@ import { useConfirmation } from '../../hooks/useConfirmation';
 import { cleanEmail } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
+import { EditModal } from '../ui/EditModal';
 
 interface UsersManagerProps {
+    users?: UserProfile[];
     classes: ClassRoom[];
     currentCampaign?: Campaign | null;
     currentUser?: UserProfile;
@@ -26,12 +28,12 @@ interface UsersManagerProps {
 }
 
 
-export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCampaign, currentUser, onRefresh, onSave }) => {
+export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, currentCampaign, currentUser, onRefresh, onSave }) => {
     const { t } = useLanguage();
     const { triggerSave } = useSaveNotification();
 
     const [usersList, setUsersList] = useState<UserProfile[]>([]);
-    const [editingUserId, setEditingUserId] = useState<string | null>(null);
+    const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
     const [editFormData, setEditFormData] = useState<Partial<UserProfile>>({});
 
     const [newUserFullName, setNewUserFullName] = useState('');
@@ -50,8 +52,12 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
     const alphabeticalClasses = [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he'));
 
     useEffect(() => {
-        if (currentCampaign) fetchUsers();
-    }, [currentCampaign]);
+        if (users) {
+            setUsersList(users);
+        } else if (currentCampaign) {
+            fetchUsers();
+        }
+    }, [currentCampaign, users]);
 
     const fetchUsers = async () => {
         if (!currentCampaign) return;
@@ -164,21 +170,23 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
         if (onRefresh) onRefresh();
     };
 
-    const saveUserChanges = async (id: string) => {
-        if (!currentCampaign) return;
+    const saveUserChanges = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentCampaign || !editingUser) return;
         try {
             await supabase.from('profiles').update({
                 full_name: editFormData.full_name,
                 class_id: editFormData.class_id || null
-            }).eq('id', id);
+            }).eq('id', editingUser.id);
 
             if (editFormData.role && editFormData.role !== 'superuser') {
                 await supabase.from('campaign_users').update({
                     role: editFormData.role
-                }).match({ user_id: id, campaign_id: currentCampaign.id });
+                }).match({ user_id: editingUser.id, campaign_id: currentCampaign.id });
             }
 
-            setEditingUserId(null);
+            setEditingUser(null);
+            setEditFormData({});
             setUserCreationStatus(t('user_details_updated'));
             fetchUsers();
             showToast(t('user_details_updated'), 'success');
@@ -353,114 +361,119 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ classes, currentCamp
                             key: 'full_name',
                             header: t('name_email_header'),
                             render: (u) => (
-                                editingUserId === u.id ? (
-                                    <input 
-                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
-                                        value={editFormData.full_name || ''} 
-                                        onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
-                                    />
-                                ) : (
-                                    <div>
-                                        <div className="font-bold flex items-center gap-2 text-[var(--text-main)] text-sm">
-                                            {u.full_name}
-                                            {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-600" />}
-                                            {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-900 dark:text-indigo-300 font-bold border border-indigo-200">{t('me')}</span>}
-                                        </div>
-                                        <div className="text-[11px] text-[var(--text-muted)] tabular-nums font-mono mt-0.5 font-bold">{u.email}</div>
+                                <div>
+                                    <div className="font-bold flex items-center gap-2 text-[var(--text-main)] text-sm">
+                                        {u.full_name}
+                                        {isSuperUser(u.role) && <CrownIcon className="w-3.5 h-3.5 text-amber-600" />}
+                                        {currentUser && u.id === currentUser.id && <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 px-1.5 py-0.5 rounded text-indigo-900 dark:text-indigo-300 font-bold border border-indigo-200">{t('me')}</span>}
                                     </div>
-                                )
+                                    <div className="text-[11px] text-[var(--text-muted)] tabular-nums font-mono mt-0.5 font-bold">{u.email}</div>
+                                </div>
                             )
                         },
                         {
                             key: 'role',
                             header: t('role_header'),
                             render: (u) => (
-                                editingUserId === u.id && u.role !== 'superuser' ? (
-                                    <select 
-                                        className="px-3 py-1.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
-                                        value={editFormData.role} 
-                                        onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
-                                    >
-                                        <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
-                                        <option value="teacher" className="bg-[var(--bg-card)]">{t('role_teacher_short')}</option>
-                                    </select>
-                                ) : (
-                                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 shadow-sm border ${u.role === 'superuser' ? 'bg-amber-100 dark:bg-amber-500/10 text-amber-900 dark:text-amber-400 border-amber-300' :
-                                        u.role === 'admin' ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-900 dark:text-purple-400 border-purple-300' :
-                                            'bg-blue-100 dark:bg-blue-500/10 text-blue-900 dark:text-blue-400 border border-blue-300'
-                                        }`}>
-                                        {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
-                                        {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
-                                        {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
-                                        {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
-                                    </span>
-                                )
+                                <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center w-fit gap-1.5 shadow-sm border ${u.role === 'superuser' ? 'bg-amber-100 dark:bg-amber-500/10 text-amber-900 dark:text-amber-400 border-amber-300' :
+                                    u.role === 'admin' ? 'bg-purple-100 dark:bg-purple-500/10 text-purple-900 dark:text-purple-400 border-purple-300' :
+                                        'bg-blue-100 dark:bg-blue-500/10 text-blue-900 dark:text-blue-400 border border-blue-300'
+                                    }`}>
+                                    {u.role === 'superuser' && <CrownIcon className="w-3 h-3" />}
+                                    {u.role === 'admin' && <SettingsIcon className="w-3 h-3" />}
+                                    {u.role === 'teacher' && <UserIcon className="w-3 h-3" />}
+                                    {u.role === 'superuser' ? t('role_superuser_short') : u.role === 'admin' ? t('role_admin_short') : t('role_teacher_short')}
+                                </span>
                             )
                         },
                         {
                             key: 'class_id',
                             header: t('group_header'),
                             render: (u) => (
-                                editingUserId === u.id ? (
-                                    <select 
-                                        className="w-full px-3 py-1.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
-                                        value={editFormData.class_id || ''} 
-                                        onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
-                                    >
-                                        <option value="" className="bg-[var(--bg-card)]">{t('no_assignment')}</option>
-                                        {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
-                                    </select>
-                                ) : (
-                                    <span className="font-bold text-[var(--text-main)] opacity-80">
-                                        {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
-                                    </span>
-                                )
+                                <span className="font-bold text-[var(--text-main)] opacity-80">
+                                    {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
+                                </span>
                             )
                         }
                     ]}
                     actions={(u) => (
-                        editingUserId === u.id ? (
-                            <div className="flex gap-2">
-                                <AdminButton 
-                                    onClick={() => saveUserChanges(u.id)} 
-                                    variant="success" 
-                                    size="sm" 
-                                    className="w-10 h-10 px-0" 
-                                    title={t('save')}
-                                >
-                                    <CheckIcon className="w-4 h-4" />
-                                </AdminButton>
-                                <AdminButton 
-                                    onClick={() => setEditingUserId(null)} 
-                                    variant="secondary" 
-                                    size="sm" 
-                                    className="w-10 h-10 px-0" 
-                                    title={t('cancel')}
-                                >
-                                    <XIcon className="w-4 h-4" />
-                                </AdminButton>
-                            </div>
-                        ) : (
-                            (!isSuperUser(u.role) || isSuperUser(currentUser?.role)) ? (
-                                <AdminRowActions
-                                    onEdit={() => { setEditingUserId(u.id); setEditFormData(u); }}
-                                    onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
-                                        openConfirmation({
-                                            title: t('delete_user'),
-                                            message: t('confirm_delete_user'),
-                                            confirmText: t('delete_user'),
-                                            isDanger: true,
-                                            onConfirm: () => handleDeleteUser(u.id)
-                                        });
-                                    } : undefined}
-                                    editTitle={t('edit_action')}
-                                    deleteTitle={t('delete')}
-                                />
-                            ) : null
-                        )
+                        (!isSuperUser(u.role) || isSuperUser(currentUser?.role)) ? (
+                            <AdminRowActions
+                                onEdit={() => { setEditingUser(u); setEditFormData(u); }}
+                                onDelete={currentUser && u.id !== currentUser.id && !isSuperUser(u.role) ? () => {
+                                    openConfirmation({
+                                        title: t('delete_user'),
+                                        message: t('confirm_delete_user'),
+                                        confirmText: t('delete_user'),
+                                        isDanger: true,
+                                        onConfirm: () => handleDeleteUser(u.id)
+                                    });
+                                } : undefined}
+                                editTitle={t('edit_action')}
+                                deleteTitle={t('delete')}
+                            />
+                        ) : null
                     )}
                 />
             </AdminSectionCard>
-        </div >
+
+            {/* User Edit Modal */}
+            <EditModal 
+                isOpen={!!editingUser} 
+                onClose={() => { setEditingUser(null); setEditFormData({}); }} 
+                title={t('edit_user_details')}
+            >
+                <form onSubmit={saveUserChanges} className="space-y-6">
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('full_name_label')}</label>
+                            <input 
+                                value={editFormData.full_name || ''} 
+                                onChange={e => setEditFormData({ ...editFormData, full_name: e.target.value })} 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                autoFocus 
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('role_label')}</label>
+                                <select 
+                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                    value={editFormData.role} 
+                                    onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
+                                    disabled={editingUser?.role === 'superuser'}
+                                >
+                                    <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
+                                    <option value="teacher" className="bg-[var(--bg-card)]">{t('role_teacher_short')}</option>
+                                    {editingUser?.role === 'superuser' && <option value="superuser">{t('role_superuser_short')}</option>}
+                                </select>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_header')}</label>
+                                <select 
+                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
+                                    value={editFormData.class_id || ''} 
+                                    onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
+                                >
+                                    <option value="" className="bg-[var(--bg-card)]">{t('no_assignment')}</option>
+                                    {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
+                        <AdminButton type="submit" variant="success" size="md" className="flex-1">
+                            {t('save')}
+                        </AdminButton>
+                        <AdminButton type="button" variant="secondary" size="md" onClick={() => { setEditingUser(null); setEditFormData({}); }} className="flex-1">
+                            {t('cancel')}
+                        </AdminButton>
+                    </div>
+                </form>
+            </EditModal>
+        </div>
     );
 };
