@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for contexts/LanguageContext.tsx</title>
+    <title>Code coverage report for src/supabaseClient.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">contexts</a> LanguageContext.tsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">src</a> supabaseClient.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10.52% </span>
+                <span class="strong">38.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/19</span>
+                <span class='fraction'>8/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>6/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">42.1% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/18</span>
+                <span class='fraction'>8/19</span>
             </div>
         
             
@@ -108,7 +108,19 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,32 +130,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,53 +145,95 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { createContext, useState, useEffect, useCallback } from 'react';
-import { Language, TranslationKey, t } from '../utils/i18n';
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+import { createClient } from '@supabase/supabase-js';
 &nbsp;
-export interface LanguageContextType {
-    language: Language;
-    setLanguage: (lang: Language) =&gt; void;
-    t: (key: TranslationKey, params?: Record&lt;string, any&gt;) =&gt; string;
-    isRTL: boolean;
-    dir: 'rtl' | 'ltr';
+// --- הוראות הגדרה ---
+// 1. צור פרויקט ב-https://supabase.com
+// 2. לך ל-Project Settings -&gt; API
+// 3. העתק את ה-Project URL וה-Anon Public Key
+// 4. הדבק אותם למטה במקום המחרוזות הריקות או הגדר משתני סביבה
+&nbsp;
+// Safely access environment variables
+const getEnv = (key: string) =&gt; {
+  // Try Vite environment variables first (client-side)
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof (import.meta as any).env !== 'undefined') {
+    const val = (import.meta as any).env[`VITE_${key}`] || (<span class="branch-1 cbranch-no" title="branch not covered" >import.meta as any).env[key];</span>
+    return val ? val.trim() : <span class="branch-1 cbranch-no" title="branch not covered" >undefined;</span>
+  }
+  // Fallback to process.env (server-side)
+<span class="cstat-no" title="statement not covered" >  if (typeof process !== 'undefined' &amp;&amp; process.env) {</span>
+    const val = <span class="cstat-no" title="statement not covered" >process.env[key];</span>
+<span class="cstat-no" title="statement not covered" >    return val ? val.trim() : undefined;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return undefined;</span>
+};
+&nbsp;
+// Client-side configuration - only expose what's necessary
+const supabaseUrl = getEnv('SUPABASE_URL');
+const supabaseKey = getEnv('SUPABASE_KEY');
+&nbsp;
+// Validate required environment variables
+<span class="missing-if-branch" title="if path not taken" >I</span>if (!supabaseUrl || !supabaseKey) {
+  const missing = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >  if (!supabaseUrl) <span class="cstat-no" title="statement not covered" >missing.push("VITE_SUPABASE_URL");</span></span>
+<span class="cstat-no" title="statement not covered" >  if (!supabaseKey) <span class="cstat-no" title="statement not covered" >missing.push("VITE_SUPABASE_KEY");</span></span>
+  
+<span class="cstat-no" title="statement not covered" >  console.error(`CRITICAL: Missing Supabase environment variables: ${missing.join(', ')}`);</span>
+  
+<span class="cstat-no" title="statement not covered" >  if (typeof (import.meta as any).env !== 'undefined' &amp;&amp; (import.meta as any).env.PROD) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(`Missing Supabase credentials in production. Required: ${missing.join(', ')}`);</span>
+  }
 }
 &nbsp;
-export const LanguageContext = createContext&lt;LanguageContextType | undefined&gt;(undefined);
+// Create client with validated credentials
+export const supabase = createClient(supabaseUrl, supabaseKey);
 &nbsp;
-export const LanguageProvider: React.FC&lt;{ children: React.ReactNode, initialLanguage?: Language }&gt; = <span class="fstat-no" title="function not covered" >({</span> children, initialLanguage = <span class="branch-0 cbranch-no" title="branch not covered" >'he' }</span>) =&gt; {
-    const [language, setLangState<span class="cstat-no" title="statement not covered" >] = useState&lt;Language&gt;(initialLanguage);</span>
+// Export only what's needed for client-side
+export { supabaseUrl, supabaseKey };
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" >setLanguage = useCallback(<span class="fstat-no" title="function not covered" >(l</span>ang: Language) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        setLangState(lang);</span>
-<span class="cstat-no" title="statement not covered" >        localStorage.setItem('winwin_preferred_language', lang);</span>
-    }, []);
-&nbsp;
-    const isRTL = <span class="cstat-no" title="statement not covered" >language === 'he';</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';</span>
-<span class="cstat-no" title="statement not covered" >        document.documentElement.lang = language;</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >        if (isRTL) {</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.add('rtl');</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.remove('ltr');</span>
-        } else {
-<span class="cstat-no" title="statement not covered" >            document.body.classList.add('ltr');</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.remove('rtl');</span>
-        }
-    }, [language, isRTL]);
-&nbsp;
-    const <span class="cstat-no" title="statement not covered" >translate = useCallback(<span class="fstat-no" title="function not covered" >(k</span>ey: TranslationKey, <span class="cstat-no" title="statement not covered" >params?: Record&lt;string, any&gt;) =&gt; t(key, language, params), [</span>language]);</span>
-    const dir = <span class="cstat-no" title="statement not covered" >isRTL ? 'rtl' : 'ltr';</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
-        &lt;LanguageContext.Provider value={{ language, setLanguage, t: translate, isRTL, dir }}&gt;
-            {children}
-        &lt;/LanguageContext.Provider&gt;
-    );
-};
+// Helper to create a temporary client for administrative actions (like creating users)
+// without overwriting the current user's session in local storage.
+export const createTempClient = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; c</span>reateClient(supabaseUrl, supabaseKey, {</span>
+  auth: {
+    persistSession: false, // Critical: Do not save this session to localStorage
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+    storageKey: 'temp_admin_auth_session' // Unique key to prevent "Multiple GoTrueClient" warning
+  }
+});
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -205,7 +241,7 @@ export const LanguageProvider: React.FC&lt;{ children: React.ReactNode, initialL
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-29T12:00:08.933Z
+                at 2025-12-30T16:39:35.821Z
             </div>
         <script src="../prettify.js"></script>
         <script>
