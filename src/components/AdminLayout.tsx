@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { UserProfile } from '@/types';
 import { Button } from './ui/button';
 import { Logo } from './ui/Logo';
@@ -59,7 +60,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
   const { t, dir, language } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useLocalStorage('admin-sidebar-collapsed', false);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
