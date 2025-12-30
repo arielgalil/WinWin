@@ -43,7 +43,7 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 pb-12">
+        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
             <AdminSectionCard
                 title={t('institutional_goals_title')}
                 description={t('institutional_goals_desc')}

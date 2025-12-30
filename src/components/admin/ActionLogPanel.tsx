@@ -194,7 +194,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 flex flex-col pb-12 h-full relative" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="max-w-6xl mx-auto space-y-8 flex flex-col pb-12 h-full relative w-full" dir={isRTL ? 'rtl' : 'ltr'}>
             <ConfirmationModal {...modalConfig} />
 
             <AnimatePresence>

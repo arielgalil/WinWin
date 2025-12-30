@@ -55,7 +55,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   }, [toast, triggerSave, onSave]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
       {/* Search and Filter Bar */}
       <AdminSectionCard
         title={t('tab_points')}

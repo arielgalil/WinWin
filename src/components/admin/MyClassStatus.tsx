@@ -47,7 +47,7 @@ export const MyClassStatus: React.FC<MyClassStatusProps> = ({ classId, classes, 
     }
 
     return (
-        <div className="space-y-8">
+        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
             <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/20">

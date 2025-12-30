@@ -108,7 +108,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 pb-12" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full" dir={isRTL ? 'rtl' : 'ltr'}>
             {/* API Configuration Card */}
             <AdminSectionCard
                 title={t('ai_api_key_title')}

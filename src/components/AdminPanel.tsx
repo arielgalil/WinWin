@@ -156,8 +156,8 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
       dismissNotification={dismiss}
     >
       <FrozenOverlay isFrozen={!campaign?.is_active && !isSuper} />
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden w-full">
+        <div className="max-w-6xl mx-auto space-y-8 w-full">
           <Suspense fallback={<LoadingTab />}>
             <AnimatePresence mode='wait'>
               <MotionDiv key={activeTab} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 5 }} transition={{ duration: 0.1 }} className="min-h-full">

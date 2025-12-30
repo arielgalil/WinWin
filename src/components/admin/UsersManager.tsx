@@ -239,7 +239,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
             <ConfirmationModal
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}
