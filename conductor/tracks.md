@@ -59,19 +59,19 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: UI Polish and AI Summary Persistence
 *Link: [./conductor/archive/ui_polish_ai_persistence_20251229/](./conductor/archive/ui_polish_ai_persistence_20251229/)*
 
+---
 
-
-
-
-
-
+## [x] Track: Admin UI Polish
+*Link: [./conductor/tracks/admin_ui_polish_20251225/](./conductor/tracks/admin_ui_polish_20251225/)*
 
 ---
 
+## [x] Track: UI Polish, Material Icons, and PWA Fix
+*Link: [./conductor/tracks/ui_polish_material_pwa_20251228/](./conductor/tracks/ui_polish_material_pwa_20251228/)*
 
+---
 
 ## [x] Track: UI/UX Refactor & Design System (Track 4)
-
 *Link: [./conductor/tracks/design_system_refactor_20251229/](./conductor/tracks/design_system_refactor_20251229/)*
 
 ---
@@ -86,5 +86,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: UI Polish: Fix Icon Vertical Alignment
+## [x] Track: UI Polish: Fix Icon Vertical Alignment
 *Link: [./conductor/tracks/ui_polish_alignment_20251228/](./conductor/tracks/ui_polish_alignment_20251228/)*

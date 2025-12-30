@@ -10,12 +10,12 @@ Fix vertical alignment of icons in headers and subheaders, particularly in the A
 - **Goal:** Ensure the icon inside the colored box in `AdminSectionCard` is perfectly centered.
 
 ## Plan
-- [ ] Task: Fix `AdminSectionCard` alignment [Icons.tsx]
-    - [ ] Update `AdminSectionCard.tsx` to ensure the icon wrapper uses `flex items-center justify-center`.
-    - [ ] Verify `line-height` inheritance.
-- [ ] Task: Fix `AdminPanel` Main Header
-    - [ ] Check the dynamic header in `AdminPanel.tsx` (the one with the large icon and title/desc).
-    - [ ] Ensure the icon wrapper `div` centers the `inline-flex` icon correctly.
+- [x] Task: Fix `AdminSectionCard` alignment [Icons.tsx] [a228510]
+    - [x] Update `AdminSectionCard.tsx` to ensure the icon wrapper uses `flex items-center justify-center`.
+    - [x] Verify `line-height` inheritance.
+- [x] Task: Fix `AdminPanel` Main Header [a228510]
+    - [x] Check the dynamic header in `AdminPanel.tsx` (the one with the large icon and title/desc).
+    - [x] Ensure the icon wrapper `div` centers the `inline-flex` icon correctly.
 
 ## Technical Details
 - When an `inline-flex` element (the icon) is inside a `flex` container (the wrapper div), it should center if `items-center` and `justify-center` are set.

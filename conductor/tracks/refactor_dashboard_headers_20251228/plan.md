@@ -8,12 +8,12 @@ Standardize the headers of all dashboard cards (Podium, MissionMeter, StudentLea
 - **Solution:** Use the newly created `DashboardCardHeader` component.
 
 ## Plan
-- [ ] Task: Refactor `Podium.tsx` [DashboardCardHeader]
-- [ ] Task: Refactor `MissionMeter.tsx` [DashboardCardHeader]
-- [ ] Task: Refactor `StudentLeaderboard.tsx` [DashboardCardHeader]
-- [ ] Task: Refactor `ClassTicker.tsx` [DashboardCardHeader]
-- [ ] Task: Fix Class Ticker Item Icons
-    - [ ] While in `ClassTicker.tsx`, also fix the icons *inside* the scrolling cards to be circular and centered (as originally requested in the previous turn).
+- [x] Task: Refactor `Podium.tsx` [DashboardCardHeader] [a228510]
+- [x] Task: Refactor `MissionMeter.tsx` [DashboardCardHeader] [a228510]
+- [x] Task: Refactor `StudentLeaderboard.tsx` [DashboardCardHeader] [a228510]
+- [x] Task: Refactor `ClassTicker.tsx` [DashboardCardHeader] [a228510]
+- [x] Task: Fix Class Ticker Item Icons [96deca3]
+    - [x] While in `ClassTicker.tsx`, also fix the icons *inside* the scrolling cards to be circular and centered (as originally requested in the previous turn).
 
 ## Component Spec (`DashboardCardHeader`)
 - **Wrapper:** `w-7 h-7 rounded-full flex items-center justify-center`.
