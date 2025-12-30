@@ -35,7 +35,7 @@
 -   [x] Task: Conductor - User Manual Verification 'Phase 2: UI Polish - General Admin & Dashboard' (Protocol in workflow.md) (ed6dcab)
 
 
-## Phase 3: Functional Enhancements & Cleanup
+## Phase 3: Functional Enhancements & Cleanup [checkpoint: 1853219]
 
 -   [x] Task: Write failing tests for music preview button. (d5797a8)
 -   [x] Task: Implement music preview button. (d5797a8)
