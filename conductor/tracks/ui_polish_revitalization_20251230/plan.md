@@ -6,7 +6,7 @@ This plan addresses UI/UX regressions, localization needs, and visual revitaliza
 - [x] Task: Implement Sidebar State Persistence in `useLocalStorage` or similar utility. 00fe55a
 - [x] Task: Update `LanguageContext` or Root Layout to apply `dir="ltr/rtl"` based on the active language. 6ec7fc9
 - [x] Task: Audit and update `AdminLayout` and major components to use Tailwind logical properties (`ps-`, `pe-`, `ms-`, `me-`). bda810c
-- [ ] Task: Add the missing English translation strings to `public/locales/en.json` (or the respective translation file).
+- [x] Task: Add the missing English translation strings to `public/locales/en.json` (or the respective translation file). fb6c01a
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Localization & Persistence' (Protocol in workflow.md)
 
 ## Phase 2: Layout Safety & Component Standardization
