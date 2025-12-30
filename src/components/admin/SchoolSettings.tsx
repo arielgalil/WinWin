@@ -13,6 +13,7 @@ import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
 import { BackgroundMusic } from '../dashboard/BackgroundMusic';
+import { BrandingPreview } from './settings/BrandingPreview';
 
 const MotionDiv = motion.div as any;
 
@@ -377,6 +378,16 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     icon={<SparklesIcon className="w-6 h-6" />}
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="md:col-span-2">
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-4">{t('live_preview' as any)}</label>
+                            <BrandingPreview 
+                                primaryColor={formData.primary_color || '#4c1d95'}
+                                secondaryColor={formData.secondary_color || '#0f172a'}
+                                brightness={formData.background_brightness ?? 50}
+                                title={formData.competition_name || settings.competition_name || t('sample_title' as any)}
+                            />
+                        </div>
+                        
                         <div className="space-y-6">
                             <div className="p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] space-y-4 shadow-inner">
                                 <h4 className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)] mb-2">{t('brand_palette')}</h4>

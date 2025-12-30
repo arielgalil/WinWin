@@ -145,6 +145,8 @@ export const he = {
     tip_atmosphere_title: "טיפ לאווירה:",
     tip_atmosphere_desc: "בחרו מוזיקה קצבית ומעוררת השראה כדי להגביר את רמת האנרגיה בתחרות!",
     visual_design_desc: "התאמת צבעים ועיצוב המערכת",
+    live_preview: "תצוגה מקדימה חיה",
+    sample_title: "כותרת לדוגמה",
     brand_palette: "פלטת המותג",
     typography_colors: "צבעי טיפוגרפיה",
     title_1_label: "כותרת 1",
