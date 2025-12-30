@@ -8,8 +8,13 @@ vi.mock('@/hooks/useLanguage', () => ({
     useLanguage: () => ({ t: (key: string) => key, dir: 'rtl', language: 'he' })
 }));
 
+// Mock hooks
+vi.mock('@/hooks/useLanguage', () => ({
+    useLanguage: () => ({ t: (key: string) => key, dir: 'rtl', language: 'he' })
+}));
+
 vi.mock('@/hooks/useTheme', () => ({
-    useTheme: () => ({ theme: 'dark', toggleTheme: vi.fn() })
+    useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() })
 }));
 
 vi.mock('@/hooks/useAuth', () => ({
@@ -25,7 +30,7 @@ vi.mock('@/hooks/useCampaignRole', () => ({
 }));
 
 describe('AdminLayout Avatar Visibility', () => {
-    it('avatar has visible border and background in dark mode', () => {
+    it('avatar has high contrast in light mode', () => {
         const props: any = {
             children: <div />,
             user: { full_name: 'Test User' },
@@ -41,17 +46,13 @@ describe('AdminLayout Avatar Visibility', () => {
 
         render(<AdminLayout {...props} />);
 
-        // The initials for "Test User" should be "TU"
         const avatar = screen.getByText('TU');
 
+        // In light mode, we want a strong ring and maybe a shadow
         expect(avatar.className).toContain('ring-2');
-        expect(avatar.className).toContain('ring-primary');
-        expect(avatar.className).toContain('border-2');
+        expect(avatar.className).toContain('shadow-lg');
         
-        // Ensure it has a background that is visible
-        expect(avatar.className).toContain('bg-gradient-to-br');
-        
-        // Ensure it has white text for contrast
-        expect(avatar.className).toContain('text-white');
+        // We want to ensure it pops out
+        expect(avatar.className).toContain('ring-offset-2');
     });
 });

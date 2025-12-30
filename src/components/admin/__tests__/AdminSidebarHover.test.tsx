@@ -32,7 +32,8 @@ describe('AdminSidebar Hover Effect', () => {
 
         const navButton = screen.getByRole('button', { name: /tab_settings/i });
         
-        // We expect a scale effect now as per user feedback
+        // We expect a scale effect AND a background change for better visibility
         expect(navButton.className).toContain('hover:scale-105');
+        expect(navButton.className).toContain('hover:bg-');
     });
 });

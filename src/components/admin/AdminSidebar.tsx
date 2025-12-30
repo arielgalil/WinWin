@@ -58,9 +58,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 onClick={() => onTabChange(item.id)}
                 onMouseEnter={() => onTabHover?.(item.id)}
                 aria-current={activeTab === item.id ? 'page' : undefined}
-                className={`w-full text-right py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative hover:scale-105 hover:shadow-md ${activeTab === item.id
-                  ? 'bg-[var(--bg-active)] font-semibold'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-medium'
+                className={`w-full text-right py-2.5 px-3 rounded-[var(--radius-main)] flex items-center gap-3 transition-all duration-200 group relative hover:scale-105 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 hover:shadow-md active:scale-95 transform ${activeTab === item.id
+                  ? 'bg-[var(--bg-active)] font-semibold shadow-sm'
+                  : 'text-[var(--text-secondary)] font-medium'
                   }`}
                 style={activeTab === item.id ? { color: item.colorVar || 'var(--primary-base)' } : {}}
               >
