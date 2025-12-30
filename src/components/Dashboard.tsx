@@ -44,22 +44,23 @@ export const Dashboard: React.FC = () => {
         calculateStudentStats(classes || []),
         [classes]);
 
-    if (!settings || !campaign) return null;
-
     const isSuperUser = checkIsSuperUser(user?.role);
-    const isCampaignActive = campaign.is_active;
-    const isFrozen = (!isCampaignActive || !!settings.is_frozen) && !isSuperUser;
-    const commentary = settings.current_commentary || '';
-
+    const isCampaignActive = campaign?.is_active ?? false;
+    const isFrozen = (!isCampaignActive || !!settings?.is_frozen) && !isSuperUser;
+    
     const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
         totalInstitutionScore,
-        settings.goals_config || [],
-        settings,
+        settings?.goals_config || [],
+        settings || {} as any,
         isFrozen,
         updateCommentary
     );
+
+    if (!settings || !campaign) return null;
+
+    const commentary = settings.current_commentary || '';
 
     return (
         <DashboardErrorBoundary>

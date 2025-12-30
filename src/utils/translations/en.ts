@@ -64,14 +64,14 @@ export const en = {
 
     // Navigation / Tabs
     tab_points: "Points & Class Status",
-    tab_school: "School Settings",
+    tab_settings: "Settings",
     tab_ai: "Artificial Intelligence",
     tab_goals: "Goals Management",
     tab_users: "Team Management",
     tab_classes: "Groups Management",
     tab_messages: "Ticker Messages",
     tab_logs: "Activity Log & AI",
-    tab_data: "Data Management",
+    tab_data_management: "Data Management",
     tab_my_class: "My Group Status",
     tab_keypad: "Points Keypad",
 
@@ -80,14 +80,7 @@ export const en = {
     goals_mgmt_desc: "Manage goals and rewards",
     classes_management_desc: "Manage groups, students, and staff",
     activity_log_description: "View activity logs and use AI tools",
-    settings_title_clean: "Competition Settings",
     
-    // Updated Admin Navigation
-    tab_settings: "Settings",
-    tab_data_management: "Data Management",
-    
-    
-
     // Admin Sidebar
     role_super_user: "Super User (Global Admin)",
     role_admin: "Competition Manager (Admin)",
@@ -120,10 +113,6 @@ export const en = {
     primary_color_label: "Top-Left Corner (Primary)",
     secondary_color_label: "Bottom-Right Corner (Secondary)",
     lighting_effect: "Lighting Effect (Opposite Corners)",
-    tip_atmosphere_title: "Tip for Perfect Atmosphere ✨",
-    tip_lofi: "Recommended to use Lofi Beats or Epic Cinematic Music without lyrics.",
-    tip_playlist: "You can paste a link to a full YouTube playlist.",
-    tip_mute: "Want silence? Just leave the field empty.",
     header_color_1: "Header Color 1",
     header_color_2: "Header Color 2",
     scoring_settings: "Scoring Settings",
@@ -424,7 +413,7 @@ Critical guidelines:
     add_stage_to_list: "Add New Step +",
         stage_name_placeholder: "The Basics",
         
-        // Users Manager    team_mgmt_title: "Team Management - %{campaign}",
+        // Users Manager    
     full_name_placeholder: "e.g. John Doe",
     email_placeholder: "name@email.com",
     password_placeholder: "••••••••",
@@ -465,7 +454,6 @@ Critical guidelines:
     group_goals_title: "Individual Group Goals",
     teacher_can_update_warning: "Note: The group teacher can also update the target through the points interface.",
     no_target_set: "No target set",
-    more_points_label: "More points to target",
     current_label: "Current",
     missing_points_label: "Missing",
     enter_target_placeholder: "Enter target...",
@@ -525,7 +513,6 @@ Critical guidelines:
     execute_action: "Execute",
     execute_full_reset: "Perform Full Reset",
     students_label: "Students",
-    add_new_class_button: "Add New Group",
     group_color_label: "Group Color",
     confirm_delete_group_warning: "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
 

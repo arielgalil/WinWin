@@ -14,19 +14,19 @@ Ensure 100% translation coverage for the new modal-based editing experience.
 ## Phase 2: Broad Code Cleanup (State & Logic)
 Eliminate "residue" from the inline-editing era and remove unused logic.
 
-- [~] Task: Clean up `ClassesManager.tsx` (remove old row-editing state/handlers).
-- [ ] Task: Clean up `UsersManager.tsx` (remove redundant state/logic).
-- [ ] Task: Clean up `MessagesManager.tsx` (remove legacy reordering/inline residue).
-- [ ] Task: Clean up `GoalsManager.tsx` (remove scroll-into-view logic and old card states).
-- [ ] Task: Audit and remove unused imports and icons across `src/components/admin/`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Broad Code Cleanup' (Protocol in workflow.md)
+- [x] Task: Clean up `ClassesManager.tsx` (remove old row-editing state/handlers). ef0b441
+- [x] Task: Clean up `UsersManager.tsx` (remove redundant state/logic). 0965c31
+- [x] Task: Clean up `MessagesManager.tsx` (remove legacy reordering/inline residue). 0965c31
+- [x] Task: Clean up `GoalsManager.tsx` (remove scroll-into-view logic and old card states). 0965c31
+- [x] Task: Audit and remove unused imports and icons across `src/components/admin/`. 0965c31
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Broad Code Cleanup' (Protocol in workflow.md)
 
 ## Phase 3: Translation Purge
 Remove deprecated keys from translation files to keep them lean.
 
-- [ ] Task: Identify and remove unused keys in `src/utils/translations/he.ts`.
-- [ ] Task: Identify and remove unused keys in `src/utils/translations/en.ts`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Translation Purge' (Protocol in workflow.md)
+- [x] Task: Identify and remove unused keys in `src/utils/translations/he.ts`. 0965c31
+- [x] Task: Identify and remove unused keys in `src/utils/translations/en.ts`. 0965c31
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Translation Purge' (Protocol in workflow.md)
 
 ## Phase 4: Final Quality Gate
 Ensure system integrity after broad deletions.

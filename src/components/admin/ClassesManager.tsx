@@ -22,7 +22,6 @@ const MotionDiv = motion.div as any;
 interface ClassesManagerProps {
     classes: ClassRoom[];
     settings: any;
-    user: UserProfile;
     onRefresh: () => Promise<void>;
     onSave?: () => Promise<void>;
 }

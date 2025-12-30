@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { TickerMessage } from '../../types';
-import { PlusIcon, EditIcon, LayersIcon, CheckIcon, XIcon } from '../ui/Icons';
+import { PlusIcon, LayersIcon, XIcon } from '../ui/Icons';
 import { AdminRowActions } from '../ui/AdminRowActions';
 
 import { motion, AnimatePresence } from 'framer-motion';

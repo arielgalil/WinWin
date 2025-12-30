@@ -189,8 +189,8 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
                 {activeTab === 'data-management' && isAdmin && (
                   <div className="space-y-8">
-                    <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} settings={settings} onSave={() => updateTabTimestamp('users')} />
-                    <ClassesManager classes={classes || []} settings={settings} user={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
+                    <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('users')} />
+                    <ClassesManager classes={classes || []} settings={settings} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
                     <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData} />
                   </div>
                 )}

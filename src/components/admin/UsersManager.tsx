@@ -23,7 +23,6 @@ interface UsersManagerProps {
     currentCampaign?: Campaign | null;
     currentUser?: UserProfile;
     onRefresh?: () => Promise<void>;
-    settings: any;
     onSave?: () => Promise<void>;
 }
 

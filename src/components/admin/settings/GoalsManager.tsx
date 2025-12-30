@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { CompetitionGoal, AppSettings } from '../../../types';
 import { RefreshIcon, EditIcon, CheckIcon, UploadIcon, TrashIcon, TargetIcon, SparklesIcon } from '../../ui/Icons';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../../utils/stringUtils';

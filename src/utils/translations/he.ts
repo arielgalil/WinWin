@@ -75,7 +75,6 @@ export const he = {
     tab_classes: "ניהול קבוצות",
     tab_messages: "הודעות רצות",
     tab_logs: "יומן פעילות ו-AI",
-    tab_data: "ניהול קבוצות וצוות",
     tab_data_management: "ניהול קבוצות וצוות",
     tab_my_class: "מצב קבוצתי",
     tab_keypad: "מקלדת נקודות",
@@ -85,11 +84,6 @@ export const he = {
     goals_mgmt_desc: "ניהול יעדים ופרסים",
     classes_management_desc: "ניהול קבוצות, תלמידים וצוות",
     activity_log_description: "צפייה ביומן פעילות ושימוש ב-AI",
-    settings_title_clean: "הגדרות תחרות",
-    
-    
-    
-
     
     // Admin Sidebar
     role_super_user: "משתמש על",
@@ -123,10 +117,6 @@ export const he = {
     primary_color_label: "פינה שמאלית-עליונה (ראשי)",
     secondary_color_label: "פינה ימנית-תחתונה (משני)",
     lighting_effect: "אפקט תאורה (בפינות הנגדיות)",
-    tip_atmosphere_title: "טיפ לאווירה מושלמת ✨",
-    tip_lofi: "מומלץ להשתמש בקישורי Lofi Beats או Epic Cinematic Music ללא מילים.",
-    tip_playlist: "ניתן להדביק קישור לפלייליסט שלם של יוטיוב.",
-    tip_mute: "רוצה שקט? פשוט השאר את השדה ריק.",
     header_color_1: "צבע כותרת 1",
     header_color_2: "צבע כותרת 2",
     scoring_settings: "הגדרות ניקוד",
@@ -427,7 +417,6 @@ export const he = {
     stage_name_placeholder: "היסודות",
     
     // Users Manager
-    team_mgmt_title: "ניהול צוות - %{campaign}",
     team_mgmt_title_clean: "ניהול צוות התחרות",
     team_mgmt_subtitle: "ניהול מנהלים ומורים המשתתפים בתחרות",
     full_name_placeholder: "למשל: ישראל ישראלי",
@@ -470,7 +459,6 @@ export const he = {
     group_goals_title: "יעדי קבוצה אישיים",
     teacher_can_update_warning: "שימו לב: גם המורה האחראי על הקבוצה יכול לעדכן את היעד בעצמו דרך ממשק הניקוד.",
     no_target_set: "טרם נקבע יעד",
-    more_points_label: "לא צריך להיות טקס באזור של הגרף, אלא ככה: גרף ובשורה חדשה את המספר עם סימן",
     current_label: "נוכחי",
     missing_points_label: "חסר",
     enter_target_placeholder: "הזן יעד...",
@@ -513,16 +501,12 @@ export const he = {
     group_color_label: "צבע קבוצה",
     edit_student: "עריכת תלמיד",
     students_count: "%{count} תלמידים",
-    student_total: "סה\"כ תלמידים",
-    manage_students_tooltip: "נהל תלמידים",
     manage_students_button: "ניהול תלמידים",
-    edit_group_tooltip: "ערוך קבוצה",
     manage_students_title: "ניהול רשימת תלמידים",
     search_student_placeholder: "חפש תלמיד...",
     new_student_placeholder: "שם תלמיד חדש...",
     close_window: "סגור חלון",
     students_label: "תלמידים",
-    add_new_class_button: "הוספת קבוצה חדשה",
     confirm_delete_group_warning: "אזהרה: מחיקת הקבוצה תמחוק את כל התלמידים והניקוד המשויכים אליה לצמיתות. האם להמשיך?",
 
     // Data Management
