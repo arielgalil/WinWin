@@ -118,3 +118,4 @@ export const ZapIcon = ({ className }: IconProps) => <MaterialIcon name="bolt" c
 export const ClockIcon = ({ className }: IconProps) => <MaterialIcon name="schedule" className={className} />;
 export const WifiOffIcon = ({ className }: IconProps) => <MaterialIcon name="wifi_off" className={className} />;
 export const WifiIcon = ({ className }: IconProps) => <MaterialIcon name="wifi" className={className} />;
+export const ImageIcon = ({ className }: IconProps) => <MaterialIcon name="image" className={className} />;

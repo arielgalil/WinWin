@@ -284,7 +284,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 </p>
               </div>
               <div className={cn(
-                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold shadow-lg text-sm ring-2 ring-offset-2 ring-offset-background ring-primary border-2 bg-gradient-to-br transition-all duration-300",
+                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold shadow-lg text-sm ring-2 ring-offset-2 ring-offset-background ring-primary border-2 bg-gradient-to-br transition-all duration-300 no-select no-drag",
                 theme === 'light' ? 'text-black border-black' : 'text-white border-white',
                 campaignRole === 'superuser' ? 'from-amber-400 to-orange-500' : 'from-primary to-accent'
               )}>

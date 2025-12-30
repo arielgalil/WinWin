@@ -20,7 +20,7 @@ export const Logo: React.FC<LogoProps> = ({
   const [error, setError] = React.useState(false);
 
   return (
-    <div className={`rounded-full bg-white dark:bg-slate-900 shadow-md flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 shrink-0 ${className}`}>
+    <div className={`rounded-full bg-white dark:bg-slate-900 shadow-md flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 shrink-0 no-select no-drag ${className}`}>
       {src && !error ? (
         <img 
             src={src} 

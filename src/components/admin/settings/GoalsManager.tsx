@@ -10,6 +10,7 @@ import { useConfirmation } from '../../../hooks/useConfirmation';
 import { EditModal } from '../../ui/EditModal';
 import { AdminButton } from '../../ui/AdminButton';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { ImagePlaceholder } from '../../ui/ImagePlaceholder';
 
 interface GoalsManagerProps {
     settings: AppSettings;
@@ -53,7 +54,15 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
 
             <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-[var(--bg-surface)] border border-[var(--border-main)] overflow-hidden relative shrink-0">
-                    {goal.image_type === 'upload' ? <img src={goal.image_value} className="w-full h-full object-cover" /> : <span>{goal.image_value}</span>}
+                    {goal.image_type === 'upload' ? (
+                        goal.image_value ? (
+                            <img src={goal.image_value} className="w-full h-full object-cover" />
+                        ) : (
+                            <ImagePlaceholder className="scale-[0.4]" />
+                        )
+                    ) : (
+                        <span>{goal.image_value}</span>
+                    )}
                     {isCompleted && <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]"><CheckIcon className="w-6 h-6 text-green-600 dark:text-green-400 drop-shadow-sm" /></div>}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -376,8 +385,12 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                         </label>
                         <div className="flex flex-col sm:flex-row gap-4 bg-[var(--bg-surface)] rounded-xl p-3 border border-[var(--border-main)] min-h-[105px] items-stretch shadow-sm">
                             <div className="w-[80px] h-[80px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group mx-auto sm:mx-0">
-                                {formState.image_type === 'upload' && formState.image_value && !editingId ? (
-                                    <img src={formState.image_value} className="w-full h-full object-cover" />
+                                {formState.image_type === 'upload' && !editingId ? (
+                                    formState.image_value ? (
+                                        <img src={formState.image_value} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <ImagePlaceholder className="scale-75" />
+                                    )
                                 ) : (
                                     <span className="text-4xl text-[var(--text-main)]">{editingId ? '🏆' : (formState.image_value || '🏆')}</span>
                                 )}
@@ -524,8 +537,12 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                             </label>
                             <div className="flex gap-4 bg-[var(--bg-surface)] rounded-xl p-4 border border-[var(--border-main)] shadow-sm">
                                 <div className="w-[100px] h-[100px] bg-[var(--bg-card)] rounded-lg border border-[var(--border-main)] flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative">
-                                    {formState.image_type === 'upload' && formState.image_value ? (
-                                        <img src={formState.image_value} className="w-full h-full object-cover" />
+                                    {formState.image_type === 'upload' ? (
+                                        formState.image_value ? (
+                                            <img src={formState.image_value} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <ImagePlaceholder className="scale-75" />
+                                        )
                                     ) : (
                                         <span className="text-5xl">{formState.image_value || '🏆'}</span>
                                     )}

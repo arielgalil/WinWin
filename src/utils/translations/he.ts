@@ -418,6 +418,7 @@ export const he = {
     update_stage_details: "עדכן פרטי שלב",
     add_stage_to_list: "הוסף שלב חדש +",
     stage_name_placeholder: "היסודות",
+    no_image_uploaded: "אין תמונה טעונה",
     
     // Users Manager
     team_mgmt_title_clean: "ניהול צוות התחרות",

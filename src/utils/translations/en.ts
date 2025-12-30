@@ -416,6 +416,7 @@ Critical guidelines:
     update_stage_details: "Update Stage Details",
     add_stage_to_list: "Add New Step +",
         stage_name_placeholder: "The Basics",
+        no_image_uploaded: "No image uploaded",
         
         // Users Manager    
     full_name_placeholder: "e.g. John Doe",
