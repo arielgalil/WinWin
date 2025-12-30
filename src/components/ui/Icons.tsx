@@ -34,14 +34,20 @@ const MaterialIcon = ({ name, className = '', filled = false }: { name: string; 
   if (className.includes('text-3xl')) fontSize = '30px';
   if (className.includes('text-4xl')) fontSize = '36px';
 
+  // Standardized font-variation-settings for visual uniformity
+  const variationSettings = filled 
+    ? "'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20" 
+    : "'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20";
+
   return (
     <span 
-      className={`material-symbols-rounded ${filled ? 'icon-filled' : ''} inline-flex items-center justify-center shrink-0 overflow-hidden ${className}`}
+      className={`material-symbols-rounded inline-flex items-center justify-center shrink-0 overflow-hidden ${className}`}
       style={{ 
         fontSize,
         width: '1em', 
         height: '1em',
-        lineHeight: 1
+        lineHeight: 1,
+        fontVariationSettings: variationSettings
       }}
       aria-hidden="true"
     >
