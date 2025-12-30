@@ -8,10 +8,10 @@ Standardize typography, ensure modal theme compatibility, implement global inter
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation' (Protocol in workflow.md)
 
 ## Phase 2: Component & Asset Refinement
-- [ ] Task: Create a reusable `ImagePlaceholder` component with the stylized photo icon and dashed border.
-- [ ] Task: Update the Target Reward logic in `AdminPanel` to display the placeholder when "Image" is selected without an upload.
-- [ ] Task: Ensure all existing avatars and icons use the new non-selectable/non-draggable utility.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Component & Asset Refinement' (Protocol in workflow.md)
+- [x] Task: Create a reusable `ImagePlaceholder` component with the stylized photo icon and dashed border. 069a1cb
+- [x] Task: Update the Target Reward logic in `AdminPanel` to display the placeholder when "Image" is selected without an upload. 069a1cb
+- [x] Task: Ensure all existing avatars and icons use the new non-selectable/non-draggable utility. 069a1cb
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Component & Asset Refinement' (Protocol in workflow.md)
 
 ## Phase 3: Typography & Modal Audit
 - [ ] Task: Apply the unified H1 font size to all main headings in the Admin interface.
