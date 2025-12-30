@@ -14,9 +14,9 @@ Fix vertical alignment issues where icons appear slightly off-center relative to
     - [x] Experiment with removing `flex` and using `inline-flex` or adjusting `line-height`.
     - [x] Ensure `overflow: hidden` is applied to clip any font bounding box weirdness.
     - [x] Verify `w-` and `h-` classes from Tailwind don't conflict with inline styles.
-- [ ] Task: Footer & Sidebar Audit
-    - [ ] Check `AdminSidebar` footer icons (Logout, Theme Toggle) for alignment.
-    - [ ] Check `VersionFooter` or dashboard footer if applicable.
+- [x] Task: Footer & Sidebar Audit
+    - [x] Check `AdminSidebar` footer icons (Logout, Theme Toggle) for alignment.
+    - [x] Check `VersionFooter` or dashboard footer if applicable.
 
 ## Technical Details
 - Material Symbols are best rendered with `display: inline-flex` and `align-items: center`.
