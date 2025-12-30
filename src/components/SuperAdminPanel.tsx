@@ -211,7 +211,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
             <header className="bg-[var(--bg-card-header)] border-b border-[var(--border-main)] sticky top-0 z-40 px-4 h-16 shadow-sm shrink-0 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <h1 className="text-lg font-black tracking-tight text-[var(--text-main)]">{t('super_admin_title')}</h1>
+                        <h1 className="text-h1 tracking-tight text-[var(--text-main)]">{t('super_admin_title')}</h1>
                     </div>
                     <div className="flex items-center gap-2">
                         <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-3 min-w-[44px] min-h-[44px] rounded-[var(--radius-main)] border transition-all active:scale-95 ${isDarkMode ? 'bg-slate-800 border-slate-700 text-yellow-300' : 'bg-white border-slate-200 text-slate-600 shadow-sm'}`}>{isDarkMode ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}</button>

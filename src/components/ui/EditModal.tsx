@@ -41,14 +41,14 @@ export const EditModal: React.FC<EditModalProps> = ({
                   initial={{ scale: 0.9, opacity: 0, y: 20 }}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
                   exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                  className="relative bg-white dark:bg-[#1e1e2e] p-8 rounded-[var(--radius-container)] shadow-2xl max-w-lg w-full overflow-hidden border-2 border-green-500 shadow-[0_0_0_4px_rgba(34,197,94,0.2)]"
+                  className="relative bg-[var(--bg-card)] p-8 rounded-[var(--radius-container)] shadow-2xl max-w-lg w-full overflow-hidden border-2 border-green-500 shadow-[0_0_0_4px_rgba(34,197,94,0.2)]"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <Dialog.Title className="text-xl font-bold text-gray-900 dark:text-white">
+                    <Dialog.Title className="text-h2 text-[var(--text-main)]">
                       {title}
                     </Dialog.Title>
                     <Dialog.Close asChild>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-white/5">
+                      <button className="p-2 text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors rounded-full hover:bg-[var(--bg-hover)]">
                         <XIcon className="w-5 h-5" />
                       </button>
                     </Dialog.Close>

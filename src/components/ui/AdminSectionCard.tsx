@@ -27,9 +27,9 @@ export const AdminSectionCard: React.FC<AdminSectionCardProps> = ({
                         </div>
                     )}
                     <div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] leading-none">{title}</h3>
+                        <h3 className="text-h2 text-[var(--text-main)] leading-none">{title}</h3>
                         {description && (
-                            <p className="text-[var(--text-secondary)] text-sm mt-1">{description}</p>
+                            <p className="text-small text-[var(--text-secondary)] mt-1">{description}</p>
                         )}
                     </div>
                 </div>

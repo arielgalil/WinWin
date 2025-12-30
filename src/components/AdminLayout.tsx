@@ -305,7 +305,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 {headerConfig && <headerConfig.icon className="w-8 h-8" />}
               </div>
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{headerConfig?.title}</h2>
+                <h2 className="text-h1 text-foreground tracking-tight">{headerConfig?.title}</h2>
                 <p className="text-muted-foreground font-medium text-base mt-1">{headerConfig?.desc}</p>
               </div>
             </div>

@@ -200,26 +200,26 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('institution_name')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('institution_name')}</label>
                             <input 
                                 value={formData.school_name || ''} 
                                 onChange={e => updateForm({ school_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-medium)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-medium)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-body shadow-sm" 
                                 placeholder={t('school_name_placeholder')} 
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('competition_name_setting')}</label>
                             <input 
                                 value={formData.competition_name || ''} 
                                 onChange={e => updateForm({ competition_name: e.target.value })} 
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" 
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-body shadow-sm" 
                                 placeholder={t('competition_name_placeholder')} 
                             />
                         </div>
 
                         <div>
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('language_setting')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('language_setting')}</label>
                             <div className="flex gap-4 p-1">
                                 <button
                                     type="button"
@@ -229,7 +229,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language !== 'en' ? 'border-indigo-500' : 'border-[var(--text-muted)]'}`}>
                                         {formData.language !== 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className="text-[var(--fs-base)]">{t('hebrew')}</span>
+                                    <span className="text-body">{t('hebrew')}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -239,13 +239,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${formData.language === 'en' ? 'border-indigo-500' : 'border-[var(--text-muted)]'}`}>
                                         {formData.language === 'en' && <div className="w-2 h-2 rounded-full bg-indigo-500" />}
                                     </div>
-                                    <span className="text-[var(--fs-base)]">{t('english')}</span>
+                                    <span className="text-body">{t('english')}</span>
                                 </button>
                             </div>
                         </div>
 
                         <div className="md:col-span-2 pt-6 border-t border-[var(--border-subtle)]">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('logo_upload')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('logo_upload')}</label>
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
                                     <div className="w-24 h-24 bg-[var(--bg-surface)] rounded-full p-2 border border-[var(--border-main)] shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
@@ -256,7 +256,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     <input
                                         value={formData.logo_url || ''}
                                         onChange={e => updateForm({ logo_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono shadow-sm"
+                                        className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-small font-mono shadow-sm"
                                         placeholder={t('logo_upload_placeholder' as any)}
                                     />
                                     <div className="flex gap-3">
@@ -329,14 +329,14 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'loop' })}
-                                            className={`flex-1 px-4 py-1.5 rounded-md text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-small font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'loop' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                         >
                                             {t('loop')}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => updateForm({ background_music_mode: 'once' })}
-                                            className={`flex-1 px-4 py-1.5 rounded-md text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                                            className={`flex-1 px-4 py-1.5 rounded-md text-small font-[var(--fw-bold)] uppercase tracking-wider transition-all ${formData.background_music_mode === 'once' ? 'bg-indigo-600 text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
                                         >
                                             {t('once')}
                                         </button>
@@ -347,8 +347,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center px-1">
-                                        <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('initial_volume')}</label>
-                                        <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-600">{formData.background_music_volume || 50}%</span>
+                                        <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('initial_volume')}</label>
+                                        <span className="text-small font-[var(--fw-bold)] text-indigo-600">{formData.background_music_volume || 50}%</span>
                                     </div>
                                     <div className="flex items-center gap-4 group bg-[var(--bg-surface)] p-4 rounded-[var(--radius-main)] border border-[var(--border-subtle)] shadow-inner">
                                         <Volume2Icon className="w-5 h-5 text-[var(--text-muted)]" />
@@ -363,7 +363,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                                     </div>
                                 </div>
                                 <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-[var(--radius-main)]">
-                                    <p className="text-[var(--fs-sm)] text-blue-600 dark:text-blue-400 font-[var(--fw-medium)] leading-relaxed">
+                                    <p className="text-body text-blue-600 dark:text-blue-400 font-[var(--fw-medium)] leading-relaxed">
                                         💡 <strong>{t('tip_atmosphere_title' as any)}</strong> {t('tip_atmosphere_desc' as any).replace('💡 **טיפ:**', '').replace(/\*\*/g, '').trim()}
                                     </p>
                                 </div>
@@ -383,7 +383,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('min_points_label')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('min_points_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
@@ -393,7 +393,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('max_points_label')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('max_points_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
@@ -403,7 +403,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('points_step_label')}</label>
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">{t('points_step_label')}</label>
                             <input
                                 type="text"
                                 dir="ltr"
@@ -415,12 +415,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     </div>
 
                     <div className="space-y-4 pt-6 mt-6 border-t border-[var(--border-subtle)]">
-                        <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
+                        <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('existing_buttons')}</label>
                         <div className="flex flex-wrap gap-3">
                             {(formData.score_presets || []).map((preset, idx) => (
                                 <div key={idx} className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-2 flex items-center gap-3 shadow-sm hover:border-indigo-500 transition-colors group">
-                                    <span className="text-[var(--fs-base)] font-[var(--fw-bold)] text-[var(--text-main)]">{preset.label}</span>
-                                    <span className="text-[var(--fs-sm)] text-indigo-700 dark:text-indigo-400 font-[var(--fw-bold)] px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
+                                    <span className="text-body font-[var(--fw-bold)] text-[var(--text-main)]">{preset.label}</span>
+                                    <span className="text-small text-indigo-700 dark:text-indigo-400 font-[var(--fw-bold)] px-2 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 rounded-md">
                                         <FormattedNumber value={preset.value} forceSign={true} />
                                     </span>
                                     <button type="button" onClick={() => removePreset(idx)} className="text-[var(--text-muted)] hover:text-red-500 transition-colors p-1">
@@ -432,19 +432,19 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     </div>
 
                     <div className="space-y-4 pt-6 mt-6 border-t border-[var(--border-subtle)]">
-                        <h4 className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
+                        <h4 className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('add_new_button')}</h4>
                         <div className="flex flex-col sm:flex-row gap-4 p-6 bg-[var(--bg-surface)] rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-inner">
                             <div className="flex-1 space-y-1">
-                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('button_label')}</label>
-                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] shadow-sm" placeholder={t('button_label_placeholder')} />
+                                <label className="text-small font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('button_label')}</label>
+                                <input value={newPresetLabel || ''} onChange={e => setNewPresetLabel(e.target.value)} className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-body shadow-sm" placeholder={t('button_label_placeholder')} />
                             </div>
                             <div className="sm:w-32 space-y-1">
-                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)] text-center block">{t('points')}</label>
+                                <label className="text-small font-[var(--fw-bold)] uppercase text-[var(--text-muted)] text-center block">{t('points')}</label>
                                 <input
                                     type="text"
                                     value={formatNumberWithCommas(newPresetValue || '')}
                                     onChange={e => setNewPresetValue(parseFormattedNumber(e.target.value).toString())}
-                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] text-center shadow-sm"
+                                    className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-body text-center shadow-sm"
                                     placeholder="10"
                                 />
                             </div>

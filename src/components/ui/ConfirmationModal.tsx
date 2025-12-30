@@ -71,8 +71,8 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             style={{ border: isDanger ? '2px solid #ef4444' : undefined }}
-            className={`relative bg-white dark:bg-[#1e1e2e] border p-8 rounded-[var(--radius-container)] shadow-2xl max-w-sm w-full overflow-hidden ${
-              isDanger ? 'border-red-500 border-2 shadow-[0_0_0_4px_rgba(239,68,68,0.2)]' : 'border-gray-200 dark:border-white/10'
+            className={`relative bg-[var(--bg-card)] border p-8 rounded-[var(--radius-container)] shadow-2xl max-w-sm w-full overflow-hidden ${
+              isDanger ? 'border-red-500 border-2 shadow-[0_0_0_4px_rgba(239,68,68,0.2)]' : 'border-[var(--border-main)]'
             }`}
           >
             <div className={`w-14 h-14 rounded-[var(--radius-container)] flex items-center justify-center mb-6 mx-auto ${
@@ -83,8 +83,8 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               {isDanger ? <TrashIcon className="w-8 h-8" /> : <AlertIcon className="w-8 h-8" />}
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">{title}</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-8 text-sm leading-relaxed whitespace-pre-line">
+            <h3 className="text-h3 text-[var(--text-main)] text-center mb-2">{title}</h3>
+            <p className="text-[var(--text-muted)] text-center mb-8 text-small leading-relaxed whitespace-pre-line">
               {message}
             </p>
 
