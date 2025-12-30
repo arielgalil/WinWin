@@ -156,10 +156,10 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                             {t('enter_board')} <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
                                         </button>
                                         <div className="grid grid-cols-2 gap-3" onClick={e => e.stopPropagation()}>
-                                            <button onClick={() => navigate(`/vote/${camp.slug}`)} className="py-3 rounded-[var(--radius-main)] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
+                                            <button onClick={() => navigate(`/vote/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
                                                 <AwardIcon className="w-4 h-4" /> {t('enter_points')}
                                             </button>
-                                            <button onClick={() => navigate(`/admin/${camp.slug}`)} className="py-3 rounded-[var(--radius-main)] bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
+                                            <button onClick={() => navigate(`/admin/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors">
                                                 <SettingsIcon className="w-4 h-4" /> {t('manage')}
                                             </button>
                                         </div>

@@ -32,7 +32,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
   };
 
   // Branding Logic
-  const hasBranding = !!settings && settings.school_name && !settings.school_name.includes('טוען');
+  const hasSettings = !!settings && !!settings.school_name;
   const logoUrl = settings?.logo_url;
   const primaryColor = settings?.primary_color || '#3b82f6';
   const secondaryColor = settings?.secondary_color || '#1e293b';
@@ -59,14 +59,14 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
               {/* Standardized Circular Logo */}
               <Logo
                 src={logoUrl}
-                className={`w-20 h-20 md:w-24 md:h-24 shadow-xl backdrop-blur-md shrink-0 transition-all duration-700 ${hasBranding ? 'scale-105' : ''}`}
+                className={`w-20 h-20 md:w-24 md:h-24 shadow-xl backdrop-blur-md shrink-0 transition-all duration-700 bg-white ${hasSettings ? 'scale-105' : ''}`}
                 fallbackIcon="trophy"
               />
 
               {/* Text Content */}
               <div className="flex-1 flex flex-col gap-1 text-right rtl:text-right ltr:text-left">
                 <h1 className="text-2xl md:text-3xl font-black text-white leading-tight tracking-tight drop-shadow-lg">
-                  {t('login_platform_title', { app_name: '___' }).split('___').map((part, i) => (
+                  {hasSettings ? settings.competition_name : t('login_platform_title', { app_name: '___' }).split('___').map((part, i) => (
                     <React.Fragment key={i}>
                       {part}
                       {i === 0 && <span className="text-emerald-400">{t('matzmicha')}</span>}
@@ -74,7 +74,7 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
                   ))}
                 </h1>
                 <p className="text-white/80 text-sm md:text-base font-bold leading-relaxed">
-                  {t('login_platform_desc')}
+                  {hasSettings ? settings.school_name : t('login_platform_desc')}
                   <span className="block text-emerald-300/90 text-xs md:text-sm mt-1 font-black">{t('login_platform_slogan')}</span>
                 </p>
               </div>

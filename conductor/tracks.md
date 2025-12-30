@@ -68,3 +68,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: UI/UX Refactor & Design System (Track 4)
 
 *Link: [./conductor/tracks/design_system_refactor_20251229/](./conductor/tracks/design_system_refactor_20251229/)*
+
+---
+
+## [~] Track: UI/UX Polish and Feature Enhancement
+*Link: [./conductor/tracks/ui_polish_and_features_20251230/](./conductor/tracks/ui_polish_and_features_20251230/)*

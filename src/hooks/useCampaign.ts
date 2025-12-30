@@ -7,10 +7,14 @@ import { logger } from '../utils/logger';
 interface UseCampaignOptions<T = AppSettings> {
   slugOverride?: string;
   settingsSelector?: (settings: AppSettings) => T;
+  initialData?: {
+    campaign: Campaign,
+    settings: AppSettings
+  }
 }
 
 export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}) => {
-  const { slugOverride, settingsSelector } = options;
+  const { slugOverride, settingsSelector, initialData } = options;
   const queryClient = useQueryClient();
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
@@ -30,7 +34,8 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
       }
       return campaign;
     },
-    enabled: !!slug,
+    enabled: !!slug && !initialData, // Do not fetch if initialData is provided
+    initialData: initialData?.campaign,
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 5,
   });
@@ -47,7 +52,8 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
       }
       return data as AppSettings;
     },
-    enabled: !!campaignId,
+    enabled: !!campaignId && !initialData, // Do not fetch if initialData is provided
+    initialData: initialData?.settings,
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 2,
     select: settingsSelector,
@@ -57,8 +63,8 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
     campaign,
     campaignId,
     settings,
-    isLoadingCampaign,
-    isLoadingSettings,
+    isLoadingCampaign: isLoadingCampaign && !initialData,
+    isLoadingSettings: isLoadingSettings && !initialData,
     isCampaignError,
     campaignFetchError,
     refreshCampaign: () => queryClient.refetchQueries({ queryKey: ['campaign', slug] }),

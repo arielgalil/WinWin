@@ -248,6 +248,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 onClick={onManualRefresh}
                 disabled={isRefreshing}
                 title={t('refresh')}
+                className="hover:scale-110 transition-transform"
               >
                 <RefreshCw className={cn("h-5 w-5", isRefreshing && "animate-spin")} />
               </Button>
@@ -256,6 +257,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 variant="ghost" size="icon"
                 onClick={onShare}
                 title={t('copy_link')}
+                className="hover:scale-110 transition-transform"
               >
                 <Share2 className="h-5 w-5" />
               </Button>
@@ -265,6 +267,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 onClick={toggleTheme}
                 title={t('toggle_theme')}
                 aria-label={t('toggle_theme')}
+                className="hover:scale-110 transition-transform"
               >
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
@@ -281,7 +284,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 </p>
               </div>
               <div className={cn(
-                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-offset-2 ring-primary border-2 border-primary/30 bg-gradient-to-br",
+                "hidden sm:flex w-10 h-10 rounded-full items-center justify-center font-bold text-white shadow-md text-sm ring-2 ring-offset-2 ring-offset-background ring-primary border-2 border-primary/30 bg-gradient-to-br",
                 campaignRole === 'superuser' ? 'from-amber-400 to-orange-500' : 'from-primary to-accent'
               )}>
                 {userInitials}

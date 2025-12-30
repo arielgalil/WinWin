@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useNavigate, Navigate, useParams } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate, useParams, useLocation } from 'react-router-dom';
 import { Dashboard } from './components/Dashboard';
 import { AdminPanel } from './components/AdminPanel';
 import { CampaignSelector } from './components/CampaignSelector';
@@ -68,12 +68,13 @@ const AdminRoute = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { slug } = useParams();
+    const location = useLocation();
     
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { isCampaignSuper, isSuper } = useAuthPermissions();
 
-    if (!user) return <Navigate to={`/login/${slug}`} replace />;
+    if (!user) return <Navigate to={`/login/${slug}`} state={location.state} replace />;
 
     return (
         <CampaignContext>
@@ -96,11 +97,12 @@ const VoteRoute = () => {
     const { user, logout } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
 
-    if (!user) return <Navigate to={`/login/${slug}`} replace />;
+    if (!user) return <Navigate to={`/login/${slug}`} state={location.state} replace />;
 
     return (
         <CampaignContext>
@@ -119,24 +121,25 @@ const LoginRoute = () => {
     const { user, login, authLoading, loginError, savedEmail } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     
-    const { campaign, settings, isLoadingCampaign } = useCampaign();
-    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+    // Get campaign data directly from navigation state.
+    const campaignData = location.state?.campaign;
+
+    // The settings are now derived directly from the passed state.
+    const settings = campaignData?.app_settings?.[0] || (campaignData ? { campaign_id: campaignData.id, competition_name: campaignData.name, logo_url: campaignData.logo_url } : undefined);
+
+    const { campaignRole } = useCampaignRole(campaignData?.id, user?.id);
     const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
 
     useEffect(() => {
         if (user && !authLoading) {
             if (slug) {
                 if (campaignRole) {
-                    // User has access to this campaign
                     if (canAccessAdmin) navigate(`/admin/${slug}`, { replace: true });
                     else if (isTeacher) navigate(`/vote/${slug}`, { replace: true });
                     else navigate(`/comp/${slug}`, { replace: true });
-                } else if (campaignRole === null) {
-                    // User is confirmed to not have access to this campaign
-                    // Let them see the error on login page
                 }
-                // campaignRole === undefined means still loading, useEffect will run again when it resolves
             } else {
                 if (isSuper) navigate('/super', { replace: true });
                 else navigate('/', { replace: true });
@@ -144,13 +147,10 @@ const LoginRoute = () => {
         }
     }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper]);
 
-    if (slug && (isLoadingCampaign || (user && campaignRole === undefined))) return <LoadingScreen message={t('identifying_permissions')} />;
-
-    // Show access denied message if user is logged in but not authorized for this campaign
     if (slug && user && campaignRole === null) {
         return (
             <>
-                <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('error')} />
+                <DynamicTitle settings={settings} campaign={campaignData} pageName={t('error')} />
                 <ErrorScreen message={t('competition_access_denied')} />
             </>
         );
@@ -158,31 +158,14 @@ const LoginRoute = () => {
 
     return (
         <>
-            <DynamicTitle settings={slug ? settings : undefined} campaign={campaign} pageName={t('login_title')} />
+            <DynamicTitle settings={settings} campaign={campaignData} pageName={t('login_title')} />
             <LiteLogin
                 onLogin={login}
                 loading={authLoading}
                 error={loginError}
                 savedEmail={savedEmail}
-                settings={slug ? settings : undefined}
-                onBack={() => {
-                    // Smart back navigation based on referrer or current path context
-                    const referrer = document.referrer;
-                    const currentPath = window.location.hash || window.location.pathname;
-
-                    // Check if coming from a competition page
-                    if (referrer.includes('/comp/') || currentPath.includes('/login/') && currentPath !== '/login' && currentPath !== '#/login') {
-                        // Extract slug from current path and navigate back to competition
-                        const slugMatch = currentPath.match(/\/login\/([^\/]+)/);
-                        if (slugMatch && slugMatch[1]) {
-                            navigate(`/comp/${slugMatch[1]}`);
-                            return;
-                        }
-                    }
-
-                    // Default to campaigns page
-                    navigate('/');
-                }}
+                settings={settings}
+                onBack={() => navigate('/')}
             />
         </>
     );

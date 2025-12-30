@@ -232,7 +232,7 @@ const shoutoutMessage = useMemo(() => {
                                 <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-600/30 to-purple-600/30">
-                                    <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl filter drop-shadow-2xl brightness-125">
+                                    <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl filter drop-shadow-2xl brightness-125">
                                         {displayGoal.image_value || '🏆'}
                                     </span>
                                 </div>

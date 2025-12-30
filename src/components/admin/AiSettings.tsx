@@ -198,7 +198,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             placeholder={t('ai_keywords_placeholder')}
                             className="flex-1 px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] placeholder:text-[var(--text-muted)] opacity-60 shadow-sm"
                         />
-                        <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95">
+                        <button type="submit" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 active:scale-95 flex items-center justify-center">
                             <PlusIcon className="w-5 h-5" />
                         </button>
                     </form>
