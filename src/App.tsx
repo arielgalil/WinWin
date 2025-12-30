@@ -174,7 +174,7 @@ const LoginRoute = () => {
 import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
 const App: React.FC = () => {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
     const { authLoading } = useAuth();
     const { theme } = useTheme();
     useAutoUpdate();
@@ -183,7 +183,7 @@ const App: React.FC = () => {
         <RouteErrorBoundary>
             <OfflineIndicator />
             <PwaReloadPrompt />
-            <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]">
+            <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]" dir={dir}>
                 {authLoading ? (
                     <LoadingScreen message={t('loading_system')} />
                 ) : (
