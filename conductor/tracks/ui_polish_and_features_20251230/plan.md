@@ -37,12 +37,13 @@
 
 ## Phase 3: Functional Enhancements & Cleanup
 
--   [ ] Task: Write failing tests for music preview button.
--   [ ] Task: Implement music preview button.
--   [ ] Task: Write failing tests for missing `tip_atmosphere_title` translation.
--   [ ] Task: Add missing `tip_atmosphere_title` translation.
--   [ ] Task: Write failing tests for AI summary box expansion.
--   [ ] Task: Implement AI summary box expansion.
--   [ ] Task: Write failing tests for admin panel card width unification.
--   [ ] Task: Implement admin panel card width unification.
--   [ ] Task: Conductor - User Manual Verification 'Phase 3: Functional Enhancements & Cleanup' (Protocol in workflow.md)
+-   [x] Task: Write failing tests for music preview button. (d5797a8)
+-   [x] Task: Implement music preview button. (d5797a8)
+-   [x] Task: Write failing tests for missing `tip_atmosphere_title` translation. (d5797a8)
+-   [x] Task: Add missing `tip_atmosphere_title` translation. (d5797a8)
+-   [x] Task: Write failing tests for AI summary box expansion. (d5797a8)
+-   [x] Task: Implement AI summary box expansion. (d5797a8)
+-   [x] Task: Write failing tests for admin panel card width unification. (d5797a8)
+-   [x] Task: Implement admin panel card width unification. (3098a9f)
+-   [x] Task: Conductor - User Manual Verification 'Phase 3: Functional Enhancements & Cleanup' (Protocol in workflow.md) (3098a9f)
+
