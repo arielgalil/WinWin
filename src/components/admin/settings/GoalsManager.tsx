@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { CompetitionGoal, AppSettings } from '../../../types';
-import { RefreshIcon, EditIcon, CheckIcon, UploadIcon, TrashIcon, TargetIcon, SparklesIcon } from '../../ui/Icons';
+import { RefreshIcon, EditIcon, CheckIcon, UploadIcon, TrashIcon, TargetIcon, SparklesIcon, XIcon } from '../../ui/Icons';
 import { formatNumberWithCommas, parseFormattedNumber } from '../../../utils/stringUtils';
 import { supabase } from '../../../supabaseClient';
 import { FormattedNumber } from '../../ui/FormattedNumber';
@@ -9,6 +9,7 @@ import { useLanguage } from '../../../hooks/useLanguage';
 import { useConfirmation } from '../../../hooks/useConfirmation';
 import { EditModal } from '../../ui/EditModal';
 import { AdminButton } from '../../ui/AdminButton';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 interface GoalsManagerProps {
     settings: AppSettings;
@@ -80,6 +81,85 @@ const GoalCard: React.FC<{ goal: CompetitionGoal; idx: number; totalScore: numbe
 
 const quickEmojis = ['🏆', '🥇', '🥈', '🥉', '🎁', '💎', '🌟', '🎈', '🍦', '🍭'];
 
+const EmojiPicker: React.FC<{
+    value: string;
+    onChange: (val: string) => void;
+    trigger: React.ReactNode;
+}> = ({ value, onChange, trigger }) => {
+    const { t } = useLanguage();
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                {trigger}
+            </PopoverTrigger>
+            <PopoverContent 
+                className="w-72 p-4 bg-[var(--bg-card)] border-[var(--border-main)] shadow-2xl rounded-2xl z-[100]" 
+                side="top" 
+                align="center"
+            >
+                <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+                        <SparklesIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        {t('prize_emoji_selection')}
+                    </h4>
+                    <button 
+                        type="button" 
+                        onClick={() => setOpen(false)} 
+                        className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                    >
+                        <XIcon className="w-4 h-4" />
+                    </button>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">{t('enter_emoji_manual')}:</label>
+                        <input
+                            type="text"
+                            value={value}
+                            onChange={e => onChange(e.target.value)}
+                            className="w-full px-3 py-2 rounded-lg border border-[var(--border-main)] bg-[var(--bg-surface)] text-2xl text-[var(--text-main)] text-center outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner"
+                            placeholder={t('insert_emoji')}
+                        />
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">{t('choose_quick_emoji')}:</label>
+                        <div className="grid grid-cols-5 gap-2">
+                            {quickEmojis.map(emoji => (
+                                <button
+                                    key={emoji}
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onChange(emoji);
+                                        setOpen(false);
+                                    }}
+                                    className={`text-xl p-1.5 rounded-xl transition-all border ${value === emoji ? 'bg-indigo-50 dark:bg-indigo-500/20 border-indigo-400' : 'bg-[var(--bg-surface)] border-[var(--border-main)] hover:border-gray-400 dark:hover:border-gray-500'}`}
+                                >
+                                    {emoji}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <AdminButton
+                        type="button"
+                        onClick={() => setOpen(false)}
+                        variant="primary"
+                        size="sm"
+                        className="w-full"
+                    >
+                        {t('confirm_selection')}
+                    </AdminButton>
+                </div>
+            </PopoverContent>
+        </Popover>
+    );
+};
+
 export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSettings, totalScore }) => {
     const { t } = useLanguage();
     const [goals, setGoals] = useState<CompetitionGoal[]>(settings.goals_config || []);
@@ -88,7 +168,6 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isGoalUploading, setIsGoalUploading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
-    const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
     const { modalConfig, openConfirmation } = useConfirmation();
 
     const minScoreAllowed = useMemo(() => {
@@ -340,18 +419,19 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
 
                                 {!editingId && (
                                     formState.image_type === 'emoji' ? (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setIsEmojiModalOpen(true);
-                                            }}
-                                            className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
-                                        >
-                                            <span>{t('insert_emoji')}</span>
-                                            <span className="text-sm">✨</span>
-                                        </button>
+                                        <EmojiPicker
+                                            value={formState.image_value || ''}
+                                            onChange={(val) => setFormState(prev => ({ ...prev, image_value: val }))}
+                                            trigger={
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all active:scale-95 w-full mt-2"
+                                                >
+                                                    <span>{t('insert_emoji')}</span>
+                                                    <span className="text-sm">✨</span>
+                                                </button>
+                                            }
+                                        />
                                     ) : (
                                         <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 px-3 py-2 rounded-lg text-[10px] font-bold transition-all cursor-pointer active:scale-95 w-full mt-2">
                                             {isGoalUploading ? <RefreshIcon className="w-3.5 h-3.5 animate-spin" /> : <UploadIcon className="w-3.5 h-3.5" />}
@@ -468,9 +548,19 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                                     </div>
 
                                     {formState.image_type === 'emoji' ? (
-                                        <AdminButton type="button" variant="secondary" size="sm" onClick={() => setIsEmojiModalOpen(true)}>
-                                            {t('insert_emoji')}
-                                        </AdminButton>
+                                        <EmojiPicker
+                                            value={formState.image_value || ''}
+                                            onChange={(val) => setFormState(prev => ({ ...prev, image_value: val }))}
+                                            trigger={
+                                                <button
+                                                    type="button"
+                                                    className="flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 px-4 py-2 rounded-lg text-xs font-bold transition-all active:scale-95 w-full"
+                                                >
+                                                    <span>{t('insert_emoji')}</span>
+                                                    <span className="text-sm">✨</span>
+                                                </button>
+                                            }
+                                        />
                                     ) : (
                                         <label className="flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition-all active:scale-95">
                                             <UploadIcon className="w-4 h-4" />
@@ -503,70 +593,6 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                     </div>
                 </div>
             </EditModal>
-
-            {/* Emoji Selection Modal */}
-            {isEmojiModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200" dir="rtl">
-                        <div className="flex justify-between items-center mb-6">
-                            <h4 className="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
-                                <div className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg">
-                                    <SparklesIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                                </div>
-                                {t('prize_emoji_selection')}
-                            </h4>
-                            <button type="button" onClick={(e) => { e.preventDefault(); setIsEmojiModalOpen(false); }} className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors text-2xl">&times;</button>
-                        </div>
-
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">{t('enter_emoji_manual')}:</label>
-                                <input
-                                    type="text"
-                                    value={formState.image_value}
-                                    onChange={e => setFormState(prev => ({ ...prev, image_value: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-lg border border-[var(--border-main)] bg-[var(--bg-surface)] text-3xl text-[var(--text-main)] text-center outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner"
-                                    placeholder={t('insert_emoji')}
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">{t('choose_quick_emoji')}:</label>
-                                <div className="grid grid-cols-5 gap-2">
-                                    {quickEmojis.map(emoji => (
-                                        <button
-                                            key={emoji}
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setFormState(prev => ({ ...prev, image_value: emoji }));
-                                                setIsEmojiModalOpen(false);
-                                            }}
-                                            className={`text-2xl p-2 rounded-xl transition-all border ${formState.image_value === emoji ? 'bg-indigo-50 dark:bg-indigo-500/20 border-indigo-400' : 'bg-[var(--bg-surface)] border-[var(--border-main)] hover:border-gray-400 dark:hover:border-gray-500'}`}
-                                        >
-                                            {emoji}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setIsEmojiModalOpen(false);
-                                }}
-                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                <span>{t('confirm_selection')}</span>
-                                <CheckIcon className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
