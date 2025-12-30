@@ -2,19 +2,19 @@
 
 Comprehensive audit of localization strings in new edit modals and a broad cleanup of redundant state and dead logic within the Admin Panel.
 
-## Phase 1: Localization Audit (Modals & Forms)
+## Phase 1: Localization Audit (Modals & Forms) [checkpoint: ef0b441]
 Ensure 100% translation coverage for the new modal-based editing experience.
 
-- [x] Task: Audit `ClassesManager.tsx` and associated modals for hard-coded strings.
-- [x] Task: Audit `UsersManager.tsx` and associated modals for hard-coded strings.
-- [x] Task: Audit `MessagesManager.tsx` and associated modals for hard-coded strings.
-- [x] Task: Audit `GoalsManager.tsx` and associated modals for hard-coded strings.
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Localization Audit' (Protocol in workflow.md)
+- [x] Task: Audit `ClassesManager.tsx` and associated modals for hard-coded strings. ef0b441
+- [x] Task: Audit `UsersManager.tsx` and associated modals for hard-coded strings. ef0b441
+- [x] Task: Audit `MessagesManager.tsx` and associated modals for hard-coded strings. ef0b441
+- [x] Task: Audit `GoalsManager.tsx` and associated modals for hard-coded strings. ef0b441
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Localization Audit' (Protocol in workflow.md) ef0b441
 
 ## Phase 2: Broad Code Cleanup (State & Logic)
 Eliminate "residue" from the inline-editing era and remove unused logic.
 
-- [ ] Task: Clean up `ClassesManager.tsx` (remove old row-editing state/handlers).
+- [~] Task: Clean up `ClassesManager.tsx` (remove old row-editing state/handlers).
 - [ ] Task: Clean up `UsersManager.tsx` (remove redundant state/logic).
 - [ ] Task: Clean up `MessagesManager.tsx` (remove legacy reordering/inline residue).
 - [ ] Task: Clean up `GoalsManager.tsx` (remove scroll-into-view logic and old card states).
