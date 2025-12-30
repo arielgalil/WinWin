@@ -140,7 +140,6 @@ export const en = {
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
     tip_atmosphere_title: "Atmosphere Tip:",
     tip_atmosphere_desc: "💡 **Tip:** Choose upbeat music to increase competition energy!",
-    visual_design: "Visual Design",
     visual_design_desc: "Customize the look and feel of your scoreboard",
     live_preview: "Live Preview",
     sample_title: "Sample Title",

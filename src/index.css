@@ -36,6 +36,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
+  --font-size-h1: var(--fs-h1);
+  --font-size-h2: var(--fs-h2);
+  --font-size-h3: var(--fs-h3);
+  --font-size-body: var(--fs-body);
+  --font-size-small: var(--fs-small);
+
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -101,11 +107,11 @@
    }
 
    /* Typographic Scale Classes */
-   .text-h1 { font-size: var(--fs-h1); font-weight: var(--fw-bold); line-height: 1.2; }
-   .text-h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); line-height: 1.25; }
-   .text-h3 { font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.3; }
-   .text-body { font-size: var(--fs-body); font-weight: var(--fw-regular); line-height: 1.5; }
-   .text-small { font-size: var(--fs-small); font-weight: var(--fw-regular); line-height: 1.4; }
+   .text-h1 { font-size: var(--fs-h1); font-weight: bold; line-height: 1.2; letter-spacing: -0.02em; }
+   .text-h2 { font-size: var(--fs-h2); font-weight: bold; line-height: 1.25; letter-spacing: -0.01em; }
+   .text-h3 { font-size: var(--fs-h3); font-weight: bold; line-height: 1.3; }
+   .text-body { font-size: var(--fs-body); font-weight: normal; line-height: 1.5; }
+   .text-small { font-size: var(--fs-small); font-weight: normal; line-height: 1.4; }
  }
 
  /* Global Icon & Media Protection */
@@ -113,7 +119,15 @@
  .material-symbols-rounded,
  .lucide,
  svg {
-   @apply no-select no-drag;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+   -webkit-user-drag: none;
+   -khtml-user-drag: none;
+   -moz-user-drag: none;
+   -o-user-drag: none;
+   user-drag: none;
  }
 :root {
   --background: 0 0% 100%;

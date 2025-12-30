@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageIcon } from './Icons';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../hooks/useLanguage';
 import { cn } from '@/lib/utils';
 
 interface ImagePlaceholderProps {
