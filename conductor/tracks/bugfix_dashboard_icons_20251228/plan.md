@@ -14,7 +14,7 @@ Fix regression in the Dashboard (Game Board) where icons in card headers are rep
     - [x] Check how icons are rendered in the headers of these components.
     - [x] Identify if styles are applied to the icon directly or a wrapper.
     - [x] Ensure wrappers have `flex items-center justify-center`.
-- [x] Task: Fix Alignment
+- [x] Task: Fix Alignment [a228510]
     - [x] Apply the same fix (centering wrapper) to Dashboard components as was done for Admin.
     - [x] If "not in a circle" persists, check if `w-` / `h-` classes on the icon match the font-size logic in `Icons.tsx`.
 
