@@ -30,8 +30,17 @@ describe('Animation Persistence', () => {
         vi.clearAllMocks();
     });
 
-    it('MissionMeter should initialize with persistentSession=false', () => {
-        vi.mocked(useStore).mockReturnValue(false);
+    it('MissionMeter should initialize correctly', () => {
+        // Mock the selector responses
+        vi.mocked(useStore).mockImplementation((selector: any) => {
+            const state = {
+                persistent_session: false,
+                iris_pattern: [{ cx: 0.5, cy: 0.5, weight: 1, delay: 0 }],
+                setIrisPattern: vi.fn()
+            };
+            return selector(state);
+        });
+
         renderWithProvider(
             <MissionMeter 
                 totalScore={100} 
@@ -42,8 +51,16 @@ describe('Animation Persistence', () => {
         expect(screen.getByText(/Test/i)).toBeDefined();
     });
 
-    it('MissionMeter should skip animations when persistentSession=true', () => {
-        vi.mocked(useStore).mockReturnValue(true);
+    it('MissionMeter should handle missing iris pattern', () => {
+        vi.mocked(useStore).mockImplementation((selector: any) => {
+            const state = {
+                persistent_session: true,
+                iris_pattern: null,
+                setIrisPattern: vi.fn()
+            };
+            return selector(state);
+        });
+
         renderWithProvider(
             <MissionMeter 
                 totalScore={100} 

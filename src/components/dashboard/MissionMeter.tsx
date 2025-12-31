@@ -30,6 +30,9 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
 }) => {
     const { t, language } = useLanguage();
     const persistentSession = useStore(state => state.persistent_session);
+    const irisPattern = useStore(state => state.iris_pattern);
+    const setIrisPattern = useStore(state => state.setIrisPattern);
+    
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
     const lastCompletedIndexRef = useRef<number>(-1);
     const prevScoreRef = useRef(totalScore);
@@ -37,9 +40,15 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const [pathLength, setPathLength] = useState(0);
     const isFirstMountRef = useRef(true);
 
-    const [irises, setIrises] = useState<{ cx: number; cy: number; weight: number; delay: number }[]>([]);
+    const [irises, setIrises] = useState<{ cx: number; cy: number; weight: number; delay: number }[]>(irisPattern || []);
 
     useEffect(() => {
+        // If we already have a pattern in the store, use it and don't regenerate
+        if (irisPattern && irisPattern.length > 0) {
+            setIrises(irisPattern);
+            return;
+        }
+
         const newIrises: { cx: number; cy: number; weight: number; delay: number }[] = [];
         let attempts = 0;
         while (newIrises.length < 3 && attempts < 50) {
@@ -68,7 +77,8 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
             newIrises.push({ cx: 0.5, cy: 0.5, weight: 1, delay: 0 });
         }
         setIrises(newIrises);
-    }, []);
+        setIrisPattern(newIrises);
+    }, [irisPattern, setIrisPattern]);
 
     const { activeIndex, sortedGoals } = useMemo(() => {
         const sorted = [...(goals || [])].sort((a, b) => a.target_score - b.target_score);

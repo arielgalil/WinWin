@@ -11,15 +11,16 @@
 - [x] Task: Integrate `KioskStartOverlay` into `src/components/Dashboard.tsx` to "unlock" the audio context. 3b04278
 - [ ] Task: Conductor - User Manual Verification 'Kiosk Initialization & Audio Unlock' (Protocol in workflow.md)
 
-## Phase 3: Animation Persistence & Continuity
-- [~] Task: Implement a `persistent_session` flag in the global state (Zustand) to track if the dashboard has already performed its initial animations.
-- [ ] Task: Update `MissionMeter.tsx` to skip entrance animations if `persistent_session` is true.
-- [ ] Task: Update `Podium.tsx` and list-based components to skip stagger/entrance animations on sub-sequent rotations.
-- [ ] Task: Verify that animations still play correctly on the very first page load.
-- [ ] Task: Conductor - User Manual Verification 'Animation Persistence & Continuity' (Protocol in workflow.md)
+## Phase 3: Animation Persistence & Continuity [checkpoint: c407d80]
+- [x] Task: Implement a `persistent_session` flag in the global state (Zustand) to track if the dashboard has already performed its initial animations. c407d80
+- [x] Task: Update `MissionMeter.tsx` to skip entrance animations if `persistent_session` is true. c407d80
+- [x] Task: Update `Podium.tsx` and list-based components to skip stagger/entrance animations on sub-sequent rotations. c407d80
+- [x] Task: Verify that animations still play correctly on the very first page load. c407d80
+- [x] Task: Move Iris pattern generation logic to Zustand store to keep it consistent (Point 18). ab97154
+- [x] Task: Conductor - User Manual Verification 'Animation Persistence & Continuity' (Protocol in workflow.md) ab97154
 
-## Phase 4: State Serialization & Rotation Polish
-- [ ] Task: Implement a state serialization utility to store the current rotation index and board state in `sessionStorage`.
-- [ ] Task: Update `KioskRotator.tsx` to initialize from serialized state on mount.
-- [ ] Task: Refine the `AnimatePresence` transitions in `KioskRotator.tsx` to ensure smooth, non-flickering switches.
-- [ ] Task: Conductor - User Manual Verification 'State Serialization & Rotation Polish' (Protocol in workflow.md)
+## Phase 4: DOM Persistence (The Stack Approach)
+- [x] Task: Rewrite `KioskRotator.tsx` to render all URLs and the Board simultaneously in a "Stack". ab97154
+- [x] Task: Use CSS `opacity` and `pointer-events` to toggle visibility without unmounting (Point 17). ab97154
+- [x] Task: Refine transitions to ensure high-performance switching on kiosk hardware. ab97154
+- [ ] Task: Conductor - User Manual Verification 'DOM Persistence & Stack Approach' (Protocol in workflow.md)

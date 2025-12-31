@@ -9,6 +9,8 @@ interface AppState {
     setTheme: (theme: Theme) => void;
     persistent_session: boolean;
     setPersistentSession: (val: boolean) => void;
+    iris_pattern: { cx: number; cy: number; weight: number; delay: number }[] | null;
+    setIrisPattern: (pattern: { cx: number; cy: number; weight: number; delay: number }[]) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -17,7 +19,9 @@ export const useStore = create<AppState>()(
             (set) => ({
                 theme: 'light',
                 persistent_session: false,
+                iris_pattern: null,
                 setPersistentSession: (val) => set({ persistent_session: val }),
+                setIrisPattern: (pattern) => set({ iris_pattern: pattern }),
                 toggleTheme: () => set((state) => {
                     const newTheme = state.theme === 'light' ? 'dark' : 'light';
                     // Side effect for theme application (similar to original Context)
