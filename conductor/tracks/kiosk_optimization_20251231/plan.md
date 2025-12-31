@@ -1,8 +1,8 @@
 # Implementation Plan: Kiosk UX & Performance Optimization
 
 ## Phase 1: PWA & Caching Foundation
-- [ ] Task: Update `vite.config.ts` PWA settings to ensure high-priority caching for dashboard assets (Material Symbols, Noto Sans Hebrew, and core CSS).
-- [ ] Task: Implement a "Pre-warm" utility to ensure these assets are in the cache before the first rotation cycle.
+- [x] Task: Update `vite.config.ts` PWA settings to ensure high-priority caching for dashboard assets (Material Symbols, Noto Sans Hebrew, and core CSS). 3b04278
+- [x] Task: Implement a "Pre-warm" utility to ensure these assets are in the cache before the first rotation cycle. 3b04278
 - [ ] Task: Conductor - User Manual Verification 'PWA & Caching Foundation' (Protocol in workflow.md)
 
 ## Phase 2: Kiosk Initialization & Audio Unlock
