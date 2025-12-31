@@ -5,11 +5,12 @@ import { AppSettings } from '../../types';
 interface KioskRotatorProps {
     settings: AppSettings;
     children: React.ReactNode;
+    isStarted?: boolean;
 }
 
-export const KioskRotator: React.FC<KioskRotatorProps> = ({ settings, children }) => {
+export const KioskRotator: React.FC<KioskRotatorProps> = ({ settings, children, isStarted = true }) => {
     const config = settings.rotation_config || [];
-    const rotationEnabled = settings.rotation_enabled && config.length > 0;
+    const rotationEnabled = settings.rotation_enabled && config.length > 0 && isStarted;
     
     const [currentIndex, setCurrentIndex] = useState(-1); // -1 is the main game board
 

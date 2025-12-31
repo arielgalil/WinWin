@@ -23,6 +23,7 @@ import { useCampaignRole } from '../hooks/useCampaignRole';
 import { useLanguage } from '../hooks/useLanguage';
 import { isSuperUser as checkIsSuperUser } from '../config';
 import { KioskRotator } from './dashboard/KioskRotator';
+import { KioskStartOverlay } from './dashboard/KioskStartOverlay';
 
 export const Dashboard: React.FC = () => {
     const { campaign, settings } = useCampaign();
@@ -36,6 +37,15 @@ export const Dashboard: React.FC = () => {
     const { slug } = useParams();
 
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+    const [isKioskStarted, setIsKioskStarted] = useState(() => {
+        return sessionStorage.getItem('kiosk_started') === 'true';
+    });
+
+    const handleStartKiosk = () => {
+        setIsKioskStarted(true);
+        sessionStorage.setItem('kiosk_started', 'true');
+        setIsMusicPlaying(true);
+    };
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
         calculateClassStats(classes || []),
@@ -65,7 +75,11 @@ export const Dashboard: React.FC = () => {
 
     return (
         <DashboardErrorBoundary>
-            <KioskRotator settings={settings}>
+            <KioskStartOverlay 
+                isVisible={!!settings?.rotation_enabled && !isKioskStarted} 
+                onStart={handleStartKiosk} 
+            />
+            <KioskRotator settings={settings} isStarted={isKioskStarted}>
                 <GradientBackground
                     primaryColor={settings.primary_color}
                     secondaryColor={settings.secondary_color}

@@ -6,9 +6,9 @@
 - [x] Task: Conductor - User Manual Verification 'PWA & Caching Foundation' (Protocol in workflow.md) 64d5144
 
 ## Phase 2: Kiosk Initialization & Audio Unlock
-- [ ] Task: Create a `KioskStartOverlay` component to prompt for the initial user interaction required for unmuted video.
-- [ ] Task: Write tests for `KioskStartOverlay` visibility and interaction.
-- [ ] Task: Integrate `KioskStartOverlay` into `src/components/Dashboard.tsx` to "unlock" the audio context.
+- [x] Task: Create a `KioskStartOverlay` component to prompt for the initial user interaction required for unmuted video. 3b04278
+- [x] Task: Write tests for `KioskStartOverlay` visibility and interaction. 3b04278
+- [x] Task: Integrate `KioskStartOverlay` into `src/components/Dashboard.tsx` to "unlock" the audio context. 3b04278
 - [ ] Task: Conductor - User Manual Verification 'Kiosk Initialization & Audio Unlock' (Protocol in workflow.md)
 
 ## Phase 3: Animation Persistence & Continuity

@@ -629,4 +629,10 @@ export const en = {
     global_interval_desc: "This time will be used as a default for new sites and for the game board itself.",
     kiosk_tip_desc: "You can display the school website, notice boards, or interesting content pages to keep the display board engaging.",
     kiosk_security_note: "Note: Some websites may block iframe embedding for security reasons. We recommend testing the link after adding it.",
+
+    // Kiosk Start
+    kiosk_start_title: "Ready to start?",
+    kiosk_start_desc: "Click the button to start the site rotation and enable automatic sound and video.",
+    kiosk_start_button: "Start Kiosk Mode",
+    kiosk_audio_hint: "This interaction is required by the browser to enable automatic audio and video playback.",
 };
