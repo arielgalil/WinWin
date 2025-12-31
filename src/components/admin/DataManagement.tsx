@@ -260,6 +260,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                 </div>
 
                 {/* Danger Zone */}
+                {/* 3. Global Score (Left) - actually it's VersionFooter, checking where logo background is */}
                 <div className="mt-10 pt-10 border-t border-[var(--border-subtle)]">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-1.5 bg-red-100 dark:bg-red-500/10 rounded-[var(--radius-main)] border border-red-200">

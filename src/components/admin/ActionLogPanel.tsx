@@ -292,27 +292,32 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             title={t('summary_ai_title')}
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
                             className="flex flex-col"
-                            rightAction={summary && (
-                                <AdminButton
-                                    onClick={handleCopySummary}
-                                    variant={isCopied ? 'success' : 'secondary'}
-                                    size="sm"
-                                    icon={isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
-                                >
-                                    {isCopied ? t('copied') : t('copy')}
-                                </AdminButton>
-                            )}
                         >
-                            <AdminButton 
-                                onClick={handleGenerateSummary} 
-                                isLoading={isLoadingAI} 
-                                variant="primary"
-                                size="lg"
-                                className="mb-6 w-full py-4"
-                                icon={<SparklesIcon className="w-5 h-5" />}
-                            >
-                                {t('generate_new_analysis')}
-                            </AdminButton>
+                            <div className="flex flex-wrap justify-end gap-3 mb-6">
+                                <AdminButton 
+                                    onClick={handleGenerateSummary} 
+                                    isLoading={isLoadingAI} 
+                                    variant="primary"
+                                    size="md"
+                                    className="flex-1 min-w-[140px]"
+                                    icon={<SparklesIcon className="w-5 h-5" />}
+                                >
+                                    {t('generate_new_analysis')}
+                                </AdminButton>
+
+                                {summary && (
+                                    <AdminButton
+                                        onClick={handleCopySummary}
+                                        variant={isCopied ? 'success' : 'secondary'}
+                                        size="md"
+                                        className="shrink-0"
+                                        icon={isCopied ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
+                                    >
+                                        {isCopied ? t('copied') : t('copy')}
+                                    </AdminButton>
+                                )}
+                            </div>
+
                             <div className="bg-[var(--bg-surface)] rounded-xl p-6 border border-[var(--border-main)] text-[var(--text-main)] shadow-inner relative min-h-[200px]">
                                 {renderFormattedSummary(summary || '')}
                                 {settings.ai_summary_updated_at && summary && !isLoadingAI && (
