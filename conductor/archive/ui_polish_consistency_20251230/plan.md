@@ -21,6 +21,6 @@ Standardize typography, ensure modal theme compatibility, implement global inter
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Typography & Modal Audit' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish & Verification
-- [ ] Task: Perform a final sweep of the interface to ensure no "one-off" font sizes remain.
-- [ ] Task: Verify RTL alignment for all newly implemented elements (placeholders, updated headings).
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)
+- [x] Task: Perform a final sweep of the interface to ensure no "one-off" font sizes remain. 3e1e583
+- [x] Task: Verify RTL alignment for all newly implemented elements (placeholders, updated headings). 3e1e583
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md)

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10.52% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/19</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/18</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -119,35 +119,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">103x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -166,33 +166,33 @@ export interface LanguageContextType {
 &nbsp;
 export const LanguageContext = createContext&lt;LanguageContextType | undefined&gt;(undefined);
 &nbsp;
-export const LanguageProvider: React.FC&lt;{ children: React.ReactNode, initialLanguage?: Language }&gt; = <span class="fstat-no" title="function not covered" >({</span> children, initialLanguage = <span class="branch-0 cbranch-no" title="branch not covered" >'he' }</span>) =&gt; {
-    const [language, setLangState<span class="cstat-no" title="statement not covered" >] = useState&lt;Language&gt;(initialLanguage);</span>
+export const LanguageProvider: React.FC&lt;{ children: React.ReactNode, initialLanguage?: Language }&gt; = ({ children, initialLanguage = 'he' }) =&gt; {
+    const [language, setLangState] = useState&lt;Language&gt;(initialLanguage);
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" >setLanguage = useCallback(<span class="fstat-no" title="function not covered" >(l</span>ang: Language) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        setLangState(lang);</span>
-<span class="cstat-no" title="statement not covered" >        localStorage.setItem('winwin_preferred_language', lang);</span>
+    const setLanguage = useCallback((lang: Language) =&gt; {
+        setLangState(lang);
+        localStorage.setItem('winwin_preferred_language', lang);
     }, []);
 &nbsp;
-    const isRTL = <span class="cstat-no" title="statement not covered" >language === 'he';</span>
+    const isRTL = language === 'he';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';</span>
-<span class="cstat-no" title="statement not covered" >        document.documentElement.lang = language;</span>
+    useEffect(() =&gt; {
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+        document.documentElement.lang = language;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (isRTL) {</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.add('rtl');</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.remove('ltr');</span>
+        if (isRTL) {
+            document.body.classList.add('rtl');
+            document.body.classList.remove('ltr');
         } else {
-<span class="cstat-no" title="statement not covered" >            document.body.classList.add('ltr');</span>
-<span class="cstat-no" title="statement not covered" >            document.body.classList.remove('rtl');</span>
+            document.body.classList.add('ltr');
+            document.body.classList.remove('rtl');
         }
     }, [language, isRTL]);
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" >translate = useCallback(<span class="fstat-no" title="function not covered" >(k</span>ey: TranslationKey, <span class="cstat-no" title="statement not covered" >params?: Record&lt;string, any&gt;) =&gt; t(key, language, params), [</span>language]);</span>
-    const dir = <span class="cstat-no" title="statement not covered" >isRTL ? 'rtl' : 'ltr';</span>
+    const translate = useCallback((key: TranslationKey, params?: Record&lt;string, any&gt;) =&gt; t(key, language, params), [language]);
+    const dir = isRTL ? 'rtl' : 'ltr';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
         &lt;LanguageContext.Provider value={{ language, setLanguage, t: translate, isRTL, dir }}&gt;
             {children}
         &lt;/LanguageContext.Provider&gt;
@@ -205,7 +205,7 @@ export const LanguageProvider: React.FC&lt;{ children: React.ReactNode, initialL
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-30T16:39:35.821Z
+                at 2025-12-31T05:12:31.982Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

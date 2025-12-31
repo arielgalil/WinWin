@@ -1,0 +1,8 @@
+{
+  "track_id": "ui_polish_revitalization_20251230",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2025-12-30T20:15:00Z",
+  "updated_at": "2025-12-30T20:15:00Z",
+  "description": "(1) In English language mode, the entire layout should be reversed to LTR. (2) In the AI ​​Summary & Analysis tab, if there is no space - the Copy button can move to the next line. (3) Lack of translation for: Data Management & Backup Backup Management, Data Export, and System Reset Competition Team Management Administrators and Teachers Management Participating in the Competition (4) Under Actions in the Data Management tab, in both \"Competition Team Management\" and \"Classes & Students Management\" the delete button is next to the edit button instead of being away from it, which is against what I asked for to be implemented throughout the product, to prevent accidentally pressing the delete button. (5) Under \"Classes & Students Management\" the button that leads to editing students does not look like the rest of the buttons on the screen, including a square-round shape and including a background color. Fix this. (6) The frame around the Export & Backup, Data Restore, and Danger Zone (Reset) icons does not look like a rounded square. (7) The sidebar state (open/collapsed) is not remembered from refresh to refresh. (8) Competition selection screen revitalization. (9) Fixed logo backgrounds."
+}

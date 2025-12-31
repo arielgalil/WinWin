@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,7 +96,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -107,17 +107,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">119x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">119x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">119x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { he } from './translations/he';
 import { en } from './translations/en';
@@ -135,17 +135,17 @@ export type TranslationKey = keyof typeof translations.he;
  * Utility function to translate a key into the given language.
  * Supports parameter substitution using %{key} syntax.
  */
-export const t = <span class="fstat-no" title="function not covered" >(k</span>ey: TranslationKey, lang: Language = <span class="branch-0 cbranch-no" title="branch not covered" >'he', p</span>arams?: Record&lt;string, any&gt;): string =&gt; {
-    let text = (<span class="cstat-no" title="statement not covered" >translations[lang] as any)[key] || (translations['he'] as any)[key] || key;</span>
+export const t = (key: TranslationKey, lang: Language = 'he', params?: Record&lt;string, any&gt;): string =&gt; {
+    let text = (translations[lang] as any)[key] || (translations['he'] as any)[key] || key;
     
-<span class="cstat-no" title="statement not covered" >    if (params) {</span>
-<span class="cstat-no" title="statement not covered" >        Object.entries(params).forEach(<span class="fstat-no" title="function not covered" >([</span>k, v]) =&gt; {</span>
-            const placeholder = <span class="cstat-no" title="statement not covered" >`%{${k}}`;</span>
-<span class="cstat-no" title="statement not covered" >            text = text.split(placeholder).join(String(v));</span>
+    if (params) {
+        Object.entries(params).forEach(([k, v]) =&gt; {
+            const placeholder = `%{${k}}`;
+            text = text.split(placeholder).join(String(v));
         });
     }
     
-<span class="cstat-no" title="statement not covered" >    return text;</span>
+    return text;
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -154,7 +154,7 @@ export const t = <span class="fstat-no" title="function not covered" >(k</span>e
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-30T16:39:35.821Z
+                at 2025-12-31T05:12:31.982Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

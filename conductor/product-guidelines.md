@@ -3,6 +3,7 @@
 ## 1. Direction & Localization
 - **RTL-First:** The system is fundamentally built for Hebrew speakers. Default layout and text direction must be RTL.
 - **i18n (Internationalization):** **Strictly Forbidden** to use hard-coded text strings. All labels, buttons, and messages must be pulled from global translation files (JSON). This ensures maintainability and future scalability.
+- **Interaction Restrictions:** Logos, avatars, and icons must be non-selectable and non-draggable (`no-select no-drag`) to ensure a clean, professional touch interface.
 
 ## 2. Brand Messaging & Voice
 - **Tone:** Direct, encouraging, and supportive.
@@ -23,6 +24,7 @@
 
 ## 5. Visual Identity & Consistency
 - **Icons:** Use Google Material Symbols for student-facing UI. Use Lucide React icons for the Admin Panel.
+- **Typography Hierarchy:** Adhere to the unified 5-level scale (H1, H2, H3, Body, Small) using responsive `clamp` units for consistency across devices.
 - **Imagery:** Prohibit the use of non-vector (raster) illustrations to maintain a clean, crisp, and professional look across all resolutions.
 - **Theme:** Full support for System, Light, and Dark modes.
 - **State Feedback:**

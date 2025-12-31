@@ -6,17 +6,27 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+## [x] Track: UI Polish and Consistency
+*Link: [./conductor/archive/ui_polish_consistency_20251230/](./conductor/archive/ui_polish_consistency_20251230/)*
+
+---
+
+## [x] Track: UI Polish and Layout Cleanup
+*Link: [./conductor/archive/ui_polish_cleanup_20251230/](./conductor/archive/ui_polish_cleanup_20251230/)*
+
+---
+
 ## [x] Track: UI/UX Polish and Feature Enhancement
 *Link: [./conductor/archive/ui_polish_and_features_20251230/](./conductor/archive/ui_polish_and_features_20251230/)*
 
 ---
 
-## [x] Track: מנגנון עדכון מרחוק של מסכים ללא מגע יד אדם
+## [x] Track: ׳³ֲ׳³ֲ ׳³ג€™׳³ֲ ׳³ג€¢׳³ֲ ׳³ֲ¢׳³ג€׳³ג€÷׳³ג€¢׳³ֲ ׳³ֲ׳³ֲ¨׳³ג€”׳³ג€¢׳³ֲ§ ׳³ֲ©׳³ֲ ׳³ֲ׳³ֲ¡׳³ג€÷׳³ג„¢׳³ֲ ׳³ֲ׳³ֲ׳³ֲ ׳³ֲ׳³ג€™׳³ֲ¢ ׳³ג„¢׳³ג€ ׳³ֲ׳³ג€׳³ֲ
 *Link: [./conductor/archive/remote_kiosk_update_20251228/](./conductor/archive/remote_kiosk_update_20251228/)*
 
 ---
 
-## [x] Track: אופטימיזציה של ניהול המצב (State Management Refactor)
+## [x] Track: ׳³ֲ׳³ג€¢׳³ג‚×׳³ֻ׳³ג„¢׳³ֲ׳³ג„¢׳³ג€“׳³ֲ¦׳³ג„¢׳³ג€ ׳³ֲ©׳³ֲ ׳³ֲ ׳³ג„¢׳³ג€׳³ג€¢׳³ֲ ׳³ג€׳³ֲ׳³ֲ¦׳³ג€˜ (State Management Refactor)
 *Link: [./conductor/archive/state_optimization_20251228/](./conductor/archive/state_optimization_20251228/)*
 
 ---
@@ -91,5 +101,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: UI Polish and Layout Cleanup
-*Link: [./conductor/tracks/ui_polish_cleanup_20251230/](./conductor/tracks/ui_polish_cleanup_20251230/)*
+## [~] Track: UI Polish, Admin Experience & Visual Revitalization
+*Link: [./conductor/tracks/ui_polish_revitalization_20251230/](./conductor/tracks/ui_polish_revitalization_20251230/)*

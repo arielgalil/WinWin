@@ -20,7 +20,7 @@
     - [ ] Ensure the popover is non-dimming and correctly positioned
 - [x] Task: Conductor - User Manual Verification 'Emoji Workflow Improvement' (Protocol in workflow.md) [649d6a6]
 
-## Phase 4: Branding Visual Preview
+## Phase 4: Branding Visual Preview [checkpoint: bf08cd5]
 - [x] Task: Implement Floating Preview Card [5796d47]
     - [ ] Write tests for the `BrandingPreview` component
     - [ ] Create the `BrandingPreview` component with dynamic style bindings

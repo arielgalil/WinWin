@@ -99,8 +99,12 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **AI Activity Analysis:** Automatically generates and persists intelligent summaries of competition activity for managers.
 *   **Professional Identity:** Enhanced Admin Panel with dynamic Institution Logos, detailed user profiles, and high-fidelity Hebrew typography.
 *   **Interactive Media:** Integrated music preview capability in the admin dashboard for immediate feedback on atmospheric settings.
+*   **Branding Real-time Preview:** Interactive visual preview in admin settings for immediate feedback on brand colors, typography, and background brightness.
+*   **Optimized Emoji Selection:** Improved workflow for target rewards using a non-dimming contextual popover for faster emoji selection.
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
 *   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
+*   **Standardized Typography:** Unified 5-level responsive typographic hierarchy across the admin interface for improved legibility and consistency.
+*   **Full Theme Compatibility:** Comprehensive support for light and dark modes across all modals and interaction points.
 *   **Automated Remote Updates:** Headless update mechanism that automatically refreshes unmanaged kiosk displays after an idle period when a new version is detected.
 
 ## Aesthetic & UX Strategy

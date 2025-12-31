@@ -669,7 +669,29 @@
 <a name='L604'></a><a href='#L604'>604</a>
 <a name='L605'></a><a href='#L605'>605</a>
 <a name='L606'></a><a href='#L606'>606</a>
-<a name='L607'></a><a href='#L607'>607</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L607'></a><a href='#L607'>607</a>
+<a name='L608'></a><a href='#L608'>608</a>
+<a name='L609'></a><a href='#L609'>609</a>
+<a name='L610'></a><a href='#L610'>610</a>
+<a name='L611'></a><a href='#L611'>611</a>
+<a name='L612'></a><a href='#L612'>612</a>
+<a name='L613'></a><a href='#L613'>613</a>
+<a name='L614'></a><a href='#L614'>614</a>
+<a name='L615'></a><a href='#L615'>615</a>
+<a name='L616'></a><a href='#L616'>616</a>
+<a name='L617'></a><a href='#L617'>617</a>
+<a name='L618'></a><a href='#L618'>618</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1417,7 +1439,9 @@
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
     tip_atmosphere_title: "Atmosphere Tip:",
     tip_atmosphere_desc: "💡 **Tip:** Choose upbeat music to increase competition energy!",
-    visual_design_desc: "Colors and theme customization",
+    visual_design_desc: "Customize the look and feel of your scoreboard",
+    live_preview: "Live Preview",
+    sample_title: "Sample Title",
     brand_palette: "Brand Palette",
     typography_colors: "Typography Colors",
     title_1_label: "Title 1",
@@ -1502,7 +1526,7 @@
     enter_board: "Enter Dashboard",
     competition_paused: "Competition Paused",
     activity_temporarily_stopped: "Activity Temporarily Stopped",
-    growth_competition: "Growth Competition",
+    growth_competition: "Participating in the Competition",
 &nbsp;
     // Super Admin
     system_management: "System Management",
@@ -1544,25 +1568,7 @@
     tag_place_3: "[3rd Place]",
     tag_random_participant: "[Random Participant]",
     tag_random_group: "[Random Group]",
-    ai_default_prompt_content: `
-You are an enthusiastic educational mentor guiding a school competition.
-      
-Real-time data:
-1. Last action: [Action].
-2. Leaderboard leaders: [Leaders].
-3. Shared goal (Mission Control): [Goal]
-4. Class goals status: [Classes]
-&nbsp;
-Goal: Encourage "Inspirational Competition" (constructive competition) and refer to the shared or class goal status if relevant.
-Write a short sentence (up to 15 words), energetic and appreciative in English.
-&nbsp;
-Critical guidelines:
-1. If we are close to the shared goal, mention it with excitement!
-2. If a class achieved a goal, appreciate them.
-3. Use language of "building", "climbing", "growth", "partnership", "together", "progress", "inspiration" and more.
-4. Avoid violent/aggressive language.
-5. Be witty and lighthearted.
-`,
+    ai_default_prompt_content: "\nYou are an enthusiastic educational mentor guiding a school competition.\n      \nReal-time data:\n1. Last action: [Action].\n2. Leaderboard leaders: [Leaders].\n3. Shared goal (Mission Control): [Goal]\n4. Class goals status: [Classes]\n\nGoal: Encourage \"Inspirational Competition\" (constructive competition) and refer to the shared or class goal status if relevant.\nWrite a short sentence (up to 15 words), energetic and appreciative in English.\n\nCritical guidelines:\n1. If we are close to the shared goal, mention it with excitement!\n2. If a class achieved a goal, appreciate them.\n3. Use language of \"building\", \"climbing\", \"growth\", \"partnership\", \"together\", \"progress\", \"inspiration\" and more.\n4. Avoid violent/aggressive language.\n5. Be witty and lighthearted.\n",
     full_backup_desc: "JSON + Media",
     structure_backup_desc: "Groups &amp; Students",
     settings_backup_desc: "Competition Settings",
@@ -1689,9 +1695,10 @@ Critical guidelines:
     upload_file: "Upload File",
     update_stage_details: "Update Stage Details",
     add_stage_to_list: "Add New Step +",
-        stage_name_placeholder: "The Basics",
+    stage_name_placeholder: "The Basics",
+    no_image_uploaded: "No image uploaded",
         
-        // Users Manager    
+    // Users Manager    
     full_name_placeholder: "e.g. John Doe",
     email_placeholder: "name@email.com",
     password_placeholder: "••••••••",
@@ -1762,6 +1769,8 @@ Critical guidelines:
     header_row_not_found: "Header row not found (required: 'Student Name', 'Grade')",
     missing_cols_error: "Missing columns in file",
     header_detected_row: "Header detected at row %{row}. Processing...",
+    creating_group_progress: "Creating group: %{name}...",
+    import_completed_summary: "Import completed: added %{groups} groups and %{students} students.",
     no_data_found: "No data found",
     excel_empty_error: "Excel file is empty",
     excel_import_success: "Import completed successfully!",
@@ -1769,6 +1778,27 @@ Critical guidelines:
     import: "Import",
     drag_or_click_excel: "Drag Excel file here or click to select",
     excel_format_info: "Ensure file has columns: Student Name, Grade",
+    group_name_placeholder: "Group Name (e.g. Class 9A)",
+    group_color_label: "Group Color",
+    students_count: "%{count} Students",
+    manage_students_button: "Manage Students",
+    manage_students_title: "Manage Students List",
+    search_student_placeholder: "Search student...",
+    new_student_placeholder: "New student name...",
+    close_window: "Close Window",
+    students_label: "Students",
+    confirm_delete_group_warning: "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
+&nbsp;
+    // Data Management
+    data_mgmt_title: "Data Management &amp; Backup",
+    data_mgmt_subtitle: "Management of backups, exports and system resets",
+    export_completed: "Export completed successfully",
+    export_error: "Export error: %{error}",
+    restore_from_backup: "Restore from backup",
+    import_warning: "This action may overwrite existing data. Do you want to continue?",
+    import_success_refresh: "Restore completed successfully. Please refresh.",
+    import_error: "Restore error: %{error}",
+    reset_logs_warning: "Do you want to reset the activity log? Current points will be kept, but history will be deleted.",
     reset_scores_warning: "Are you sure you want to reset all points to 0? Activity log will be kept.",
     reset_full_warning: "CRITICAL WARNING: This action will reset all points and delete all history permanently.",
     reset_data_title: "Reset Data",
@@ -1789,10 +1819,14 @@ Critical guidelines:
     reset_full_label: "Full Reset (Everything)",
     reset_full_desc: "Deletes everything and starts from scratch",
     execute_action: "Execute",
+    reset_logs_btn: "Reset History",
+    reset_scores_btn: "Reset Points",
+    reset_all_btn: "Perform Full Reset",
     execute_full_reset: "Perform Full Reset",
-    students_label: "Students",
-    group_color_label: "Group Color",
-    confirm_delete_group_warning: "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
+&nbsp;
+    // Team Management
+    team_mgmt_title_clean: "Competition Team Management",
+    team_mgmt_subtitle: "Management of administrators and teachers participating in the competition",
 &nbsp;
     // Lite Teacher View
     no_groups_assigned: "No groups assigned",
@@ -1875,20 +1909,19 @@ Critical guidelines:
     ai_instruction_commentator: "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
     ai_prompt_summarize: "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
     ai_instruction_admin: "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
-        changes_detected: 'Changes detected',
-            offline_message: "You are offline. Some actions may not work until connection is restored.",
-            pwa_offline_ready: "App is ready for offline usage",
-            pwa_update_available: "New version available. Update now?",
-            pwa_refresh_button: "Refresh &amp; Update",
-        };
-        </pre></td></tr></table></pre>
+    changes_detected: 'Changes detected',
+    offline_message: "You are offline. Some actions may not work until connection is restored.",
+    pwa_offline_ready: "App is ready for offline usage",
+    pwa_update_available: "New version available. Update now?",
+    pwa_refresh_button: "Refresh &amp; Update",
+};</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-30T16:39:35.821Z
+                at 2025-12-31T05:12:31.982Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
