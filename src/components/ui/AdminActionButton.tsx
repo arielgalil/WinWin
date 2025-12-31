@@ -7,6 +7,7 @@ interface AdminActionButtonProps {
   className?: string;
   title?: string;
   disabled?: boolean;
+  circular?: boolean;
 }
 
 export const AdminActionButton: React.FC<AdminActionButtonProps> = ({
@@ -15,9 +16,10 @@ export const AdminActionButton: React.FC<AdminActionButtonProps> = ({
   children,
   className = '',
   title,
-  disabled = false
+  disabled = false,
+  circular = false
 }) => {
-  const baseStyles = "p-2 rounded-[var(--radius-main)] transition-all flex items-center justify-center min-h-[44px] min-w-[44px] active:scale-95 disabled:opacity-50 disabled:pointer-events-none";
+  const baseStyles = `p-2 ${circular ? 'rounded-full hover:scale-110 shadow-md' : 'rounded-[var(--radius-main)]'} transition-all flex items-center justify-center min-h-[44px] min-w-[44px] active:scale-95 disabled:opacity-50 disabled:pointer-events-none`;
   
   const variantStyles = {
     edit: "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20",

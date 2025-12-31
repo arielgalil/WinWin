@@ -53,6 +53,16 @@ describe('AdminRowActions', () => {
     expect(deleteBtn.className).toContain('me-6');
   });
 
+  it('does NOT apply me-6 when only delete button is present', () => {
+    const { container } = render(
+      <AdminRowActions 
+        onDelete={onDelete} 
+      />
+    );
+    const deleteBtn = container.querySelector('button');
+    expect(deleteBtn?.className).not.toContain('me-6');
+  });
+
   it('renders only provided actions', () => {
     const { container } = render(
       <AdminRowActions onEdit={onEdit} />

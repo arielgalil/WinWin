@@ -35,4 +35,11 @@ describe('AdminActionButton', () => {
     expect(button).toHaveClass('min-h-[44px]');
     expect(button).toHaveClass('min-w-[44px]');
   });
+
+  it('applies rounded-full and hover:scale-110 when circular is true', () => {
+    render(<AdminActionButton onClick={() => {}} circular>Circular</AdminActionButton>);
+    const button = screen.getByText('Circular');
+    expect(button).toHaveClass('rounded-full');
+    expect(button).toHaveClass('hover:scale-110');
+  });
 });

@@ -430,6 +430,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
                                             variant="secondary"
                                             title={t('manage_students_button')}
+                                            circular
                                         >
                                             <UsersIcon className="w-4 h-4" />
                                         </AdminActionButton>
