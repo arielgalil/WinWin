@@ -42,10 +42,23 @@ export const Dashboard: React.FC = () => {
     });
 
     const handleStartKiosk = () => {
+        console.log("[Kiosk] Starting kiosk mode...");
         setIsKioskStarted(true);
         sessionStorage.setItem('kiosk_started', 'true');
         setIsMusicPlaying(true);
     };
+
+    // Auto-dismiss if no click after 15 seconds
+    React.useEffect(() => {
+        if (settings?.rotation_enabled && !isKioskStarted) {
+            console.log("[Kiosk] Overlay visible. Settings:", settings);
+            const timer = setTimeout(() => {
+                console.log("[Kiosk] Auto-dismissing overlay (interaction may be lost)");
+                handleStartKiosk();
+            }, 15000);
+            return () => clearTimeout(timer);
+        }
+    }, [settings?.rotation_enabled, isKioskStarted]);
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
         calculateClassStats(classes || []),

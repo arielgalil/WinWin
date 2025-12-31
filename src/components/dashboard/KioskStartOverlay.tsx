@@ -10,6 +10,14 @@ interface KioskStartOverlayProps {
 
 export const KioskStartOverlay: React.FC<KioskStartOverlayProps> = ({ onStart, isVisible }) => {
     const { t } = useLanguage();
+    const [countdown, setCountdown] = React.useState(15);
+
+    React.useEffect(() => {
+        if (isVisible && countdown > 0) {
+            const timer = setInterval(() => setCountdown(prev => prev - 1), 1000);
+            return () => clearInterval(timer);
+        }
+    }, [isVisible, countdown]);
 
     return (
         <AnimatePresence>
@@ -68,9 +76,14 @@ export const KioskStartOverlay: React.FC<KioskStartOverlayProps> = ({ onStart, i
                             </span>
                         </button>
 
-                        <p className="mt-8 text-slate-500 text-sm italic">
-                            {t('kiosk_audio_hint' as any)}
-                        </p>
+                        <div className="mt-8 flex flex-col items-center gap-2">
+                            <p className="text-slate-500 text-sm italic">
+                                {t('kiosk_audio_hint' as any)}
+                            </p>
+                            <div className="mt-2 text-indigo-400/60 text-xs font-mono">
+                                Auto-starting in {countdown}s...
+                            </div>
+                        </div>
                     </motion.div>
                 </motion.div>
             )}
