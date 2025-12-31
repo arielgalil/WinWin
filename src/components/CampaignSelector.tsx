@@ -93,7 +93,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
 
             <main className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-8 md:px-8 md:pt-12 flex-1 pb-0 rtl:text-right ltr:text-left">
                 <div className="flex flex-row items-center justify-start gap-5 md:gap-8 mb-12">
-                    <MotionDiv initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-20 h-20 md:w-28 md:h-28 bg-card rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center text-primary border-4 border-background shrink-0 overflow-hidden relative">
+                    <MotionDiv initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-20 h-20 md:w-28 md:h-28 bg-[#f8fafc] rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center text-primary border-4 border-slate-200 shrink-0 overflow-hidden relative no-select no-drag">
                         <div className="absolute inset-0 bg-primary/5" />
                         <SproutIcon className="w-12 h-12 md:w-16 md:h-16 relative z-10" />
                     </MotionDiv>

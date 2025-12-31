@@ -184,7 +184,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
             <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 border-b border-[var(--border-subtle)] pb-6">
-                    <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
+                    <div className="w-12 h-12 flex items-center justify-center bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
                         <DatabaseIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div>
@@ -204,7 +204,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                     {/* Export Section */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-1.5 bg-[var(--bg-surface)] dark:bg-emerald-500/10 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
+                            <div className="w-8 h-8 flex items-center justify-center bg-[var(--bg-surface)] dark:bg-emerald-500/10 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                 <DownloadIcon className="w-4 h-4 text-emerald-800 dark:text-emerald-400" />
                             </div>
                             <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('export_backup_title')}</h4>
@@ -244,7 +244,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                     {/* Import Section */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-1.5 bg-[var(--bg-surface)] dark:bg-blue-500/10 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
+                            <div className="w-8 h-8 flex items-center justify-center bg-[var(--bg-surface)] dark:bg-blue-500/10 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
                                 <UploadIcon className="w-4 h-4 text-blue-800 dark:text-blue-400" />
                             </div>
                             <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('data_restore_title')}</h4>
@@ -263,7 +263,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                 {/* 3. Global Score (Left) - actually it's VersionFooter, checking where logo background is */}
                 <div className="mt-10 pt-10 border-t border-[var(--border-subtle)]">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-1.5 bg-red-100 dark:bg-red-500/10 rounded-[var(--radius-main)] border border-red-200">
+                        <div className="w-8 h-8 flex items-center justify-center bg-red-100 dark:bg-red-500/10 rounded-[var(--radius-main)] border border-red-200">
                             <AlertIcon className="w-4 h-4 text-red-800 dark:text-red-400" />
                         </div>
                         <h4 className="text-xs font-black text-red-800 dark:text-red-400 uppercase tracking-widest leading-none">{t('danger_zone_title')}</h4>

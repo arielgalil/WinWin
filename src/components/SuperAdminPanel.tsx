@@ -269,13 +269,13 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                                                     {/* Header: Logo, Name, Toggle, Edit/Trash */}
                                                     <div className="flex items-center justify-between gap-3">
                                                         <div className="flex items-center gap-3 min-w-0">
-                                                            {camp.logo_url ? (
-                                                                <img src={camp.logo_url} className="w-10 h-10 rounded-full object-cover border-2 border-white/20 shadow-md" alt={camp.name} />
-                                                            ) : (
-                                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md border-2 border-white/20">
+                                                            <div className="w-10 h-10 rounded-full bg-[#f8fafc] flex items-center justify-center shadow-md border border-white/20 shrink-0 overflow-hidden">
+                                                                {camp.logo_url ? (
+                                                                    <img src={camp.logo_url} className="w-full h-full object-contain p-1 no-select no-drag" alt={camp.name} />
+                                                                ) : (
                                                                     <SproutIcon className="w-6 h-6 text-green-600" />
-                                                                </div>
-                                                            )}
+                                                                )}
+                                                            </div>
                                                             <div className="min-w-0">
                                                                 <h4 className="font-black text-lg truncate text-[var(--text-main)] leading-none mb-1">{camp.name}</h4>
                                                                 <p className="text-[10px] text-[var(--text-muted)] font-mono truncate" dir="ltr">{camp.slug}</p>

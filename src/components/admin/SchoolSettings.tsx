@@ -248,8 +248,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                             <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-3">{t('logo_upload')}</label>
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
                                 {formData.logo_url && (
-                                    <div className="w-24 h-24 bg-[var(--bg-surface)] rounded-full p-2 border border-[var(--border-main)] shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
-                                        <img src={formData.logo_url} alt="Preview" className="max-w-full max-h-full object-contain" />
+                                    <div className="w-24 h-24 bg-[#f8fafc] rounded-full p-2 border border-[var(--border-main)] shrink-0 overflow-hidden shadow-sm flex items-center justify-center">
+                                        <img src={formData.logo_url} alt="Preview" className="max-w-full max-h-full object-contain no-select no-drag" />
                                     </div>
                                 )}
                                 <div className="flex-1 w-full space-y-4">
