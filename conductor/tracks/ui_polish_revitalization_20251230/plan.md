@@ -2,12 +2,12 @@
 
 This plan addresses UI/UX regressions, localization needs, and visual revitalization of the Admin Panel and Competition Selection screen.
 
-## Phase 1: Localization & Persistence (Foundation)
+## Phase 1: Localization & Persistence (Foundation) [checkpoint: 417461c]
 - [x] Task: Implement Sidebar State Persistence in `useLocalStorage` or similar utility. 00fe55a
 - [x] Task: Update `LanguageContext` or Root Layout to apply `dir="ltr/rtl"` based on the active language. 6ec7fc9
 - [x] Task: Audit and update `AdminLayout` and major components to use Tailwind logical properties (`ps-`, `pe-`, `ms-`, `me-`). bda810c
 - [x] Task: Add the missing English translation strings to `public/locales/en.json` (or the respective translation file). fb6c01a
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Localization & Persistence' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Localization & Persistence' (Protocol in workflow.md) 417461c
 
 ## Phase 2: Layout Safety & Component Standardization
 - [ ] Task: Update "Competition Team Management" and "Classes & Students Management" list views to add the safety margin (`ml-6`/`mr-6`) between Edit and Delete buttons.
