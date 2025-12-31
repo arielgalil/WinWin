@@ -46,8 +46,8 @@
     * **Interface:** "Quick Input" mobile-first screen for rapid scoring in the field.
 4.  **Public/Students:**
     * **Capability:** View-only.
-    * **Interface:** Public Scoreboard (Leaderboard & Image Reveal).
-    * **Note:** The Public Scoreboard is a pre-existing module. **Do not modify** without explicit instruction.
+    * **Interface:** Public Scoreboard (Leaderboard, Image Reveal, and External Site Rotation).
+    * **Note:** The Public Scoreboard now supports external site rotation via the KioskRotator module.
 
 ## Key Interfaces & Workflows
 
@@ -105,6 +105,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
 *   **Standardized Typography:** Unified 5-level responsive typographic hierarchy across the admin interface for improved legibility and consistency.
 *   **Full Theme Compatibility:** Comprehensive support for light and dark modes across all modals and interaction points, with full RTL/LTR localization support for global accessibility.
+*   **Kiosk Site Rotation:** Capability to cycle the public scoreboard with external websites using smooth swipe transitions for multi-purpose school displays.
 *   **Automated Remote Updates:** Headless update mechanism that automatically refreshes unmanaged kiosk displays after an idle period when a new version is detected.
 
 ## Aesthetic & UX Strategy

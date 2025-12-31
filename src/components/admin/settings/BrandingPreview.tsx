@@ -31,6 +31,7 @@ export const BrandingPreview: React.FC<BrandingPreviewProps> = ({
                 secondaryColor={secondaryColor} 
                 brightness={brightness}
                 className="!absolute"
+                fixed={false}
             >
                 <div className="flex flex-col items-center justify-center h-full p-4 relative z-10">
                     <div className="bg-black/40 backdrop-blur-xl p-5 rounded-xl border border-white/10 shadow-2xl flex flex-col items-center gap-1 max-w-[85%]">
@@ -54,8 +55,8 @@ export const BrandingPreview: React.FC<BrandingPreviewProps> = ({
             
             {/* Status indicators */}
             <div className="absolute top-3 right-3 flex gap-2 z-20">
-                <div className="w-3 h-3 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: primaryColor }} title="Primary Color" />
-                <div className="w-3 h-3 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: secondaryColor }} title="Secondary Color" />
+                <div className="w-4 h-4 rounded-full border border-white/40 shadow-md" style={{ backgroundColor: primaryColor }} title="Primary Color" />
+                <div className="w-4 h-4 rounded-full border border-white/40 shadow-md" style={{ backgroundColor: secondaryColor }} title="Secondary Color" />
             </div>
         </div>
     );

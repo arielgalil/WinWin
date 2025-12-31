@@ -80,27 +80,31 @@ export const VisualDesignSection: React.FC<VisualDesignSectionProps> = ({ settin
                             <div className="space-y-2">
                                 <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('primary_color')}</label>
                                 <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                    <input 
-                                        type="color" 
-                                        value={localState.primary_color} 
-                                        onInput={e => handleInput({ primary_color: (e.target as HTMLInputElement).value })}
-                                        onChange={e => handleChange({ primary_color: (e.target as HTMLInputElement).value })}
-                                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" 
-                                    />
-                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{localState.primary_color}</span>
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-[var(--border-main)] shadow-sm shrink-0">
+                                        <input 
+                                            type="color" 
+                                            value={localState.primary_color} 
+                                            onInput={e => handleInput({ primary_color: (e.target as HTMLInputElement).value })}
+                                            onChange={e => handleChange({ primary_color: (e.target as HTMLInputElement).value })}
+                                            className="absolute -inset-4 w-[200%] h-[200%] cursor-pointer border-none bg-transparent p-0" 
+                                        />
+                                    </div>
+                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)] truncate">{localState.primary_color}</span>
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('secondary_color')}</label>
                                 <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                    <input 
-                                        type="color" 
-                                        value={localState.secondary_color} 
-                                        onInput={e => handleInput({ secondary_color: (e.target as HTMLInputElement).value })}
-                                        onChange={e => handleChange({ secondary_color: (e.target as HTMLInputElement).value })}
-                                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" 
-                                    />
-                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{localState.secondary_color}</span>
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-[var(--border-main)] shadow-sm shrink-0">
+                                        <input 
+                                            type="color" 
+                                            value={localState.secondary_color} 
+                                            onInput={e => handleInput({ secondary_color: (e.target as HTMLInputElement).value })}
+                                            onChange={e => handleChange({ secondary_color: (e.target as HTMLInputElement).value })}
+                                            className="absolute -inset-4 w-[200%] h-[200%] cursor-pointer border-none bg-transparent p-0" 
+                                        />
+                                    </div>
+                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)] truncate">{localState.secondary_color}</span>
                                 </div>
                             </div>
                         </div>
@@ -136,27 +140,31 @@ export const VisualDesignSection: React.FC<VisualDesignSectionProps> = ({ settin
                             <div className="space-y-2">
                                 <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_1_label')}</label>
                                 <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                    <input 
-                                        type="color" 
-                                        value={localState.header_text_color_1} 
-                                        onInput={e => handleInput({ header_text_color_1: (e.target as HTMLInputElement).value })}
-                                        onChange={e => handleChange({ header_text_color_1: (e.target as HTMLInputElement).value })}
-                                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" 
-                                    />
-                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{localState.header_text_color_1}</span>
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-[var(--border-main)] shadow-sm shrink-0">
+                                        <input 
+                                            type="color" 
+                                            value={localState.header_text_color_1} 
+                                            onInput={e => handleInput({ header_text_color_1: (e.target as HTMLInputElement).value })}
+                                            onChange={e => handleChange({ header_text_color_1: (e.target as HTMLInputElement).value })}
+                                            className="absolute -inset-4 w-[200%] h-[200%] cursor-pointer border-none bg-transparent p-0" 
+                                        />
+                                    </div>
+                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)] truncate">{localState.header_text_color_1}</span>
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase text-[var(--text-muted)]">{t('title_2_label')}</label>
                                 <div className="flex items-center gap-3 bg-[var(--bg-card)] p-2 rounded-[var(--radius-main)] border border-[var(--border-main)] shadow-sm">
-                                    <input 
-                                        type="color" 
-                                        value={localState.header_text_color_2} 
-                                        onInput={e => handleInput({ header_text_color_2: (e.target as HTMLInputElement).value })}
-                                        onChange={e => handleChange({ header_text_color_2: (e.target as HTMLInputElement).value })}
-                                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" 
-                                    />
-                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)]">{localState.header_text_color_2}</span>
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-[var(--border-main)] shadow-sm shrink-0">
+                                        <input 
+                                            type="color" 
+                                            value={localState.header_text_color_2} 
+                                            onInput={e => handleInput({ header_text_color_2: (e.target as HTMLInputElement).value })}
+                                            onChange={e => handleChange({ header_text_color_2: (e.target as HTMLInputElement).value })}
+                                            className="absolute -inset-4 w-[200%] h-[200%] cursor-pointer border-none bg-transparent p-0" 
+                                        />
+                                    </div>
+                                    <span className="text-[var(--fs-xs)] font-mono font-[var(--fw-bold)] uppercase text-[var(--text-main)] truncate">{localState.header_text_color_2}</span>
                                 </div>
                             </div>
                         </div>

@@ -577,7 +577,7 @@ export const en = {
     ai_settings_title: 'Artificial Intelligence Settings',
     ai_test_connection_title: 'Test AI Server Connection',
     ai_test_connection_desc: 'The API key is configured on the server and used to generate smart real-time commentary.',
-    ai_test_connection_button: 'Test Gemini API connection',
+    ai_test_connection_button: 'Check connection',
     ai_api_key_title: 'Unique API Key for Competition',
     ai_api_key_desc: 'You can set a specific API key for this competition. If left empty, the system will use the default server key.',
     ai_api_key_placeholder: 'Paste your API key here (AIza...)' ,
@@ -596,8 +596,8 @@ export const en = {
     // AI Service
     ai_server_connection_error: "Cannot connect to AI server. The function might not be deployed or there's a network issue.",
     ai_api_key_error: "Gemini API key is not configured on the server. Please set it in the Supabase Dashboard.",
-    ai_connection_success_provided_key: "Connection successful with the provided key",
-    ai_connection_success_server: "Connection successful to AI server",
+    ai_connection_success_provided_key: "Connection OK",
+    ai_connection_success_server: "Connection OK",
     ai_empty_response: "Empty response",
     ai_communication_error: "Communication Error",
     ai_commentary_fallback: "Keep growing and climbing up! 🌱",
@@ -615,4 +615,18 @@ export const en = {
     pwa_offline_ready: "App is ready for offline usage",
     pwa_update_available: "New version available. Update now?",
     pwa_refresh_button: "Refresh & Update",
+
+    // Kiosk Rotation
+    kiosk_rotation_title: "Kiosk Rotation",
+    kiosk_rotation_desc: "Configure external websites to cycle with the scoreboard.",
+    rotation_urls_label: "Rotation URLs",
+    no_urls_added: "No URLs added to rotation yet",
+    rotation_interval_label: "Display duration per site",
+    seconds: "seconds",
+    kiosk_tip_title: "Kiosk Tip:",
+    global_kiosk_settings: "Global Rotation Settings",
+    default_interval_label: "Default Interval (seconds)",
+    global_interval_desc: "This time will be used as a default for new sites and for the game board itself.",
+    kiosk_tip_desc: "You can display the school website, notice boards, or interesting content pages to keep the display board engaging.",
+    kiosk_security_note: "Note: Some websites may block iframe embedding for security reasons. We recommend testing the link after adding it.",
 };

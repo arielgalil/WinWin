@@ -7,6 +7,7 @@ interface GradientBackgroundProps {
   brightness?: number;     // 0-100 (Controls Top-Right & Bottom-Left ambiance)
   children: React.ReactNode;
   className?: string;
+  fixed?: boolean;
 }
 
 export const GradientBackground: React.FC<GradientBackgroundProps> = ({
@@ -14,7 +15,8 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
   secondaryColor = '#0f172a',
   brightness = 50, // Default to neutral
   children,
-  className = ''
+  className = '',
+  fixed = true
 }) => {
 
   // Calculate overlay based on brightness slider (0-100)
@@ -44,7 +46,7 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
         ${getAmbientLayer()}
     `,
     backgroundSize: '100% 100%',
-    backgroundAttachment: 'fixed',
+    backgroundAttachment: fixed ? 'fixed' : 'scroll',
   };
 
   return (

@@ -120,6 +120,9 @@ export interface AppSettings {
   goals_updated_at?: string;
   classes_updated_at?: string;
   logs_updated_at?: string;
+  rotation_enabled?: boolean;
+  rotation_interval?: number; // Default/Global fallback
+  rotation_config?: { url: string; duration: number }[];
 }
 
 export interface LogSnapshot {

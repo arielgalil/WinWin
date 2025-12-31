@@ -598,7 +598,7 @@ export const he = {
     ai_settings_title: "הגדרות בינה מלאכותית",
     ai_test_connection_title: "בדיקת חיבור לשרת ה-AI",
     ai_test_connection_desc: "מפתח ה-API מוגדר בשרת ומשמש ליצירת פרשנות חכמה בזמן אמת.",
-    ai_test_connection_button: "בדוק חיבור ל-Gemini API",
+    ai_test_connection_button: "בדוק חיבור",
     ai_api_key_title: "מפתח API ייחודי לתחרות",
     ai_api_key_desc: "ניתן להגדיר מפתח API ספציפי לתחרות זו. אם יישאר ריק, המערכת תשתמש במפתח ברירת המחדל של השרת.",
     ai_api_key_placeholder: "הדבק כאן את מפתח ה-API (AIza...)",
@@ -617,8 +617,8 @@ export const he = {
     // AI Service
     ai_server_connection_error: "לא ניתן להתחבר לשרת ה-AI. ייתכן שהפונקציה לא עברה Deployment או שיש בעיית רשת.",
     ai_api_key_error: "מפתח ה-API של Gemini לא הוגדר בשרת. יש להגדיר אותו ב-Supabase Dashboard.",
-    ai_connection_success_provided_key: "חיבור תקין מול המפתח שהוזן",
-    ai_connection_success_server: "חיבור תקין לשרת AI",
+    ai_connection_success_provided_key: "החיבור תקין",
+    ai_connection_success_server: "החיבור תקין",
     ai_empty_response: "תגובה ריקה",
     ai_communication_error: "שגיאת תקשורת",
     ai_commentary_fallback: "ממשיכים לצמוח ולטפס למעלה! 🌱",
@@ -636,4 +636,18 @@ export const he = {
     pwa_offline_ready: "האפליקציה מוכנה לעבודה באופליין",
     pwa_update_available: "גרסה חדשה זמינה. עדכן עכשיו?",
     pwa_refresh_button: "רענן ועדכן",
+
+    // Kiosk Rotation
+    kiosk_rotation_title: "רוטציית אתרים (Kiosk Mode)",
+    kiosk_rotation_desc: "הגדרת אתרים חיצוניים שיוצגו לסירוגין עם לוח התוצאות.",
+    rotation_urls_label: "רשימת כתובות אתרים (URLs)",
+    no_urls_added: "טרם נוספו אתרים לרוטציה",
+    rotation_interval_label: "זמן תצוגה לכל אתר",
+    seconds: "שניות",
+    kiosk_tip_title: "טיפ לרוטציה:",
+    global_kiosk_settings: "הגדרות סבב כלליות",
+    default_interval_label: "זמן ברירת מחדל (שניות)",
+    global_interval_desc: "זמן זה ישמש כברירת מחדל עבור אתרים חדשים ועבור לוח המשחק עצמו.",
+    kiosk_tip_desc: "ניתן להציג את אתר בית הספר, לוח הודעות או דפי תוכן מעניינים כדי לשמור על עניין בלוח התצוגה.",
+    kiosk_security_note: "שים לב: אתרים מסוימים עשויים לחסום תצוגה בתוך מסגרת (iframe) מסיבות אבטחה. מומלץ לבדוק את הקישור לאחר ההוספה.",
 };

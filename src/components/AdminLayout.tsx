@@ -294,9 +294,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 bg-gradient-high-energy">
+        <main className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-6 lg:px-10 lg:pb-10 bg-gradient-high-energy">
           {/* Content Header (from old AdminPanel) */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 pb-6 border-b border-border">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-border">
             <div className="flex items-center gap-5">
               <div 
                 className="p-3.5 rounded-2xl bg-secondary shadow-sm border border-border flex items-center justify-center"

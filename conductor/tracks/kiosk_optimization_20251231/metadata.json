@@ -1,0 +1,8 @@
+{
+  "track_id": "kiosk_optimization_20251231",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2025-12-31T15:30:00Z",
+  "updated_at": "2025-12-31T15:30:00Z",
+  "description": "(16) The site that loads, has videos that should play automatically, this does not happen. (17) The site that loads, and also the competition board, every time you swipe back to it, should continue from where we were and not as if it refreshes again. There should also be caching to improve loading."
+}

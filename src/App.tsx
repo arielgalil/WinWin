@@ -20,6 +20,7 @@ import { useTheme } from './hooks/useTheme';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
 import { useAutoUpdate } from './hooks/useAutoUpdate';
+import { prewarmKioskAssets } from './utils/pwaUtils';
 
 const LanguageSync: React.FC = () => {
     const { settings: campaignLanguage } = useCampaign({
@@ -178,6 +179,10 @@ const App: React.FC = () => {
     const { authLoading } = useAuth();
     const { theme } = useTheme();
     useAutoUpdate();
+
+    useEffect(() => {
+        prewarmKioskAssets();
+    }, []);
 
     return (
         <RouteErrorBoundary>

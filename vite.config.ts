@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
         tailwindcss(),
         VitePWA({
           registerType: 'autoUpdate',
-          includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg'],
+          includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'favicon-96x96.png'],
           workbox: {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
             cleanupOutdatedCaches: true,
@@ -43,6 +43,20 @@ export default defineConfig(({ mode }) => {
                   expiration: {
                     maxEntries: 20,
                     maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                  }
+                }
+              },
+              {
+                urlPattern: /^https:\/\/(aistudiocdn\.com|esm\.sh|cdn\.sheetjs\.com)\/.*/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'external-libs-cache',
+                  expiration: {
+                    maxEntries: 50,
+                    maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                  },
+                  cacheableResponse: {
+                    statuses: [0, 200]
                   }
                 }
               },

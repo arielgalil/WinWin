@@ -21,12 +21,12 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: ׳³ֲ׳³ֲ ׳³ג€™׳³ֲ ׳³ג€¢׳³ֲ ׳³ֲ¢׳³ג€׳³ג€÷׳³ג€¢׳³ֲ ׳³ֲ׳³ֲ¨׳³ג€”׳³ג€¢׳³ֲ§ ׳³ֲ©׳³ֲ ׳³ֲ׳³ֲ¡׳³ג€÷׳³ג„¢׳³ֲ ׳³ֲ׳³ֲ׳³ֲ ׳³ֲ׳³ג€™׳³ֲ¢ ׳³ג„¢׳³ג€ ׳³ֲ׳³ג€׳³ֲ
+## [x] Track: remote_kiosk_update_20251228
 *Link: [./conductor/archive/remote_kiosk_update_20251228/](./conductor/archive/remote_kiosk_update_20251228/)*
 
 ---
 
-## [x] Track: ׳³ֲ׳³ג€¢׳³ג‚×׳³ֻ׳³ג„¢׳³ֲ׳³ג„¢׳³ג€“׳³ֲ¦׳³ג„¢׳³ג€ ׳³ֲ©׳³ֲ ׳³ֲ ׳³ג„¢׳³ג€׳³ג€¢׳³ֲ ׳³ג€׳³ֲ׳³ֲ¦׳³ג€˜ (State Management Refactor)
+## [x] Track: state_optimization_20251228 (State Management Refactor)
 *Link: [./conductor/archive/state_optimization_20251228/](./conductor/archive/state_optimization_20251228/)*
 
 ---
@@ -101,5 +101,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [x] Track: UI Polish, Admin Experience & Visual Revitalization
-*Link: [./conductor/tracks/ui_polish_revitalization_20251230/](./conductor/tracks/ui_polish_revitalization_20251230/)*
+## [x] Track: Mobile UI refinements, Gemini API button polish, and Kiosk rotation for external sites.
+*Link: [./conductor/archive/ui_refinement_kiosk_20251231/](./conductor/archive/ui_refinement_kiosk_20251231/)*
+---
+
+## [~] Track: Kiosk UX & Performance Optimization
+*Link: [./conductor/tracks/kiosk_optimization_20251231/](./conductor/tracks/kiosk_optimization_20251231/)*

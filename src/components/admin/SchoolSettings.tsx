@@ -15,6 +15,7 @@ import { AdminButton } from '../ui/AdminButton';
 import { BackgroundMusic } from '../dashboard/BackgroundMusic';
 import { BrandingPreview } from './settings/BrandingPreview';
 import { VisualDesignSection } from './settings/VisualDesignSection';
+import { KioskRotationSection } from './settings/KioskRotationSection';
 
 const MotionDiv = motion.div as any;
 
@@ -45,7 +46,10 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         secondary_color: '#0f172a',
         header_text_color_1: '#ffffff',
         header_text_color_2: '#ffffff',
-        background_music_mode: 'loop'
+        background_music_mode: 'loop',
+        rotation_enabled: false,
+        rotation_config: [],
+        rotation_interval: 30
     });
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
@@ -110,6 +114,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 background_music_mode: formData.background_music_mode || 'loop',
                 background_music_volume: formData.background_music_volume ?? 50,
                 language: formData.language || 'he',
+                rotation_enabled: formData.rotation_enabled ?? false,
+                rotation_config: formData.rotation_config || [],
+                rotation_interval: formData.rotation_interval ?? 30,
                 settings_updated_at: new Date().toISOString()
             };
 
@@ -375,7 +382,10 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 {/* 3. Visual Design */}
                 <VisualDesignSection settings={formData} onUpdate={updateForm} />
 
-                {/* 4. Scoring Settings */}
+                {/* 4. Kiosk Rotation */}
+                <KioskRotationSection settings={formData} onUpdate={updateForm} />
+
+                {/* 5. Scoring Settings */}
                 <AdminSectionCard
                     title={t('scoring_settings')}
                     description={t('scoring_settings_desc')}

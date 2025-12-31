@@ -116,24 +116,38 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 icon={<KeyIcon className="w-6 h-6" />}
                 rightAction={
                     <div className="flex items-center gap-3">
-                        {testResult && (
-                            <div className={`text-[var(--fs-sm)] px-3 py-1.5 rounded-[var(--radius-main)] font-[var(--fw-bold)] flex items-center gap-2 animate-in fade-in ${testResult.success ? 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400'}`}>
-                                {testResult.success ? <CheckIcon className="w-4 h-4" /> : <AlertIcon className="w-4 h-4" />}
-                                {testResult.message}
-                            </div>
-                        )}
                         <button
                             onClick={handleTestConnection}
                             disabled={isTesting}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-[var(--fw-bold)] rounded-[var(--radius-main)] border border-blue-100 dark:border-blue-500/20 transition-all text-[var(--fs-sm)] disabled:opacity-50 active:scale-95 shadow-sm"
+                            className={`flex items-center justify-center gap-2 px-4 py-2 font-[var(--fw-bold)] rounded-[var(--radius-main)] border transition-all text-[var(--fs-sm)] disabled:opacity-50 active:scale-95 shadow-sm min-w-[140px] h-[40px] ${
+                                testResult 
+                                    ? testResult.success 
+                                        ? 'bg-green-50 dark:bg-green-500/10 border-green-100 dark:border-green-500/20 text-green-600 dark:text-green-400' 
+                                        : 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400'
+                                    : 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20'
+                            }`}
                         >
-                            <RefreshIcon className={`w-4 h-4 ${isTesting ? 'animate-spin' : ''}`} />
-                            <span>{t('ai_test_connection_button')}</span>
+                            {isTesting ? (
+                                <>
+                                    <RefreshIcon className="w-4 h-4 animate-spin" />
+                                    <span>{t('loading')}</span>
+                                </>
+                            ) : testResult ? (
+                                <>
+                                    {testResult.success ? <CheckIcon className="w-4 h-4" /> : <AlertIcon className="w-4 h-4" />}
+                                    <span className="truncate max-w-[100px]">{testResult.message}</span>
+                                </>
+                            ) : (
+                                <>
+                                    <RefreshIcon className="w-4 h-4" />
+                                    <span>{t('ai_test_connection_button')}</span>
+                                </>
+                            )}
                         </button>
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
-                            className="flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-[var(--fs-sm)] disabled:opacity-30 active:scale-95"
+                            className="flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-[var(--fw-bold)] rounded-[var(--radius-main)] transition-all shadow-md shadow-indigo-500/20 text-[var(--fs-sm)] h-[40px] disabled:opacity-30 active:scale-95"
                         >
                             {isSaving ? <RefreshIcon className="w-4 h-4 animate-spin" /> : <SaveIcon className="w-4 h-4" />}
                             <span>{t('save')}</span>
