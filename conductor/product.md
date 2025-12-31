@@ -104,7 +104,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **Multi-Platform Access:** A responsive web application designed for both large-screen dashboard displays and mobile-first teacher interactions.
 *   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
 *   **Standardized Typography:** Unified 5-level responsive typographic hierarchy across the admin interface for improved legibility and consistency.
-*   **Full Theme Compatibility:** Comprehensive support for light and dark modes across all modals and interaction points.
+*   **Full Theme Compatibility:** Comprehensive support for light and dark modes across all modals and interaction points, with full RTL/LTR localization support for global accessibility.
 *   **Automated Remote Updates:** Headless update mechanism that automatically refreshes unmanaged kiosk displays after an idle period when a new version is detected.
 
 ## Aesthetic & UX Strategy
