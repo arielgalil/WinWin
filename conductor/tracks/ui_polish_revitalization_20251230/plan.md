@@ -26,5 +26,5 @@ This plan addresses UI/UX regressions, localization needs, and visual revitaliza
 ## Phase 4: Final Polish & Verification
 - [x] Task: Perform a full RTL/LTR audit across all Admin tabs. 95c9252
 - [x] Task: Verify mobile responsiveness (44x44px targets) for all new/modified UI elements. 95c9252
-- [ ] Task: Run full test suite and ensure no regressions.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Verification' (Protocol in workflow.md)
+- [x] Task: Run full test suite and ensure no regressions. 9045083
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish & Verification' (Protocol in workflow.md) 9045083
