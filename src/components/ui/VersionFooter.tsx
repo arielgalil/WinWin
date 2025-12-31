@@ -11,13 +11,16 @@ import {
     LockIcon,
     SettingsIcon,
     LogoutIcon,
-    XIcon
+    XIcon,
+    MoonIcon,
+    SunIcon
 } from './Icons';
 import { useAuth } from '../../hooks/useAuth';
 import { useCampaign } from '../../hooks/useCampaign';
 import { useCampaignRole } from '../../hooks/useCampaignRole';
 import { isSuperUser as checkSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useTheme } from '../../hooks/useTheme';
 import { DebugConsole } from './DebugConsole';
 
 interface VersionFooterProps {
@@ -38,6 +41,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
 }) => {
     const { t } = useLanguage();
     const { user, logout: handleLogout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     
     // Simple fallback for router functionality
     const [fallbackSlug, setFallbackSlug] = useState('');
@@ -400,6 +404,16 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     )}
                                 </div>
                             )}
+
+                            {/* 5. Theme Toggle (End-aligned) */}
+                            <button
+                                onClick={toggleTheme}
+                                title={t('toggle_theme')}
+                                className={`w-6 h-6 flex items-center justify-center text-foreground/60 hover:text-foreground ${getNavButtonClass()}`}
+                                style={getNavButtonStyle()}
+                            >
+                                {theme === 'dark' ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" />}
+                            </button>
                         </div>
                     </nav>
                 </div>

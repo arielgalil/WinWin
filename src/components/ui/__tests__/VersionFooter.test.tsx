@@ -23,7 +23,12 @@ vi.mock('../Icons', () => ({
     LockIcon: () => <div data-testid="lock-icon" />,
     SettingsIcon: () => <div data-testid="settings-icon" />,
     LogoutIcon: () => <div data-testid="logout-icon" />,
-    XIcon: () => <div data-testid="x-icon" />
+    XIcon: () => <div data-testid="x-icon" />,
+    MoonIcon: () => <div data-testid="moon-icon" />,
+    SunIcon: () => <div data-testid="sun-icon" />
+}));
+vi.mock('../../../hooks/useTheme', () => ({
+    useTheme: () => ({ theme: 'dark', toggleTheme: vi.fn() })
 }));
 vi.mock('../DebugConsole', () => ({
     DebugConsole: () => <div data-testid="debug-console" />
@@ -67,5 +72,11 @@ describe('VersionFooter Layout', () => {
         expect(navClasses).toContain('gap-4'); // Or whatever uniform gap we choose
         expect(navClasses).not.toContain('ml-3');
         expect(navClasses).not.toContain('mr-2');
+    });
+
+    it('renders the theme toggle button', () => {
+        render(<VersionFooter />);
+        // In dark mode (mocked), it should show SunIcon
+        expect(screen.getByTestId('sun-icon')).toBeInTheDocument();
     });
 });

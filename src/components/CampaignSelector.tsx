@@ -129,50 +129,67 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                         </MotionDiv>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {campaigns.map(camp => (
-                                <MotionDiv
-                                    key={camp.id}
-                                    whileHover={{ y: -8 }}
-                                    className="group relative flex flex-col bg-card rounded-[var(--radius-container)] p-6 transition-all shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-border overflow-hidden cursor-pointer"
-                                    onClick={() => navigate(`/comp/${camp.slug}`)}
-                                >
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="flex items-center gap-4 min-w-0">
-                                            <Logo src={camp.logo_url} className="w-16 h-16 shadow-md group-hover:scale-105 transition-transform duration-500" fallbackIcon="school" />
-                                            <div className="rtl:text-right ltr:text-left min-w-0">
-                                                <h3 className="text-xl font-black text-foreground leading-tight truncate group-hover:text-primary transition-colors uppercase">{camp.name}</h3>
-                                                <p className="text-muted-foreground text-[10px] font-black uppercase tracking-wider truncate">{camp.school_name}</p>
+                            {campaigns.map((camp, idx) => {
+                                const vibrantColors = [
+                                    'from-blue-600 to-indigo-700',
+                                    'from-purple-600 to-pink-700',
+                                    'from-emerald-600 to-teal-700',
+                                    'from-orange-500 to-red-600',
+                                    'from-cyan-500 to-blue-600',
+                                    'from-indigo-600 to-purple-700',
+                                    'from-rose-500 to-pink-600',
+                                    'from-amber-500 to-orange-600'
+                                ];
+                                const colorClass = vibrantColors[idx % vibrantColors.length];
+
+                                return (
+                                    <MotionDiv
+                                        key={camp.id}
+                                        whileHover={{ y: -8, scale: 1.02 }}
+                                        className={`group relative flex flex-col rounded-[var(--radius-container)] p-6 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br ${colorClass} text-white border-none`}
+                                        onClick={() => navigate(`/comp/${camp.slug}`)}
+                                    >
+                                        {/* Decorative element */}
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
+                                        
+                                        <div className="flex items-center justify-between mb-8 relative z-10">
+                                            <div className="flex items-center gap-4 min-w-0">
+                                                <Logo src={camp.logo_url} className="w-16 h-16 shadow-2xl border-white/20 group-hover:scale-110 transition-transform duration-500" fallbackIcon="school" />
+                                                <div className="rtl:text-right ltr:text-left min-w-0">
+                                                    <h3 className="text-xl font-black leading-tight truncate drop-shadow-sm uppercase">{camp.name}</h3>
+                                                    <p className="text-white/70 text-[10px] font-black uppercase tracking-wider truncate">{camp.school_name}</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-left flex flex-col items-end">
+                                                <div className="text-3xl font-black tracking-tighter tabular-nums drop-shadow-md">
+                                                    <FormattedNumber value={camp.total_score || 0} />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="text-left flex flex-col items-end">
-                                            <div className="text-3xl font-black text-foreground tracking-tighter tabular-nums">
-                                                <FormattedNumber value={camp.total_score || 0} />
+
+                                        <div className="space-y-4 mt-auto relative z-10">
+                                            <button className="w-full py-4 rounded-[var(--radius-main)] bg-white text-gray-900 transition-all flex items-center justify-center gap-3 font-black shadow-xl group-hover:shadow-white/20">
+                                                {t('enter_board')} <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
+                                            </button>
+                                            <div className="grid grid-cols-2 gap-3" onClick={e => e.stopPropagation()}>
+                                                <button onClick={() => navigate(`/vote/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
+                                                    <AwardIcon className="w-4 h-4" /> {t('enter_points')}
+                                                </button>
+                                                <button onClick={() => navigate(`/admin/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
+                                                    <SettingsIcon className="w-4 h-4" /> {t('manage')}
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="space-y-4 mt-auto">
-                                        <button className="w-full py-4 rounded-[var(--radius-main)] bg-primary hover:opacity-90 text-primary-foreground transition-all flex items-center justify-center gap-3 font-black shadow-lg">
-                                            {t('enter_board')} <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
-                                        </button>
-                                        <div className="grid grid-cols-2 gap-3" onClick={e => e.stopPropagation()}>
-                                            <button onClick={() => navigate(`/vote/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-primary/10 text-primary hover:bg-primary/20 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-primary/10">
-                                                <AwardIcon className="w-4 h-4" /> {t('enter_points')}
-                                            </button>
-                                            <button onClick={() => navigate(`/admin/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-accent/10 text-accent-foreground hover:bg-accent/20 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-accent/10">
-                                                <SettingsIcon className="w-4 h-4" /> {t('manage')}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {!camp.is_active && (
-                                        <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 gap-3">
-                                            <LockIcon className="w-10 h-10 text-muted-foreground/40" />
-                                            <span className="font-black text-muted-foreground text-lg">{t('competition_paused')}</span>
-                                        </div>
-                                    )}
-                                </MotionDiv>
-                            ))}
+                                        {!camp.is_active && (
+                                            <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-md flex flex-col items-center justify-center z-20 gap-3">
+                                                <LockIcon className="w-10 h-10 text-white/40" />
+                                                <span className="font-black text-white/90 text-lg uppercase tracking-widest">{t('competition_paused')}</span>
+                                            </div>
+                                        )}
+                                    </MotionDiv>
+                                );
+                            })}
                         </div>
                     )}
                 </AnimatePresence>
