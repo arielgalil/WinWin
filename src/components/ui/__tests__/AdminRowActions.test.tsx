@@ -49,8 +49,8 @@ describe('AdminRowActions', () => {
     const buttons = container.querySelectorAll('button');
     const deleteBtn = buttons[0];
     
-    // We expect a class that creates separation, e.g., ml-6 to push others away in RTL flex
-    expect(deleteBtn.className).toContain('ml-6');
+    // We expect a class that creates separation, e.g., me-6 to push others away
+    expect(deleteBtn.className).toContain('me-6');
   });
 
   it('renders only provided actions', () => {

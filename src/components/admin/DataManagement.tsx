@@ -210,28 +210,28 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                             <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('export_backup_title')}</h4>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                            <button onClick={() => handleExport('full')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95 flex justify-between items-start gap-3">
+                            <button onClick={() => handleExport('full')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-start shadow-sm active:scale-95 flex justify-between items-start gap-3">
                                 <div className="flex-1">
                                     <div className="text-[var(--text-main)] font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('full_backup')}</div>
                                     <div className="text-[10px] text-[var(--text-muted)] font-bold">{t('full_backup_desc' as any)}</div>
                                 </div>
                                 <DownloadIcon className="w-4 h-4 text-emerald-600/40 group-hover:text-emerald-600 shrink-0 mt-1" />
                             </button>
-                            <button onClick={() => handleExport('structure')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95 flex justify-between items-start gap-3">
+                            <button onClick={() => handleExport('structure')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-start shadow-sm active:scale-95 flex justify-between items-start gap-3">
                                 <div className="flex-1">
                                     <div className="text-[var(--text-main)] font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('structure_backup')}</div>
                                     <div className="text-[10px] text-[var(--text-muted)] font-bold">{t('structure_backup_desc' as any)}</div>
                                 </div>
                                 <DownloadIcon className="w-4 h-4 text-emerald-600/40 group-hover:text-emerald-600 shrink-0 mt-1" />
                             </button>
-                            <button onClick={() => handleExport('settings')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95 flex justify-between items-start gap-3">
+                            <button onClick={() => handleExport('settings')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-start shadow-sm active:scale-95 flex justify-between items-start gap-3">
                                 <div className="flex-1">
                                     <div className="text-[var(--text-main)] font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('settings_backup')}</div>
                                     <div className="text-[10px] text-[var(--text-muted)] font-bold">{t('settings_backup_desc' as any)}</div>
                                 </div>
                                 <DownloadIcon className="w-4 h-4 text-emerald-600/40 group-hover:text-emerald-600 shrink-0 mt-1" />
                             </button>
-                            <button onClick={() => handleExport('staff')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-right shadow-sm active:scale-95 flex justify-between items-start gap-3">
+                            <button onClick={() => handleExport('staff')} disabled={isExporting} className="group p-4 bg-[var(--bg-surface)] hover:bg-emerald-100 dark:hover:bg-emerald-500/10 border border-[var(--border-main)] hover:border-emerald-400 dark:hover:border-emerald-500/20 rounded-[var(--radius-main)] transition-all text-start shadow-sm active:scale-95 flex justify-between items-start gap-3">
                                 <div className="flex-1">
                                     <div className="text-[var(--text-main)] font-black text-sm mb-1 group-hover:text-emerald-900 dark:group-hover:text-emerald-400">{t('staff_backup')}</div>
                                     <div className="text-[10px] text-[var(--text-muted)] font-bold">{t('staff_backup_desc' as any)}</div>
@@ -250,7 +250,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                             <h4 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('data_restore_title')}</h4>
                         </div>
                         <label className={`w-full flex flex-col items-center justify-center p-8 bg-[var(--bg-surface)] border-2 border-dashed border-[var(--border-main)] rounded-[var(--radius-container)] hover:bg-blue-50 dark:hover:bg-blue-500/5 hover:border-blue-500 dark:hover:border-blue-500/30 transition-all cursor-pointer group ${isImporting ? 'opacity-50' : ''} shadow-inner`}>
-                            <div className="w-12 h-12 bg-blue-200 dark:bg-blue-500/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-800 dark:text-blue-400">
+                            <div className="w-12 h-12 bg-blue-200 dark:bg-blue-500/10 rounded-[var(--radius-main)] border border-blue-300 dark:border-blue-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-blue-800 dark:text-blue-400">
                                 {isImporting ? <RefreshIcon className="w-6 h-6 animate-spin" /> : <UploadIcon className="w-6 h-6" />}
                             </div>
                             <span className="text-sm font-black text-[var(--text-main)] group-hover:text-blue-900 dark:group-hover:text-blue-400 transition-colors">{t('select_backup_file')}</span>

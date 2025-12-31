@@ -4,6 +4,7 @@ import { PlusIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from 
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable } from '../ui/AdminTable';
 import { AdminRowActions } from '../ui/AdminRowActions';
+import { AdminActionButton } from '../ui/AdminActionButton';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
 import { EditModal } from '../ui/EditModal';
@@ -425,13 +426,13 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                                         <span className="text-[var(--text-main)] opacity-80 font-[var(--fw-bold)] text-[var(--fs-sm)]">
                                             {t('students_count', { count: cls.students?.length || 0 })}
                                         </span>
-                                        <button 
+                                        <AdminActionButton
                                             onClick={(e) => { e.stopPropagation(); setSelectedClassId(cls.id); setView('students'); }}
-                                            className="p-1.5 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-full text-indigo-800 dark:text-indigo-400 transition-colors border border-[var(--border-main)] hover:border-indigo-300 dark:hover:border-indigo-500/30 shadow-sm"
+                                            variant="secondary"
                                             title={t('manage_students_button')}
                                         >
                                             <UsersIcon className="w-4 h-4" />
-                                        </button>
+                                        </AdminActionButton>
                                     </div>
                                 )
                             }

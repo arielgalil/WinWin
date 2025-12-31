@@ -73,7 +73,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
                 {!selectedClassId && <option value="" className="bg-[var(--bg-card)]">{t('select_group_placeholder')}</option>}
                 {teacherClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
               </select>
-              <div className="absolute rtl:left-4 ltr:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] opacity-50 text-[var(--fs-sm)]">▼</div>
+              <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--text-muted)] opacity-50 text-[var(--fs-sm)]">▼</div>
             </div>
           </div>
           <div className="relative flex-1">
@@ -84,9 +84,9 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder={t('search_student_placeholder')}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] rtl:pr-11 ltr:pl-11 placeholder:text-[var(--text-muted)] opacity-80"
+                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] ps-11 placeholder:text-[var(--text-muted)] opacity-80"
               />
-              <SearchIcon className="absolute rtl:right-4 ltr:left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50" />
+              <SearchIcon className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50" />
             </div>
           </div>
         </div>

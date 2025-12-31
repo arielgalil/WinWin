@@ -35,7 +35,7 @@ export const AdminSectionCard: React.FC<AdminSectionCardProps> = ({
                 </div>
 
                 {rightAction && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-end gap-3 flex-wrap mt-2 md:mt-0 self-end md:self-auto">
                         {rightAction}
                     </div>
                 )}

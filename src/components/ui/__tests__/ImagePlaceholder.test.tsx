@@ -3,8 +3,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { ImagePlaceholder } from '../ImagePlaceholder';
 import React from 'react';
 
-// Mock LanguageContext since it's likely used for translations
-vi.mock('@/contexts/LanguageContext', () => ({
+// Mock useLanguage hook
+vi.mock('@/hooks/useLanguage', () => ({
   useLanguage: () => ({
     t: (key: string) => key === 'no_image_uploaded' ? 'אין תמונה טעונה' : key,
   }),

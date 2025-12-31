@@ -269,25 +269,7 @@ export const en = {
     tag_place_3: "[3rd Place]",
     tag_random_participant: "[Random Participant]",
     tag_random_group: "[Random Group]",
-    ai_default_prompt_content: `
-You are an enthusiastic educational mentor guiding a school competition.
-      
-Real-time data:
-1. Last action: [Action].
-2. Leaderboard leaders: [Leaders].
-3. Shared goal (Mission Control): [Goal]
-4. Class goals status: [Classes]
-
-Goal: Encourage "Inspirational Competition" (constructive competition) and refer to the shared or class goal status if relevant.
-Write a short sentence (up to 15 words), energetic and appreciative in English.
-
-Critical guidelines:
-1. If we are close to the shared goal, mention it with excitement!
-2. If a class achieved a goal, appreciate them.
-3. Use language of "building", "climbing", "growth", "partnership", "together", "progress", "inspiration" and more.
-4. Avoid violent/aggressive language.
-5. Be witty and lighthearted.
-`,
+    ai_default_prompt_content: "\nYou are an enthusiastic educational mentor guiding a school competition.\n      \nReal-time data:\n1. Last action: [Action].\n2. Leaderboard leaders: [Leaders].\n3. Shared goal (Mission Control): [Goal]\n4. Class goals status: [Classes]\n\nGoal: Encourage \"Inspirational Competition\" (constructive competition) and refer to the shared or class goal status if relevant.\nWrite a short sentence (up to 15 words), energetic and appreciative in English.\n\nCritical guidelines:\n1. If we are close to the shared goal, mention it with excitement!\n2. If a class achieved a goal, appreciate them.\n3. Use language of \"building\", \"climbing\", \"growth\", \"partnership\", \"together\", \"progress\", \"inspiration\" and more.\n4. Avoid violent/aggressive language.\n5. Be witty and lighthearted.\n",
     full_backup_desc: "JSON + Media",
     structure_backup_desc: "Groups & Students",
     settings_backup_desc: "Competition Settings",
@@ -414,10 +396,10 @@ Critical guidelines:
     upload_file: "Upload File",
     update_stage_details: "Update Stage Details",
     add_stage_to_list: "Add New Step +",
-        stage_name_placeholder: "The Basics",
-        no_image_uploaded: "No image uploaded",
+    stage_name_placeholder: "The Basics",
+    no_image_uploaded: "No image uploaded",
         
-        // Users Manager    
+    // Users Manager    
     full_name_placeholder: "e.g. John Doe",
     email_placeholder: "name@email.com",
     password_placeholder: "••••••••",
@@ -488,6 +470,8 @@ Critical guidelines:
     header_row_not_found: "Header row not found (required: 'Student Name', 'Grade')",
     missing_cols_error: "Missing columns in file",
     header_detected_row: "Header detected at row %{row}. Processing...",
+    creating_group_progress: "Creating group: %{name}...",
+    import_completed_summary: "Import completed: added %{groups} groups and %{students} students.",
     no_data_found: "No data found",
     excel_empty_error: "Excel file is empty",
     excel_import_success: "Import completed successfully!",
@@ -495,29 +479,15 @@ Critical guidelines:
     import: "Import",
     drag_or_click_excel: "Drag Excel file here or click to select",
     excel_format_info: "Ensure file has columns: Student Name, Grade",
-    reset_scores_warning: "Are you sure you want to reset all points to 0? Activity log will be kept.",
-    reset_full_warning: "CRITICAL WARNING: This action will reset all points and delete all history permanently.",
-    reset_data_title: "Reset Data",
-    reset_success: "Reset completed successfully.",
-    reset_error: "Reset error: %{error}",
-    export_backup_title: "Export & Backup",
-    full_backup: "Full Backup (Everything)",
-    structure_backup: "Classes/Students Structure",
-    settings_backup: "Competition Settings",
-    staff_backup: "Staff List",
-    data_restore_title: "Data Restore",
-    select_backup_file: "Click to select a backup file (JSON)",
-    danger_zone_title: "Danger Zone (Reset)",
-    reset_logs_label: "Reset Activity Log",
-    reset_logs_desc: "Deletes history but keeps points",
-    reset_scores_label: "Reset Points Only",
-    reset_scores_desc: "Resets points to 0, keeps history",
-    reset_full_label: "Full Reset (Everything)",
-    reset_full_desc: "Deletes everything and starts from scratch",
-    execute_action: "Execute",
-    execute_full_reset: "Perform Full Reset",
-    students_label: "Students",
+    group_name_placeholder: "Group Name (e.g. Class 9A)",
     group_color_label: "Group Color",
+    students_count: "%{count} Students",
+    manage_students_button: "Manage Students",
+    manage_students_title: "Manage Students List",
+    search_student_placeholder: "Search student...",
+    new_student_placeholder: "New student name...",
+    close_window: "Close Window",
+    students_label: "Students",
     confirm_delete_group_warning: "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
 
     // Data Management
@@ -640,10 +610,9 @@ Critical guidelines:
     ai_instruction_commentator: "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
     ai_prompt_summarize: "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
     ai_instruction_admin: "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
-        changes_detected: 'Changes detected',
-            offline_message: "You are offline. Some actions may not work until connection is restored.",
-            pwa_offline_ready: "App is ready for offline usage",
-            pwa_update_available: "New version available. Update now?",
-            pwa_refresh_button: "Refresh & Update",
-        };
-        
+    changes_detected: 'Changes detected',
+    offline_message: "You are offline. Some actions may not work until connection is restored.",
+    pwa_offline_ready: "App is ready for offline usage",
+    pwa_update_available: "New version available. Update now?",
+    pwa_refresh_button: "Refresh & Update",
+};
