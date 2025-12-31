@@ -7,6 +7,7 @@ import { CrownIcon } from '../ui/Icons';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { useStore } from '../../services/store';
 
 const MotionDiv = motion.div as any;
 
@@ -16,8 +17,10 @@ interface PodiumProps {
 
 export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
   const { t } = useLanguage();
+  const persistentSession = useStore(state => state.persistent_session);
   const podiumOrder = [top3Classes?.[1], top3Classes?.[0], top3Classes?.[2]].filter(Boolean);
   const smoothSpring = { type: "spring" as const, stiffness: 120, damping: 25, mass: 1 };
+  const instantTransition = { duration: 0.1 };
 
   return (
     <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[280px] [isolation:isolate]">
@@ -63,7 +66,11 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
 
           return (
             <div key={cls.id || idx} className="flex flex-col items-center justify-end w-1/3 h-full group min-h-0 relative">
-              <MotionDiv layout transition={smoothSpring} className="mb-2 text-center z-20 w-full px-1">
+              <MotionDiv 
+                layout={persistentSession ? false : true} 
+                transition={persistentSession ? instantTransition : smoothSpring} 
+                className="mb-2 text-center z-20 w-full px-1"
+              >
                 <div className={`font-bold text-white leading-tight mb-0.5 drop-shadow-md line-clamp-2 ${rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)]' : 'text-xs md:text-sm opacity-80'}`}>
                   {cls.name}
                 </div>
@@ -71,7 +78,11 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                   <AnimatedCounter value={cls.score || 0} />
                 </div>
               </MotionDiv>
-              <MotionDiv layout transition={smoothSpring} className={`w-full ${height} rounded-t-[var(--radius-main)] rounded-b-none relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}>
+              <MotionDiv 
+                layout={persistentSession ? false : true} 
+                transition={persistentSession ? instantTransition : smoothSpring} 
+                className={`w-full ${height} rounded-t-[var(--radius-main)] rounded-b-none relative flex flex-col items-center justify-start pt-3 backdrop-blur-sm ${barStyle} shrink-0`}
+              >
                 {badge}
               </MotionDiv>
             </div>

@@ -6,6 +6,7 @@ import { CompetitionGoal, ClassRoom } from '../../types';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { useStore } from '../../services/store';
 
 const MotionPath = motion.path as any;
 const MotionCircle = motion.circle as any;
@@ -28,6 +29,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     classes = []
 }) => {
     const { t, language } = useLanguage();
+    const persistentSession = useStore(state => state.persistent_session);
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
     const lastCompletedIndexRef = useRef<number>(-1);
     const prevScoreRef = useRef(totalScore);
@@ -108,7 +110,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     }, [totalScore, sortedGoals]);
 
     useEffect(() => {
-        if (pathRef.current) {
+        if (pathRef.current && typeof pathRef.current.getTotalLength === 'function') {
             setPathLength(pathRef.current.getTotalLength());
         }
     }, [sortedGoals, activeIndex]);
@@ -243,7 +245,19 @@ const shoutoutMessage = useMemo(() => {
                                 <mask id="iris-mask" maskContentUnits="objectBoundingBox">
                                     <rect width="1" height="1" fill="black" />
                                     {irises.map((iris, i) => (
-                                        <MotionCircle key={i} cx={iris.cx} cy={iris.cy} fill="white" initial={{ r: 0 }} animate={{ r: finalK * iris.weight }} transition={{ duration: 2.5, ease: [0.34, 1.56, 0.64, 1], delay: isFirstMountRef.current ? 0 : iris.delay }} />
+                                        <MotionCircle 
+                                            key={i} 
+                                            cx={iris.cx} 
+                                            cy={iris.cy} 
+                                            fill="white" 
+                                            initial={persistentSession ? false : { r: 0 }} 
+                                            animate={{ r: finalK * iris.weight }} 
+                                            transition={{ 
+                                                duration: persistentSession ? 0.1 : 2.5, 
+                                                ease: [0.34, 1.56, 0.64, 1], 
+                                                delay: (isFirstMountRef.current || persistentSession) ? 0 : iris.delay 
+                                            }} 
+                                        />
                                     ))}
                                 </mask>
                             </defs>
@@ -266,7 +280,18 @@ const shoutoutMessage = useMemo(() => {
                                 </defs>
                                 {/* Future Path: Highly Visible Trail */}
                                 <path d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="16" strokeLinecap="round" strokeDasharray="4 8" />
-                                <MotionPath ref={pathRef} d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="url(#progress-gradient)" strokeWidth="18" strokeLinecap="round" strokeDasharray={pathLength || 1000} initial={{ strokeDashoffset: pathLength || 1000 }} animate={{ strokeDashoffset: progressOffset }} transition={{ duration: 2, ease: "easeInOut" }} />
+                                <MotionPath 
+                                    ref={pathRef} 
+                                    d="M 140 85 C 120 5, 40 95, 20 15" 
+                                    fill="none" 
+                                    stroke="url(#progress-gradient)" 
+                                    strokeWidth="18" 
+                                    strokeLinecap="round" 
+                                    strokeDasharray={pathLength || 1000} 
+                                    initial={persistentSession ? false : { strokeDashoffset: pathLength || 1000 }} 
+                                    animate={{ strokeDashoffset: progressOffset }} 
+                                    transition={{ duration: persistentSession ? 0.1 : 2, ease: "easeInOut" }} 
+                                />
                             </svg>
 {/* Percentage: Aligned below the path line */}
                             <div className="absolute bottom-6 flex items-end gap-1" dir="rtl">

@@ -12,7 +12,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Kiosk Initialization & Audio Unlock' (Protocol in workflow.md)
 
 ## Phase 3: Animation Persistence & Continuity
-- [ ] Task: Implement a `persistent_session` flag in the global state (Zustand) to track if the dashboard has already performed its initial animations.
+- [~] Task: Implement a `persistent_session` flag in the global state (Zustand) to track if the dashboard has already performed its initial animations.
 - [ ] Task: Update `MissionMeter.tsx` to skip entrance animations if `persistent_session` is true.
 - [ ] Task: Update `Podium.tsx` and list-based components to skip stagger/entrance animations on sub-sequent rotations.
 - [ ] Task: Verify that animations still play correctly on the very first page load.

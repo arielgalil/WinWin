@@ -24,6 +24,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { isSuperUser as checkIsSuperUser } from '../config';
 import { KioskRotator } from './dashboard/KioskRotator';
 import { KioskStartOverlay } from './dashboard/KioskStartOverlay';
+import { useStore } from '../services/store';
 
 export const Dashboard: React.FC = () => {
     const { campaign, settings } = useCampaign();
@@ -32,14 +33,21 @@ export const Dashboard: React.FC = () => {
     const { updateCommentary } = useCompetitionMutations(campaign?.id);
     const { user } = useAuth();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
-    const { t } = useLanguage();
-    const navigate = useNavigate();
     const { slug } = useParams();
-
+    const navigate = useNavigate();
+    const setPersistentSession = useStore(state => state.setPersistentSession);
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
     const [isKioskStarted, setIsKioskStarted] = useState(() => {
         return sessionStorage.getItem('kiosk_started') === 'true';
     });
+
+    React.useEffect(() => {
+        // After 5 seconds (completion of initial animations), mark session as persistent
+        const timer = setTimeout(() => {
+            setPersistentSession(true);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [setPersistentSession]);
 
     const handleStartKiosk = () => {
         console.log("[Kiosk] Starting kiosk mode...");

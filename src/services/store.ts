@@ -7,6 +7,8 @@ interface AppState {
     theme: Theme;
     toggleTheme: () => void;
     setTheme: (theme: Theme) => void;
+    persistent_session: boolean;
+    setPersistentSession: (val: boolean) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -14,6 +16,8 @@ export const useStore = create<AppState>()(
         persist(
             (set) => ({
                 theme: 'light',
+                persistent_session: false,
+                setPersistentSession: (val) => set({ persistent_session: val }),
                 toggleTheme: () => set((state) => {
                     const newTheme = state.theme === 'light' ? 'dark' : 'light';
                     // Side effect for theme application (similar to original Context)
@@ -32,6 +36,7 @@ export const useStore = create<AppState>()(
             }),
             {
                 name: 'app-storage',
+                partialize: (state) => ({ theme: state.theme }),
                 onRehydrateStorage: () => (state) => {
                     // Ensure theme is applied on rehydration
                     if (state) {
