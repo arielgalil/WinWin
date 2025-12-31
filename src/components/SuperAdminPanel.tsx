@@ -249,7 +249,13 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                             <div key={inst.id} className={`bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-container)] overflow-hidden shadow-xl transition-all`}>
                                 <div className="p-5 flex justify-between items-center border-b border-[var(--divide-main)] bg-black/5">
                                     <div className="flex items-center gap-4">
-                                        <Logo src={inst.logo_url} className="w-12 h-12 shadow-lg" fallbackIcon="school" padding="p-1" />
+                                        <div className="w-12 h-12 rounded-full bg-[#f8fafc] flex items-center justify-center shadow-lg border border-slate-200 shrink-0 overflow-hidden">
+                                            {inst.logo_url ? (
+                                                <img src={inst.logo_url} className="w-full h-full object-contain p-1 no-select no-drag" alt={inst.name} />
+                                            ) : (
+                                                <SchoolIcon className="w-6 h-6 text-blue-500" />
+                                            )}
+                                        </div>
                                         <div><h3 className="font-black text-xl text-[var(--text-main)]">{inst.name}</h3><p className="text-xs text-[var(--text-secondary)] uppercase tracking-widest font-bold">{inst.type || t('educational_institution')} • {t('campaigns_count', { count: inst.campaigns.length })}</p></div>
                                     </div>
                                     <div className="flex gap-4 items-center">
