@@ -1,6 +1,7 @@
 import { supabase } from "../supabaseClient";
 import { ClassRoom, ActionLog, AppSettings } from "../types";
 import { t, Language } from "../utils/i18n";
+import { AI_CONSTANTS } from "../constants";
 
 // Helper to call our secure Supabase Edge Function
 const callGeminiFunction = async (payload: {
@@ -10,7 +11,7 @@ const callGeminiFunction = async (payload: {
     jsonSchema?: any;
 }, lang: Language = 'he'): Promise<string> => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), AI_CONSTANTS.API_TIMEOUT_MS);
 
     try {
         const { data, error } = await supabase.functions.invoke('ask-gemini', {

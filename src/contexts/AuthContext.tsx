@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 import { UserProfile } from '../types';
 import { t } from '../utils/i18n';
 import { TIMEOUTS } from '../config';
+import { logger } from '../utils/logger';
 
 const SAVED_EMAIL_KEY = 'metziacha_saved_email';
 
@@ -37,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userRef = useRef<UserProfile | null>(null);
 
     const updateLoadingState = useCallback((state: boolean, reason: string) => {
-        console.log(`[AUTH-STATE] authLoading -> ${state} (Reason: ${reason})`);
+        logger.debug(`[AUTH-STATE] authLoading -> ${state} (Reason: ${reason})`);
         setAuthLoading(state);
     }, []);
 
@@ -47,8 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return;
         }
 
-try {
-            console.log(`[AUTH] Fetching profile for ID: ${userId}`);
+        try {
+            logger.debug(`[AUTH] Fetching profile for ID: ${userId}`);
 
             const { data: profileData, error: profileError } = await Promise.race([
                 supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
@@ -91,7 +92,7 @@ try {
     }, [updateLoadingState]);
 
     const hardReset = async () => {
-        console.log("[AUTH] Initiating NUCLEAR RESET...");
+        logger.info("[AUTH] Initiating NUCLEAR RESET...");
         try {
             // Safe localStorage clear with try-catch
             try {
@@ -99,7 +100,7 @@ try {
             } catch (e) {
                 console.warn("Failed to clear localStorage:", e);
             }
-            
+
             // Safe sessionStorage clear
             try {
                 sessionStorage.clear();
@@ -174,7 +175,7 @@ try {
         initAuth();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(`[AUTH-EVENT] ${event}`);
+            logger.debug(`[AUTH-EVENT] ${event}`);
             if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
                 if (!isPasswordRecovery) {
                     await fetchUserProfile(session.user.id, session.user.email || '');

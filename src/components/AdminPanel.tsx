@@ -107,10 +107,10 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
   const handleShare = async () => {
     if (!campaign) return;
-    
+
     try {
       const message = generateRoleBasedShareMessage({
-        role: campaignRole as any,
+        role: campaignRole || 'teacher',
         campaign: campaign,
         institutionName: settings?.school_name || t('educational_institution'),
         origin: window.location.origin,
@@ -140,7 +140,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   return (
     <AdminLayout
       user={user}
-      campaignRole={campaignRole as any}
+      campaignRole={campaignRole || undefined}
       activeTab={activeTab}
       onTabChange={handleTabChange}
       onViewDashboard={onViewDashboard}
@@ -189,16 +189,16 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                   </div>
                 )}
                 {activeTab === 'logs' && (
-                  <ActionLogPanel 
-                    logs={logs} 
-                    onLoadMore={loadMoreLogs} 
-                    onDelete={deleteLog} 
-                    onUpdate={(id, description, points) => updateLog({ id, description, points })} 
+                  <ActionLogPanel
+                    logs={logs}
+                    onLoadMore={loadMoreLogs}
+                    onDelete={deleteLog}
+                    onUpdate={(id, description, points) => updateLog({ id, description, points })}
                     onUpdateSummary={updateAiSummary}
-                    currentUser={user} 
-                    settings={settings} 
-                    isAdmin={isAdmin} 
-                    onSave={() => updateTabTimestamp('logs')} 
+                    currentUser={user}
+                    settings={settings}
+                    isAdmin={isAdmin}
+                    onSave={() => updateTabTimestamp('logs')}
                   />
                 )}
               </MotionDiv>
@@ -206,7 +206,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
           </Suspense>
         </div>
         {/* VersionFooter is now handled by AdminLayout */}
-        {/* <VersionFooter /> */} 
+        {/* <VersionFooter /> */}
       </div>
     </AdminLayout>
   );

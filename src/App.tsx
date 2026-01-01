@@ -70,7 +70,7 @@ const AdminRoute = () => {
     const navigate = useNavigate();
     const { slug } = useParams();
     const location = useLocation();
-    
+
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { isCampaignSuper, isSuper } = useAuthPermissions();
@@ -86,7 +86,7 @@ const AdminRoute = () => {
                     onLogout={async () => { await logout(); navigate('/'); }}
                     onViewDashboard={() => navigate(`/comp/${slug}`)}
                     isSuperAdmin={isSuper || isCampaignSuper}
-                    campaignRole={campaignRole as any}
+                    campaignRole={campaignRole || undefined}
                 />
             )}
         </CampaignContext>
@@ -99,7 +99,7 @@ const VoteRoute = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
 
@@ -110,7 +110,7 @@ const VoteRoute = () => {
             <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('enter_points')} />
             <LiteTeacherView
                 user={user}
-                userRole={campaignRole as any}
+                userRole={campaignRole || undefined}
                 onLogout={async () => { await logout(); navigate('/'); }}
             />
         </CampaignContext>
@@ -123,7 +123,7 @@ const LoginRoute = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Get campaign data directly from navigation state.
     const campaignData = location.state?.campaign;
 
@@ -196,34 +196,34 @@ const App: React.FC = () => {
                         <Routes>
                             <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
                             <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
-                                                            <Route path="/login" element={<LoginRoute />} />
-                                                            <Route path="/login/:slug" element={<LoginRoute />} />
-                                                            <Route path="/comp/:slug" element={<DashboardRoute />} />
-                                                            <Route 
-                                                                path="/admin/:slug" 
-                                                                element={
-                                                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
-                                                                        <AdminRoute />
-                                                                    </ProtectedRoute>
-                                                                } 
-                                                            />
-                                                            <Route 
-                                                                path="/admin/:slug/:tab" 
-                                                                element={
-                                                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
-                                                                        <AdminRoute />
-                                                                    </ProtectedRoute>
-                                                                } 
-                                                            />
-                                                            <Route 
-                                                                path="/vote/:slug" 
-                                                                element={
-                                                                    <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
-                                                                        <VoteRoute />
-                                                                    </ProtectedRoute>
-                                                                } 
-                                                            />
-                                                            <Route path="*" element={<Navigate to="/" replace />} />                        </Routes>
+                            <Route path="/login" element={<LoginRoute />} />
+                            <Route path="/login/:slug" element={<LoginRoute />} />
+                            <Route path="/comp/:slug" element={<DashboardRoute />} />
+                            <Route
+                                path="/admin/:slug"
+                                element={
+                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                        <AdminRoute />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/:slug/:tab"
+                                element={
+                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                        <AdminRoute />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/vote/:slug"
+                                element={
+                                    <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
+                                        <VoteRoute />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route path="*" element={<Navigate to="/" replace />} />                        </Routes>
                     </div>
                 )}
             </div>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { KIOSK_CONSTANTS } from '../constants';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { Podium } from './dashboard/Podium';
 import { ClassTicker } from './dashboard/ClassTicker';
@@ -50,7 +51,6 @@ export const Dashboard: React.FC = () => {
     }, [setPersistentSession]);
 
     const handleStartKiosk = () => {
-        console.log("[Kiosk] Starting kiosk mode...");
         setIsKioskStarted(true);
         sessionStorage.setItem('kiosk_started', 'true');
         setIsMusicPlaying(true);
@@ -59,11 +59,9 @@ export const Dashboard: React.FC = () => {
     // Auto-dismiss if no click after 15 seconds
     React.useEffect(() => {
         if (settings?.rotation_enabled && !isKioskStarted) {
-            console.log("[Kiosk] Overlay visible. Settings:", settings);
             const timer = setTimeout(() => {
-                console.log("[Kiosk] Auto-dismissing overlay (interaction may be lost)");
                 handleStartKiosk();
-            }, 15000);
+            }, KIOSK_CONSTANTS.AUTO_START_DELAY_MS);
             return () => clearTimeout(timer);
         }
     }, [settings?.rotation_enabled, isKioskStarted]);
@@ -79,7 +77,7 @@ export const Dashboard: React.FC = () => {
     const isSuperUser = checkIsSuperUser(user?.role);
     const isCampaignActive = campaign?.is_active ?? false;
     const isFrozen = (!isCampaignActive || !!settings?.is_frozen) && !isSuperUser;
-    
+
     const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
@@ -96,9 +94,9 @@ export const Dashboard: React.FC = () => {
 
     return (
         <DashboardErrorBoundary>
-            <KioskStartOverlay 
-                isVisible={!!settings?.rotation_enabled && !isKioskStarted} 
-                onStart={handleStartKiosk} 
+            <KioskStartOverlay
+                isVisible={!!settings?.rotation_enabled && !isKioskStarted}
+                onStart={handleStartKiosk}
             />
             <KioskRotator settings={settings} isStarted={isKioskStarted}>
                 <GradientBackground
@@ -168,8 +166,8 @@ export const Dashboard: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <VersionFooter 
-                            musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }} 
+                        <VersionFooter
+                            musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }}
                             onAdminClick={() => navigate(`/login/${slug}`)}
                         />
                     </div>

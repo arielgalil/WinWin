@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { BurstNotificationData, ClassRoom, CompetitionGoal, AppSettings } from '../types';
 import { generateCompetitionCommentary } from '../services/geminiService';
 import { useLanguage } from './useLanguage';
+import { AI_CONSTANTS, EVENT_CONSTANTS } from '../constants';
 
 export const useCompetitionEvents = (
     sortedClasses: ClassRoom[],
@@ -45,7 +46,7 @@ export const useCompetitionEvents = (
         } catch (e) {
             console.error("AI automated commentary failed", e);
         } finally {
-            setTimeout(() => { isGeneratingAi.current = false; }, 5000); // Reduced to 5 seconds
+            setTimeout(() => { isGeneratingAi.current = false; }, AI_CONSTANTS.COMMENTARY_THROTTLE_MS);
         }
     }, [onUpdateCommentary, sortedClasses, settings, totalInstitutionScore, language]);
 
@@ -136,8 +137,8 @@ export const useCompetitionEvents = (
             const prev = prevScoresRef.current.get(s.id);
             if (prev !== undefined && s.score > prev) {
                 const diff = s.score - prev;
-                // Increased threshold from 25 to 50 points and added time-based throttling (10 seconds)
-                if (diff >= 50 && !foundSignificantJump && currentTime - lastJumpTime.current > 30000) {
+                // Increased threshold and added time-based throttling
+                if (diff >= EVENT_CONSTANTS.STUDENT_JUMP_THRESHOLD && !foundSignificantJump && currentTime - lastJumpTime.current > EVENT_CONSTANTS.STUDENT_JUMP_THROTTLE_MS) {
                     foundSignificantJump = true;
                     lastJumpTime.current = currentTime;
                     setBurstQueue(queue => [...queue, {
@@ -159,7 +160,7 @@ export const useCompetitionEvents = (
                 const diff = c.score - prev;
                 
                 // 4. Significant Group Jump (Class Boost) - increased threshold and added throttling
-                if (diff >= 200 && currentTime - lastJumpTime.current > 45000) { // Further increased to 200 points, 45 second throttle
+                if (diff >= EVENT_CONSTANTS.CLASS_BOOST_THRESHOLD && currentTime - lastJumpTime.current > EVENT_CONSTANTS.CLASS_BOOST_THROTTLE_MS) {
                     setBurstQueue(queue => [...queue, {
                         id: `boost-${c.id}-${Date.now()}`,
                         type: 'CLASS_BOOST',
@@ -172,7 +173,7 @@ export const useCompetitionEvents = (
 
                 // Highlight class with reduced duration
                 setHighlightClassId(c.id);
-                setTimeout(() => setHighlightClassId(null), 3000); // Reduced from 5000ms to 3000ms
+                setTimeout(() => setHighlightClassId(null), EVENT_CONSTANTS.CLASS_HIGHLIGHT_DURATION_MS);
             }
             prevScoresRef.current.set(c.id, c.score || 0);
         });

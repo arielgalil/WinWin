@@ -51,15 +51,6 @@ export const useRealtimeSubscriptions = (campaignId: string | undefined, onRealt
         }
       },
       {
-        table: 'students',
-        handler: (payload: any) => {
-          logger.debug("Realtime: Students update received", payload);
-          queryClient.invalidateQueries({ queryKey: ['classes', campaignId] });
-          queryClient.refetchQueries({ queryKey: ['classes', campaignId] });
-          invalidate();
-        }
-      },
-      {
         table: 'action_logs',
         handler: () => invalidate()
       },
