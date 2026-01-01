@@ -9,7 +9,7 @@
 - [x] Task: Create a `KioskStartOverlay` component to prompt for the initial user interaction required for unmuted video. 1eb40ef
 - [x] Task: Write tests for `KioskStartOverlay` visibility and interaction. 1eb40ef
 - [x] Task: Integrate `KioskStartOverlay` into `src/components/Dashboard.tsx` to "unlock" the audio context. 1eb40ef
-- [ ] Task: Conductor - User Manual Verification 'Kiosk Initialization & Audio Unlock' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Kiosk Initialization & Audio Unlock' (Protocol in workflow.md) 0ada69d
 
 ## Phase 3: Animation Persistence & Continuity [checkpoint: c407d80]
 - [x] Task: Implement a `persistent_session` flag in the global state (Zustand) to track if the dashboard has already performed its initial animations. c407d80
