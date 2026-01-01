@@ -71,11 +71,11 @@ const AdminRoute = () => {
     const { slug } = useParams();
     const location = useLocation();
 
+    // ProtectedRoute handles !user check
+    // However, we still need to derive campaign data for the title and props
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { isCampaignSuper, isSuper } = useAuthPermissions();
-
-    if (!user) return <Navigate to={`/login/${slug}`} state={location.state} replace />;
 
     return (
         <CampaignContext>
@@ -100,10 +100,9 @@ const VoteRoute = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // ProtectedRoute handles !user check
     const { campaign, settings } = useCampaign();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
-
-    if (!user) return <Navigate to={`/login/${slug}`} state={location.state} replace />;
 
     return (
         <CampaignContext>
@@ -124,13 +123,25 @@ const LoginRoute = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Get campaign data directly from navigation state.
-    const campaignData = location.state?.campaign;
+    // We use useCampaign to ensure we have data even if navigating directly or via redirect
+    // We pass location.state?.campaign as initialData to avoid refetch if available.
+    // NOTE: This hook is only meaningful if 'slug' is present.
+    const { campaign, settings, isLoadingCampaign, isLoadingSettings, isFetchingCampaign, isFetchingSettings } = useCampaign({
+        slugOverride: slug,
+        settingsSelector: (s) => s,
+        initialData: location.state?.campaign ? {
+            campaign: location.state.campaign,
+            settings: location.state.campaign.app_settings?.[0]
+        } : undefined
+    });
 
-    // The settings are now derived directly from the passed state.
-    const settings = campaignData?.app_settings?.[0] || (campaignData ? { campaign_id: campaignData.id, competition_name: campaignData.name, logo_url: campaignData.logo_url } : undefined);
+    // Determine if we should show a branded or generic login
+    const isBranded = !!slug;
 
-    const { campaignRole } = useCampaignRole(campaignData?.id, user?.id);
+    // Fallback for settings if manual construction is needed (legacy support for state shape)
+    const activeSettings = settings || (campaign ? { campaign_id: campaign.id, competition_name: campaign.name, logo_url: campaign.logo_url } : undefined);
+
+    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
 
     useEffect(() => {
@@ -151,21 +162,40 @@ const LoginRoute = () => {
     if (slug && user && campaignRole === null) {
         return (
             <>
-                <DynamicTitle settings={settings} campaign={campaignData} pageName={t('error')} />
-                <ErrorScreen message={t('competition_access_denied')} />
+                <>
+                    {slug && isLoadingCampaign ? (
+                        <LoadingScreen message={t('loading_campaign_data')} />
+                    ) : (
+                        <>
+                            <DynamicTitle settings={activeSettings} campaign={campaign} pageName={t('error')} />
+                            <ErrorScreen message={t('competition_access_denied')} />
+                        </>
+                    )}
+                </>
             </>
         );
     }
 
+    // If it's a branded route, we MUST wait for the data to avoid generic flash.
+    // We wait if:
+    // 1. We are still performing the initial loading (no data at all)
+    // 2. OR we have partial data (missing colors) AND a fetch is still happening in background
+    const isActuallyFetching = isLoadingCampaign || isLoadingSettings || isFetchingCampaign || isFetchingSettings;
+    const hasBrandingData = !!activeSettings?.primary_color;
+
+    if (isBranded && isActuallyFetching && !hasBrandingData) {
+        return <LoadingScreen message={t('loading_campaign_data')} />;
+    }
+
     return (
         <>
-            <DynamicTitle settings={settings} campaign={campaignData} pageName={t('login_title')} />
+            <DynamicTitle settings={activeSettings} campaign={campaign} pageName={t('login_title')} />
             <LiteLogin
                 onLogin={login}
                 loading={authLoading}
                 error={loginError}
                 savedEmail={savedEmail}
-                settings={settings}
+                settings={isBranded ? activeSettings : undefined}
                 onBack={() => navigate('/')}
             />
         </>
@@ -195,7 +225,7 @@ const App: React.FC = () => {
                     <div className="flex-1 flex flex-col min-h-0 relative">
                         <Routes>
                             <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
-                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel user={null} onLogout={() => { }} onSelectCampaign={() => { }} /></>} />
+                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel onLogout={() => { }} /></>} />
                             <Route path="/login" element={<LoginRoute />} />
                             <Route path="/login/:slug" element={<LoginRoute />} />
                             <Route path="/comp/:slug" element={<DashboardRoute />} />

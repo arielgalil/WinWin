@@ -48,7 +48,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                 .from('campaigns')
                 .select(`
                     *,
-                    app_settings (school_name, logo_url),
+                    app_settings (school_name, logo_url, primary_color, secondary_color, background_brightness),
                     classes (score)
                 `)
                 .order('created_at', { ascending: false });
@@ -151,7 +151,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                     >
                                         {/* Decorative element */}
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
-                                        
+
                                         <div className="flex items-center justify-between mb-8 relative z-10">
                                             <div className="flex items-center gap-4 min-w-0">
                                                 <Logo src={camp.logo_url} className="w-16 h-16 shadow-2xl border-white/20 group-hover:scale-110 transition-transform duration-500" fallbackIcon="school" />

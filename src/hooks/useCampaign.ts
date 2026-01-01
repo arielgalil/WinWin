@@ -19,7 +19,7 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
 
-  const { data: campaign, isLoading: isLoadingCampaign, isError: isCampaignError, error: campaignFetchError } = useQuery({
+  const { data: campaign, isLoading: isLoadingCampaign, isFetching: isFetchingCampaign, isError: isCampaignError, error: campaignFetchError } = useQuery({
     queryKey: ['campaign', slug],
     queryFn: async () => {
       const { data, error } = await supabase.from('campaigns').select('*, institution:institutions(*)').eq('slug', slug).single();
@@ -34,7 +34,7 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
       }
       return campaign;
     },
-    enabled: !!slug && !initialData, // Do not fetch if initialData is provided
+    enabled: !!slug, // Always enabled if slug is present
     initialData: initialData?.campaign,
     staleTime: 1000 * 60 * 10,
     refetchInterval: 1000 * 60 * 5,
@@ -42,7 +42,7 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
 
   const campaignId = campaign?.id;
 
-  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+  const { data: settings, isLoading: isLoadingSettings, isFetching: isFetchingSettings } = useQuery({
     queryKey: ['settings', campaignId],
     queryFn: async () => {
       const { data, error } = await supabase.from('app_settings').select('*').eq('campaign_id', campaignId).single();
@@ -52,7 +52,7 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
       }
       return data as AppSettings;
     },
-    enabled: !!campaignId && !initialData, // Do not fetch if initialData is provided
+    enabled: !!campaignId, // Always enabled if campaignId is present
     initialData: initialData?.settings,
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 2,
@@ -65,6 +65,8 @@ export const useCampaign = <T = AppSettings>(options: UseCampaignOptions<T> = {}
     settings,
     isLoadingCampaign: isLoadingCampaign && !initialData,
     isLoadingSettings: isLoadingSettings && !initialData,
+    isFetchingCampaign,
+    isFetchingSettings,
     isCampaignError,
     campaignFetchError,
     refreshCampaign: () => queryClient.refetchQueries({ queryKey: ['campaign', slug] }),

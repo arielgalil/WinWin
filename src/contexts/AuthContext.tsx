@@ -192,7 +192,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             subscription.unsubscribe();
             clearTimeout(safetyTimer);
         };
-    }, [isPasswordRecovery, fetchUserProfile, updateLoadingState]);
+    }, [fetchUserProfile, updateLoadingState]); // Removed isPasswordRecovery as it's checked inside the handler which is fine
 
     const login = async (email: string, password: string, remember: boolean) => {
         updateLoadingState(true, "Login starting");

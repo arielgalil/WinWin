@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { Campaign, UserProfile, Institution } from '../types';
@@ -18,9 +18,7 @@ import { useTheme } from '../hooks/useTheme';
 const { useNavigate } = ReactRouterDOM as any;
 
 interface SuperAdminPanelProps {
-    user: UserProfile | null;
     onLogout: () => void;
-    onSelectCampaign: (campaign: Campaign) => void;
 }
 
 interface InstitutionStats extends Institution {
@@ -50,9 +48,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
 
     // Theme is handled globally by useTheme/AuthContext or App wrapper
 
-    useEffect(() => { fetchInstitutions(); }, []);
-
-    const fetchInstitutions = async () => {
+    const fetchInstitutions = useCallback(async () => {
         setIsLoading(true);
         setFetchError(null);
         try {
@@ -69,7 +65,9 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [showToast, t]);
+
+    useEffect(() => { fetchInstitutions(); }, [fetchInstitutions]);
 
     const handleSaveInstitution = async () => {
         try {
