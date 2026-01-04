@@ -18,7 +18,7 @@ export const AdminSectionCard: React.FC<AdminSectionCardProps> = ({
     className = ""
 }) => {
     return (
-        <div className={`bg-[var(--bg-card)] p-4 sm:p-6 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8 ${className}`}>
+        <div className={`bg-[var(--bg-card)] p-4 sm:p-6 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-[var(--admin-section-gap)] ${className}`}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
                 <div className="flex items-center gap-4">
                     {icon && (

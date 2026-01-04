@@ -181,7 +181,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
         <div className="space-y-[var(--admin-section-gap)] w-full">
             <ConfirmationModal {...modalConfig} />
 
-            <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8">
+            <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-[var(--admin-section-gap)]">
                 {/* Header */}
                 <div className="flex items-center gap-4 border-b border-[var(--border-subtle)] pb-6">
                     <div className="w-12 h-12 flex items-center justify-center bg-indigo-50 dark:bg-indigo-500/10 rounded-[var(--radius-main)] border border-indigo-100 dark:border-indigo-500/20">
