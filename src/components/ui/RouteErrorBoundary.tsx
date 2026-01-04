@@ -1,6 +1,7 @@
 import React from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ErrorInfo } from 'react';
+import { logger } from '../../utils/logger';
 
 // Error boundary specifically for route components
 export const RouteErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -22,9 +23,7 @@ export const RouteErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ ch
     }
     onError={(error: Error, errorInfo: ErrorInfo) => {
       // Log error to monitoring service
-      import('../../utils/logger').then(({ logger }) => {
-        logger.error('Route Error Boundary:', { error: error.message, stack: error.stack, info: errorInfo });
-      });
+      logger.error('Route Error Boundary:', { error: error.message, stack: error.stack, info: errorInfo });
 
       // TODO: Send error to monitoring service (Sentry, LogRocket, etc.)
       /* sendToMonitoring({ 

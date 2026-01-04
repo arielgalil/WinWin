@@ -2,11 +2,18 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { TargetIcon } from '../ui/Icons';
-import { CompetitionGoal, ClassRoom } from '../../types';
+import { CompetitionGoal, ClassRoom, AppSettings } from '../../types';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
 import { useStore } from '../../services/store';
+import { 
+    calibrateIrisScale, 
+    generateOptimizedIrisPattern, 
+    DEFAULT_CORNER_RADIUS,
+    IrisConfig 
+} from '../../utils/irisGeometry';
+import { useCompetitionMutations } from '../../hooks/useCompetitionMutations';
 
 const MotionPath = motion.path as any;
 const MotionCircle = motion.circle as any;
@@ -18,6 +25,8 @@ interface MissionMeterProps {
     legacyImageUrl?: string | null;
     competitionName: string;
     classes?: ClassRoom[];
+    settings?: AppSettings;
+    campaignId?: string;
 }
 
 export const MissionMeter: React.FC<MissionMeterProps> = ({
@@ -26,12 +35,15 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     legacyTargetScore,
     legacyImageUrl,
     competitionName,
-    classes = []
+    classes = [],
+    settings,
+    campaignId
 }) => {
     const { t, language } = useLanguage();
     const persistentSession = useStore(state => state.persistent_session);
-    const irisPattern = useStore(state => state.iris_pattern);
-    const setIrisPattern = useStore(state => state.setIrisPattern);
+    const localIrisPattern = useStore(state => state.iris_pattern);
+    const setLocalIrisPattern = useStore(state => state.setIrisPattern);
+    const { updateIrisPattern } = useCompetitionMutations(campaignId);
     
     const [celebratingGoalIndex, setCelebratingGoalIndex] = useState<number | null>(null);
     const lastCompletedIndexRef = useRef<number>(-1);
@@ -39,46 +51,43 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const pathRef = useRef<SVGPathElement>(null);
     const [pathLength, setPathLength] = useState(0);
     const isFirstMountRef = useRef(true);
+    const patternSavedRef = useRef(false);
 
-    const [irises, setIrises] = useState<{ cx: number; cy: number; weight: number; delay: number }[]>(irisPattern || []);
+    // Priority: Database > Local Store > Generate New
+    const dbIrisPattern = settings?.iris_pattern;
+    const [irises, setIrises] = useState<IrisConfig[]>(dbIrisPattern || localIrisPattern || []);
 
     useEffect(() => {
-        // If we already have a pattern in the store, use it and don't regenerate
-        if (irisPattern && irisPattern.length > 0) {
-            setIrises(irisPattern);
+        // If database has a pattern, use it and sync to local store
+        if (dbIrisPattern && dbIrisPattern.length > 0) {
+            setIrises(dbIrisPattern);
+            setLocalIrisPattern(dbIrisPattern);
             return;
         }
 
-        const newIrises: { cx: number; cy: number; weight: number; delay: number }[] = [];
-        let attempts = 0;
-        while (newIrises.length < 3 && attempts < 50) {
-            const cx = Math.random() * 0.6 + 0.2; // Keep away from extreme edges
-            const cy = Math.random() * 0.6 + 0.2;
-
-            // Check distance from existing irises
-            const isTooClose = newIrises.some(iris => {
-                const dx = iris.cx - cx;
-                const dy = iris.cy - cy;
-                return Math.sqrt(dx * dx + dy * dy) < 0.3; // Min distance 0.3
-            });
-
-            if (!isTooClose) {
-                newIrises.push({
-                    cx,
-                    cy,
-                    weight: 0.8 + Math.random() * 0.4, // Weights 0.8 - 1.2
-                    delay: Math.random() * 0.5
-                });
+        // If local store has a pattern (and we have campaignId to save), use it and persist to DB
+        if (localIrisPattern && localIrisPattern.length > 0) {
+            setIrises(localIrisPattern);
+            // Save to database if not already saved
+            if (campaignId && !patternSavedRef.current) {
+                patternSavedRef.current = true;
+                updateIrisPattern(localIrisPattern);
             }
-            attempts++;
+            return;
         }
-        // Fallback if we couldn't place 3
-        if (newIrises.length < 3) {
-            newIrises.push({ cx: 0.5, cy: 0.5, weight: 1, delay: 0 });
-        }
+
+        // Generate new optimized pattern
+        const newIrises = generateOptimizedIrisPattern(3, DEFAULT_CORNER_RADIUS);
         setIrises(newIrises);
-        setIrisPattern(newIrises);
-    }, [irisPattern, setIrisPattern]);
+        setLocalIrisPattern(newIrises);
+        
+        // Save to database if we have campaignId
+        if (campaignId && !patternSavedRef.current) {
+            patternSavedRef.current = true;
+            updateIrisPattern(newIrises);
+        }
+    }, [dbIrisPattern, localIrisPattern, setLocalIrisPattern, campaignId, updateIrisPattern]);
+
 
     const { activeIndex, sortedGoals } = useMemo(() => {
         const sorted = [...(goals || [])].sort((a, b) => a.target_score - b.target_score);
@@ -159,14 +168,15 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const missingPoints = Math.max(0, displayGoal.target_score - totalScore);
     const progressOffset = pathLength > 0 ? pathLength * (1 - progressPct) : 0;
 
-    // Multi-Iris Calibrated Reveal
-    const sumWeightsSq = irises.reduce((acc, iris) => acc + iris.weight * iris.weight, 0) || 1;
-    const baseK = Math.sqrt(progressPct / (Math.PI * sumWeightsSq));
+    // Multi-Iris Calibrated Reveal - uses Monte Carlo to compute accurate coverage
+    // If complete, force full reveal; otherwise calibrate scale for accurate percentage
+    const finalK = useMemo(() => {
+        if (isCelebrationMode || progressPct >= 1) return 2.0;
+        if (irises.length === 0 || progressPct <= 0) return 0;
+        return calibrateIrisScale(irises, progressPct, DEFAULT_CORNER_RADIUS);
+    }, [irises, progressPct, isCelebrationMode]);
 
-    // If complete, force full reveal
-    const finalK = (isCelebrationMode || progressPct >= 1) ? 2.0 : baseK;
 
-    
 
     const headerText = sortedGoals.length > 0
         ? `${t('stage')} ${displayIndex + 1}: ${displayGoal.name}`

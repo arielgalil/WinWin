@@ -147,6 +147,8 @@ export const Dashboard: React.FC = () => {
                                         legacyImageUrl={settings.logo_url}
                                         competitionName={settings.competition_name}
                                         classes={classes || []}
+                                        settings={settings}
+                                        campaignId={campaign?.id}
                                     />
                                 </div>
 

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useStore } from '../../../services/store';
 import { MissionMeter } from '../MissionMeter';
 import { LanguageProvider } from '../../../contexts/LanguageContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
 // Define minimal SVGPathElement if it doesn't exist in JSDOM
@@ -17,11 +18,26 @@ vi.mock('../../../services/store', () => ({
     useStore: vi.fn()
 }));
 
+// Mock useCompetitionMutations to avoid Supabase dependency
+vi.mock('../../../hooks/useCompetitionMutations', () => ({
+    useCompetitionMutations: () => ({
+        updateIrisPattern: vi.fn()
+    })
+}));
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: { retry: false }
+    }
+});
+
 const renderWithProvider = (ui: React.ReactElement) => {
     return render(
-        <LanguageProvider>
-            {ui}
-        </LanguageProvider>
+        <QueryClientProvider client={queryClient}>
+            <LanguageProvider>
+                {ui}
+            </LanguageProvider>
+        </QueryClientProvider>
     );
 };
 
