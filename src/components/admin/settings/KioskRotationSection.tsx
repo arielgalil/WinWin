@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const MotionDiv = motion.div as any;
 
+import { KIOSK_CONSTANTS } from '../../../constants';
+
 interface KioskRotationSectionProps {
     settings: Partial<AppSettings>;
     onUpdate: (updates: Partial<AppSettings>) => void;
@@ -15,7 +17,7 @@ interface KioskRotationSectionProps {
 }
 
 // Special marker for dashboard entry
-const DASHBOARD_URL = '__DASHBOARD__';
+const DASHBOARD_URL = KIOSK_CONSTANTS.DASHBOARD_URL;
 
 export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ 
     settings, 

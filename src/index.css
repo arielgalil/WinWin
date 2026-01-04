@@ -177,6 +177,15 @@ svg {
   -moz-user-drag: none;
   -o-user-drag: none;
   user-drag: none;
+  color: currentColor;
+}
+
+.no-interaction {
+  cursor: none !important;
+}
+
+.no-interaction * {
+  pointer-events: none !important;
 }
 
 :root {

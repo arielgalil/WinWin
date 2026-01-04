@@ -115,13 +115,36 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
   useEffect(() => {
     if (!playerRef.current || !playerRef.current.setVolume) return;
     
-    // Smoothly toggle play state
+    let fadeInterval: any;
+    const targetVolume = isPlaying ? volume : 0;
+    let currentVolume = isPlaying ? 0 : volume; // Start from 0 if playing, or current if stopping
+
+    // If starting, play immediately, we'll fade the volume
     if (isPlaying) {
         playerRef.current.playVideo();
-        playerRef.current.setVolume(volume);
-    } else {
-        playerRef.current.pauseVideo();
     }
+
+    const fade = () => {
+        const step = 5; // Volume step
+        const player = playerRef.current;
+        if (!player || !player.getVolume || !player.setVolume) return;
+
+        const nowVol = player.getVolume();
+        if (Math.abs(nowVol - targetVolume) <= step) {
+            player.setVolume(targetVolume);
+            clearInterval(fadeInterval);
+            if (targetVolume === 0) {
+                player.pauseVideo();
+            }
+        } else {
+            const nextVol = nowVol < targetVolume ? nowVol + step : nowVol - step;
+            player.setVolume(nextVol);
+        }
+    };
+
+    fadeInterval = setInterval(fade, 100); // Fade over ~1-2 seconds
+
+    return () => clearInterval(fadeInterval);
   }, [isPlaying, volume]);
 
   if (!videoData) return null;

@@ -20,6 +20,7 @@ export const EVENT_CONSTANTS = {
 export const KIOSK_CONSTANTS = {
   AUTO_START_DELAY_MS: 15000,
   AUTO_DISMISS_DELAY_MS: 10000,
+  DASHBOARD_URL: "__DASHBOARD__",
 };
 
 export const UI_CONSTANTS = {
