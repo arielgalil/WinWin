@@ -125,6 +125,12 @@ export interface AppSettings {
   iris_pattern?:
     | { cx: number; cy: number; weight: number; delay: number }[]
     | null;
+  burst_student_threshold?: number;
+  burst_class_threshold?: number;
+  burst_sounds_enabled?: boolean;
+  burst_notifications_enabled?: boolean;
+  burst_volume?: number;
+  enabled_burst_types?: string[];
 }
 
 export interface LogSnapshot {

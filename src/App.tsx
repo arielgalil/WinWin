@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate, useParams, useLocation } from 'react-router-dom';
-import { Dashboard } from './components/Dashboard';
-import { AdminPanel } from './components/AdminPanel';
-import { CampaignSelector } from './components/CampaignSelector';
-import { SuperAdminPanel } from './components/SuperAdminPanel';
-import { LiteTeacherView } from './components/lite/LiteTeacherView';
-import { LiteLogin } from './components/lite/LiteLogin';
+const Dashboard = React.lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const CampaignSelector = React.lazy(() => import('./components/CampaignSelector').then(m => ({ default: m.CampaignSelector })));
+const SuperAdminPanel = React.lazy(() => import('./components/SuperAdminPanel').then(m => ({ default: m.SuperAdminPanel })));
+const LiteTeacherView = React.lazy(() => import('./components/lite/LiteTeacherView').then(m => ({ default: m.LiteTeacherView })));
+const LiteLogin = React.lazy(() => import('./components/lite/LiteLogin').then(m => ({ default: m.LiteLogin })));
+
 import { LoadingScreen } from './components/ui/LoadingScreen';
 import { ErrorScreen } from './components/ui/ErrorScreen';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -155,13 +156,23 @@ const LoginRoute = () => {
         if (user && !authLoading && !isActuallyFetching) {
             if (slug) {
                 if (campaignRole) {
-                    if (canAccessAdmin) navigate(`/admin/${slug}`, { replace: true });
-                    else if (isTeacher) navigate(`/vote/${slug}`, { replace: true });
-                    else navigate(`/comp/${slug}`, { replace: true });
+                    if (canAccessAdmin) {
+                        if (location.pathname !== `/admin/${slug}`) navigate(`/admin/${slug}`, { replace: true });
+                    }
+                    else if (isTeacher) {
+                        if (location.pathname !== `/vote/${slug}`) navigate(`/vote/${slug}`, { replace: true });
+                    }
+                    else {
+                        if (location.pathname !== `/comp/${slug}`) navigate(`/comp/${slug}`, { replace: true });
+                    }
                 }
             } else {
-                if (isSuper) navigate('/super', { replace: true });
-                else navigate('/', { replace: true });
+                if (isSuper) {
+                    if (location.pathname !== '/super') navigate('/super', { replace: true });
+                }
+                else {
+                    if (location.pathname !== '/') navigate('/', { replace: true });
+                }
             }
         }
     }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching]);
@@ -215,37 +226,40 @@ const App: React.FC = () => {
                     <LoadingScreen message={t('loading_system')} />
                 ) : (
                     <div className="flex-1 flex flex-col min-h-0 relative">
-                        <Routes>
-                            <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
-                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel onLogout={() => { }} /></>} />
-                            <Route path="/login" element={<LoginRoute />} />
-                            <Route path="/login/:slug" element={<LoginRoute />} />
-                            <Route path="/comp/:slug" element={<DashboardRoute />} />
-                            <Route
-                                path="/admin/:slug"
-                                element={
-                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
-                                        <AdminRoute />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="/admin/:slug/:tab"
-                                element={
-                                    <ProtectedRoute allowedRoles={['admin', 'superuser']}>
-                                        <AdminRoute />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="/vote/:slug"
-                                element={
-                                    <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
-                                        <VoteRoute />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route path="*" element={<Navigate to="/" replace />} />                        </Routes>
+                        <React.Suspense fallback={<LoadingScreen message={t('loading_system')} />}>
+                            <Routes>
+                                <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
+                                <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel onLogout={() => { }} /></>} />
+                                <Route path="/login" element={<LoginRoute />} />
+                                <Route path="/login/:slug" element={<LoginRoute />} />
+                                <Route path="/comp/:slug" element={<DashboardRoute />} />
+                                <Route
+                                    path="/admin/:slug"
+                                    element={
+                                        <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                            <AdminRoute />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/admin/:slug/:tab"
+                                    element={
+                                        <ProtectedRoute allowedRoles={['admin', 'superuser']}>
+                                            <AdminRoute />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="/vote/:slug"
+                                    element={
+                                        <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
+                                            <VoteRoute />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route path="*" element={<Navigate to="/" replace />} />
+                            </Routes>
+                        </React.Suspense>
                     </div>
                 )}
             </div>

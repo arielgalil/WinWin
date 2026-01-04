@@ -14,9 +14,24 @@ const MotionH3 = motion.h3 as any;
 interface BurstNotificationProps {
     data: BurstNotificationData | null;
     onDismiss: () => void;
+    volume?: number;
+    soundsEnabled?: boolean;
 }
 
-export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDismiss }) => {
+const BURST_SOUNDS: Record<string, string> = {
+    GOAL_REACHED: 'https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3', // Fanfare/Success
+    LEADER_CHANGE: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3', // Trumpet
+    STAR_STUDENT: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3', // Ding/Level up
+    CLASS_BOOST: 'https://assets.mixkit.co/active_storage/sfx/1433/1433-preview.mp3', // Achievement
+    SHOUTOUT: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'
+};
+
+export const BurstNotification: React.FC<BurstNotificationProps> = ({ 
+    data, 
+    onDismiss, 
+    volume = 50, 
+    soundsEnabled = true 
+}) => {
     const { t, dir } = useLanguage();
     const DURATION = 5000; // 5 Seconds
 
@@ -36,6 +51,27 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({ data, onDi
             return () => clearTimeout(timer);
         }
     }, [data]);
+
+    // Sound Logic
+    useEffect(() => {
+        if (data && soundsEnabled) {
+            const soundUrl = BURST_SOUNDS[data.type] || BURST_SOUNDS.STAR_STUDENT;
+            const audio = new Audio(soundUrl);
+            audio.volume = volume / 100;
+            
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.warn("Auto-play was prevented. This usually happens if the user hasn't interacted with the page yet.", error);
+                });
+            }
+
+            return () => {
+                audio.pause();
+                audio.src = '';
+            };
+        }
+    }, [data, volume, soundsEnabled]);
 
     const getTheme = (type: string) => {
         switch (type) {

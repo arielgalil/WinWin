@@ -9,6 +9,7 @@ describe('KioskRotator', () => {
         rotation_enabled: true,
         rotation_interval: 1, // 1 second for fast testing
         rotation_config: [
+            { url: '__DASHBOARD__', duration: 1 },
             { url: 'https://example1.com', duration: 1 },
             { url: 'https://example2.com', duration: 1 }
         ]
@@ -32,62 +33,86 @@ describe('KioskRotator', () => {
         expect(screen.getByTestId('board')).toBeDefined();
     });
 
-    it('should render children and iframes when rotation is enabled (Stack Approach)', () => {
+    it('should show board and preload next item when rotation is enabled', () => {
         render(
-            <KioskRotator settings={mockSettings}>
+            <KioskRotator settings={mockSettings} currentIndex={0}>
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );
         
-        // Stack approach keeps everything in DOM
+        // Dashboard is active, Site 1 is next (preloading)
         expect(screen.getByTestId('board')).toBeDefined();
-        expect(screen.getAllByTitle(/Kiosk Content/i)).toHaveLength(2);
+        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
     });
 
-    it('should show board initially (currentIndex = -1)', () => {
+    it('should show board initially (currentIndex = 0)', () => {
         render(
-            <KioskRotator settings={mockSettings}>
+            <KioskRotator settings={mockSettings} currentIndex={0}>
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );
 
-        const boardContainer = screen.getByTestId('board').parentElement;
-        expect(boardContainer?.style.opacity).toBe('1');
+        expect(screen.getByTestId('board')).toBeDefined();
     });
 
-    it('should rotate through sites', () => {
-        render(
-            <KioskRotator settings={mockSettings}>
+    it('should rotate through sites while keeping a 3-item sliding window', () => {
+        const { rerender } = render(
+            <KioskRotator settings={mockSettings} currentIndex={0}>
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );
 
-        const boardContainer = screen.getByTestId('board').parentElement;
-        const iframes = screen.getAllByTitle(/Kiosk Content/i).map(el => el.parentElement);
+        // Initially: Dashboard (0) active, Site 1 (1) is next (preloading)
+        // Site 2 (2) is outside window and should NOT be mounted
+        expect(screen.getByTestId('board')).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
+        expect(screen.queryByTitle(/Kiosk Content 2/i)).toBeNull();
 
-        // Initially board is visible
-        expect(boardContainer?.style.opacity).toBe('1');
-        expect(iframes[0]?.style.opacity).toBe('0');
+        // Rotate to Site 1 (currentIndex = 1)
+        rerender(
+            <KioskRotator settings={mockSettings} currentIndex={1}>
+                <div data-testid="board">Game Board</div>
+            </KioskRotator>
+        );
 
-        // Advance timers by 1 second
-        vi.advanceTimersByTime(1000);
+        // Advance timers so board (idx 0) becomes previousIndex
+        vi.advanceTimersByTime(2000);
 
-        // Now first site should be visible
-        expect(boardContainer?.style.opacity).toBe('0');
-        expect(iframes[0]?.style.opacity).toBe('1');
+        // Window: Board (0) is previous, Site 1 (1) is active, Site 2 (2) is next
+        // All 3 should be mounted
+        expect(screen.getByTestId('board')).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
 
-        // Advance timers by another 1 second
-        vi.advanceTimersByTime(1000);
+        // Rotate to Site 2 (currentIndex = 2)
+        rerender(
+            <KioskRotator settings={mockSettings} currentIndex = {2}>
+                <div data-testid="board">Game Board</div>
+            </KioskRotator>
+        );
+        
+        // Advance timers so Site 1 (idx 1) becomes previousIndex
+        vi.advanceTimersByTime(2000);
 
-        // Now second site should be visible
-        expect(iframes[0]?.style.opacity).toBe('0');
-        expect(iframes[1]?.style.opacity).toBe('1');
+        // Window: Site 1 (1) is previous, Site 2 (2) is active, Dashboard (0) is next
+        // Optimization: Dashboard (0) is unmounted when only preloading to save resources.
+        expect(screen.queryByTestId('board')).toBeNull();
+        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
 
-        // Advance timers by another 1 second
-        vi.advanceTimersByTime(1000);
+        // Advance to Dashboard (currentIndex = 0)
+        rerender(
+            <KioskRotator settings={mockSettings} currentIndex = {0}>
+                <div data-testid="board">Game Board</div>
+            </KioskRotator>
+        );
 
-        // Should return to board
-        expect(iframes[1]?.style.opacity).toBe('0');
-        expect(boardContainer?.style.opacity).toBe('1');
+        // Advance timers so Site 2 (idx 2) becomes previousIndex
+        vi.advanceTimersByTime(2000);
+
+        // Window: Site 2 (2) is previous, Dashboard (0) is active, Site 1 (1) is next
+        expect(screen.getByTestId('board')).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
+        expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
     });
 });

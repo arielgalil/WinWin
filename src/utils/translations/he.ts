@@ -698,4 +698,20 @@ export const he = {
     kiosk_start_button: "הפעל מצב קיוסק",
     kiosk_audio_hint:
         "לחיצה זו נדרשת על ידי הדפדפן כדי לאפשר השמעת מוזיקה ווידאו באופן אוטומטי.",
+
+    // Burst Notifications
+    burst_notifications_title: "הגדרות הודעות מתפרצות",
+    burst_notifications_desc:
+        "ניהול הודעות ה'פלאש' שמופיעות על המסך באירועים מיוחדים",
+    master_burst_toggle: "הודעות מתפרצות פעילות",
+    student_jump_threshold: "סף זינוק תלמיד (נקודות)",
+    class_boost_threshold: "סף זינוק קבוצתי (נקודות)",
+    burst_sounds_enabled: "צלילי התראה",
+    burst_volume: "עוצמת צליל התראה",
+    enabled_burst_types: "סוגי הודעות פעילים",
+    type_goal_reached: "הגעה ליעד",
+    type_leader_change: "מהפך בטבלה",
+    type_star_student: "כוכב עולה (תלמיד)",
+    type_class_boost: "זינוק קבוצתי",
+    type_shoutout: "פרגון כללי",
 };

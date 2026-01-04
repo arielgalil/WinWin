@@ -16,6 +16,7 @@ import { BackgroundMusic } from '../dashboard/BackgroundMusic';
 import { BrandingPreview } from './settings/BrandingPreview';
 import { VisualDesignSection } from './settings/VisualDesignSection';
 import { KioskRotationSection } from './settings/KioskRotationSection';
+import { BurstSettingsSection } from './settings/BurstSettingsSection';
 
 const MotionDiv = motion.div as any;
 
@@ -49,7 +50,13 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
         background_music_mode: 'loop',
         rotation_enabled: false,
         rotation_config: [],
-        rotation_interval: 30
+        rotation_interval: 30,
+        burst_notifications_enabled: true,
+        burst_sounds_enabled: true,
+        burst_volume: 50,
+        burst_student_threshold: 50,
+        burst_class_threshold: 100,
+        enabled_burst_types: ['GOAL_REACHED', 'LEADER_CHANGE', 'STAR_STUDENT', 'CLASS_BOOST', 'SHOUTOUT']
     });
     const [isSaving, setIsSaving] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
@@ -117,6 +124,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 rotation_enabled: formData.rotation_enabled ?? false,
                 rotation_config: formData.rotation_config || [],
                 rotation_interval: formData.rotation_interval ?? 30,
+                burst_notifications_enabled: formData.burst_notifications_enabled ?? true,
+                burst_sounds_enabled: formData.burst_sounds_enabled ?? true,
+                burst_volume: formData.burst_volume ?? 50,
+                burst_student_threshold: formData.burst_student_threshold ?? 50,
+                burst_class_threshold: formData.burst_class_threshold ?? 100,
+                enabled_burst_types: formData.enabled_burst_types || ['GOAL_REACHED', 'LEADER_CHANGE', 'STAR_STUDENT', 'CLASS_BOOST', 'SHOUTOUT'],
                 settings_updated_at: new Date().toISOString()
             };
 
@@ -390,7 +403,10 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                     institutionName={formData.school_name || ''}
                 />
 
-                {/* 5. Scoring Settings */}
+                {/* 5. Burst Notifications */}
+                <BurstSettingsSection settings={formData} onUpdate={updateForm} />
+
+                {/* 6. Scoring Settings */}
                 <AdminSectionCard
                     title={t('scoring_settings')}
                     description={t('scoring_settings_desc')}

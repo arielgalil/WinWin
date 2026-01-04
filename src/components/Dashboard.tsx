@@ -15,6 +15,7 @@ import { calculateClassStats, calculateStudentStats } from '../utils/rankingUtil
 import { ShareableLeaderboard } from './dashboard/ShareableLeaderboard';
 import { VersionFooter } from './ui/VersionFooter';
 import { DashboardErrorBoundary } from './ui/ErrorBoundaries';
+import { loadHtml2Canvas } from '../utils/dynamicLibraries';
 import { useCampaign } from '../hooks/useCampaign';
 import { useClasses } from '../hooks/useClasses';
 import { useTicker } from '../hooks/useTicker';
@@ -179,6 +180,8 @@ export const Dashboard: React.FC = () => {
                                     <BurstNotification
                                         data={activeBurst}
                                         onDismiss={() => setActiveBurst(null)}
+                                        volume={settings.burst_volume}
+                                        soundsEnabled={settings.burst_sounds_enabled}
                                     />
                                 )}
 
@@ -191,6 +194,32 @@ export const Dashboard: React.FC = () => {
                                             totalInstitutionScore={totalInstitutionScore}
                                             sortedClasses={sortedClasses}
                                             topStudents={top10Students}
+                                            onCapture={async () => {
+                                                setIsSharing(true);
+                                                // Give React time to render the off-screen component
+                                                setTimeout(async () => {
+                                                    try {
+                                                        const html2canvas = await loadHtml2Canvas();
+                                                        const element = document.getElementById('share-leaderboard-capture');
+                                                        if (element) {
+                                                            const canvas = await html2canvas(element, {
+                                                                useCORS: true,
+                                                                scale: 2,
+                                                                backgroundColor: '#0f172a'
+                                                            });
+                                                            const dataUrl = canvas.toDataURL('image/png');
+                                                            const link = document.createElement('a');
+                                                            link.download = `winwin-leaderboard-${new Date().toISOString().split('T')[0]}.png`;
+                                                            link.href = dataUrl;
+                                                            link.click();
+                                                        }
+                                                    } catch (err) {
+                                                        console.error('Capture failed:', err);
+                                                    } finally {
+                                                        setIsSharing(false);
+                                                    }
+                                                }, 500);
+                                            }}
                                         />
                                     </div>
 

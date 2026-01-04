@@ -690,4 +690,20 @@ export const en = {
     kiosk_start_button: "Start Kiosk Mode",
     kiosk_audio_hint:
         "This interaction is required by the browser to enable automatic audio and video playback.",
+
+    // Burst Notifications
+    burst_notifications_title: "Burst Notification Settings",
+    burst_notifications_desc:
+        "Manage 'flash' messages that appear on screen during special events",
+    master_burst_toggle: "Burst Notifications Active",
+    student_jump_threshold: "Student Jump Threshold (Points)",
+    class_boost_threshold: "Class Boost Threshold (Points)",
+    burst_sounds_enabled: "Alert Sounds",
+    burst_volume: "Alert Sound Volume",
+    enabled_burst_types: "Active Notification Types",
+    type_goal_reached: "Goal Reached",
+    type_leader_change: "Leader Change",
+    type_star_student: "Rising Star (Student)",
+    type_class_boost: "Group Jump",
+    type_shoutout: "General Appreciation",
 };

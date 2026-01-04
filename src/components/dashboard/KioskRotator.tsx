@@ -1,7 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AppSettings } from '../../types';
 import { KIOSK_CONSTANTS } from '../../constants';
+import { KioskMediaItem } from './KioskMediaItem';
 
 interface KioskRotatorProps {
     settings: AppSettings;
@@ -15,6 +16,19 @@ export const KioskRotator: React.FC<KioskRotatorProps> = ({
     currentIndex 
 }) => {
     const config = settings.rotation_config || [];
+    const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+    const lastIndex = React.useRef(currentIndex);
+
+    useEffect(() => {
+        if (lastIndex.current !== currentIndex) {
+            setPreviousIndex(lastIndex.current);
+            const timer = setTimeout(() => {
+                setPreviousIndex(null);
+            }, 2000);
+            lastIndex.current = currentIndex;
+            return () => clearTimeout(timer);
+        }
+    }, [currentIndex]);
 
     // If rotation is disabled/empty, just render children.
     if (!settings.rotation_enabled || config.length === 0) {
@@ -23,36 +37,39 @@ export const KioskRotator: React.FC<KioskRotatorProps> = ({
 
     return (
         <div className="relative w-full h-full overflow-hidden bg-black">
-            {/* Render all config items (including dashboard marker) */}
+            {/* Render items ONLY if they are active OR were recently active (for transition) */}
             {config.map((item, idx) => {
-                // Skip rendering hidden items UNLESS they are somehow active (shouldn't happen with fixed logic)
-                if (item.hidden && currentIndex !== idx) return null;
-
-                const isDashboard = item.url === KIOSK_CONSTANTS.DASHBOARD_URL;
                 const isActive = currentIndex === idx;
+                const wasActive = previousIndex === idx;
+                const nextIndex = config.length > 0 ? (currentIndex + 1) % config.length : -1;
+                const isNext = nextIndex === idx;
+                const isTransitioning = wasActive && !isActive;
+                const isVisible = isActive || wasActive;
+
+                if (!isActive && !wasActive && !isNext) return null;
 
                 return (
                     <div 
                         key={item.url + idx}
-                        className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out bg-black"
+                        className="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out bg-black"
                         style={{ 
                             opacity: isActive ? 1 : 0,
+                            visibility: isVisible ? 'visible' : 'hidden',
                             pointerEvents: isActive ? 'auto' : 'none',
-                            zIndex: isActive ? 20 : 0,
-                            transform: isActive 
-                                ? 'translateX(0)' 
-                                : (currentIndex < idx ? 'translateX(100%)' : 'translateX(-100%)')
+                            zIndex: isActive ? 20 : 10,
                         }}
                     >
-                        {isDashboard ? (
-                            <div className="w-full h-full">{children}</div>
+                        {item.url === KIOSK_CONSTANTS.DASHBOARD_URL ? (
+                            // Optimization: Don't render heavy dashboard if only preloading.
+                            // Dashboard is always mounted when active OR fading out.
+                            isVisible ? <div className="w-full h-full">{children}</div> : null
                         ) : (
-                            <iframe
-                                src={item.url}
-                                className="w-full h-full border-none"
+                            <KioskMediaItem
+                                url={item.url}
+                                isPlaying={isActive}
+                                isVisible={isVisible} // New prop to control iframe loading
+                                volume={50}
                                 title={`Kiosk Content ${idx}`}
-                                sandbox="allow-scripts allow-same-origin allow-forms"
-                                loading="lazy"
                             />
                         )}
                     </div>

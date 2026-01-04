@@ -27,6 +27,21 @@ export const useCompetitionEvents = (
         null,
     );
 
+    // Config values from settings or defaults
+    const isBurstEnabled = settings.burst_notifications_enabled !== false;
+    const enabledTypes = settings.enabled_burst_types ||
+        [
+            "GOAL_REACHED",
+            "LEADER_CHANGE",
+            "STAR_STUDENT",
+            "CLASS_BOOST",
+            "SHOUTOUT",
+        ];
+    const studentThreshold = settings.burst_student_threshold ??
+        EVENT_CONSTANTS.STUDENT_JUMP_THRESHOLD;
+    const classThreshold = settings.burst_class_threshold ??
+        EVENT_CONSTANTS.CLASS_BOOST_THRESHOLD;
+
     const prevTotalScoreRef = useRef(totalInstitutionScore);
     const prevTopClassIdRef = useRef<string | null>(null);
     const prevScoresRef = useRef<Map<string, number>>(new Map());
@@ -65,6 +80,21 @@ export const useCompetitionEvents = (
             totalInstitutionScore,
             language,
         ],
+    );
+
+    const addToBurstQueue = useCallback(
+        (data: Omit<BurstNotificationData, "id">) => {
+            if (!isBurstEnabled || !enabledTypes.includes(data.type as any)) {
+                return;
+            }
+            setBurstQueue((prev) => [...prev, {
+                ...data,
+                id: `${data.type.toLowerCase()}-${Date.now()}-${
+                    Math.random().toString(36).substr(2, 5)
+                }`,
+            } as BurstNotificationData]);
+        },
+        [isBurstEnabled, enabledTypes],
     );
 
     useEffect(() => {
@@ -126,16 +156,14 @@ export const useCompetitionEvents = (
         );
 
         if (currentGoal) {
-            const burstId = `goal-${currentGoal.id}-${Date.now()}`;
-            setBurstQueue((prev) => [...prev, {
-                id: burstId,
+            addToBurstQueue({
                 type: "GOAL_REACHED",
                 title: t("shared_goal_reached"),
                 subTitle: currentGoal.name,
                 value: `${
                     t("total_label")
                 } ${totalInstitutionScore.toLocaleString()}`,
-            }]);
+            });
 
             // Get contributors for AI context if needed
             const deltas = sortedClasses.map((c) => {
@@ -177,13 +205,12 @@ export const useCompetitionEvents = (
             prevTopClassIdRef.current &&
             prevTopClassIdRef.current !== currentTopClass.id
         ) {
-            setBurstQueue((prev) => [...prev, {
-                id: `leader-${currentTopClass.id}-${Date.now()}`,
+            addToBurstQueue({
                 type: "LEADER_CHANGE",
                 title: t("leaderboard_overtake"),
                 subTitle: currentTopClass.name,
                 value: t("rising_to_first"),
-            }]);
+            });
             triggerAiCommentary(
                 t("ai_event_leader_change", {
                     className: currentTopClass.name,
@@ -212,20 +239,19 @@ export const useCompetitionEvents = (
             if (prev !== undefined && s.score > prev) {
                 const diff = s.score - prev;
                 if (
-                    diff >= EVENT_CONSTANTS.STUDENT_JUMP_THRESHOLD &&
+                    diff >= studentThreshold &&
                     !foundSignificantJump &&
                     currentTime - lastJumpTime.current >
                         EVENT_CONSTANTS.STUDENT_JUMP_THROTTLE_MS
                 ) {
                     foundSignificantJump = true;
                     lastJumpTime.current = currentTime;
-                    setBurstQueue((queue) => [...queue, {
-                        id: `star-${s.id}-${Date.now()}`,
+                    addToBurstQueue({
                         type: "STAR_STUDENT",
                         title: t("rising_star"),
                         subTitle: s.name,
                         value: diff,
-                    }]);
+                    });
                     triggerAiCommentary(
                         t("ai_event_student_jump", { studentName: s.name }),
                         `${diff} ${t("points_plural")}`,
@@ -245,17 +271,16 @@ export const useCompetitionEvents = (
 
                 // Class Boost
                 if (
-                    diff >= EVENT_CONSTANTS.CLASS_BOOST_THRESHOLD &&
+                    diff >= classThreshold &&
                     currentTime - lastJumpTime.current >
                         EVENT_CONSTANTS.CLASS_BOOST_THROTTLE_MS
                 ) {
-                    setBurstQueue((queue) => [...queue, {
-                        id: `boost-${c.id}-${Date.now()}`,
+                    addToBurstQueue({
                         type: "CLASS_BOOST",
                         title: t("rising_group"),
                         subTitle: c.name,
                         value: diff,
-                    }]);
+                    });
                     triggerAiCommentary(
                         t("ai_event_class_jump", { className: c.name }),
                         `${diff} ${t("points_plural")}`,
@@ -279,7 +304,16 @@ export const useCompetitionEvents = (
         if (hasAnyScoreIncrease && !foundSignificantJump) {
             // Logic for general updates if needed
         }
-    }, [studentsWithStats, sortedClasses, isFrozen, t, triggerAiCommentary]);
+    }, [
+        studentsWithStats,
+        sortedClasses,
+        isFrozen,
+        t,
+        triggerAiCommentary,
+        addToBurstQueue,
+        studentThreshold,
+        classThreshold,
+    ]);
 
     return {
         activeBurst,

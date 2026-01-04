@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import * as ReactRouterDOM from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { Campaign, UserProfile } from '../types';
@@ -34,16 +35,9 @@ interface CampaignSelectorProps {
 export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
     const { t, dir } = useLanguage();
     const navigate = useNavigate();
-    const [campaigns, setCampaigns] = useState<ExtendedCampaign[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [fetchError, setFetchError] = useState<string | null>(null);
-
-    const fetchCampaigns = async () => {
-        setIsLoading(true);
-        setFetchError(null);
-        console.log("[CAMPAIGN-SELECTOR] Fetch started...");
-
-        try {
+    const { data: campaigns = [], isLoading, error: fetchError, refetch: fetchCampaigns } = useQuery({
+        queryKey: ['campaign-selector-list'],
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('campaigns')
                 .select(`
@@ -53,12 +47,9 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                 `)
                 .order('created_at', { ascending: false });
 
-            if (error) {
-                console.error("[CAMPAIGN-SELECTOR] Database error:", error);
-                throw error;
-            }
+            if (error) throw error;
 
-            const processed: ExtendedCampaign[] = (data || []).map(camp => {
+            return (data || []).map(camp => {
                 const settings = Array.isArray(camp.app_settings) ? camp.app_settings[0] : camp.app_settings;
                 const classes = Array.isArray(camp.classes) ? camp.classes : [];
 
@@ -67,21 +58,11 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                     school_name: settings?.school_name || t('educational_institution'),
                     logo_url: settings?.logo_url || camp.logo_url,
                     total_score: classes.reduce((sum: number, cls: any) => sum + (cls.score || 0), 0)
-                };
+                } as ExtendedCampaign;
             });
-
-            setCampaigns(processed);
-        } catch (err: any) {
-            console.error("[CAMPAIGN-SELECTOR] Fatal fetch error:", err);
-            setFetchError(err.message || t('database_connection_error'));
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCampaigns();
-    }, [user?.id]);
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutes cache
+    });
 
     return (
         <div className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden selection:bg-primary/30 relative" dir={dir}>

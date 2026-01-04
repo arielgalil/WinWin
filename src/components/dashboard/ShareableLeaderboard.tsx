@@ -10,6 +10,7 @@ interface ShareableLeaderboardProps {
     settings: AppSettings;
     topClasses: ClassRoom[];
     top10Students: (Student & { rank: number, className: string })[];
+    onCapture?: () => void;
 }
 
 export const ShareableLeaderboard: React.FC<ShareableLeaderboardProps> = ({
