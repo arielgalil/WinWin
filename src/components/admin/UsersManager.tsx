@@ -239,7 +239,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
     };
 
     return (
-        <div className="space-y-8 w-full">
+        <div className="space-y-[var(--admin-section-gap)] w-full">
+            <ConfirmationModal {...modalConfig} />
             <AdminSectionCard 
                 title={t('users_management_title')} 
                 description={t('users_management_desc')} 

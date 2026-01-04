@@ -178,7 +178,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
     };
 
     return (
-        <div className="space-y-8 pb-12 w-full">
+        <div className="space-y-[var(--admin-section-gap)] w-full">
             <ConfirmationModal {...modalConfig} />
 
             <div className="bg-[var(--bg-card)] p-6 sm:p-8 rounded-[var(--radius-container)] border border-[var(--border-main)] shadow-sm space-y-8">

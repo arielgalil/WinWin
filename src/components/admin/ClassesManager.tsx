@@ -310,7 +310,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
     };
 
     return (
-        <div className="space-y-8 pb-12 w-full">
+        <div className="space-y-[var(--admin-section-gap)] w-full">
             <ConfirmationModal
                 isOpen={modalConfig.isOpen}
                 title={modalConfig.title}

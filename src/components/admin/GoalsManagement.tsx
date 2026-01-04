@@ -43,7 +43,7 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
     };
 
     return (
-        <div className="space-y-8 w-full">
+        <div className="space-y-[var(--admin-section-gap)] w-full">
             <AdminSectionCard
                 title={t('institutional_goals_title')}
                 description={t('institutional_goals_desc')}

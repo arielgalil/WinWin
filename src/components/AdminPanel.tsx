@@ -212,7 +212,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         <AnimatePresence mode='wait'>
           <MotionDiv key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
             {activeTab === 'settings' && isAdmin && (
-              <div className="space-y-8">
+              <div className="space-y-[var(--admin-section-gap)] pb-12">
                 <SchoolSettings settings={settings} onRefresh={refreshData} totalScore={totalInstitutionScore} />
                 <MessagesManager
                   messages={tickerMessages || []}
@@ -224,23 +224,26 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
               </div>
             )}
             {activeTab === 'points' && (
-              <div className="space-y-8">
+              <div className="space-y-[var(--admin-section-gap)] pb-12">
                 <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
               </div>
             )}
             {activeTab === 'goals' && isAdmin && (
-              <GoalsManagement settings={settings} classes={classes || []} totalInstitutionScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals} onUpdateClassTarget={updateClassTarget} />
+              <div className="pb-12">
+                <GoalsManagement settings={settings} classes={classes || []} totalScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals} onUpdateClassTarget={updateClassTarget} />
+              </div>
             )}
 
             {activeTab === 'data-management' && isAdmin && (
-              <div className="space-y-8">
+              <div className="space-y-[var(--admin-section-gap)] pb-12">
                 <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('users')} />
                 <ClassesManager classes={classes || []} settings={settings} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
                 <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData} />
               </div>
             )}
             {activeTab === 'logs' && (
-              <ActionLogPanel
+              <div className="pb-12 h-full">
+                <ActionLogPanel
                 logs={logs}
                 onLoadMore={loadMoreLogs}
                 onDelete={deleteLog}
@@ -251,6 +254,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 isAdmin={isAdmin}
                 onSave={() => updateTabTimestamp('logs')}
               />
+              </div>
             )}
           </MotionDiv>
         </AnimatePresence>

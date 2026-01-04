@@ -198,8 +198,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     };
 
     return (
-        <div className="space-y-8 w-full">
-            <form onSubmit={handleSaveSettings} className="space-y-8">
+        <div className="space-y-[var(--admin-section-gap)] w-full">
+            <form onSubmit={handleSaveSettings} className="space-y-[var(--admin-section-gap)]">
                 <AdminSectionCard
                     title={t('details_logo')}
                     description={t('basic_info_desc')}
