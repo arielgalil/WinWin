@@ -63,7 +63,7 @@ describe('geminiService', () => {
     
     expect(supabase.functions.invoke).toHaveBeenCalledWith('ask-gemini', expect.objectContaining({
       body: expect.objectContaining({
-        model: 'gemini-2.0-flash'
+        model: 'gemini-2.5-flash-lite-preview-09-2025'
       })
     }));
     expect(result).toBe('AI Summary Result');
@@ -87,7 +87,7 @@ describe('geminiService', () => {
     const result = await testGeminiConnection('fake-key');
     expect(result.success).toBe(true);
     expect(result.message).toBe('ai_connection_success_provided_key');
-    expect(getGenerativeModelMock).toHaveBeenCalledWith({ model: 'gemini-2.0-flash' });
+    expect(getGenerativeModelMock).toHaveBeenCalledWith({ model: 'gemini-2.5-flash-lite-preview-09-2025' });
   });
 
   describe('AI Summary Persistence', () => {

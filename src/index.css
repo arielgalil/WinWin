@@ -22,6 +22,8 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
+  --color-surface: var(--bg-surface);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
@@ -35,10 +37,21 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: var(--radius-container);
+
+  --shadow-card: var(--card-shadow);
 
   --font-size-h1: var(--fs-h1);
+  --font-size-h1--line-height: 1.2;
+  --font-size-h1--letter-spacing: -0.02em;
+
   --font-size-h2: var(--fs-h2);
+  --font-size-h2--line-height: 1.25;
+  --font-size-h2--letter-spacing: -0.01em;
+
   --font-size-h3: var(--fs-h3);
+  --font-size-h3--line-height: 1.3;
+
   --font-size-body: var(--fs-body);
   --font-size-small: var(--fs-small);
 

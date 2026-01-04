@@ -14,6 +14,9 @@ import { AdminCard } from './ui/AdminCard';
 import { StatCard } from './ui/StatCard';
 import { AdminModal } from './ui/AdminModal';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
+import { WorkspaceLayout, NavItem } from './layouts/WorkspaceLayout';
+import { Shield, Plus, Search } from 'lucide-react';
 
 const { useNavigate } = ReactRouterDOM as any;
 
@@ -32,42 +35,34 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     const { t, dir } = useLanguage();
     const { showToast } = useToast();
     const navigate = useNavigate();
+    const { user, logout } = useAuth();
     const [institutions, setInstitutions] = useState<InstitutionStats[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [fetchError, setFetchError] = useState<string | null>(null);
     const { theme, toggleTheme } = useTheme();
-    const isDarkMode = theme === 'dark';
 
     const { modalConfig, openConfirmation } = useConfirmation();
-    const [showInstModal, setShowInstModal] = useState(false);
-    const [instForm, setInstForm] = useState<Partial<Institution>>({ name: '', type: t('yeshiva'), contacts: [], crm_notes: '' });
-
-    const [showCampModal, setShowCampModal] = useState(false);
-    const [campForm, setCampForm] = useState<Partial<Campaign>>({ name: '', slug: '', institution_id: '', is_active: true });
-
-    // Theme is handled globally by useTheme/AuthContext or App wrapper
-
-    const fetchInstitutions = useCallback(async () => {
-        setIsLoading(true);
-        setFetchError(null);
-        try {
-            const { data: insts, error } = await supabase.from('institutions').select(`*, campaigns (*)`).order('created_at', { ascending: false });
-            if (error) throw error;
-            const enriched: InstitutionStats[] = (insts || []).map((inst: any) => {
-                const camps = (inst.campaigns || []).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-                return { ...inst, contacts: inst.contacts || [], campaigns: camps, total_revenue: camps.reduce((sum: number, c: any) => sum + (c.price || 0), 0) };
-            });
-            setInstitutions(enriched);
-        } catch (err: any) {
-            setFetchError(err?.message || t('data_load_error'));
-            showToast(err?.message || t('data_load_error'), 'error');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [showToast, t]);
-
+// ...
     useEffect(() => { fetchInstitutions(); }, [fetchInstitutions]);
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
+
+    const navItems: NavItem[] = useMemo(() => [
+        { id: 'institutions', label: t('institutions_label'), icon: Shield },
+    ], [t]);
+
+    const userInitials = useMemo(() => {
+        const name = user?.full_name?.trim() || 'S';
+        const parts = name.split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    }, [user?.full_name]);
 
     const handleSaveInstitution = async () => {
         try {
@@ -187,58 +182,55 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
     });
 
     return (
-        <div className={`min-h-full bg-[var(--bg-page)] text-[var(--text-main)] transition-colors duration-300 flex flex-col admin-view`} dir={dir}>
-            <ConfirmationModal {...modalConfig} />
-            <header className="bg-[var(--bg-card-header)] border-b border-[var(--border-main)] sticky top-0 z-40 px-4 h-16 shadow-sm shrink-0 backdrop-blur-md">
-                <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-h1 tracking-tight text-[var(--text-main)]">{t('super_admin_title')}</h1>
+        <WorkspaceLayout
+            user={{
+                full_name: user?.full_name || 'Super Admin',
+                initials: userInitials,
+                roleLabel: t('role_super_user')
+            }}
+            institution={{
+                name: "WinWin System",
+            }}
+            navItems={navItems}
+            activeTab="institutions"
+            onTabChange={() => { }}
+            onLogout={handleLogout}
+            onViewDashboard={() => navigate('/')}
+            headerTitle={t('super_admin_title')}
+            headerIcon={Shield}
+            headerColorVar="var(--acc-settings)"
+            onRefresh={fetchInstitutions}
+            isRefreshing={isLoading}
+            headerActions={
+                <div className="flex items-center gap-3">
+                    <div className="relative w-64">
+                        <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 text-muted-foreground rtl:right-3 ltr:left-3" />
+                        <input
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            placeholder={t('campaign_search_placeholder')}
+                            className="bg-muted border border-border rounded-lg px-4 py-2 rtl:pr-10 ltr:pl-10 text-sm w-full outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                        />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button
-                            onClick={toggleTheme}
-                            variant="ghost"
-                            size="icon"
-                            className="min-w-[44px] min-h-[44px]"
-                        >
-                            {isDarkMode ? <SunIcon className="w-5 h-5 text-yellow-400" /> : <MoonIcon className="w-5 h-5 text-slate-700" />}
-                        </Button>
-                        <Button
-                            onClick={onLogout}
-                            variant="ghost"
-                            size="icon"
-                            className="min-w-[44px] min-h-[44px] text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                            <LogoutIcon className="w-5 h-5" />
-                        </Button>
-                    </div>
+                    <Button
+                        onClick={() => { setInstForm({ name: '', type: t('yeshiva'), contacts: [], crm_notes: '' }); setShowInstModal(true); }}
+                        className="shadow-sm gap-2"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('add_institution')}</span>
+                    </Button>
                 </div>
-            </header>
-            <div className="px-4 py-4 border-b border-[var(--border-main)] bg-[var(--bg-surface)]/50 sticky top-16 z-30 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-4">
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <div className="relative flex-1 md:w-72">
-                            <SearchIcon className="w-5 h-5 absolute top-1/2 -translate-y-1/2 text-[var(--text-muted)] rtl:right-3 ltr:left-3" />
-                            <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t('campaign_search_placeholder')} className={`bg-[var(--bg-input)] text-[var(--text-main)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 rtl:pr-10 ltr:pl-10 text-base w-full outline-none shadow-sm transition-all focus:ring-2 focus:ring-blue-500/20`} />
-                        </div>
-                        <Button
-                            onClick={() => { setInstForm({ name: '', type: t('yeshiva'), contacts: [], crm_notes: '' }); setShowInstModal(true); }}
-                            variant="default"
-                            size="default"
-                            className="shadow-lg"
-                        >
-                            <PlusIcon className="w-5 h-5" />
-                            <span className="hidden md:inline">{t('add_institution')}</span>
-                        </Button>
-                    </div>
-                    <div className="grid grid-cols-3 md:flex gap-2 md:gap-3 w-full md:w-auto">
-                        <StatCard label={t('institutions_label')} value={institutions.length} icon={<SchoolIcon className="w-4 h-4 text-blue-500" />} colorClass="bg-blue-500/10" />
-                        <StatCard label={t('campaigns_label')} value={institutions.reduce((a, b) => a + b.campaigns.length, 0)} icon={<TrophyIcon className="w-4 h-4 text-yellow-500" />} colorClass="bg-yellow-500/10" />
-                        <StatCard label={t('revenue_label')} value={institutions.reduce((a, b) => a + b.total_revenue, 0).toLocaleString()} icon={<DollarSignIcon className="w-4 h-4 text-green-500" />} colorClass="bg-green-500/10" />
-                    </div>
+            }
+        >
+            <div className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <StatCard label={t('institutions_label')} value={institutions.length} icon={<SchoolIcon className="w-4 h-4 text-blue-500" />} colorClass="bg-blue-500/10" />
+                    <StatCard label={t('campaigns_label')} value={institutions.reduce((a, b) => a + b.campaigns.length, 0)} icon={<TrophyIcon className="w-4 h-4 text-yellow-500" />} colorClass="bg-yellow-500/10" />
+                    <StatCard label={t('revenue_label')} value={institutions.reduce((a, b) => a + b.total_revenue, 0).toLocaleString()} icon={<DollarSignIcon className="w-4 h-4 text-green-500" />} colorClass="bg-green-500/10" />
                 </div>
-            </div>
-            <main className="max-w-7xl mx-auto p-4 space-y-6 flex-1">
+
+                <ConfirmationModal {...modalConfig} />
+
                 {fetchError && (
                     <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-[var(--radius-main)] text-red-500 mb-6 flex items-center gap-3">
                         <AlertIcon className="w-6 h-6 shrink-0" />
@@ -424,67 +416,66 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = ({ onLogout }) =>
                         ))}
                     </div>
                 )}
-            </main>
 
-            {/* Institution Modal */}
-            <AdminModal
-                isOpen={showInstModal}
-                onClose={() => setShowInstModal(false)}
-                title={instForm.id ? t('edit_institution') : t('add_institution')}
-                size="lg"
-                footer={
-                    <>
-                        <Button variant="ghost" onClick={() => setShowInstModal(false)}>
-                            {t('cancel')}
-                        </Button>
-                        <Button variant="default" onClick={handleSaveInstitution}>
-                            {t('save_label')}
-                        </Button>
-                    </>
-                }
-            >
-                <div className="space-y-4">
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-[var(--text-muted)]">{t('institution_name')}</label>
-                        <input value={instForm.name || ''} onChange={e => setInstForm({ ...instForm, name: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                {/* Institution Modal */}
+                <AdminModal
+                    isOpen={showInstModal}
+                    onClose={() => setShowInstModal(false)}
+                    title={instForm.id ? t('edit_institution') : t('add_institution')}
+                    size="lg"
+                    footer={
+                        <>
+                            <Button variant="ghost" onClick={() => setShowInstModal(false)}>
+                                {t('cancel')}
+                            </Button>
+                            <Button variant="default" onClick={handleSaveInstitution}>
+                                {t('save_label')}
+                            </Button>
+                        </>
+                    }
+                >
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-[var(--text-muted)]">{t('institution_name')}</label>
+                            <input value={instForm.name || ''} onChange={e => setInstForm({ ...instForm, name: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-[var(--text-muted)]">{t('institution_type')}</label>
+                            <input value={instForm.type || ''} onChange={e => setInstForm({ ...instForm, type: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                        </div>
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-[var(--text-muted)]">{t('institution_type')}</label>
-                        <input value={instForm.type || ''} onChange={e => setInstForm({ ...instForm, type: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
-                    </div>
-                </div>
-            </AdminModal>
+                </AdminModal>
 
 
-            {/* Campaign Modal */}
-            <AdminModal
-                isOpen={showCampModal}
-                onClose={() => setShowCampModal(false)}
-                title={campForm.id ? t('edit_campaign_title') : t('add_competition')}
-                size="lg"
-                footer={
-                    <>
-                        <Button variant="ghost" onClick={() => setShowCampModal(false)}>
-                            {t('cancel')}
-                        </Button>
-                        <Button variant="default" onClick={handleSaveCampaign}>
-                            {t('save_label')}
-                        </Button>
-                    </>
-                }
-            >
-                <div className="space-y-4">
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-[var(--text-muted)]">{t('campaign_name_label')}</label>
-                        <input value={campForm.name || ''} onChange={e => setCampForm({ ...campForm, name: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                {/* Campaign Modal */}
+                <AdminModal
+                    isOpen={showCampModal}
+                    onClose={() => setShowCampModal(false)}
+                    title={campForm.id ? t('edit_campaign_title') : t('add_competition')}
+                    size="lg"
+                    footer={
+                        <>
+                            <Button variant="ghost" onClick={() => setShowCampModal(false)}>
+                                {t('cancel')}
+                            </Button>
+                            <Button variant="default" onClick={handleSaveCampaign}>
+                                {t('save_label')}
+                            </Button>
+                        </>
+                    }
+                >
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-[var(--text-muted)]">{t('campaign_name_label')}</label>
+                            <input value={campForm.name || ''} onChange={e => setCampForm({ ...campForm, name: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-[var(--text-muted)]">{t('campaign_slug_label')}</label>
+                            <input value={campForm.slug || ''} onChange={e => setCampForm({ ...campForm, slug: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
+                        </div>
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-[var(--text-muted)]">{t('campaign_slug_label')}</label>
-                        <input value={campForm.slug || ''} onChange={e => setCampForm({ ...campForm, slug: e.target.value })} className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20" />
-                    </div>
-                </div>
-            </AdminModal>
-            <VersionFooter />
-        </div>
+                </AdminModal>
+            </div>
+        </WorkspaceLayout>
     );
 };

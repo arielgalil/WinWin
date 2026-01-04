@@ -14,7 +14,9 @@ import { SaveNotificationProvider, useSaveNotification } from '../contexts/SaveN
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/useToast';
 import { generateRoleBasedShareMessage } from '../utils/sharingUtils';
-import { AdminLayout } from './AdminLayout';
+import { WorkspaceLayout, NavItem } from './layouts/WorkspaceLayout';
+import { Settings, Users, Target } from 'lucide-react';
+import { SaveNotificationBadge } from './ui/SaveNotificationBadge';
 
 const { useParams, useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -124,6 +126,35 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     }
   };
 
+  const navItems: NavItem[] = useMemo(() => [
+    { id: 'settings', label: t('tab_settings' as any), icon: Settings, adminOnly: true },
+    { id: 'data-management', label: t('tab_data_management' as any), icon: Users, adminOnly: true },
+    { divider: true, id: 'divider-1', label: '', icon: () => null },
+    { id: 'goals', label: t('tab_goals' as any), icon: Target, adminOnly: true },
+    { id: 'points', label: t('tab_points' as any), icon: CalculatorIcon, adminOnly: false },
+    { divider: true, id: 'divider-2', label: '', icon: () => null },
+    { id: 'logs', label: t('tab_logs' as any), icon: ClockIcon, adminOnly: false },
+  ].filter(item => {
+    if (item.divider) return true;
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  }), [isAdmin, t]);
+
+  const userRoleLabel = useMemo(() => {
+    if (campaignRole === 'superuser') return t('role_super_user');
+    if (campaignRole === 'admin') return t('role_admin');
+    return t('role_teacher');
+  }, [campaignRole, t]);
+
+  const userInitials = useMemo(() => {
+    const name = user.full_name?.trim() || 'U';
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }, [user.full_name]);
+
   const headerConfig = useMemo(() => {
     const configs: Record<TabType, { icon: any; colorVar: string; title: string; desc: string; updatedAt?: string }> = {
       'settings': { icon: SettingsIcon, colorVar: 'var(--acc-settings)', title: t('tab_settings' as any), desc: t('settings_title' as any), updatedAt: settings?.settings_updated_at },
@@ -135,80 +166,96 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     return configs[activeTab] || configs['points'];
   }, [activeTab, settings, t]);
 
+  const breadcrumbs = useMemo(() => [
+    { label: t('admin_panel'), href: `/admin/${slug}` },
+    { label: headerConfig.title }
+  ], [slug, headerConfig.title, t]);
+
   if (!settings || !campaign) return <LoadingTab />;
 
   return (
-    <AdminLayout
-      user={user}
-      campaignRole={campaignRole || undefined}
+    <WorkspaceLayout
+      user={{
+        full_name: user.full_name || '',
+        initials: userInitials,
+        roleLabel: userRoleLabel
+      }}
+      institution={{
+        name: settings.school_name || "WinWin",
+        logoUrl: settings.logo_url
+      }}
+      navItems={navItems}
       activeTab={activeTab}
       onTabChange={handleTabChange}
-      onViewDashboard={onViewDashboard}
       onLogout={onLogout}
-      onShare={handleShare}
-      onManualRefresh={handleRefresh}
+      onViewDashboard={onViewDashboard}
+      headerTitle={headerConfig.title}
+      headerDescription={headerConfig.desc}
+      headerIcon={headerConfig.icon}
+      headerColorVar={headerConfig.colorVar}
+      breadcrumbs={breadcrumbs}
+      lastSavedAt={headerConfig.updatedAt}
       isRefreshing={isRefreshing}
-      campaign={campaign}
-      settings={settings}
-      headerConfig={headerConfig}
-      activeNotification={activeNotification}
-      dismissNotification={dismiss}
+      onRefresh={handleRefresh}
+      onShare={handleShare}
+      headerActions={
+        activeNotification && (
+          <SaveNotificationBadge
+            notification={activeNotification}
+            onDismiss={() => dismiss(activeTab)}
+          />
+        )
+      }
     >
       <FrozenOverlay isFrozen={!campaign?.is_active && !isSuper} />
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden w-full">
-        <div className="max-w-6xl mx-auto w-full">
-          <Suspense fallback={<LoadingTab />}>
-            <AnimatePresence mode='wait'>
-              <MotionDiv key={activeTab} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 5 }} transition={{ duration: 0.1 }} className="min-h-full">
-                {activeTab === 'settings' && isAdmin && (
-                  <div className="space-y-8">
-                    <SchoolSettings settings={settings} onRefresh={refreshData} totalScore={totalInstitutionScore} />
-                    <MessagesManager
-                      messages={tickerMessages || []}
-                      onAdd={addTickerMessage}
-                      onDelete={deleteTickerMessage}
-                      onUpdate={handleUpdateTickerMessage}
-                    />
-                    <AiSettings settings={settings} onRefresh={refreshData} />
-                  </div>
-                )}
-                {activeTab === 'points' && (
-                  <div className="space-y-8">
-                    <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
-                  </div>
-                )}
-                {activeTab === 'goals' && isAdmin && (
-                  <GoalsManagement settings={settings} classes={classes || []} totalInstitutionScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals} onUpdateClassTarget={updateClassTarget} />
-                )}
+      <Suspense fallback={<LoadingTab />}>
+        <AnimatePresence mode='wait'>
+          <MotionDiv key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+            {activeTab === 'settings' && isAdmin && (
+              <div className="space-y-8">
+                <SchoolSettings settings={settings} onRefresh={refreshData} totalScore={totalInstitutionScore} />
+                <MessagesManager
+                  messages={tickerMessages || []}
+                  onAdd={addTickerMessage}
+                  onDelete={deleteTickerMessage}
+                  onUpdate={handleUpdateTickerMessage}
+                />
+                <AiSettings settings={settings} onRefresh={refreshData} />
+              </div>
+            )}
+            {activeTab === 'points' && (
+              <div className="space-y-8">
+                <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
+              </div>
+            )}
+            {activeTab === 'goals' && isAdmin && (
+              <GoalsManagement settings={settings} classes={classes || []} totalInstitutionScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals} onUpdateClassTarget={updateClassTarget} />
+            )}
 
-                {activeTab === 'data-management' && isAdmin && (
-                  <div className="space-y-8">
-                    <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('users')} />
-                    <ClassesManager classes={classes || []} settings={settings} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
-                    <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData} />
-                  </div>
-                )}
-                {activeTab === 'logs' && (
-                  <ActionLogPanel
-                    logs={logs}
-                    onLoadMore={loadMoreLogs}
-                    onDelete={deleteLog}
-                    onUpdate={(id, description, points) => updateLog({ id, description, points })}
-                    onUpdateSummary={updateAiSummary}
-                    currentUser={user}
-                    settings={settings}
-                    isAdmin={isAdmin}
-                    onSave={() => updateTabTimestamp('logs')}
-                  />
-                )}
-              </MotionDiv>
-            </AnimatePresence>
-          </Suspense>
-        </div>
-        {/* VersionFooter is now handled by AdminLayout */}
-        {/* <VersionFooter /> */}
-      </div>
-    </AdminLayout>
+            {activeTab === 'data-management' && isAdmin && (
+              <div className="space-y-8">
+                <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('users')} />
+                <ClassesManager classes={classes || []} settings={settings} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
+                <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData} />
+              </div>
+            )}
+            {activeTab === 'logs' && (
+              <ActionLogPanel
+                logs={logs}
+                onLoadMore={loadMoreLogs}
+                onDelete={deleteLog}
+                onUpdate={(id, description, points) => updateLog({ id, description, points })}
+                onUpdateSummary={updateAiSummary}
+                currentUser={user}
+                settings={settings}
+                isAdmin={isAdmin}
+                onSave={() => updateTabTimestamp('logs')}
+              />
+            )}
+          </MotionDiv>
+        </AnimatePresence>
+      </Suspense>
+    </WorkspaceLayout>
   );
 };
 

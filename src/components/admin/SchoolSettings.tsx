@@ -198,7 +198,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
+        <div className="space-y-8 w-full">
             <form onSubmit={handleSaveSettings} className="space-y-8">
                 <AdminSectionCard
                     title={t('details_logo')}

@@ -17,7 +17,7 @@ const callGeminiFunction = async (payload: {
         const { data, error } = await supabase.functions.invoke('ask-gemini', {
             body: {
                 ...payload,
-                model: payload.model || 'gemini-2.0-flash' // Default to stable model
+                model: payload.model || 'gemini-2.5-flash-lite-preview-09-2025' // Default to 2.5 Flash Lite
             },
             signal: controller.signal
         });
@@ -59,7 +59,7 @@ export const testGeminiConnection = async (overrideKey?: string, lang: Language 
         if (overrideKey) {
             const { GoogleGenAI } = await import("@google/genai");
             const ai = new GoogleGenAI({ apiKey: overrideKey }) as any;
-            const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
+            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash-lite-preview-09-2025' });
             await model.generateContent("ping");
             return { success: true, message: t('ai_connection_success_provided_key', lang) };
         }
@@ -98,21 +98,22 @@ export const generateCompetitionCommentary = async (
     : sanitizedLeaders;
   const sanitizedAction = sanitizeForAI(recentAction);
   const sanitizedNote = sanitizeForAI(actionNote || '');
+  const keywords = settings.ai_keywords?.length ? `${t('ai_keyword_instruction', lang, { keywords: settings.ai_keywords.join(", ") })} ` : '';
   
-  const prompt = `Recent Contributors: ${sanitizedContributors}. Total Score: ${totalInstitutionScore}. Goal Progress: ${sanitizedAction}. Note: ${sanitizedNote}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
+  const prompt = `${keywords}Recent Contributors: ${sanitizedContributors}. Total Score: ${totalInstitutionScore}. Goal Progress: ${sanitizedAction}. Note: ${sanitizedNote}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
   
   try {
       return await callGeminiFunction({
           prompt,
           systemInstruction: settings.ai_custom_prompt || t('ai_instruction_commentator', lang),
-          model: 'gemini-2.0-flash'
+          model: 'gemini-2.5-flash-lite-preview-09-2025'
       }, lang);
   } catch (err) {
       return t('ai_commentary_fallback', lang);
   }
 };
 
-export const generateFillerMessages = async (schoolName: string, competitionName: string, lang: Language = 'he'): Promise<string[]> => {
+export const generateFillerMessages = async (schoolName: string, competitionName: string, lang: Language = 'he', keywords?: string[]): Promise<string[]> => {
     const fallbacks = [
         t('ai_fallback_1', lang),
         t('ai_fallback_2', lang),
@@ -121,13 +122,14 @@ export const generateFillerMessages = async (schoolName: string, competitionName
         t('ai_fallback_5', lang)
     ];
     try {
+        const keywordInstruction = keywords?.length ? ` ${t('ai_keyword_instruction', lang, { keywords: keywords.join(", ") })}` : '';
         const text = await callGeminiFunction({
-            prompt: t('ai_prompt_generate_filler', lang, { schoolName, competitionName }),
+            prompt: t('ai_prompt_generate_filler', lang, { schoolName, competitionName }) + keywordInstruction,
             jsonSchema: {
                 type: "array",
                 items: { type: "string" }
             },
-            model: 'gemini-2.0-flash'
+            model: 'gemini-2.5-flash-lite-preview-09-2025'
         }, lang);
         
         if (!text) return fallbacks;
@@ -161,12 +163,13 @@ export const generateAdminSummary = async (
       note: log.note || ''
   }));
 
-  const prompt = t('ai_prompt_summarize', lang, { data: JSON.stringify(cleanedLogs) });
+  const keywordInstruction = settings.ai_keywords?.length ? ` ${t('ai_keyword_instruction', lang, { keywords: settings.ai_keywords.join(", ") })}` : '';
+  const prompt = t('ai_prompt_summarize', lang, { data: JSON.stringify(cleanedLogs) }) + keywordInstruction;
 
   const summary = await callGeminiFunction({
       prompt,
       systemInstruction: t('ai_instruction_admin', lang),
-      model: 'gemini-2.0-flash'
+      model: 'gemini-2.5-flash-lite-preview-09-2025'
   }, lang);
 
   if (summary && campaignId) {

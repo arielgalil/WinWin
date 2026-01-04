@@ -144,8 +144,15 @@ const LoginRoute = () => {
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
 
+    // If it's a branded route, we MUST wait for the data to avoid generic flash or false "Access Denied".
+    // We wait if:
+    // 1. We are still performing the initial loading (no data at all)
+    // 2. OR we have partial data (missing colors) AND a fetch is still happening in background
+    const isActuallyFetching = isLoadingCampaign || isLoadingSettings || isFetchingCampaign || isFetchingSettings;
+    const hasBrandingData = !!activeSettings?.primary_color;
+
     useEffect(() => {
-        if (user && !authLoading) {
+        if (user && !authLoading && !isActuallyFetching) {
             if (slug) {
                 if (campaignRole) {
                     if (canAccessAdmin) navigate(`/admin/${slug}`, { replace: true });
@@ -157,34 +164,19 @@ const LoginRoute = () => {
                 else navigate('/', { replace: true });
             }
         }
-    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper]);
-
-    if (slug && user && campaignRole === null) {
-        return (
-            <>
-                <>
-                    {slug && isLoadingCampaign ? (
-                        <LoadingScreen message={t('loading_campaign_data')} />
-                    ) : (
-                        <>
-                            <DynamicTitle settings={activeSettings} campaign={campaign} pageName={t('error')} />
-                            <ErrorScreen message={t('competition_access_denied')} />
-                        </>
-                    )}
-                </>
-            </>
-        );
-    }
-
-    // If it's a branded route, we MUST wait for the data to avoid generic flash.
-    // We wait if:
-    // 1. We are still performing the initial loading (no data at all)
-    // 2. OR we have partial data (missing colors) AND a fetch is still happening in background
-    const isActuallyFetching = isLoadingCampaign || isLoadingSettings || isFetchingCampaign || isFetchingSettings;
-    const hasBrandingData = !!activeSettings?.primary_color;
+    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching]);
 
     if (isBranded && isActuallyFetching && !hasBrandingData) {
         return <LoadingScreen message={t('loading_campaign_data')} />;
+    }
+
+    if (slug && user && !isActuallyFetching && campaignRole === null) {
+        return (
+            <>
+                <DynamicTitle settings={activeSettings} campaign={campaign} pageName={t('error')} />
+                <ErrorScreen message={t('competition_access_denied')} />
+            </>
+        );
     }
 
     return (

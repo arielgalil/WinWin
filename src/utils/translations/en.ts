@@ -610,6 +610,7 @@ export const en = {
     ai_instruction_commentator: "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
     ai_prompt_summarize: "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
     ai_instruction_admin: "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
+    ai_keyword_instruction: "Use the following keywords as inspiration and context to naturally integrate into the text: %{keywords}.",
     changes_detected: 'Changes detected',
     offline_message: "You are offline. Some actions may not work until connection is restored.",
     pwa_offline_ready: "App is ready for offline usage",

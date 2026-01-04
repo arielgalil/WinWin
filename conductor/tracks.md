@@ -103,7 +103,13 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Mobile UI refinements, Gemini API button polish, and Kiosk rotation for external sites.
 *Link: [./conductor/archive/ui_refinement_kiosk_20251231/](./conductor/archive/ui_refinement_kiosk_20251231/)*
+
 ---
 
-## [~] Track: Kiosk UX & Performance Optimization
-*Link: [./conductor/tracks/kiosk_optimization_20251231/](./conductor/tracks/kiosk_optimization_20251231/)*
+## [x] Track: Kiosk UX & Performance Optimization
+*Link: [./conductor/archive/kiosk_optimization_20251231/](./conductor/archive/kiosk_optimization_20251231/)*
+
+---
+
+## [x] Track: Master UI Standardization (Admin Workspace Focus)
+*Link: [./conductor/archive/ui_standardization_20260102/](./conductor/archive/ui_standardization_20260102/)*

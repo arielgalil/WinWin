@@ -40,7 +40,7 @@
 
         * **Sharing:** Can generate and share filtered multi-link invitations (Dashboard and Scoring only).
 
-    *   **Interface:** Comprehensive Admin Panel (Must be Mobile-Friendly).
+    *   **Interface:** Comprehensive Admin Workspace using the unified `WorkspaceLayout` (Mobile-Friendly).
 3.  **Teacher (מורה):**
     * **Capability:** Restricted input. Can only award points to *their* specific assigned students or *their* assigned group.
     * **Interface:** "Quick Input" mobile-first screen for rapid scoring in the field.
@@ -54,6 +54,8 @@
 ### 1. The Admin Panel (Competition Manager)
 * **Purpose:** Total control over the competition lifecycle and data.
 * **Requirements:**
+    * **Workspace Layout:** Unified structure with a collapsible RTL-aware sidebar, sticky header with breadcrumbs, and dynamic action slots.
+    * **Standardized Spacing:** Consistent page padding (`p-4 md:p-6 lg:p-8`) enforced by the layout system.
     * **Data Grids:** Advanced tables with filtering, sorting, and bulk actions (e.g., "Add 50 points to selected students").
         *   **CRUD Operations:** Create/Edit/Delete groups and students with strict validation and **enforced delete safety protocols** using modern Shadcn/UI components.
         *   **Audit Logs:** Ability to see who gave points to whom and when.
@@ -105,7 +107,7 @@ WinWin is a gamified education and competition platform designed to transform th
 *   **PWA Capabilities:** Fully installable Progressive Web App with offline support, asset caching, and background synchronization for reliable data entry in low-connectivity environments.
 *   **Standardized Typography:** Unified 5-level responsive typographic hierarchy across the admin interface for improved legibility and consistency.
 *   **Full Theme Compatibility:** Comprehensive support for light and dark modes across all modals and interaction points, with full RTL/LTR localization support for global accessibility.
-*   **Kiosk Site Rotation:** Capability to cycle the public scoreboard with external websites using smooth swipe transitions for multi-purpose school displays.
+* **Kiosk Site Rotation:** Capability to cycle the public scoreboard with external websites using smooth swipe transitions. Includes a "Start Kiosk" overlay to ensure unmuted video playback and session-based animation persistence for high-performance switching.
 *   **Automated Remote Updates:** Headless update mechanism that automatically refreshes unmanaged kiosk displays after an idle period when a new version is detected.
 
 ## Aesthetic & UX Strategy

@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_hebrew_and_branding_20260102",
+  "type": "bug",
+  "status": "completed",
+  "created_at": "2026-01-02T15:21:00Z",
+  "updated_at": "2026-01-02T15:21:00Z",
+  "description": "Fix missing Hebrew translations in Data/Team Management and ensure login branding consistency."
+}

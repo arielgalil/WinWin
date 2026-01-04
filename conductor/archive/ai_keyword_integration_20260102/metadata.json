@@ -1,0 +1,8 @@
+{
+  "track_id": "ai_keyword_integration_20260102",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-02T09:15:00Z",
+  "updated_at": "2026-01-02T09:15:00Z",
+  "description": "Integrate AI Keywords into Gemini Prompts for summaries, commentary, and filler messages"
+}

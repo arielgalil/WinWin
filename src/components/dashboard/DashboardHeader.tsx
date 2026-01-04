@@ -40,10 +40,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         if (!settings.school_name || settings.school_name.includes(t('loading').replace('...', ''))) return;
         if (customMessages.length === 0 && !hasFetchedFillers.current) {
             hasFetchedFillers.current = true;
-            generateFillerMessages(settings.school_name, settings.competition_name)
+            generateFillerMessages(settings.school_name, settings.competition_name, 'he', settings.ai_keywords)
                 .then(setAiFillers);
         }
-    }, [customMessages.length, settings.school_name, settings.competition_name, t]);
+    }, [customMessages.length, settings.school_name, settings.competition_name, settings.ai_keywords, t]);
 
     const playlist = useMemo(() => {
         const list = customMessages.length > 0 ? customMessages.map(m => m.text) : aiFillers;

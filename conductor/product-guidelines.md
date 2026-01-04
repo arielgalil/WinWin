@@ -34,6 +34,7 @@
 
 ## 6. Mobile-First Admin Design
 - **Touch Targets:** All interactive elements (buttons, inputs) must have a minimum hit area of **44x44px**.
+- **Workspace Spacing:** Use standardized layout padding of `p-4 md:p-6 lg:p-8`. Avoid hardcoding root padding on individual sub-pages.
 - **Safe Areas:** Adhere to viewport safe areas; avoid placing critical controls at the extreme top or bottom edges to prevent conflict with OS gestures.
 - **Contextual Inputs:** Use appropriate `inputMode` (e.g., `numeric`, `decimal`) for score entries to trigger the optimal mobile keyboard.
 

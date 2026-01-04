@@ -239,32 +239,17 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 pb-12 w-full">
-            <ConfirmationModal
-                isOpen={modalConfig.isOpen}
-                title={modalConfig.title}
-                message={modalConfig.message}
-                showCancel={modalConfig.showCancel}
-                isDanger={modalConfig.isDanger}
-                confirmText={modalConfig.confirmText}
-                onConfirm={modalConfig.onConfirm}
-                onCancel={modalConfig.onCancel}
-            />
-
-            <AdminSectionCard
-                title={t('team_mgmt_title_clean')}
-                description={t('team_mgmt_subtitle')}
+        <div className="space-y-8 w-full">
+            <AdminSectionCard 
+                title={t('users_management_title')} 
+                description={t('users_management_desc')} 
                 icon={<UsersIcon className="w-6 h-6" />}
                 rightAction={
-                    <AdminButton
-                        onClick={() => fileInputRef.current?.click()}
-                        variant="secondary"
-                        size="md"
-                        isLoading={isBulkImporting}
-                        icon={<UploadIcon className="w-4 h-4" />}
-                    >
-                        {t('import_from_excel')}
-                    </AdminButton>
+                    <div className="flex gap-2">
+                        <AdminButton variant="secondary" size="md" onClick={() => fileInputRef.current?.click()} isLoading={isBulkImporting} icon={<UploadIcon className="w-4 h-4" />}>
+                            {t('bulk_import')}
+                        </AdminButton>
+                    </div>
                 }
             >
                 <input

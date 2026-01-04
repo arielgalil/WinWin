@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_action_log_spacing_20260102",
+  "type": "bug",
+  "status": "completed",
+  "created_at": "2026-01-02T15:13:00Z",
+  "updated_at": "2026-01-02T15:13:00Z",
+  "description": "In the Activity Log and AI, Action History tab, the icon and title are not properly spaced from the rest of the card, like on the other cards."
+}

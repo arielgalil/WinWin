@@ -19,7 +19,7 @@
 - [x] Task: Move Iris pattern generation logic to Zustand store to keep it consistent (Point 18). ab97154
 - [x] Task: Conductor - User Manual Verification 'Animation Persistence & Continuity' (Protocol in workflow.md) ab97154
 
-## Phase 4: DOM Persistence (The Stack Approach)
+## Phase 4: DOM Persistence (The Stack Approach) [checkpoint: 83a4ce9]
 - [x] Task: Rewrite `KioskRotator.tsx` to render all URLs and the Board simultaneously in a "Stack". 83a4ce9
 - [x] Task: Use CSS `opacity` and `pointer-events` to toggle visibility without unmounting (Point 17). 83a4ce9
 - [x] Task: Refine transitions to ensure high-performance switching on kiosk hardware. 83a4ce9
