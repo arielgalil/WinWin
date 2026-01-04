@@ -29,7 +29,8 @@ export const he = {
     clear_action: "נקה הכל",
     copy_all: "העתק הכל",
     logs_copied: "הלוגים הועתקו ללוח!",
-    debug_tip: "טיפ: אם יש שגיאה אדומה בעדכון ניקוד, העתק את הלוגיקה ושלח אותה לתיקון.",
+    debug_tip:
+        "טיפ: אם יש שגיאה אדומה בעדכון ניקוד, העתק את הלוגיקה ושלח אותה לתיקון.",
     copied_to_clipboard: "הועתק ללוח! 📋",
     last_saved: "נשמר לאחרונה",
     not_saved_recently: "לא נשמר לאחרונה",
@@ -41,7 +42,7 @@ export const he = {
     dashboard: "לוח תחרות",
     admin_panel: "ניהול תחרות",
     super_admin_title: "🌱 מערכת תחרויות מצמיחה - פאנל משתמש על",
-    
+
     // Sharing
     share_title: "🌱 תחרות מצמיחה - %{institution} - %{campaign}",
     share_leaderboard: "לוח התוצאות 🏆",
@@ -65,8 +66,8 @@ export const he = {
     col_student_name: "שם התלמיד",
     col_grade: "שכבה",
     col_parallel: "מקבילה",
-    
-// Navigation / Tabs
+
+    // Navigation / Tabs
     tab_points: "ניקוד ומצב קבוצתי",
     tab_settings: "הגדרות",
     tab_ai: "בינה מלאכותית",
@@ -78,13 +79,13 @@ export const he = {
     tab_data_management: "ניהול קבוצות וצוות",
     tab_my_class: "מצב קבוצתי",
     tab_keypad: "מקלדת נקודות",
-    
+
     // Header Descriptions
     points_mgmt_desc: "ניהול נקודות ויומן פעילות",
     goals_mgmt_desc: "ניהול יעדים ופרסים",
     classes_management_desc: "ניהול קבוצות, תלמידים וצוות",
     activity_log_description: "צפייה ביומן פעילות ושימוש ב-AI",
-    
+
     // Admin Sidebar
     role_super_user: "משתמש על",
     role_admin: "מנהל תחרות",
@@ -93,7 +94,7 @@ export const he = {
     view_leaderboard: "מעבר ללוח התוצאות",
     freeze_board: "הקפאת הלוח בלייב",
     unfreeze_board: "שחרור הקפאת לוח",
-    
+
     // School Settings
     settings_title: "הגדרות תחרות",
     details_logo: "פרטים ולוגו",
@@ -130,7 +131,8 @@ export const he = {
     save_success: "ההגדרות נשמרו בהצלחה ✨",
     unsaved_changes: "יש שינויים שטרם נשמרו",
     saving: "שומר...",
-    missing_campaign_id_error: "שגיאה חמורה: מזהה תחרות חסר. נסה לרענן את העמוד.",
+    missing_campaign_id_error:
+        "שגיאה חמורה: מזהה תחרות חסר. נסה לרענן את העמוד.",
     settings_saved_success: "ההגדרות נשמרו בהצלחה ✨",
     save_error: "שגיאה בשמירה: %{message}",
     run_sql_code_check: "וודא שהרצת את קוד ה-SQL",
@@ -143,7 +145,8 @@ export const he = {
     music_settings_desc: "הגדרות מוזיקת רקע",
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
     tip_atmosphere_title: "טיפ לאווירה:",
-    tip_atmosphere_desc: "בחרו מוזיקה קצבית ומעוררת השראה כדי להגביר את רמת האנרגיה בתחרות!",
+    tip_atmosphere_desc:
+        "בחרו מוזיקה קצבית ומעוררת השראה כדי להגביר את רמת האנרגיה בתחרות!",
     visual_design_desc: "התאמת צבעים ועיצוב המערכת",
     live_preview: "תצוגה מקדימה חיה",
     sample_title: "כותרת לדוגמה",
@@ -151,13 +154,14 @@ export const he = {
     typography_colors: "צבעי טיפוגרפיה",
     title_1_label: "כותרת 1",
     title_2_label: "כותרת 2",
-    contrast_test_tip: "בדיקת ניגודיות: וודאו שהטקסט נשאר קריא על רקע הצבעים שבחרתם.",
+    contrast_test_tip:
+        "בדיקת ניגודיות: וודאו שהטקסט נשאר קריא על רקע הצבעים שבחרתם.",
     scoring_settings_desc: "קביעת ערכי ניקוד וגבולות",
     button_label_placeholder: "לדוגמה: בונוס",
     delete_preset_title: "מחיקת כפתור ניקוד",
-    delete_preset_confirm: "האם אתה בטוח שברצונך למחוק את הכפתור \"%{label}\"",
+    delete_preset_confirm: 'האם אתה בטוח שברצונך למחוק את הכפתור "%{label}"',
     delete_keyword_title: "מחיקת מילת מפתח",
-    delete_keyword_confirm: "האם אתה בטוח שברצונך למחוק את מילת המפתח \"%{kw}\"",
+    delete_keyword_confirm: 'האם אתה בטוח שברצונך למחוק את מילת המפתח "%{kw}"',
     goal_score_error: "היעד חייב להיות גבוה מהניקוד הנוכחי (%{minScore})",
     delete_student: "מחק תלמיד",
     delete_group: "מחק קבוצה",
@@ -165,7 +169,7 @@ export const he = {
     delete_log: "מחק פעולה",
     delete_user: "מחק משתמש",
     delete_stage: "מחק שלב",
-    
+
     // Footer
     nav_home: "ראשי",
     score_board: "לוח תוצאות",
@@ -176,7 +180,7 @@ export const he = {
     debug: "דיבאג",
     system_admin: "System Admin",
     login_title: "התחברות",
-    
+
     // App Screens
     loading_data: "טוען נתונים...",
     loading_wait: "אנא המתן בזמן שאנו מחברים אותך למערכת...",
@@ -189,10 +193,11 @@ export const he = {
     competition_access_denied: "הגישה נדחתה. אין לך הרשאה לגשת לתחרות זו.",
     identifying_permissions: "מזהה הרשאות...",
     loading_system: "טוען מערכת...",
-    
+
     // Login
     login_platform_title: "מערכת תחרויות %{app_name}",
-    login_platform_desc: "פלטרפורמת ניהול והצגת הישגים משותפים, קבוצתיים ואישיים בזמן אמת.",
+    login_platform_desc:
+        "פלטרפורמת ניהול והצגת הישגים משותפים, קבוצתיים ואישיים בזמן אמת.",
     login_platform_slogan: "מנצחים וצומחים ביחד.",
     email_label: "אימייל",
     password_label: "סיסמה",
@@ -203,7 +208,7 @@ export const he = {
     login_failed_error: "שגיאה: שם משתמש או סיסמה שגויים",
     user_fallback_name: "משתמש",
     user_delayed_fallback_name: "משתמש (בדיליי)",
-    
+
     // Campaign Selector
     educational_institution: "מוסד חינוכי",
     database_connection_error: "לא ניתן ליצור קשר עם מסד הנתונים.",
@@ -214,7 +219,7 @@ export const he = {
     competition_paused: "תחרות מושהית",
     activity_temporarily_stopped: "הפעילות נעצרה זמנית",
     growth_competition: "תחרות מצמיחה",
-    
+
     // Super Admin
     system_management: "ניהול מערכת",
     campaign_search_placeholder: "חיפוש תחרות (שם, מוסד, slug)...",
@@ -229,7 +234,8 @@ export const he = {
     total_points_label: "סך ניקוד",
     manage_action: "ניהול",
     delete_action: "מחיקה",
-    confirm_delete_campaign: "האם אתה בטוח שברצונך למחוק את התחרות? כל הניקוד והתלמידים יימחקו לצמיתות.",
+    confirm_delete_campaign:
+        "האם אתה בטוח שברצונך למחוק את התחרות? כל הניקוד והתלמידים יימחקו לצמיתות.",
     new_campaign_title: "הוספת תחרות חדשה",
     edit_campaign_title: "עריכת תחרות",
     institutions_label: "מוסדות",
@@ -294,7 +300,7 @@ export const he = {
     staff_backup_desc: "רשימת צוות ותפקידים",
     // Events & AI
     shared_goal_reached: "יעד משותף נכבש!",
-    total_label: "סה\"כ",
+    total_label: 'סה"כ',
     leaderboard_overtake: "מהפך בפסגה!",
     rising_to_first: "עולה למקום הראשון 🏆",
     rising_star: "כוכב עולה!",
@@ -303,7 +309,7 @@ export const he = {
     ai_event_leader_change: "מהפך בטבלה! הקבוצה %{className} עקפה את כולם",
     ai_event_student_jump: "זינוק מרשים של התלמיד %{studentName}",
     ai_event_class_jump: "זינוק אדיר של הקבוצה %{className}",
-    
+
     // Score Entry
     group_label: "קבוצה",
     selected_student: "תלמיד נבחר",
@@ -314,10 +320,11 @@ export const he = {
     select_group_placeholder: "בחר קבוצה...",
     points_update_error: "שגיאה בעדכון ניקוד: %{error}",
     server_error: "תקלת שרת",
-    
+
     // Action Log & AI Summary
     activity_log_and_ai_title: "יומן פעילות ו-AI",
-    activity_log_and_ai_description: "מעקב אחר כלל פעולות הניקוד במערכת וניתוח חכם של המגמות.",
+    activity_log_and_ai_description:
+        "מעקב אחר כלל פעולות הניקוד במערכת וניתוח חכם של המגמות.",
     activity_history_title: "היסטוריית פעולות",
     time: "זמן",
     performer: "מבצע",
@@ -341,16 +348,17 @@ export const he = {
     restore: "לשחזר",
     cancel_short: "לבטל",
     modify_action_title: "%{action} פעולה",
-    modify_action_confirm: "האם אתה בטוח שברצונך %{action} פעולה זו? הניקוד יתעדכן בהתאם.",
+    modify_action_confirm:
+        "האם אתה בטוח שברצונך %{action} פעולה זו? הניקוד יתעדכן בהתאם.",
     action_completed_successfully: "הפעולה הושלמה בהצלחה",
-    
+
     error_prefix: "שגיאה: %{error}",
     update_error_prefix: "שגיאה בעדכון: %{error}",
     edit_action: "ערוך פעולה",
     restore_action: "שחזר פעולה",
     cancel_action: "בטל פעולה",
     cancel_edit: "בטל עריכה",
-    
+
     // Dashboard
     total_institution_score: "ניקוד מוסדי כולל",
     points_ticker: "ניקוד רץ",
@@ -369,14 +377,14 @@ export const he = {
     more_points: "עוד",
     points_short: "נקו'",
     to_stage: "לשלב",
-    to_label: "ל-",
+    to_label: "לחשיפת הפרס",
     cumulative_score: "ניקוד מצטבר",
     together: "יחד",
     last_update: "עדכון אחרון",
     groups_podium: "פודיום הקבוצות",
     top_10_students: "עשרת המצטיינים",
     competition_label: "תחרות",
-    
+
     // Goals Manager
     stage_label: "שלב %{index}",
     stage_progress: "התקדמות שלב",
@@ -384,15 +392,18 @@ export const he = {
     emoji_only_error: "נא להזין אמוג'י אחד בלבד (למשל: 🏆)",
     score_must_be_higher: "היעד חייב להיות גדול מהשלב הקודם (%{minScore})",
     delete_stage_title: "מחיקת שלב",
-    confirm_delete_stage: "האם אתה בטוח שברצונך למחוק שלב זה? הפעולה אינה ניתנת לביטול.",
+    confirm_delete_stage:
+        "האם אתה בטוח שברצונך למחוק שלב זה? הפעולה אינה ניתנת לביטול.",
     edit_stage_title: "עריכת שלב קיים",
     add_stage_title: "הוספת שלב תחרות חדש",
     add_goal_title: "הוספת יעד מוסדי חדש",
     edit_goal_title: "עריכת יעד קיים",
     define_stages_desc: "הגדרת שלבים וחשיפת פרסים",
     prize_emoji_selection: "בחירת אמוג'י לפרס",
-    current_institution_score: "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
-    current_cumulative_score_label: "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
+    current_institution_score:
+        "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
+    current_cumulative_score_label:
+        "<span class='text-green-400'>יחד</span> ניקוד מצטבר:",
     stage_name_label: "שם השלב/יעד",
     stage_name_label_with_index: "שלב %{index}: שם השלב/יעד",
     stage_index_label: "שלב %{index}: %{name}",
@@ -419,7 +430,7 @@ export const he = {
     add_stage_to_list: "הוסף שלב חדש +",
     stage_name_placeholder: "היסודות",
     no_image_uploaded: "אין תמונה טעונה",
-    
+
     // Users Manager
     users_management_title: "ניהול צוות ומשתמשים",
     users_management_desc: "הוספה, עריכה וניהול הרשאות של מנהלים ומורים בתחרות",
@@ -458,18 +469,19 @@ export const he = {
     role_superuser_short: "משתמש על",
     role_admin_short: "מנהל",
     role_teacher_short: "מורה",
-    
+
     // Goals Management
     goals_mgmt_title: "ניהול יעדים ואבני דרך",
     institutional_goals_title: "יעדים מוסדיים משותפים",
     institutional_goals_desc: "שלבי התחרות שכולם חושפים יחד ככל שנצברים נקודות",
     group_goals_title: "יעדי קבוצה אישיים",
-    teacher_can_update_warning: "שימו לב: גם המורה האחראי על הקבוצה יכול לעדכן את היעד בעצמו דרך ממשק הניקוד.",
+    teacher_can_update_warning:
+        "שימו לב: גם המורה האחראי על הקבוצה יכול לעדכן את היעד בעצמו דרך ממשק הניקוד.",
     no_target_set: "טרם נקבע יעד",
     current_label: "נוכחי",
     missing_points_label: "חסר",
     enter_target_placeholder: "הזן יעד...",
-    
+
     // Classes Manager
     classes_management_title: "ניהול קבוצות ותלמידים",
     add_class_label: "הוסף קבוצה",
@@ -489,14 +501,17 @@ export const he = {
     student_deleted_success: "תלמיד נמחק",
     student_delete_error: "שגיאה במחיקה",
     delete_student_title: "מחיקת תלמיד",
-    confirm_delete_student: "האם אתה בטוח שברצונך למחוק את התלמיד %{studentName}?",
+    confirm_delete_student:
+        "האם אתה בטוח שברצונך למחוק את התלמיד %{studentName}?",
     loading_excel_lib: "טוען ספריית אקסל...",
     invalid_excel_file: "קובץ לא תקין או ריק מדי",
-    header_row_not_found: "לא נמצאה שורת כותרת תקינה (חובה: 'שם התלמיד', 'שכבה')",
+    header_row_not_found:
+        "לא נמצאה שורת כותרת תקינה (חובה: 'שם התלמיד', 'שכבה')",
     missing_cols_error: "עמודות חסרות בקובץ",
     header_detected_row: "זוהתה כותרת בשורה %{row}. מעבד נתונים...",
     creating_group_progress: "יוצר קבוצה: %{name}...",
-    import_completed_summary: "ייבוא הושלם: נוספו %{groups} קבוצות ו-%{students} תלמידים.",
+    import_completed_summary:
+        "ייבוא הושלם: נוספו %{groups} קבוצות ו-%{students} תלמידים.",
     no_data_found: "לא נמצאו נתונים",
     excel_empty_error: "קובץ האקסל ריק",
     excel_import_success: "הייבוא הושלם בהצלחה!",
@@ -514,7 +529,8 @@ export const he = {
     new_student_placeholder: "שם תלמיד חדש...",
     close_window: "סגור חלון",
     students_label: "תלמידים",
-    confirm_delete_group_warning: "אזהרה: מחיקת הקבוצה תמחוק את כל התלמידים והניקוד המשויכים אליה לצמיתות. האם להמשיך?",
+    confirm_delete_group_warning:
+        "אזהרה: מחיקת הקבוצה תמחוק את כל התלמידים והניקוד המשויכים אליה לצמיתות. האם להמשיך?",
 
     // Data Management
     data_mgmt_title: "ניהול נתונים וגיבוי",
@@ -525,9 +541,11 @@ export const he = {
     import_warning: "פעולה זו עלולה לדרוס נתונים קיימים. האם להמשיך?",
     import_success_refresh: "השחזור בוצע בהצלחה. נא לרענן.",
     import_error: "שגיאה בשחזור: %{error}",
-    reset_logs_warning: "האם לאפס את יומן הפעילות? הניקוד הנוכחי יישמר, אך ההיסטוריה תימחק.",
+    reset_logs_warning:
+        "האם לאפס את יומן הפעילות? הניקוד הנוכחי יישמר, אך ההיסטוריה תימחק.",
     reset_scores_warning: "האם לאפס את הניקוד ל-0? יומן הפעילות יישמר.",
-    reset_full_warning: "אזהרה חמורה: פעולה זו תאפס את כל הניקוד ותמחק את כל ההיסטוריה לצמיתות.",
+    reset_full_warning:
+        "אזהרה חמורה: פעולה זו תאפס את כל הניקוד ותמחק את כל ההיסטוריה לצמיתות.",
     reset_data_title: "איפוס נתונים",
     reset_success: "האיפוס בוצע בהצלחה.",
     reset_error: "שגיאה באיפוס: %{error}",
@@ -551,7 +569,8 @@ export const he = {
     reset_all_btn: "בצע איפוס מלא",
     execute_full_reset: "בצע איפוס מלא",
 
-    run_code_supabase_msg: "נא להריץ את הקוד ב-Supabase SQL Editor תחת הפרויקט שלך.",
+    run_code_supabase_msg:
+        "נא להריץ את הקוד ב-Supabase SQL Editor תחת הפרויקט שלך.",
 
     // Lite Teacher View
     no_groups_assigned: "אין קבוצות משויכות",
@@ -596,30 +615,36 @@ export const he = {
     placeholder_place_3: "מקום 3",
     placeholder_random_participant: "משתתף אקראי",
     placeholder_random_group: "קבוצה אקראית",
-    
+
     // AI Settings
     ai_settings_title: "הגדרות בינה מלאכותית",
     ai_test_connection_title: "בדיקת חיבור לשרת ה-AI",
-    ai_test_connection_desc: "מפתח ה-API מוגדר בשרת ומשמש ליצירת פרשנות חכמה בזמן אמת.",
+    ai_test_connection_desc:
+        "מפתח ה-API מוגדר בשרת ומשמש ליצירת פרשנות חכמה בזמן אמת.",
     ai_test_connection_button: "בדוק חיבור",
     ai_api_key_title: "מפתח API ייחודי לתחרות",
-    ai_api_key_desc: "ניתן להגדיר מפתח API ספציפי לתחרות זו. אם יישאר ריק, המערכת תשתמש במפתח ברירת המחדל של השרת.",
+    ai_api_key_desc:
+        "ניתן להגדיר מפתח API ספציפי לתחרות זו. אם יישאר ריק, המערכת תשתמש במפתח ברירת המחדל של השרת.",
     ai_api_key_placeholder: "הדבק כאן את מפתח ה-API (AIza...)",
     ai_prompt_title: "הנחיות לפרשן המערכת",
-    ai_prompt_desc: "כאן ניתן לשנות את ההנחיות ל-AI. השאר ריק כדי להשתמש בברירת המחדל של המערכת.",
+    ai_prompt_desc:
+        "כאן ניתן לשנות את ההנחיות ל-AI. השאר ריק כדי להשתמש בברירת המחדל של המערכת.",
     ai_default_prompt_label: "ברירת המחדל (לקריאה בלבד)",
     ai_custom_prompt_label: "פרומפט מותאם אישית",
     ai_custom_prompt_placeholder: "כתוב כאן את ההנחיות החדשות...",
     ai_keywords_title: "מילות מפתח",
-    ai_keywords_desc: "הוסף מילים שה-AI ישתדל לשלב בפרשנות (לדוגמה: סלוגן בית ספרי, ערך החודש, דמויות מפתח).",
+    ai_keywords_desc:
+        "הוסף מילים שה-AI ישתדל לשלב בפרשנות (לדוגמה: סלוגן בית ספרי, ערך החודש, דמויות מפתח).",
     ai_keywords_placeholder: "הקלד תגית ולחץ אנטר...",
     ai_no_tags: "אין תגיות מוגדרות",
     ai_settings_saved: "הגדרות AI נשמרו בהצלחה",
     ai_settings_save_error: "שגיאה בשמירה: %{error}",
-    
+
     // AI Service
-    ai_server_connection_error: "לא ניתן להתחבר לשרת ה-AI. ייתכן שהפונקציה לא עברה Deployment או שיש בעיית רשת.",
-    ai_api_key_error: "מפתח ה-API של Gemini לא הוגדר בשרת. יש להגדיר אותו ב-Supabase Dashboard.",
+    ai_server_connection_error:
+        "לא ניתן להתחבר לשרת ה-AI. ייתכן שהפונקציה לא עברה Deployment או שיש בעיית רשת.",
+    ai_api_key_error:
+        "מפתח ה-API של Gemini לא הוגדר בשרת. יש להגדיר אותו ב-Supabase Dashboard.",
     ai_connection_success_provided_key: "החיבור תקין",
     ai_connection_success_server: "החיבור תקין",
     ai_empty_response: "תגובה ריקה",
@@ -630,13 +655,19 @@ export const he = {
     ai_fallback_3: "ההצלחה של החבר היא ההשראה שלי לצמיחה!",
     ai_fallback_4: "הכיתה היא צוות אחד במסע משותף לעבר היעד!",
     ai_fallback_5: "שימו לב לזינוק המרשים! הדרך פתוטה לכולם!",
-    ai_prompt_generate_filler: "צור 5 הודעות מוטיבציה קצרות המקדמות 'קנאת סופרים' וצמיחה עבור %{schoolName} במבצע %{competitionName}. השתמש במושגים כמו 'המסע המשותף' ו'הגן הפורח'. החזר כצד מערך JSON של מחרוזות.",
-    ai_instruction_commentator: "אתה מנטור חינוכי. תפקידך לפרגן ל-3 הקבוצות שתרמו הכי הרבה לאחרונה לעלייה בניקוד. כתוב משפט קצר מאוד (3-5 מילים) שמעודד אותם בשמם. אל תשתמש במזהים טכניים.",
-    ai_prompt_summarize: "נתח את פעילות הניקוד: %{data}. הפק סיכום מעורר השראה בפורמט וואטסאפ (השתמש ב-* להדגשות) ברוח 'קנאת סופרים', במטרה לגרום לתחרות המצמיחה להמשיך בשיא הכוח! התמקד במאמץ, ב'מסע המשותף' הקבוצתי, ובהצטיינות אישית שמעלה את הרף לכולם. סיים בקריאה נלהבת להמשך צמיחה משותפת! שים לב: בשום פנים ואופן אל תשתמש במזהים (IDs), קודים פנימיים או UUID המופיעים בנתונים. השתמש רק בשמות ובתיאורים המילוליים.",
-    ai_instruction_admin: "אתה יועץ פדגוגי מומחה לתרבות של צמיחה ו'קנאת סופרים'. נתח נתונים כדי לזהות מוקדי עוצמה, שיתוף פעולה והתקדמות שמעוררת השראה באחרים. לעולם אל תזכיר מזהים טכניים או קודים של המערכת בסיכומים שלך.",
-    ai_keyword_instruction: "השתמש במילות המפתח הבאות כהשראה והקשר לשילוב טבעי בטקסט: %{keywords}.",
+    ai_prompt_generate_filler:
+        "צור 5 הודעות מוטיבציה קצרות המקדמות 'קנאת סופרים' וצמיחה עבור %{schoolName} במבצע %{competitionName}. השתמש במושגים כמו 'המסע המשותף' ו'הגן הפורח'. החזר כצד מערך JSON של מחרוזות.",
+    ai_instruction_commentator:
+        "אתה מנטור חינוכי. תפקידך לפרגן ל-3 הקבוצות שתרמו הכי הרבה לאחרונה לעלייה בניקוד. כתוב משפט קצר מאוד (3-5 מילים) שמעודד אותם בשמם. אל תשתמש במזהים טכניים.",
+    ai_prompt_summarize:
+        "נתח את פעילות הניקוד: %{data}. הפק סיכום מעורר השראה בפורמט וואטסאפ (השתמש ב-* להדגשות) ברוח 'קנאת סופרים', במטרה לגרום לתחרות המצמיחה להמשיך בשיא הכוח! התמקד במאמץ, ב'מסע המשותף' הקבוצתי, ובהצטיינות אישית שמעלה את הרף לכולם. סיים בקריאה נלהבת להמשך צמיחה משותפת! שים לב: בשום פנים ואופן אל תשתמש במזהים (IDs), קודים פנימיים או UUID המופיעים בנתונים. השתמש רק בשמות ובתיאורים המילוליים.",
+    ai_instruction_admin:
+        "אתה יועץ פדגוגי מומחה לתרבות של צמיחה ו'קנאת סופרים'. נתח נתונים כדי לזהות מוקדי עוצמה, שיתוף פעולה והתקדמות שמעוררת השראה באחרים. לעולם אל תזכיר מזהים טכניים או קודים של המערכת בסיכומים שלך.",
+    ai_keyword_instruction:
+        "השתמש במילות המפתח הבאות כהשראה והקשר לשילוב טבעי בטקסט: %{keywords}.",
     changes_detected: "יש שינויים",
-    offline_message: "אתה במצב אופליין. חלק מהפעולות עשויות שלא לעבוד עד לחיבור מחדש.",
+    offline_message:
+        "אתה במצב אופליין. חלק מהפעולות עשויות שלא לעבוד עד לחיבור מחדש.",
     pwa_offline_ready: "האפליקציה מוכנה לעבודה באופליין",
     pwa_update_available: "גרסה חדשה זמינה. עדכן עכשיו?",
     pwa_refresh_button: "רענן ועדכן",
@@ -651,13 +682,20 @@ export const he = {
     kiosk_tip_title: "טיפ לרוטציה:",
     global_kiosk_settings: "הגדרות סבב כלליות",
     default_interval_label: "זמן ברירת מחדל (שניות)",
-    global_interval_desc: "זמן זה ישמש כברירת מחדל עבור אתרים חדשים ועבור לוח המשחק עצמו.",
-    kiosk_tip_desc: "ניתן להציג את אתר בית הספר, לוח הודעות או דפי תוכן מעניינים כדי לשמור על עניין בלוח התצוגה.",
-    kiosk_security_note: "שים לב: אתרים מסוימים עשויים לחסום תצוגה בתוך מסגרת (iframe) מסיבות אבטחה. מומלץ לבדוק את הקישור לאחר ההוספה.",
-    
+    global_interval_desc:
+        "זמן זה ישמש כברירת מחדל עבור אתרים חדשים ועבור לוח המשחק עצמו.",
+    kiosk_tip_desc:
+        "ניתן להציג את אתר בית הספר, לוח הודעות או דפי תוכן מעניינים כדי לשמור על עניין בלוח התצוגה.",
+    kiosk_security_note:
+        "שים לב: אתרים מסוימים עשויים לחסום תצוגה בתוך מסגרת (iframe) מסיבות אבטחה. מומלץ לבדוק את הקישור לאחר ההוספה.",
+    competition_dashboard: "לוח תחרות",
+    add_external_sites: "הוסף אתרים חיצוניים כדי להציגם לסירוגין עם לוח התחרות",
+
     // Kiosk Start
     kiosk_start_title: "מוכנים להתחיל?",
-    kiosk_start_desc: "לחצו על הכפתור כדי להפעיל את סבב האתרים ולפתוח את אפשרות הסאונד והוידאו האוטומטי.",
+    kiosk_start_desc:
+        "לחצו על הכפתור כדי להפעיל את סבב האתרים ולפתוח את אפשרות הסאונד והוידאו האוטומטי.",
     kiosk_start_button: "הפעל מצב קיוסק",
-    kiosk_audio_hint: "לחיצה זו נדרשת על ידי הדפדפן כדי לאפשר השמעת מוזיקה ווידאו באופן אוטומטי.",
+    kiosk_audio_hint:
+        "לחיצה זו נדרשת על ידי הדפדפן כדי לאפשר השמעת מוזיקה ווידאו באופן אוטומטי.",
 };

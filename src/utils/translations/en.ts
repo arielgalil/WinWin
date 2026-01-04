@@ -25,7 +25,8 @@ export const en = {
     confirm_deletion: "Confirm Deletion",
     click_again_to_confirm: "Click again to confirm",
     logs_copied: "Logs copied to clipboard!",
-    debug_tip: "Tip: If there's a red error when updating points, copy the logs and send them for fixing.",
+    debug_tip:
+        "Tip: If there's a red error when updating points, copy the logs and send them for fixing.",
     copied_to_clipboard: "Copied to clipboard! 📋",
     last_saved: "Last saved",
     not_saved_recently: "Not saved recently",
@@ -80,7 +81,7 @@ export const en = {
     goals_mgmt_desc: "Manage goals and rewards",
     classes_management_desc: "Manage groups, students, and staff",
     activity_log_description: "View activity logs and use AI tools",
-    
+
     // Admin Sidebar
     role_super_user: "Super User (Global Admin)",
     role_admin: "Competition Manager (Admin)",
@@ -126,7 +127,8 @@ export const en = {
     save_success: "Settings saved successfully ✨",
     unsaved_changes: "You have unsaved changes",
     saving: "Saving...",
-    missing_campaign_id_error: "Critical Error: Missing Campaign ID. Try refreshing the page.",
+    missing_campaign_id_error:
+        "Critical Error: Missing Campaign ID. Try refreshing the page.",
     settings_saved_success: "Settings saved successfully ✨",
     save_error: "Save Error: %{message}",
     run_sql_code_check: "Make sure you ran the SQL code",
@@ -139,7 +141,8 @@ export const en = {
     music_settings_desc: "Background audio settings",
     youtube_placeholder: "https://www.youtube.com/watch?v=...",
     tip_atmosphere_title: "Atmosphere Tip:",
-    tip_atmosphere_desc: "💡 **Tip:** Choose upbeat music to increase competition energy!",
+    tip_atmosphere_desc:
+        "💡 **Tip:** Choose upbeat music to increase competition energy!",
     visual_design_desc: "Customize the look and feel of your scoreboard",
     live_preview: "Live Preview",
     sample_title: "Sample Title",
@@ -147,15 +150,18 @@ export const en = {
     typography_colors: "Typography Colors",
     title_1_label: "Title 1",
     title_2_label: "Title 2",
-    contrast_test_tip: "Contrast test: Ensure text remains readable against your chosen background colors.",
+    contrast_test_tip:
+        "Contrast test: Ensure text remains readable against your chosen background colors.",
     scoring_settings_desc: "Configure point values and limits",
     button_label_placeholder: "e.g. Bonus",
     delete_preset_title: "Delete Score Preset",
-    delete_preset_confirm: "Are you sure you want to delete the preset \"%{label}\"",
-    
+    delete_preset_confirm:
+        'Are you sure you want to delete the preset "%{label}"',
+
     // AI Settings and Goals Manager additions
     delete_keyword_title: "Delete Keyword",
-    delete_keyword_confirm: "Are you sure you want to delete the keyword \"%{\\kw}\"",
+    delete_keyword_confirm:
+        'Are you sure you want to delete the keyword "%{\\kw}"',
     goal_score_error: "Target must be higher than starting score (%{minScore})",
     start_label: "Start",
     end_score_label: "Ending Score",
@@ -200,13 +206,15 @@ export const en = {
     back_to_selection: "Back to Selection",
     loading_campaign_data: "Loading competition data...",
     campaign_not_found: "Competition not found or invalid link.",
-    competition_access_denied: "Access denied. You don't have permission to access this competition.",
+    competition_access_denied:
+        "Access denied. You don't have permission to access this competition.",
     identifying_permissions: "Identifying permissions...",
     loading_system: "Loading system...",
 
     // Login
     login_platform_title: "%{app_name} Competition System",
-    login_platform_desc: "A platform for managing and displaying shared, group, and personal achievements in real-time.",
+    login_platform_desc:
+        "A platform for managing and displaying shared, group, and personal achievements in real-time.",
     login_platform_slogan: "Winning and growing together.",
     email_label: "Email",
     password_label: "Password",
@@ -269,7 +277,8 @@ export const en = {
     tag_place_3: "[3rd Place]",
     tag_random_participant: "[Random Participant]",
     tag_random_group: "[Random Group]",
-    ai_default_prompt_content: "\nYou are an enthusiastic educational mentor guiding a school competition.\n      \nReal-time data:\n1. Last action: [Action].\n2. Leaderboard leaders: [Leaders].\n3. Shared goal (Mission Control): [Goal]\n4. Class goals status: [Classes]\n\nGoal: Encourage \"Inspirational Competition\" (constructive competition) and refer to the shared or class goal status if relevant.\nWrite a short sentence (up to 15 words), energetic and appreciative in English.\n\nCritical guidelines:\n1. If we are close to the shared goal, mention it with excitement!\n2. If a class achieved a goal, appreciate them.\n3. Use language of \"building\", \"climbing\", \"growth\", \"partnership\", \"together\", \"progress\", \"inspiration\" and more.\n4. Avoid violent/aggressive language.\n5. Be witty and lighthearted.\n",
+    ai_default_prompt_content:
+        '\nYou are an enthusiastic educational mentor guiding a school competition.\n      \nReal-time data:\n1. Last action: [Action].\n2. Leaderboard leaders: [Leaders].\n3. Shared goal (Mission Control): [Goal]\n4. Class goals status: [Classes]\n\nGoal: Encourage "Inspirational Competition" (constructive competition) and refer to the shared or class goal status if relevant.\nWrite a short sentence (up to 15 words), energetic and appreciative in English.\n\nCritical guidelines:\n1. If we are close to the shared goal, mention it with excitement!\n2. If a class achieved a goal, appreciate them.\n3. Use language of "building", "climbing", "growth", "partnership", "together", "progress", "inspiration" and more.\n4. Avoid violent/aggressive language.\n5. Be witty and lighthearted.\n',
     full_backup_desc: "JSON + Media",
     structure_backup_desc: "Groups & Students",
     settings_backup_desc: "Competition Settings",
@@ -277,7 +286,8 @@ export const en = {
     total_points_label: "Total Points",
     manage_action: "Manage",
     delete_action: "Delete",
-    confirm_delete_campaign: "Are you sure you want to delete this competition? All points and students will be permanently deleted.",
+    confirm_delete_campaign:
+        "Are you sure you want to delete this competition? All points and students will be permanently deleted.",
     new_campaign_title: "Add New Competition",
     edit_campaign_title: "Edit Competition",
     institutions_label: "Institutions",
@@ -285,7 +295,8 @@ export const en = {
     revenue_label: "Revenue",
     add_institution: "Add Institution",
     delete_institution_title: "Delete Institution",
-    confirm_delete_institution: "Are you sure you want to delete this institution? All data will be deleted.",
+    confirm_delete_institution:
+        "Are you sure you want to delete this institution? All data will be deleted.",
     error_deleting: "Delete Error",
     no_active_campaigns: "No active competitions for this institution",
 
@@ -297,7 +308,8 @@ export const en = {
     rising_star: "Rising Star!",
     rising_group: "Group Jump!",
     ai_event_goal_reached: "Shared goal reached: %{goalName}",
-    ai_event_leader_change: "Leaderboard shakeup! %{className} is now in the lead",
+    ai_event_leader_change:
+        "Leaderboard shakeup! %{className} is now in the lead",
     ai_event_student_jump: "Impressive jump by %{studentName}",
     ai_event_class_jump: "Massive jump by %{className}",
 
@@ -314,7 +326,8 @@ export const en = {
 
     // Action Log & AI Summary
     activity_log_and_ai_title: "Activity Log & AI",
-    activity_log_and_ai_description: "Track all point actions in the system and smart analysis of trends.",
+    activity_log_and_ai_description:
+        "Track all point actions in the system and smart analysis of trends.",
     activity_history_title: "Activity History",
     time: "Time",
     performer: "Performer",
@@ -331,14 +344,16 @@ export const en = {
     copy_error: "Copy error",
     analyzing_data: "Analyzing data...",
     generate_new_analysis: "Generate New Analysis",
-    click_below_for_ai_analysis: "Click below for smart analysis of recent activity",
+    click_below_for_ai_analysis:
+        "Click below for smart analysis of recent activity",
     ai_summary_error_prefix: "⚠️ Error generating summary:",
     unknown_error: "Unknown error",
     ai_api_key_check: "Please ensure the API key is correct and try again.",
     restore: "Restore",
     cancel_short: "Cancel",
     modify_action_title: "%{action} Action",
-    modify_action_confirm: "Are you sure you want to %{action} this action? The score will be updated accordingly.",
+    modify_action_confirm:
+        "Are you sure you want to %{action} this action? The score will be updated accordingly.",
     action_completed_successfully: "Completed successfully",
     error_prefix: "Error: %{error}",
     update_error_prefix: "Update Error: %{error}",
@@ -363,7 +378,7 @@ export const en = {
     goal_achieved: "Goal Achieved!",
     common_goal: "Common Goal",
     more_points: "More",
-    to_label: "to",
+    to_label: "to reveal the prize",
     cumulative_score: "Cumulative Score",
     together: "Together",
     last_update: "Last Update",
@@ -376,17 +391,21 @@ export const en = {
     stage_progress: "Stage Progress",
     upload_error_label: "Upload Error",
     emoji_only_error: "Please enter only one emoji (e.g., 🏆)",
-    score_must_be_higher: "Target must be higher than previous stage (%{minScore})",
+    score_must_be_higher:
+        "Target must be higher than previous stage (%{minScore})",
     delete_stage_title: "Delete Stage",
-    confirm_delete_stage: "Are you sure you want to delete this stage? This action cannot be undone.",
+    confirm_delete_stage:
+        "Are you sure you want to delete this stage? This action cannot be undone.",
     edit_stage_title: "Edit Existing Stage",
     add_stage_title: "Add New Competition Stage",
     add_goal_title: "Add New Institutional Goal",
     edit_goal_title: "Edit Existing Goal",
     define_stages_desc: "Define stages and reveal rewards",
     prize_emoji_selection: "Prize Emoji Selection",
-    current_institution_score: "<span class='text-green-400'>Together</span> Cumulative Score:",
-    current_cumulative_score_label: "<span class='text-green-400'>Together</span> Cumulative Score:",
+    current_institution_score:
+        "<span class='text-green-400'>Together</span> Cumulative Score:",
+    current_cumulative_score_label:
+        "<span class='text-green-400'>Together</span> Cumulative Score:",
     stage_name_label: "Stage Name",
     stage_name_label_with_index: "Stage %{index}: Stage Name",
     step_label: "Step %{number}:",
@@ -398,8 +417,8 @@ export const en = {
     add_stage_to_list: "Add New Step +",
     stage_name_placeholder: "The Basics",
     no_image_uploaded: "No image uploaded",
-        
-    // Users Manager    
+
+    // Users Manager
     full_name_placeholder: "e.g. John Doe",
     email_placeholder: "name@email.com",
     password_placeholder: "••••••••",
@@ -417,7 +436,8 @@ export const en = {
     user_not_found: "User not found in system",
     user_exists_joined_success: "Existing user joined successfully!",
     user_created_joined_success: "User created and joined successfully!",
-    confirm_delete_user: "Are you sure you want to remove this user from the competition?",
+    confirm_delete_user:
+        "Are you sure you want to remove this user from the competition?",
     user_details_updated: "User details updated",
     user_deleted_success: "User successfully removed from competition",
     edit_user_details: "Edit User Details",
@@ -436,9 +456,11 @@ export const en = {
     // Goals Management
     goals_mgmt_title: "Goals & Milestones Management",
     institutional_goals_title: "Shared Institutional Goals",
-    institutional_goals_desc: "Competition stages that everyone reveals together as points are accumulated",
+    institutional_goals_desc:
+        "Competition stages that everyone reveals together as points are accumulated",
     group_goals_title: "Individual Group Goals",
-    teacher_can_update_warning: "Note: The group teacher can also update the target through the points interface.",
+    teacher_can_update_warning:
+        "Note: The group teacher can also update the target through the points interface.",
     no_target_set: "No target set",
     current_label: "Current",
     missing_points_label: "Missing",
@@ -464,14 +486,17 @@ export const en = {
     student_deleted_success: "Student deleted",
     student_delete_error: "Deletion error",
     delete_student_title: "Delete Student",
-    confirm_delete_student: "Are you sure you want to delete the student %{studentName}?",
+    confirm_delete_student:
+        "Are you sure you want to delete the student %{studentName}?",
     loading_excel_lib: "Loading Excel library...",
     invalid_excel_file: "Invalid or empty file",
-    header_row_not_found: "Header row not found (required: 'Student Name', 'Grade')",
+    header_row_not_found:
+        "Header row not found (required: 'Student Name', 'Grade')",
     missing_cols_error: "Missing columns in file",
     header_detected_row: "Header detected at row %{row}. Processing...",
     creating_group_progress: "Creating group: %{name}...",
-    import_completed_summary: "Import completed: added %{groups} groups and %{students} students.",
+    import_completed_summary:
+        "Import completed: added %{groups} groups and %{students} students.",
     no_data_found: "No data found",
     excel_empty_error: "Excel file is empty",
     excel_import_success: "Import completed successfully!",
@@ -488,7 +513,8 @@ export const en = {
     new_student_placeholder: "New student name...",
     close_window: "Close Window",
     students_label: "Students",
-    confirm_delete_group_warning: "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
+    confirm_delete_group_warning:
+        "Warning: Deleting the group will permanently delete all associated students and scores. Do you want to continue?",
 
     // Data Management
     data_mgmt_title: "Data Management & Backup",
@@ -496,12 +522,16 @@ export const en = {
     export_completed: "Export completed successfully",
     export_error: "Export error: %{error}",
     restore_from_backup: "Restore from backup",
-    import_warning: "This action may overwrite existing data. Do you want to continue?",
+    import_warning:
+        "This action may overwrite existing data. Do you want to continue?",
     import_success_refresh: "Restore completed successfully. Please refresh.",
     import_error: "Restore error: %{error}",
-    reset_logs_warning: "Do you want to reset the activity log? Current points will be kept, but history will be deleted.",
-    reset_scores_warning: "Are you sure you want to reset all points to 0? Activity log will be kept.",
-    reset_full_warning: "CRITICAL WARNING: This action will reset all points and delete all history permanently.",
+    reset_logs_warning:
+        "Do you want to reset the activity log? Current points will be kept, but history will be deleted.",
+    reset_scores_warning:
+        "Are you sure you want to reset all points to 0? Activity log will be kept.",
+    reset_full_warning:
+        "CRITICAL WARNING: This action will reset all points and delete all history permanently.",
     reset_data_title: "Reset Data",
     reset_success: "Reset completed successfully.",
     reset_error: "Reset error: %{error}",
@@ -527,7 +557,8 @@ export const en = {
 
     // Team Management
     team_mgmt_title_clean: "Competition Team Management",
-    team_mgmt_subtitle: "Management of administrators and teachers participating in the competition",
+    team_mgmt_subtitle:
+        "Management of administrators and teachers participating in the competition",
 
     // Lite Teacher View
     no_groups_assigned: "No groups assigned",
@@ -537,7 +568,8 @@ export const en = {
     not_defined: "Not defined",
     progress_label: "Progress",
     target_label: "Target",
-    add_note_placeholder: "Add a note (e.g., great participation, helped a friend...)",
+    add_note_placeholder:
+        "Add a note (e.g., great participation, helped a friend...)",
     add_context: "Add Context",
     other: "Other",
     add_to_list: "Add to List",
@@ -550,7 +582,8 @@ export const en = {
 
     // Messages Manager
     messages_mgmt_title: "Running Messages Management",
-    messages_mgmt_desc: "Set the sentences to be displayed at the top of the leaderboard alternately",
+    messages_mgmt_desc:
+        "Set the sentences to be displayed at the top of the leaderboard alternately",
     add_message_card: "Add Message",
     write_encouraging_msg: "Write an encouraging message here...",
     smart_tags: "Smart Tags",
@@ -574,28 +607,34 @@ export const en = {
     placeholder_random_group: "Random Group",
 
     // AI Settings
-    ai_settings_title: 'Artificial Intelligence Settings',
-    ai_test_connection_title: 'Test AI Server Connection',
-    ai_test_connection_desc: 'The API key is configured on the server and used to generate smart real-time commentary.',
-    ai_test_connection_button: 'Check connection',
-    ai_api_key_title: 'Unique API Key for Competition',
-    ai_api_key_desc: 'You can set a specific API key for this competition. If left empty, the system will use the default server key.',
-    ai_api_key_placeholder: 'Paste your API key here (AIza...)' ,
-    ai_prompt_title: 'Commentator Prompt (Custom Prompt)',
-    ai_prompt_desc: 'Here you can change the AI instructions. Leave empty to use the system default.',
-    ai_default_prompt_label: 'Default Prompt (Read-only)',
-    ai_custom_prompt_label: 'Custom Prompt',
-    ai_custom_prompt_placeholder: 'Write the new instructions here...',
-    ai_keywords_title: 'Keywords',
-    ai_keywords_desc: 'Add words the AI will try to incorporate into the commentary (e.g., school slogan, monthly value, key figures).',
-    ai_keywords_placeholder: 'Type a tag and press Enter...',
-    ai_no_tags: 'No tags defined',
-    ai_settings_saved: 'AI settings saved successfully',
-    ai_settings_save_error: 'Error saving: %{error}',
+    ai_settings_title: "Artificial Intelligence Settings",
+    ai_test_connection_title: "Test AI Server Connection",
+    ai_test_connection_desc:
+        "The API key is configured on the server and used to generate smart real-time commentary.",
+    ai_test_connection_button: "Check connection",
+    ai_api_key_title: "Unique API Key for Competition",
+    ai_api_key_desc:
+        "You can set a specific API key for this competition. If left empty, the system will use the default server key.",
+    ai_api_key_placeholder: "Paste your API key here (AIza...)",
+    ai_prompt_title: "Commentator Prompt (Custom Prompt)",
+    ai_prompt_desc:
+        "Here you can change the AI instructions. Leave empty to use the system default.",
+    ai_default_prompt_label: "Default Prompt (Read-only)",
+    ai_custom_prompt_label: "Custom Prompt",
+    ai_custom_prompt_placeholder: "Write the new instructions here...",
+    ai_keywords_title: "Keywords",
+    ai_keywords_desc:
+        "Add words the AI will try to incorporate into the commentary (e.g., school slogan, monthly value, key figures).",
+    ai_keywords_placeholder: "Type a tag and press Enter...",
+    ai_no_tags: "No tags defined",
+    ai_settings_saved: "AI settings saved successfully",
+    ai_settings_save_error: "Error saving: %{error}",
 
     // AI Service
-    ai_server_connection_error: "Cannot connect to AI server. The function might not be deployed or there's a network issue.",
-    ai_api_key_error: "Gemini API key is not configured on the server. Please set it in the Supabase Dashboard.",
+    ai_server_connection_error:
+        "Cannot connect to AI server. The function might not be deployed or there's a network issue.",
+    ai_api_key_error:
+        "Gemini API key is not configured on the server. Please set it in the Supabase Dashboard.",
     ai_connection_success_provided_key: "Connection OK",
     ai_connection_success_server: "Connection OK",
     ai_empty_response: "Empty response",
@@ -606,20 +645,27 @@ export const en = {
     ai_fallback_3: "A friend's success is my inspiration!",
     ai_fallback_4: "The class is one team on the way to the goal!",
     ai_fallback_5: "Notice the impressive leap! It's possible for everyone!",
-    ai_prompt_generate_filler: "Create 5 short motivational messages promoting 'Kinaat Sofrim' (inspirational competition) and growth for %{schoolName} in the %{competitionName} campaign. Return as a JSON array of strings.",
-    ai_instruction_commentator: "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
-    ai_prompt_summarize: "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
-    ai_instruction_admin: "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
-    ai_keyword_instruction: "Use the following keywords as inspiration and context to naturally integrate into the text: %{keywords}.",
-    changes_detected: 'Changes detected',
-    offline_message: "You are offline. Some actions may not work until connection is restored.",
+    ai_prompt_generate_filler:
+        "Create 5 short motivational messages promoting 'Kinaat Sofrim' (inspirational competition) and growth for %{schoolName} in the %{competitionName} campaign. Return as a JSON array of strings.",
+    ai_instruction_commentator:
+        "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
+    ai_prompt_summarize:
+        "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
+    ai_instruction_admin:
+        "You are a pedagogical consultant expert in growth culture and constructive competition. Analyze data to identify strengths, collaboration, and progress beyond the average. Never include technical IDs or system codes in your summaries.",
+    ai_keyword_instruction:
+        "Use the following keywords as inspiration and context to naturally integrate into the text: %{keywords}.",
+    changes_detected: "Changes detected",
+    offline_message:
+        "You are offline. Some actions may not work until connection is restored.",
     pwa_offline_ready: "App is ready for offline usage",
     pwa_update_available: "New version available. Update now?",
     pwa_refresh_button: "Refresh & Update",
 
     // Kiosk Rotation
     kiosk_rotation_title: "Kiosk Rotation",
-    kiosk_rotation_desc: "Configure external websites to cycle with the scoreboard.",
+    kiosk_rotation_desc:
+        "Configure external websites to cycle with the scoreboard.",
     rotation_urls_label: "Rotation URLs",
     no_urls_added: "No URLs added to rotation yet",
     rotation_interval_label: "Display duration per site",
@@ -627,13 +673,21 @@ export const en = {
     kiosk_tip_title: "Kiosk Tip:",
     global_kiosk_settings: "Global Rotation Settings",
     default_interval_label: "Default Interval (seconds)",
-    global_interval_desc: "This time will be used as a default for new sites and for the game board itself.",
-    kiosk_tip_desc: "You can display the school website, notice boards, or interesting content pages to keep the display board engaging.",
-    kiosk_security_note: "Note: Some websites may block iframe embedding for security reasons. We recommend testing the link after adding it.",
+    global_interval_desc:
+        "This time will be used as a default for new sites and for the game board itself.",
+    kiosk_tip_desc:
+        "You can display the school website, notice boards, or interesting content pages to keep the display board engaging.",
+    kiosk_security_note:
+        "Note: Some websites may block iframe embedding for security reasons. We recommend testing the link after adding it.",
+    competition_dashboard: "Competition Dashboard",
+    add_external_sites:
+        "Add external sites to cycle with the competition dashboard",
 
     // Kiosk Start
     kiosk_start_title: "Ready to start?",
-    kiosk_start_desc: "Click the button to start the site rotation and enable automatic sound and video.",
+    kiosk_start_desc:
+        "Click the button to start the site rotation and enable automatic sound and video.",
     kiosk_start_button: "Start Kiosk Mode",
-    kiosk_audio_hint: "This interaction is required by the browser to enable automatic audio and video playback.",
+    kiosk_audio_hint:
+        "This interaction is required by the browser to enable automatic audio and video playback.",
 };

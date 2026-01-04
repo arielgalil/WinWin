@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppSettings } from '../../../types';
 import { useLanguage } from '../../../hooks/useLanguage';
 import { AdminSectionCard } from '../../ui/AdminSectionCard';
-import { RefreshIcon, PlusIcon, XIcon, GlobeIcon, ClockIcon, EditIcon, CheckIcon } from '../../ui/Icons';
+import { RefreshIcon, PlusIcon, XIcon, GlobeIcon, ClockIcon, EditIcon, CheckIcon, LayoutDashboardIcon, EyeIcon, EyeOffIcon } from '../../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MotionDiv = motion.div as any;
@@ -10,12 +10,27 @@ const MotionDiv = motion.div as any;
 interface KioskRotationSectionProps {
     settings: Partial<AppSettings>;
     onUpdate: (updates: Partial<AppSettings>) => void;
+    competitionName?: string;
+    institutionName?: string;
 }
 
-export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ settings, onUpdate }) => {
+// Special marker for dashboard entry
+const DASHBOARD_URL = '__DASHBOARD__';
+
+export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ 
+    settings, 
+    onUpdate,
+    competitionName = '',
+    institutionName = ''
+}) => {
     const { t, isRTL } = useLanguage();
     
-    const config = settings.rotation_config || [];
+    // Get external URLs only (filter out dashboard marker)
+    const externalConfig = (settings.rotation_config || []).filter(i => i.url !== DASHBOARD_URL);
+    // Get dashboard duration from config or use default
+    const dashboardEntry = (settings.rotation_config || []).find(i => i.url === DASHBOARD_URL);
+    const dashboardDuration = dashboardEntry?.duration || settings.rotation_interval || 30;
+    
     const rotationInterval = settings.rotation_interval || 30;
     const enabled = settings.rotation_enabled || false;
     
@@ -23,38 +38,69 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ sett
     const [editingIdx, setEditingIdx] = useState<number | null>(null);
     const [editUrl, setEditUrl] = useState('');
     const [editDuration, setEditDuration] = useState(30);
+    const [editingDashboardDuration, setEditingDashboardDuration] = useState(false);
+    const [tempDashboardDuration, setTempDashboardDuration] = useState(dashboardDuration);
+
+    // Normalize URL - add https:// if missing
+    const normalizeUrl = (url: string): string => {
+        const trimmed = url.trim();
+        if (!trimmed) return trimmed;
+        // If already has protocol, return as-is
+        if (/^https?:\/\//i.test(trimmed)) return trimmed;
+        // Add https:// prefix
+        return `https://${trimmed}`;
+    };
+
+    // Build full config with dashboard always first
+    const buildFullConfig = (external: typeof externalConfig, dashDuration: number) => {
+        return [{ url: DASHBOARD_URL, duration: dashDuration }, ...external];
+    };
 
     const handleAddUrl = () => {
-        const trimmedUrl = newUrl.trim();
-        if (trimmedUrl && !config.some(i => i.url === trimmedUrl)) {
-            const updated = [...config, { url: trimmedUrl, duration: rotationInterval }];
+        const normalizedUrl = normalizeUrl(newUrl);
+        if (normalizedUrl && !externalConfig.some(i => i.url === normalizedUrl)) {
+            const updated = buildFullConfig([...externalConfig, { url: normalizedUrl, duration: rotationInterval, hidden: false }], dashboardDuration);
             onUpdate({ rotation_config: updated });
             setNewUrl('');
         }
     };
 
     const removeUrl = (index: number) => {
-        const updated = config.filter((_, i) => i !== index);
+        const updated = buildFullConfig(externalConfig.filter((_, i) => i !== index), dashboardDuration);
         onUpdate({ rotation_config: updated });
     };
 
     const startEdit = (idx: number) => {
         setEditingIdx(idx);
-        setEditUrl(config[idx].url);
-        setEditDuration(config[idx].duration);
+        setEditUrl(externalConfig[idx].url);
+        setEditDuration(externalConfig[idx].duration);
     };
 
     const saveEdit = () => {
         if (editingIdx === null) return;
-        const updated = [...config];
-        updated[editingIdx] = { url: editUrl.trim(), duration: editDuration };
-        onUpdate({ rotation_config: updated });
+        const updatedExternal = [...externalConfig];
+        const normalizedUrl = normalizeUrl(editUrl);
+        updatedExternal[editingIdx] = { ...updatedExternal[editingIdx], url: normalizedUrl, duration: editDuration };
+        onUpdate({ rotation_config: buildFullConfig(updatedExternal, dashboardDuration) });
         setEditingIdx(null);
+    };
+
+    const toggleVisibility = (idx: number) => {
+        const updatedExternal = [...externalConfig];
+        updatedExternal[idx] = { ...updatedExternal[idx], hidden: !updatedExternal[idx].hidden };
+        onUpdate({ rotation_config: buildFullConfig(updatedExternal, dashboardDuration) });
+    };
+
+    const saveDashboardDuration = () => {
+        onUpdate({ rotation_config: buildFullConfig(externalConfig, tempDashboardDuration) });
+        setEditingDashboardDuration(false);
     };
 
     const toggleEnabled = () => {
         onUpdate({ rotation_enabled: !enabled });
     };
+
+    const dashboardLabel = `${t('competition_dashboard' as any)} ${competitionName}${institutionName ? ` - ${institutionName}` : ''}`;
 
     return (
         <AdminSectionCard
@@ -104,8 +150,55 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ sett
                         </div>
 
                         <div className="space-y-3">
+                            {/* DASHBOARD ENTRY - Always First, Not Deletable */}
+                            <div className="bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border-2 border-indigo-300 dark:border-indigo-500/30 overflow-hidden shadow-sm">
+                                {editingDashboardDuration ? (
+                                    <div className="p-4 space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <LayoutDashboardIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                                            <span className="flex-1 text-[var(--fs-sm)] font-bold truncate" style={{ color: 'var(--text-main, black)' }}>{dashboardLabel}</span>
+                                            <button onClick={saveDashboardDuration} className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                                <CheckIcon className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <ClockIcon className="w-4 h-4 text-[var(--text-muted)]" />
+                                            <input 
+                                                type="range" min="5" max="300" step="5"
+                                                value={tempDashboardDuration}
+                                                onChange={e => setTempDashboardDuration(Number(e.target.value))}
+                                                className="flex-1 h-1.5 accent-indigo-600"
+                                            />
+                                            <span className="text-xs font-bold text-indigo-600 min-w-[3rem] text-end">{tempDashboardDuration}s</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="p-3 flex items-center justify-between group">
+                                        <div className="flex-1 min-w-0 flex items-center gap-3">
+                                            <LayoutDashboardIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                                            <div className="min-w-0">
+                                                <p className="text-[var(--fs-sm)] truncate font-bold" style={{ color: 'var(--text-main, black)' }}>{dashboardLabel}</p>
+                                                <p className="text-[var(--fs-xs)] text-indigo-800 dark:text-indigo-400/80 flex items-center gap-1">
+                                                    <ClockIcon className="w-3 h-3" /> {dashboardDuration} {t('seconds' as any)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <button 
+                                                onClick={() => { setTempDashboardDuration(dashboardDuration); setEditingDashboardDuration(true); }} 
+                                                className="p-2 text-indigo-600 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg"
+                                            >
+                                                <EditIcon className="w-4 h-4" />
+                                            </button>
+                                            {/* No delete button for dashboard */}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* External URLs */}
                             <AnimatePresence initial={false}>
-                                {config.map((item, idx) => (
+                                {externalConfig.map((item, idx) => (
                                     <MotionDiv
                                         key={item.url + idx}
                                         initial={{ opacity: 0, y: -10 }}
@@ -137,21 +230,28 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ sett
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="p-3 flex items-center justify-between group">
+                                            <div className={`p-3 flex items-center justify-between group ${item.hidden ? 'opacity-50' : ''}`}>
                                                 <div className="flex-1 min-w-0 flex items-center gap-3">
                                                     <GlobeIcon className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
                                                     <div className="min-w-0">
-                                                        <p className="text-[var(--fs-sm)] text-[var(--text-main)] truncate font-medium">{item.url}</p>
+                                                        <p className={`text-[var(--fs-sm)] truncate font-medium ${item.hidden ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-main)]'}`}>{item.url}</p>
                                                         <p className="text-[var(--fs-xs)] text-[var(--text-muted)] flex items-center gap-1">
                                                             <ClockIcon className="w-3 h-3" /> {item.duration} {t('seconds' as any)}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button onClick={() => startEdit(idx)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg">
+                                                <div className="flex items-center gap-1">
+                                                    <button 
+                                                        onClick={() => toggleVisibility(idx)} 
+                                                        className={`p-2 rounded-lg transition-colors ${item.hidden ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-500/10'}`}
+                                                        title={item.hidden ? t('show_site' as any) : t('hide_site' as any)}
+                                                    >
+                                                        {item.hidden ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+                                                    </button>
+                                                    <button onClick={() => startEdit(idx)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <EditIcon className="w-4 h-4" />
                                                     </button>
-                                                    <button onClick={() => removeUrl(idx)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg">
+                                                    <button onClick={() => removeUrl(idx)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <XIcon className="w-4 h-4" />
                                                     </button>
                                                 </div>
@@ -160,9 +260,9 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({ sett
                                     </MotionDiv>
                                 ))}
                             </AnimatePresence>
-                            {config.length === 0 && (
-                                <div className="text-center py-10 text-[var(--text-muted)] italic border-2 border-dashed border-[var(--border-subtle)] rounded-xl bg-[var(--bg-surface)]/50">
-                                    {t('no_urls_added' as any)}
+                            {externalConfig.length === 0 && (
+                                <div className="text-center py-6 text-[var(--text-muted)] italic border-2 border-dashed border-[var(--border-subtle)] rounded-xl bg-[var(--bg-surface)]/50">
+                                    {t('add_external_sites' as any)}
                                 </div>
                             )}
                         </div>

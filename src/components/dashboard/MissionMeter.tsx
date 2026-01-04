@@ -53,6 +53,10 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const isFirstMountRef = useRef(true);
     const patternSavedRef = useRef(false);
 
+    // Use ref for stable access to updateIrisPattern (avoid dependency loop)
+    const updateIrisPatternRef = useRef(updateIrisPattern);
+    updateIrisPatternRef.current = updateIrisPattern;
+
     // Priority: Database > Local Store > Generate New
     const dbIrisPattern = settings?.iris_pattern;
     const [irises, setIrises] = useState<IrisConfig[]>(dbIrisPattern || localIrisPattern || []);
@@ -71,7 +75,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
             // Save to database if not already saved
             if (campaignId && !patternSavedRef.current) {
                 patternSavedRef.current = true;
-                updateIrisPattern(localIrisPattern);
+                updateIrisPatternRef.current(localIrisPattern);
             }
             return;
         }
@@ -84,9 +88,10 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
         // Save to database if we have campaignId
         if (campaignId && !patternSavedRef.current) {
             patternSavedRef.current = true;
-            updateIrisPattern(newIrises);
+            updateIrisPatternRef.current(newIrises);
         }
-    }, [dbIrisPattern, localIrisPattern, setLocalIrisPattern, campaignId, updateIrisPattern]);
+    }, [dbIrisPattern, localIrisPattern, setLocalIrisPattern, campaignId]);
+
 
 
     const { activeIndex, sortedGoals } = useMemo(() => {
@@ -151,12 +156,22 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     
     const isCelebrationMode = celebratingGoalIndex !== null;
 
+    // Calculate progress within the CURRENT STAGE (not cumulative)
+    // Example: If previous goal was 50,000 and current is 100,000, and score is 75,000:
+    // Progress = (75,000 - 50,000) / (100,000 - 50,000) = 50%
     let progressPct = 0;
     if (isCelebrationMode) {
         progressPct = 1;
     } else if (sortedGoals.length > 0) {
-        // Absolute cumulative progress towards current target
-        const raw = displayGoal.target_score > 0 ? totalScore / displayGoal.target_score : 0;
+        // Get the previous goal's threshold (or 0 if this is the first goal)
+        const previousGoalThreshold = displayIndex > 0 
+            ? sortedGoals[displayIndex - 1].target_score 
+            : 0;
+        const currentGoalTarget = displayGoal.target_score;
+        const stageRange = currentGoalTarget - previousGoalThreshold;
+        const scoreWithinStage = totalScore - previousGoalThreshold;
+        
+        const raw = stageRange > 0 ? scoreWithinStage / stageRange : 0;
         progressPct = Math.min(Math.max(raw, 0), 1);
     } else if (legacyTargetScore) {
         const raw = legacyTargetScore > 0 ? totalScore / legacyTargetScore : 0;
@@ -167,6 +182,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = ({
     const isCompleted = isCelebrationMode || (totalScore >= displayGoal.target_score && sortedGoals.length > 0);
     const missingPoints = Math.max(0, displayGoal.target_score - totalScore);
     const progressOffset = pathLength > 0 ? pathLength * (1 - progressPct) : 0;
+
 
     // Multi-Iris Calibrated Reveal - uses Monte Carlo to compute accurate coverage
     // If complete, force full reveal; otherwise calibrate scale for accurate percentage

@@ -8,6 +8,7 @@ import {
   Menu, 
   LogOut, 
   ArrowLeft, 
+  Trophy,
   Sun, 
   Moon, 
   Share2, 
@@ -18,7 +19,7 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { VersionFooter } from '@/components/ui/VersionFooter';
 import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
 import { formatLastSaved } from '@/utils/dateUtils';
-import { Clock } from 'lucide-react';
+import { LastSavedPill } from '@/components/ui/LastSavedPill';
 
 export interface NavItem {
   id: string;
@@ -160,7 +161,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
           )}
           title={collapsed ? t('return_to_dashboard') : undefined}
         >
-          <ArrowLeft className="h-4 w-4" />
+          <Trophy className="h-4 w-4 text-amber-500" />
           {!collapsed && <span>{t('return_to_dashboard')}</span>}
         </Button>
         <Button
@@ -264,25 +265,25 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
 
         {/* Dynamic Page Header */}
         {(headerTitle || HeaderIcon) && (
-          <div className="bg-card border-b border-border px-4 lg:px-8 py-6 lg:py-8">
+          <div className="bg-card border-b border-border px-4 lg:px-8 py-4 lg:py-4">
             <div className="max-w-7xl mx-auto">
               {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4 lg:gap-6">
                   {HeaderIcon && (
                     <div 
-                      className="p-3 lg:p-4 rounded-2xl bg-muted shadow-sm border border-border/50 flex items-center justify-center shrink-0"
+                      className="p-2.5 lg:p-3 rounded-xl bg-muted shadow-sm border border-border/50 flex items-center justify-center shrink-0"
                       style={{ color: headerColorVar }}
                     >
-                      <HeaderIcon className="w-6 h-6 lg:w-8 lg:h-8" />
+                      <HeaderIcon className="w-5 h-5 lg:w-6 lg:h-6" />
                     </div>
                   )}
                   <div>
-                    <h1 className="text-h2 lg:text-h1 text-foreground tracking-tight leading-tight">
+                    <h1 className="text-xl lg:text-2xl font-bold text-foreground tracking-tight leading-tight">
                       {headerTitle}
                     </h1>
                     {headerDescription && (
-                      <p className="text-sm lg:text-base text-muted-foreground font-medium mt-1 lg:mt-2 opacity-80">
+                      <p className="text-xs lg:text-sm text-muted-foreground font-medium mt-0.5 opacity-80">
                         {headerDescription}
                       </p>
                     )}
@@ -294,10 +295,10 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                   </div>
                 )}
                 {!headerActions && lastSavedAt && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium bg-muted px-3 py-1.5 rounded-full border border-border self-end">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{(language === 'he' ? 'נשמר ' : 'Saved ')} {formatLastSaved(lastSavedAt, language)}</span>
-                  </div>
+                  <LastSavedPill 
+                    timestamp={lastSavedAt} 
+                    className="self-end" 
+                  />
                 )}
               </div>
             </div>

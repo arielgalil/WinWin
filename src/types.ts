@@ -121,7 +121,7 @@ export interface AppSettings {
   logs_updated_at?: string;
   rotation_enabled?: boolean;
   rotation_interval?: number; // Default/Global fallback
-  rotation_config?: { url: string; duration: number }[];
+  rotation_config?: { url: string; duration: number; hidden?: boolean }[];
   iris_pattern?:
     | { cx: number; cy: number; weight: number; delay: number }[]
     | null;

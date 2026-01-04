@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ClockIcon } from './Icons';
 import { SaveNotification } from '../../contexts/SaveNotificationContext';
-import { formatLastSaved } from '../../utils/dateUtils';
-import { useLanguage } from '../../hooks/useLanguage';
+import { LastSavedPill } from './LastSavedPill';
 
 interface SaveNotificationBadgeProps {
   notification?: SaveNotification;
@@ -11,11 +9,6 @@ interface SaveNotificationBadgeProps {
 
 export const SaveNotificationBadge: React.FC<SaveNotificationBadgeProps> = ({ notification, onDismiss }) => {
   const [isDismissed, setIsDismissed] = useState(false);
-  const { language, t } = useLanguage();
-
-  const formatLocalDate = (date: Date): string => {
-    return formatLastSaved(date.toISOString(), language);
-  };
 
   useEffect(() => {
     if (!notification || isDismissed) {
@@ -39,16 +32,10 @@ export const SaveNotificationBadge: React.FC<SaveNotificationBadgeProps> = ({ no
   if (isDismissed || !notification) return null;
 
   return (
-    <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[11px] text-white/70 shadow-sm animate-in fade-in slide-in-from-left-2 duration-300">
-      <ClockIcon className="w-3.5 h-3.5 text-orange-400" />
-      <span className="text-[10px] font-bold">
-        {notification.timestamp 
-          ? `${t('last_saved')}: ${formatLocalDate(notification.timestamp)}`
-          : t('not_saved_recently')}
-      </span>
-      {notification && (
-        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse ml-1" />
-      )}
-    </div>
+    <LastSavedPill 
+      timestamp={notification.timestamp} 
+      isPulse={true} 
+      className="animate-in fade-in slide-in-from-left-2 duration-300"
+    />
   );
 };

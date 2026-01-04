@@ -25,6 +25,9 @@ vi.mock('../../../hooks/useCompetitionMutations', () => ({
     })
 }));
 
+// Stable mock functions - MUST be defined outside mockImplementation to avoid infinite loops
+const mockSetIrisPattern = vi.fn();
+
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: { retry: false }
@@ -44,15 +47,16 @@ const renderWithProvider = (ui: React.ReactElement) => {
 describe('Animation Persistence', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        queryClient.clear();
     });
 
     it('MissionMeter should initialize correctly', () => {
-        // Mock the selector responses
+        // Mock the selector responses with STABLE functions
         vi.mocked(useStore).mockImplementation((selector: any) => {
             const state = {
                 persistent_session: false,
                 iris_pattern: [{ cx: 0.5, cy: 0.5, weight: 1, delay: 0 }],
-                setIrisPattern: vi.fn()
+                setIrisPattern: mockSetIrisPattern // Use stable reference
             };
             return selector(state);
         });
@@ -72,7 +76,7 @@ describe('Animation Persistence', () => {
             const state = {
                 persistent_session: true,
                 iris_pattern: null,
-                setIrisPattern: vi.fn()
+                setIrisPattern: mockSetIrisPattern // Use stable reference
             };
             return selector(state);
         });

@@ -120,3 +120,6 @@ export const WifiOffIcon = ({ className }: IconProps) => <MaterialIcon name="wif
 export const WifiIcon = ({ className }: IconProps) => <MaterialIcon name="wifi" className={className} />;
 export const ImageIcon = ({ className }: IconProps) => <MaterialIcon name="image" className={className} />;
 export const GlobeIcon = ({ className }: IconProps) => <MaterialIcon name="public" className={className} />;
+export const LayoutDashboardIcon = ({ className }: IconProps) => <MaterialIcon name="dashboard" className={className} filled />;
+export const EyeIcon = ({ className }: IconProps) => <MaterialIcon name="visibility" className={className} />;
+export const EyeOffIcon = ({ className }: IconProps) => <MaterialIcon name="visibility_off" className={className} />;

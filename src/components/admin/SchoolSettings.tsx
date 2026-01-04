@@ -383,7 +383,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = ({ settings, onRefr
                 <VisualDesignSection settings={formData} onUpdate={updateForm} />
 
                 {/* 4. Kiosk Rotation */}
-                <KioskRotationSection settings={formData} onUpdate={updateForm} />
+                <KioskRotationSection 
+                    settings={formData} 
+                    onUpdate={updateForm}
+                    competitionName={formData.competition_name || ''}
+                    institutionName={formData.school_name || ''}
+                />
 
                 {/* 5. Scoring Settings */}
                 <AdminSectionCard

@@ -5,7 +5,7 @@ import { UserProfile } from '@/types';
 import { Button } from './ui/button';
 import { Logo } from './ui/Logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import { Menu, Settings, Users, Target, LogOut, ArrowLeft, Sun, Moon, Share2, RefreshCw } from 'lucide-react';
+import { Menu, Settings, Users, Target, LogOut, Trophy, Sun, Moon, Share2, RefreshCw } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { formatLastSaved } from '@/utils/dateUtils';
@@ -159,7 +159,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             className={cn("w-full h-11 text-base text-foreground hover:bg-accent/50 hover:scale-105 transition-all duration-200", isCollapsed ? "justify-center px-0" : "justify-start gap-3")}
             title={isCollapsed ? t('return_to_dashboard') : undefined}
           >
-            <ArrowLeft className="h-5 w-5 shrink-0" />
+            <Trophy className="h-5 w-5 shrink-0 text-amber-500" />
             {!isCollapsed && <span>{t('return_to_dashboard')}</span>}
           </Button>
           <Button 
@@ -203,7 +203,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
               </nav>
               <div className="p-4 border-t border-border">
                 <Button variant="ghost" onClick={onViewDashboard} className="w-full justify-start gap-3 h-11 text-base text-foreground">
-                  <ArrowLeft className="h-5 w-5" />
+                  <Trophy className="h-5 w-5 text-amber-500" />
                   {t('return_to_dashboard')}
                 </Button>
                 <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 h-11 text-base text-destructive hover:bg-destructive/10">
@@ -296,17 +296,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
 
         <main className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-6 lg:px-10 lg:pb-10 bg-gradient-high-energy">
           {/* Content Header (from old AdminPanel) */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-b border-border">
-            <div className="flex items-center gap-5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 py-4 border-b border-border">
+            <div className="flex items-center gap-3">
               <div 
-                className="p-3.5 rounded-2xl bg-secondary shadow-sm border border-border flex items-center justify-center"
+                className="p-2.5 rounded-xl bg-secondary shadow-sm border border-border flex items-center justify-center"
                 style={{ color: headerConfig?.colorVar }}
               >
-                {headerConfig && <headerConfig.icon className="w-8 h-8" />}
+                {headerConfig && <headerConfig.icon className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-h1 text-foreground tracking-tight">{headerConfig?.title}</h2>
-                <p className="text-muted-foreground font-medium text-base mt-1">{headerConfig?.desc}</p>
+                <h2 className="text-xl font-bold text-foreground tracking-tight">{headerConfig?.title}</h2>
+                <p className="text-muted-foreground font-medium text-sm">{headerConfig?.desc}</p>
               </div>
             </div>
 
