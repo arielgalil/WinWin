@@ -55,18 +55,17 @@ describe('KioskRotator', () => {
         expect(screen.getByTestId('board')).toBeDefined();
     });
 
-    it('should rotate through sites while keeping a 3-item sliding window', () => {
+    it('should permanently mount all items to preserve state', () => {
         const { rerender } = render(
             <KioskRotator settings={mockSettings} currentIndex={0}>
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );
 
-        // Initially: Dashboard (0) active, Site 1 (1) is next (preloading)
-        // Site 2 (2) is outside window and should NOT be mounted
+        // ALL items should be mounted at all times for state preservation
         expect(screen.getByTestId('board')).toBeDefined();
         expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
-        expect(screen.queryByTitle(/Kiosk Content 2/i)).toBeNull();
+        expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
 
         // Rotate to Site 1 (currentIndex = 1)
         rerender(
@@ -75,11 +74,7 @@ describe('KioskRotator', () => {
             </KioskRotator>
         );
 
-        // Advance timers so board (idx 0) becomes previousIndex
-        vi.advanceTimersByTime(2000);
-
-        // Window: Board (0) is previous, Site 1 (1) is active, Site 2 (2) is next
-        // All 3 should be mounted
+        // All items still mounted
         expect(screen.getByTestId('board')).toBeDefined();
         expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
         expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
@@ -90,27 +85,8 @@ describe('KioskRotator', () => {
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );
-        
-        // Advance timers so Site 1 (idx 1) becomes previousIndex
-        vi.advanceTimersByTime(2000);
 
-        // Window: Site 1 (1) is previous, Site 2 (2) is active, Dashboard (0) is next
-        // Optimization: Dashboard (0) is unmounted when only preloading to save resources.
-        expect(screen.queryByTestId('board')).toBeNull();
-        expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
-        expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();
-
-        // Advance to Dashboard (currentIndex = 0)
-        rerender(
-            <KioskRotator settings={mockSettings} currentIndex = {0}>
-                <div data-testid="board">Game Board</div>
-            </KioskRotator>
-        );
-
-        // Advance timers so Site 2 (idx 2) becomes previousIndex
-        vi.advanceTimersByTime(2000);
-
-        // Window: Site 2 (2) is previous, Dashboard (0) is active, Site 1 (1) is next
+        // All items still mounted
         expect(screen.getByTestId('board')).toBeDefined();
         expect(screen.getByTitle(/Kiosk Content 1/i)).toBeDefined();
         expect(screen.getByTitle(/Kiosk Content 2/i)).toBeDefined();

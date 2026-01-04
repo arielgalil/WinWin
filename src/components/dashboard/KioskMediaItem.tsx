@@ -5,7 +5,6 @@ interface KioskMediaItemProps {
     isPlaying: boolean;
     volume?: number;
     title?: string;
-    isVisible?: boolean; // New prop to control loading
 }
 
 declare global {
@@ -19,8 +18,7 @@ export const KioskMediaItem: React.FC<KioskMediaItemProps> = ({
     url,
     isPlaying,
     volume = 50,
-    title = 'Media Item',
-    isVisible = true
+    title = 'Media Item'
 }) => {
     const playerRef = useRef<any>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -220,12 +218,11 @@ export const KioskMediaItem: React.FC<KioskMediaItemProps> = ({
         );
     }
 
-    // For generic iframes, we ONLY load the src if the item is visible.
-    // This prevents background audio. PRELOADING is sacrificed for external sites
-    // to guarantee silence.
+    // Keep iframe mounted with real src to preserve state.
+    // Browser throttles visibility:hidden iframes naturally, pausing animations/videos.
     return (
         <iframe
-            src={isVisible ? url : 'about:blank'}
+            src={url}
             className="w-full h-full border-none"
             title={title}
             sandbox="allow-scripts allow-same-origin allow-forms"

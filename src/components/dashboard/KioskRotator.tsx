@@ -37,37 +37,35 @@ export const KioskRotator: React.FC<KioskRotatorProps> = ({
 
     return (
         <div className="relative w-full h-full overflow-hidden bg-black">
-            {/* Render items ONLY if they are active OR were recently active (for transition) */}
+            {/* Mount ALL items permanently to preserve state across rotations */}
             {config.map((item, idx) => {
+                // Skip hidden items entirely
+                if (item.hidden) return null;
+
                 const isActive = currentIndex === idx;
                 const wasActive = previousIndex === idx;
-                const nextIndex = config.length > 0 ? (currentIndex + 1) % config.length : -1;
-                const isNext = nextIndex === idx;
-                const isTransitioning = wasActive && !isActive;
                 const isVisible = isActive || wasActive;
-
-                if (!isActive && !wasActive && !isNext) return null;
+                // Dormant = not visible but still mounted for state preservation
+                const isDormant = !isActive && !wasActive;
 
                 return (
                     <div 
                         key={item.url + idx}
-                        className="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out bg-black"
+                        className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out bg-black"
                         style={{ 
                             opacity: isActive ? 1 : 0,
-                            visibility: isVisible ? 'visible' : 'hidden',
+                            // Use visibility: hidden for dormant items - browser throttles but preserves state
+                            visibility: isDormant ? 'hidden' : 'visible',
                             pointerEvents: isActive ? 'auto' : 'none',
                             zIndex: isActive ? 20 : 10,
                         }}
                     >
                         {item.url === KIOSK_CONSTANTS.DASHBOARD_URL ? (
-                            // Optimization: Don't render heavy dashboard if only preloading.
-                            // Dashboard is always mounted when active OR fading out.
-                            isVisible ? <div className="w-full h-full">{children}</div> : null
+                            <div className="w-full h-full">{children}</div>
                         ) : (
                             <KioskMediaItem
                                 url={item.url}
                                 isPlaying={isActive}
-                                isVisible={isVisible} // New prop to control iframe loading
                                 volume={50}
                                 title={`Kiosk Content ${idx}`}
                             />
