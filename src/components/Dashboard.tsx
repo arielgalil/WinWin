@@ -209,6 +209,9 @@ export const Dashboard: React.FC = () => {
             <KioskStartOverlay
                 isVisible={!!settings?.rotation_enabled && !isKioskStarted}
                 onStart={handleStartKiosk}
+                autoStartSeconds={Math.floor(
+                    KIOSK_CONSTANTS.AUTO_START_DELAY_MS / 1000,
+                )}
             />
 
             <div className="flex flex-col h-screen w-full overflow-hidden bg-black relative">
