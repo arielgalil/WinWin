@@ -42,8 +42,11 @@ export const Dashboard: React.FC = () => {
     const setPersistentSession = useStore(state => state.setPersistentSession);
     
     // State
-    const [isMusicPlaying, setIsMusicPlaying] = useState(false);
     const [isKioskStarted, setIsKioskStarted] = useState(() => {
+        return sessionStorage.getItem('kiosk_started') === 'true';
+    });
+    const [isMusicPlaying, setIsMusicPlaying] = useState(() => {
+        // If kiosk is already started, music should be playing
         return sessionStorage.getItem('kiosk_started') === 'true';
     });
     const [kioskIndex, setKioskIndex] = useState(0); // Index in settings.rotation_config
