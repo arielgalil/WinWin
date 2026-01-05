@@ -3,9 +3,9 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAuthPermissions } from '../services/useAuthPermissions';
 import { ErrorScreen } from './ui/ErrorScreen';
+import { PageSkeleton } from './ui/PageSkeleton';
 import { useLanguage } from '../hooks/useLanguage';
 
-import { LoadingScreen } from './ui/LoadingScreen';
 import { useParams } from 'react-router-dom';
 import { useCampaign } from '../hooks/useCampaign';
 
@@ -20,17 +20,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     children,
     fallbackPath = '/login'
 }) => {
-    const { user } = useAuth();
+    const { user, authLoading } = useAuth();
     const { slug } = useParams();
     const { isLoadingCampaign } = useCampaign();
     const { canAccessAdmin, canAccessVote } = useAuthPermissions();
     const { t } = useLanguage();
     const location = useLocation();
 
-    if (slug && isLoadingCampaign) {
-        return <LoadingScreen message={t('identifying_permissions')} />;
+    // Determine skeleton type based on route
+    const skeletonType = allowedRoles.includes('teacher') && !allowedRoles.includes('admin') 
+        ? 'vote' 
+        : 'admin';
+
+    // Show skeleton while auth or campaign is still loading
+    // This provides immediate visual feedback instead of blocking
+    if (authLoading || (slug && isLoadingCampaign)) {
+        return <PageSkeleton type={skeletonType} message={t('identifying_permissions')} />;
     }
 
+    // Only redirect if auth is settled AND user is not logged in
     if (!user) {
         if (slug) {
             return <Navigate to={`/login/${slug}`} state={location.state} replace />;
@@ -39,9 +47,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
 
     // Determine authorization based on allowedRoles
-    // For now, we use the pre-calculated flags from useAuthPermissions
-    // tailored to the specific routes they were intended for.
-
     let isAuthorized = false;
 
     if (allowedRoles.includes('admin') || allowedRoles.includes('superuser')) {
@@ -56,3 +61,4 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
     return <>{children}</>;
 };
+
