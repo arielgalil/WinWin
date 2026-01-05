@@ -109,14 +109,38 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
               </div>
 
               <div className="flex items-center gap-3 mx-1">
-                <input
-                  type="checkbox"
-                  id="lite-remember"
-                  checked={rememberMe}
-                  onChange={e => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded-[var(--radius-main)] bg-black/30 border-white/20 accent-white cursor-pointer"
-                />
-                <label htmlFor="lite-remember" className="text-white text-xs font-bold cursor-pointer select-none">{t('remember_me')}</label>
+                <button
+                  type="button"
+                  onClick={() => setRememberMe(!rememberMe)}
+                  className="w-5 h-5 rounded-[var(--radius-main)] bg-black/30 border-2 border-white/30 flex items-center justify-center cursor-pointer transition-all hover:border-white/50 active:scale-95 shrink-0"
+                  style={{
+                    backgroundColor: rememberMe ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.3)',
+                    borderColor: rememberMe ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.3)'
+                  }}
+                  aria-label={t('remember_me')}
+                  aria-checked={rememberMe}
+                  role="checkbox"
+                >
+                  {rememberMe && (
+                    <svg
+                      className="w-3.5 h-3.5 text-white"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </button>
+                <label
+                  onClick={() => setRememberMe(!rememberMe)}
+                  className="text-white text-xs font-bold cursor-pointer select-none"
+                >
+                  {t('remember_me')}
+                </label>
               </div>
 
               {error && (

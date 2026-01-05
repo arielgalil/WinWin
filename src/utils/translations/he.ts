@@ -569,6 +569,16 @@ export const he = {
     reset_all_btn: "בצע איפוס מלא",
     execute_full_reset: "בצע איפוס מלא",
 
+    // Backup type detection
+    invalid_backup_format: "הקובץ אינו קובץ גיבוי תקין",
+    invalid_json_file: "הקובץ אינו JSON תקין. וודא שהקובץ נוצר מייצוא המערכת.",
+    restoring_backup_type: "משחזר גיבוי מסוג: %{type}",
+    backup_type_full: "גיבוי מלא",
+    backup_type_settings: "הגדרות",
+    backup_type_structure: "מבנה קבוצות",
+    backup_type_staff: "צוות",
+    no_restorable_data: "לא נמצאו נתונים לשחזור בקובץ",
+
     run_code_supabase_msg:
         "נא להריץ את הקוד ב-Supabase SQL Editor תחת הפרויקט שלך.",
 

@@ -555,6 +555,17 @@ export const en = {
     reset_all_btn: "Perform Full Reset",
     execute_full_reset: "Perform Full Reset",
 
+    // Backup type detection
+    invalid_backup_format: "The file is not a valid backup file",
+    invalid_json_file:
+        "The file is not valid JSON. Make sure it was exported from the system.",
+    restoring_backup_type: "Restoring backup type: %{type}",
+    backup_type_full: "Full Backup",
+    backup_type_settings: "Settings",
+    backup_type_structure: "Group Structure",
+    backup_type_staff: "Staff",
+    no_restorable_data: "No restorable data found in file",
+
     // Team Management
     team_mgmt_title_clean: "Competition Team Management",
     team_mgmt_subtitle:

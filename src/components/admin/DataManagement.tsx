@@ -1,12 +1,66 @@
 import React, { useState } from 'react';
 import { AppSettings } from '../../types';
-import { DatabaseIcon, DownloadIcon, UploadIcon, AlertIcon, CheckIcon, RefreshIcon, UsersIcon } from '../ui/Icons';
+import { DatabaseIcon, DownloadIcon, UploadIcon, AlertIcon, RefreshIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { supabase } from '../../supabaseClient';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
-
+import { useToast } from '../../hooks/useToast';
 import { useConfirmation } from '../../hooks/useConfirmation';
+
+// Type definitions for backup data
+type BackupType = 'full' | 'settings' | 'structure' | 'staff';
+
+interface BackupData {
+    type?: string;
+    timestamp?: string;
+    campaign_name?: string;
+    settings?: Partial<AppSettings>;
+    classes?: Array<{
+        name: string;
+        score: number;
+        color?: string;
+        students?: Array<{ name: string; score: number }>;
+    }>;
+    staff?: Array<{ role: string; profiles: unknown }>;
+    logs?: unknown[];
+}
+
+/**
+ * Detect the type of backup file based on its contents
+ */
+function detectBackupType(data: BackupData): BackupType | null {
+    if (!data || typeof data !== 'object') return null;
+    
+    const hasSettings = !!data.settings;
+    const hasClasses = !!data.classes && Array.isArray(data.classes);
+    const hasStaff = !!data.staff && Array.isArray(data.staff);
+    const hasLogs = !!data.logs && Array.isArray(data.logs);
+    
+    // Full backup has multiple data types or explicit 'full' type
+    if (data.type === 'full' || (hasSettings && hasClasses) || hasLogs) {
+        return 'full';
+    }
+    
+    // Explicit type from export
+    if (data.type === 'settings' && hasSettings) return 'settings';
+    if (data.type === 'structure' && hasClasses) return 'structure';
+    if (data.type === 'staff' && hasStaff) return 'staff';
+    
+    // Infer type from content
+    if (hasSettings && !hasClasses && !hasStaff) return 'settings';
+    if (hasClasses && !hasSettings && !hasStaff) return 'structure';
+    if (hasStaff && !hasSettings && !hasClasses) return 'staff';
+    
+    // If has any restorable content
+    if (hasSettings || hasClasses || hasStaff) {
+        return hasSettings && hasClasses ? 'full' : 
+               hasSettings ? 'settings' : 
+               hasClasses ? 'structure' : 'staff';
+    }
+    
+    return null;
+}
 
 interface DataManagementProps {
     settings: AppSettings;
@@ -17,13 +71,26 @@ interface DataManagementProps {
 export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave, onRefresh }) => {
     const { t } = useLanguage();
     const { triggerSave } = useSaveNotification();
+    const { showToast } = useToast();
 
     const [isExporting, setIsExporting] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
-    const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     const { modalConfig, openConfirmation } = useConfirmation();
+
+    /**
+     * Get translated backup type name
+     */
+    const getBackupTypeName = (type: BackupType): string => {
+        const names: Record<BackupType, string> = {
+            full: t('backup_type_full' as any) || 'גיבוי מלא',
+            settings: t('backup_type_settings' as any) || 'הגדרות',
+            structure: t('backup_type_structure' as any) || 'מבנה קבוצות',
+            staff: t('backup_type_staff' as any) || 'צוות'
+        };
+        return names[type];
+    };
 
     const handleExport = async (type: 'full' | 'settings' | 'staff' | 'structure') => {
         setIsExporting(true);
@@ -63,9 +130,9 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
             link.click();
             document.body.removeChild(link);
 
-            setStatusMsg({ type: 'success', text: t('export_completed') });
+            showToast(t('export_completed'), 'success');
         } catch (err: any) {
-            setStatusMsg({ type: 'error', text: t('export_error', { error: err.message }) });
+            showToast(t('export_error', { error: err.message }), 'error');
         } finally {
             setIsExporting(false);
         }
@@ -87,53 +154,100 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
     const processImport = async (file: File) => {
         setIsImporting(true);
         try {
-            const text = await file.text();
-            const data = JSON.parse(text);
+            // Parse JSON with specific error handling
+            let data: BackupData;
+            try {
+                const text = await file.text();
+                data = JSON.parse(text);
+            } catch {
+                showToast(t('invalid_json_file' as any) || 'הקובץ אינו JSON תקין. וודא שהקובץ נוצר מייצוא המערכת.', 'error');
+                setIsImporting(false);
+                return;
+            }
+
             const campaignId = settings.campaign_id;
+            if (!campaignId) {
+                showToast(t('missing_campaign_id_error'), 'error');
+                setIsImporting(false);
+                return;
+            }
 
-            if (!campaignId) throw new Error("Campaign ID missing");
+            // Detect backup type
+            const detectedType = detectBackupType(data);
+            if (!detectedType) {
+                showToast(t('invalid_backup_format' as any) || 'הקובץ אינו קובץ גיבוי תקין', 'error');
+                setIsImporting(false);
+                return;
+            }
 
+            // Notify user what we're restoring
+            const typeName = getBackupTypeName(detectedType);
+            showToast((t('restoring_backup_type' as any) || 'משחזר גיבוי מסוג: %{type}').replace('%{type}', typeName), 'info');
+
+            let restoredItems: string[] = [];
+
+            // Restore settings if present
             if (data.settings) {
-                const { id, ...cleanSettings } = data.settings;
-                await supabase.from('app_settings').update({
+                const { id, campaign_id, ...cleanSettings } = data.settings as any;
+                const { error } = await supabase.from('app_settings').update({
                     ...cleanSettings,
                     settings_updated_at: new Date().toISOString()
                 }).eq('campaign_id', campaignId);
+                
+                if (error) throw new Error(`שגיאה בשחזור הגדרות: ${error.message}`);
+                restoredItems.push(t('settings_backup'));
             }
 
+            // Restore classes/structure if present
             if (data.classes && Array.isArray(data.classes)) {
+                // Delete existing data
                 await supabase.from('students').delete().eq('campaign_id', campaignId);
                 await supabase.from('classes').delete().eq('campaign_id', campaignId);
 
                 for (const cls of data.classes) {
                     const { data: newClass, error } = await supabase.from('classes').insert({
                         name: cls.name,
-                        score: cls.score,
+                        score: cls.score ?? 0,
                         color: cls.color,
                         campaign_id: campaignId
                     }).select().single();
 
-                    if (error) throw error;
+                    if (error) throw new Error(`שגיאה ביצירת קבוצה "${cls.name}": ${error.message}`);
 
                     if (cls.students && cls.students.length > 0) {
-                        const studentsPayload = cls.students.map((s: any) => ({
+                        const studentsPayload = cls.students.map((s) => ({
                             name: s.name,
-                            score: s.score,
+                            score: s.score ?? 0,
                             class_id: newClass.id,
                             campaign_id: campaignId
                         }));
-                        await supabase.from('students').insert(studentsPayload);
+                        const { error: studentsError } = await supabase.from('students').insert(studentsPayload);
+                        if (studentsError) throw new Error(`שגיאה בהוספת תלמידים לקבוצה "${cls.name}": ${studentsError.message}`);
                     }
                 }
+                restoredItems.push(t('structure_backup'));
+            }
+
+            // Note: staff restore requires special handling (auth) - skip for safety
+            if (data.staff && Array.isArray(data.staff) && data.staff.length > 0) {
+                // Staff restore is complex due to auth requirements
+                // Just notify that staff was in the backup but not restored
+                showToast('שחזור צוות דורש טיפול ידני - הנתונים זמינים בקובץ', 'info');
+            }
+
+            if (restoredItems.length === 0) {
+                showToast(t('no_restorable_data' as any) || 'לא נמצאו נתונים לשחזור בקובץ', 'error');
+                setIsImporting(false);
+                return;
             }
 
             triggerSave('data-management');
             if (onSave) await onSave();
-            setStatusMsg({ type: 'success', text: t('import_success_refresh') });
+            showToast(t('import_success_refresh'), 'success');
             setTimeout(() => window.location.reload(), 2000);
 
         } catch (err: any) {
-            setStatusMsg({ type: 'error', text: t('import_error', { error: err.message }) });
+            showToast(t('import_error', { error: err.message }), 'error');
         } finally {
             setIsImporting(false);
         }
@@ -166,10 +280,10 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
 
                     triggerSave('data-management');
                     if (onSave) await onSave();
-                    setStatusMsg({ type: 'success', text: t('reset_success') });
+                    showToast(t('reset_success'), 'success');
                     onRefresh();
                 } catch (err: any) {
-                    setStatusMsg({ type: 'error', text: t('reset_error', { error: err.message }) });
+                    showToast(t('reset_error', { error: err.message }), 'error');
                 } finally {
                     setIsResetting(false);
                 }
@@ -193,12 +307,7 @@ export const DataManagement: React.FC<DataManagementProps> = ({ settings, onSave
                     </div>
                 </div>
 
-                {statusMsg && (
-                    <div className={`p-4 rounded-[var(--radius-main)] border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${statusMsg.type === 'success' ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400'}`}>
-                        <CheckIcon className="w-5 h-5" />
-                        <span className="font-bold text-sm">{statusMsg.text}</span>
-                    </div>
-                )}
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Export Section */}
