@@ -411,6 +411,24 @@ body,
   font-family: "Noto Sans Hebrew", "Heebo", sans-serif;
 }
 
+/* ACCESSIBILITY - Focus Styles for Keyboard Navigation */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-main);
+}
+
+/* Remove default outline when using mouse */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ADMIN PANEL - CLEAN CASCADE */
 .admin-view {
   font-family: "Noto Sans Hebrew", "Heebo", sans-serif;

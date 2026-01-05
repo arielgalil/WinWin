@@ -68,6 +68,8 @@ export const KioskStartOverlay: React.FC<KioskStartOverlayProps> = ({ onStart, i
 
                         <button
                             onClick={onStart}
+                            onKeyDown={(e) => e.key === 'Enter' && onStart()}
+                            aria-label={t('kiosk_start_button' as any) || 'Start Presentation'}
                             className="group relative inline-flex items-center justify-center px-10 py-5 font-bold text-white transition-all duration-200 bg-indigo-600 font-pj rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 active:scale-95 shadow-xl shadow-indigo-500/20"
                         >
                             <span className="relative flex items-center gap-3 text-xl">

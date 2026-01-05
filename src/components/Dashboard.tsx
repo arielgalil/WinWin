@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { KIOSK_CONSTANTS } from '../constants';
 import { DashboardHeader } from './dashboard/DashboardHeader';
@@ -28,6 +28,20 @@ import { KioskRotator } from './dashboard/KioskRotator';
 import { KioskStartOverlay } from './dashboard/KioskStartOverlay';
 import { useStore } from '../services/store';
 import { useIdleMode } from '../hooks/useIdleMode';
+import { usePersistedBoolean } from '../hooks/usePersistedBoolean';
+import { useKioskRotation } from '../hooks/useKioskRotation';
+import { useToast } from '../hooks/useToast';
+import { logger } from '../utils/logger';
+import { AppSettings } from '../types';
+
+// Default settings to avoid `as any` cast
+const DEFAULT_SETTINGS: Partial<AppSettings> = {
+    burst_notifications_enabled: false,
+    enabled_burst_types: [],
+    burst_student_threshold: 50,
+    burst_class_threshold: 100,
+    goals_config: [],
+};
 
 export const Dashboard: React.FC = () => {
     useIdleMode(5000); // 5s idle to hide cursor/interactions
@@ -38,77 +52,93 @@ export const Dashboard: React.FC = () => {
     const { user } = useAuth();
     const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { slug } = useParams();
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const setPersistentSession = useStore(state => state.setPersistentSession);
+    const { showToast } = useToast();
     
-    // State
-    const [isKioskStarted, setIsKioskStarted] = useState(() => {
-        return sessionStorage.getItem('kiosk_started') === 'true';
-    });
-    const [isMusicPlaying, setIsMusicPlaying] = useState(() => {
-        // If kiosk is already started, music should be playing
-        return sessionStorage.getItem('kiosk_started') === 'true';
-    });
-    const [kioskIndex, setKioskIndex] = useState(0); // Index in settings.rotation_config
-    const [isSharing, setIsSharing] = useState(false); // Optimization: Only render leaderboard when sharing
+    // State - using new persisted boolean hook
+    const [isKioskStarted, setIsKioskStarted] = usePersistedBoolean('kiosk_started');
+    const [isMusicPlaying, setIsMusicPlaying] = useState(isKioskStarted);
+    const [isSharing, setIsSharing] = useState(false);
+    
+    // Auto-start timer ref for cleanup
+    const autoStartTimerRef = useRef<number | undefined>(undefined);
 
-    React.useEffect(() => {
-        // After 5 seconds (completion of initial animations), mark session as persistent
-        const timer = setTimeout(() => {
+    // Use the extracted kiosk rotation hook
+    const { kioskIndex, isHiddenByKiosk } = useKioskRotation({
+        settings,
+        isKioskStarted
+    });
+
+    // Mark session as persistent after initial animations
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
             setPersistentSession(true);
         }, 5000);
         return () => clearTimeout(timer);
     }, [setPersistentSession]);
 
-    // Kiosk Rotation Logic (Lifted from KioskRotator)
-    React.useEffect(() => {
-        const config = settings?.rotation_config || [];
-        const rotationEnabled = settings?.rotation_enabled && config.length > 0 && isKioskStarted;
-
-        if (!rotationEnabled) {
-            // Find dashboard index or default to 0
-            const dashIdx = config.findIndex(i => i.url === KIOSK_CONSTANTS.DASHBOARD_URL);
-            setKioskIndex(dashIdx !== -1 ? dashIdx : 0);
-            return;
-        }
-
-        const rotate = () => {
-            setKioskIndex(prev => {
-                // Find next visible index
-                let next = (prev + 1) % config.length;
-                let count = 0;
-                while (config[next]?.hidden && count < config.length) {
-                    next = (next + 1) % config.length;
-                    count++;
-                }
-                return next;
-            });
-        };
-
-        // Determine duration for current view
-        const currentItem = config[kioskIndex] || config[0];
-        const currentDuration = currentItem?.duration || settings?.rotation_interval || 30;
-
-        const timer = setTimeout(rotate, currentDuration * 1000);
-        return () => clearTimeout(timer);
-    }, [kioskIndex, settings?.rotation_enabled, settings?.rotation_config, settings?.rotation_interval, isKioskStarted]);
-
-
-    const handleStartKiosk = () => {
+    // Memoized handler for starting kiosk
+    const handleStartKiosk = useCallback(() => {
         setIsKioskStarted(true);
-        sessionStorage.setItem('kiosk_started', 'true');
         setIsMusicPlaying(true);
-    };
+    }, [setIsKioskStarted]);
 
-    // Auto-dismiss if no click after 15 seconds
-    React.useEffect(() => {
+    // Auto-start kiosk if rotation is enabled and user doesn't click
+    useEffect(() => {
         if (settings?.rotation_enabled && !isKioskStarted) {
-            const timer = setTimeout(() => {
+            autoStartTimerRef.current = window.setTimeout(() => {
                 handleStartKiosk();
             }, KIOSK_CONSTANTS.AUTO_START_DELAY_MS);
-            return () => clearTimeout(timer);
+            
+            return () => {
+                if (autoStartTimerRef.current) {
+                    clearTimeout(autoStartTimerRef.current);
+                    autoStartTimerRef.current = undefined;
+                }
+            };
         }
-    }, [settings?.rotation_enabled, isKioskStarted]);
+    }, [settings?.rotation_enabled, isKioskStarted, handleStartKiosk]);
+
+    // Memoized capture handler
+    const handleCapture = useCallback(async () => {
+        setIsSharing(true);
+        // Give React time to render the off-screen component
+        setTimeout(async () => {
+            try {
+                const html2canvas = await loadHtml2Canvas();
+                const element = document.getElementById('share-leaderboard-capture');
+                if (element) {
+                    const canvas = await html2canvas(element, {
+                        useCORS: true,
+                        scale: 2,
+                        backgroundColor: '#0f172a'
+                    });
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `winwin-leaderboard-${new Date().toISOString().split('T')[0]}.png`;
+                    link.href = dataUrl;
+                    link.click();
+                }
+            } catch (err) {
+                logger.error('Capture failed:', err);
+                showToast(t('capture_failed' as any) || 'Capture failed', 'error');
+            } finally {
+                setIsSharing(false);
+            }
+        }, 500);
+    }, [showToast, t]);
+
+    // Memoized music toggle
+    const handleMusicToggle = useCallback(() => {
+        setIsMusicPlaying(prev => !prev);
+    }, []);
+
+    // Memoized admin click
+    const handleAdminClick = useCallback(() => {
+        navigate(`/login/${slug}`);
+    }, [navigate, slug]);
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
         calculateClassStats(classes || []),
@@ -123,19 +153,28 @@ export const Dashboard: React.FC = () => {
     
     // "Frozen" logically means: Data stops updating OR we are hidden by Kiosk
     const isFrozen = (!isCampaignActive || !!settings?.is_frozen) && !isSuperUser;
-    const currentView = settings?.rotation_config?.[kioskIndex];
-    const isHiddenByKiosk = currentView ? currentView.url !== KIOSK_CONSTANTS.DASHBOARD_URL : false;
     const effectiveIsFrozen = isFrozen || isHiddenByKiosk;
+
+    // Use merged settings with defaults to avoid `as any`
+    const mergedSettings = useMemo(() => ({
+        ...DEFAULT_SETTINGS,
+        ...settings
+    }), [settings]);
 
     const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
         sortedClasses,
         studentsWithStats,
         totalInstitutionScore,
-        settings?.goals_config || [],
-        settings || {} as any,
-        effectiveIsFrozen, // Pause event generation if hidden or frozen
+        mergedSettings.goals_config || [],
+        mergedSettings as AppSettings,
+        effectiveIsFrozen,
         updateCommentary
     );
+
+    // Memoized burst dismiss handler
+    const handleDismissBurst = useCallback(() => {
+        setActiveBurst(null);
+    }, [setActiveBurst]);
 
     if (!settings || !campaign) return null;
 
@@ -153,7 +192,7 @@ export const Dashboard: React.FC = () => {
                     url={settings.background_music_url}
                     mode={settings.background_music_mode}
                     volume={settings.background_music_volume}
-                    isPlaying={isMusicPlaying && !isHiddenByKiosk} // This now triggers volume fade in BackgroundMusic
+                    isPlaying={isMusicPlaying && !isHiddenByKiosk}
                 />
 
                 <div className="flex-1 relative min-h-0">
@@ -182,7 +221,7 @@ export const Dashboard: React.FC = () => {
                                 {!effectiveIsFrozen && (
                                     <BurstNotification
                                         data={activeBurst}
-                                        onDismiss={() => setActiveBurst(null)}
+                                        onDismiss={handleDismissBurst}
                                         volume={settings.burst_volume}
                                         soundsEnabled={settings.burst_sounds_enabled}
                                     />
@@ -197,32 +236,7 @@ export const Dashboard: React.FC = () => {
                                             totalInstitutionScore={totalInstitutionScore}
                                             sortedClasses={sortedClasses}
                                             topStudents={top10Students}
-                                            onCapture={async () => {
-                                                setIsSharing(true);
-                                                // Give React time to render the off-screen component
-                                                setTimeout(async () => {
-                                                    try {
-                                                        const html2canvas = await loadHtml2Canvas();
-                                                        const element = document.getElementById('share-leaderboard-capture');
-                                                        if (element) {
-                                                            const canvas = await html2canvas(element, {
-                                                                useCORS: true,
-                                                                scale: 2,
-                                                                backgroundColor: '#0f172a'
-                                                            });
-                                                            const dataUrl = canvas.toDataURL('image/png');
-                                                            const link = document.createElement('a');
-                                                            link.download = `winwin-leaderboard-${new Date().toISOString().split('T')[0]}.png`;
-                                                            link.href = dataUrl;
-                                                            link.click();
-                                                        }
-                                                    } catch (err) {
-                                                        console.error('Capture failed:', err);
-                                                    } finally {
-                                                        setIsSharing(false);
-                                                    }
-                                                }, 500);
-                                            }}
+                                            onCapture={handleCapture}
                                         />
                                     </div>
 
@@ -267,8 +281,8 @@ export const Dashboard: React.FC = () => {
 
                 <div className="shrink-0 z-[60] bg-[var(--bg-card)]/40 backdrop-blur-xl border-t border-[var(--border-subtle)]/30 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]">
                     <VersionFooter
-                        musicState={{ isPlaying: isMusicPlaying, onToggle: () => setIsMusicPlaying(!isMusicPlaying) }}
-                        onAdminClick={() => navigate(`/login/${slug}`)}
+                        musicState={{ isPlaying: isMusicPlaying, onToggle: handleMusicToggle }}
+                        onAdminClick={handleAdminClick}
                     />
                 </div>
             </div>

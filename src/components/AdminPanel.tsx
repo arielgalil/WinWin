@@ -1,5 +1,5 @@
-import React, { useMemo, Suspense } from 'react';
-import * as ReactRouterDOM from 'react-router-dom';
+import React, { useMemo, Suspense, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { UserProfile, TickerMessage } from '../types';
 import { SettingsIcon, UsersIcon, TargetIcon, RefreshIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,8 +18,8 @@ import { WorkspaceLayout, NavItem } from './layouts/WorkspaceLayout';
 import { Settings, Users, Target } from 'lucide-react';
 import { SaveNotificationBadge } from './ui/SaveNotificationBadge';
 
-const { useParams, useNavigate } = ReactRouterDOM as any;
-const MotionDiv = motion.div as any;
+// Motion component with proper typing
+const MotionDiv = motion.div;
 
 const PointsManager = React.lazy(() => import('./admin/PointsManager').then(module => ({ default: module.PointsManager })));
 const UsersManager = React.lazy(() => import('./admin/UsersManager').then(module => ({ default: module.UsersManager })));
@@ -84,17 +84,17 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
-  const handleUpdateTickerMessage = async (id: string, updates: Partial<TickerMessage>) => {
+  const handleUpdateTickerMessage = useCallback(async (id: string, updates: Partial<TickerMessage>) => {
     await updateTickerMessage({ id, ...updates });
-  };
+  }, [updateTickerMessage]);
 
   const totalInstitutionScore = useMemo(() => (classes || []).reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
 
-  const handleTabChange = (tab: string) => {
+  const handleTabChange = useCallback((tab: string) => {
     navigate(`/admin/${slug}/${tab}`);
-  };
+  }, [navigate, slug]);
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
       await refreshData();
@@ -105,9 +105,9 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [refreshData]);
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async () => {
     if (!campaign) return;
 
     try {
@@ -124,7 +124,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
       console.error('Share failed:', err);
       showToast(t('copy_error'), 'error');
     }
-  };
+  }, [campaign, campaignRole, settings?.school_name, t, language, showToast]);
 
   const navItems: NavItem[] = useMemo(() => [
     { id: 'settings', label: t('tab_settings' as any), icon: Settings, adminOnly: true },

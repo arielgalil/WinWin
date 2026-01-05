@@ -251,6 +251,10 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
       className="h-full min-h-[144px] w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/20 bg-slate-900/60"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      role="region"
+      aria-label={t('tab_my_class')}
+      aria-live="polite"
+      aria-atomic="false"
     >
       <DashboardCardHeader
         title={t('tab_my_class')}
