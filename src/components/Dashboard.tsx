@@ -1,38 +1,47 @@
-import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { KIOSK_CONSTANTS } from '../constants';
-import { DashboardHeader } from './dashboard/DashboardHeader';
-import { Podium } from './dashboard/Podium';
-import { ClassTicker } from './dashboard/ClassTicker';
-import { StudentLeaderboard } from './dashboard/StudentLeaderboard';
-import { MissionMeter } from './dashboard/MissionMeter';
-import { FrozenOverlay } from './ui/FrozenOverlay';
-import { BurstNotification } from './ui/BurstNotification';
-import { GradientBackground } from './ui/GradientBackground';
-import { BackgroundMusic } from './dashboard/BackgroundMusic';
-import { useCompetitionEvents } from '../hooks/useCompetitionEvents';
-import { calculateClassStats, calculateStudentStats } from '../utils/rankingUtils';
-import { ShareableLeaderboard } from './dashboard/ShareableLeaderboard';
-import { VersionFooter } from './ui/VersionFooter';
-import { DashboardErrorBoundary } from './ui/ErrorBoundaries';
-import { loadHtml2Canvas } from '../utils/dynamicLibraries';
-import { useCampaign } from '../hooks/useCampaign';
-import { useClasses } from '../hooks/useClasses';
-import { useTicker } from '../hooks/useTicker';
-import { useCompetitionMutations } from '../hooks/useCompetitionMutations';
-import { useAuth } from '../hooks/useAuth';
-import { useCampaignRole } from '../hooks/useCampaignRole';
-import { useLanguage } from '../hooks/useLanguage';
-import { isSuperUser as checkIsSuperUser } from '../config';
-import { KioskRotator } from './dashboard/KioskRotator';
-import { KioskStartOverlay } from './dashboard/KioskStartOverlay';
-import { useStore } from '../services/store';
-import { useIdleMode } from '../hooks/useIdleMode';
-import { usePersistedBoolean } from '../hooks/usePersistedBoolean';
-import { useKioskRotation } from '../hooks/useKioskRotation';
-import { useToast } from '../hooks/useToast';
-import { logger } from '../utils/logger';
-import { AppSettings } from '../types';
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { KIOSK_CONSTANTS } from "../constants";
+import { DashboardHeader } from "./dashboard/DashboardHeader";
+import { Podium } from "./dashboard/Podium";
+import { ClassTicker } from "./dashboard/ClassTicker";
+import { StudentLeaderboard } from "./dashboard/StudentLeaderboard";
+import { MissionMeter } from "./dashboard/MissionMeter";
+import { FrozenOverlay } from "./ui/FrozenOverlay";
+import { BurstNotification } from "./ui/BurstNotification";
+import { GradientBackground } from "./ui/GradientBackground";
+import { BackgroundMusic } from "./dashboard/BackgroundMusic";
+import { useCompetitionEvents } from "../hooks/useCompetitionEvents";
+import {
+    calculateClassStats,
+    calculateStudentStats,
+} from "../utils/rankingUtils";
+import { ShareableLeaderboard } from "./dashboard/ShareableLeaderboard";
+import { VersionFooter } from "./ui/VersionFooter";
+import { DashboardErrorBoundary } from "./ui/ErrorBoundaries";
+import { loadHtml2Canvas } from "../utils/dynamicLibraries";
+import { useCampaign } from "../hooks/useCampaign";
+import { useClasses } from "../hooks/useClasses";
+import { useTicker } from "../hooks/useTicker";
+import { useCompetitionMutations } from "../hooks/useCompetitionMutations";
+import { useAuth } from "../hooks/useAuth";
+import { useCampaignRole } from "../hooks/useCampaignRole";
+import { useLanguage } from "../hooks/useLanguage";
+import { isSuperUser as checkIsSuperUser } from "../config";
+import { KioskRotator } from "./dashboard/KioskRotator";
+import { KioskStartOverlay } from "./dashboard/KioskStartOverlay";
+import { useStore } from "../services/store";
+import { useIdleMode } from "../hooks/useIdleMode";
+import { usePersistedBoolean } from "../hooks/usePersistedBoolean";
+import { useKioskRotation } from "../hooks/useKioskRotation";
+import { useToast } from "../hooks/useToast";
+import { logger } from "../utils/logger";
+import { AppSettings } from "../types";
 
 // Default settings to avoid `as any` cast
 const DEFAULT_SETTINGS: Partial<AppSettings> = {
@@ -54,21 +63,25 @@ export const Dashboard: React.FC = () => {
     const { slug } = useParams();
     const { t } = useLanguage();
     const navigate = useNavigate();
-    const setPersistentSession = useStore(state => state.setPersistentSession);
+    const setPersistentSession = useStore((state) =>
+        state.setPersistentSession
+    );
     const { showToast } = useToast();
-    
+
     // State - using new persisted boolean hook
-    const [isKioskStarted, setIsKioskStarted] = usePersistedBoolean('kiosk_started');
+    const [isKioskStarted, setIsKioskStarted] = usePersistedBoolean(
+        "kiosk_started",
+    );
     const [isMusicPlaying, setIsMusicPlaying] = useState(isKioskStarted);
     const [isSharing, setIsSharing] = useState(false);
-    
+
     // Auto-start timer ref for cleanup
     const autoStartTimerRef = useRef<number | undefined>(undefined);
 
     // Use the extracted kiosk rotation hook
     const { kioskIndex, isHiddenByKiosk } = useKioskRotation({
         settings,
-        isKioskStarted
+        isKioskStarted,
     });
 
     // Mark session as persistent after initial animations
@@ -91,7 +104,7 @@ export const Dashboard: React.FC = () => {
             autoStartTimerRef.current = window.setTimeout(() => {
                 handleStartKiosk();
             }, KIOSK_CONSTANTS.AUTO_START_DELAY_MS);
-            
+
             return () => {
                 if (autoStartTimerRef.current) {
                     clearTimeout(autoStartTimerRef.current);
@@ -108,22 +121,29 @@ export const Dashboard: React.FC = () => {
         setTimeout(async () => {
             try {
                 const html2canvas = await loadHtml2Canvas();
-                const element = document.getElementById('share-leaderboard-capture');
+                const element = document.getElementById(
+                    "share-leaderboard-capture",
+                );
                 if (element) {
                     const canvas = await html2canvas(element, {
                         useCORS: true,
                         scale: 2,
-                        backgroundColor: '#0f172a'
+                        backgroundColor: "#0f172a",
                     });
-                    const dataUrl = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = `winwin-leaderboard-${new Date().toISOString().split('T')[0]}.png`;
+                    const dataUrl = canvas.toDataURL("image/png");
+                    const link = document.createElement("a");
+                    link.download = `winwin-leaderboard-${
+                        new Date().toISOString().split("T")[0]
+                    }.png`;
                     link.href = dataUrl;
                     link.click();
                 }
             } catch (err) {
-                logger.error('Capture failed:', err);
-                showToast(t('capture_failed' as any) || 'Capture failed', 'error');
+                logger.error("Capture failed:", err);
+                showToast(
+                    t("capture_failed" as any) || "Capture failed",
+                    "error",
+                );
             } finally {
                 setIsSharing(false);
             }
@@ -132,7 +152,7 @@ export const Dashboard: React.FC = () => {
 
     // Memoized music toggle
     const handleMusicToggle = useCallback(() => {
-        setIsMusicPlaying(prev => !prev);
+        setIsMusicPlaying((prev) => !prev);
     }, []);
 
     // Memoized admin click
@@ -140,36 +160,40 @@ export const Dashboard: React.FC = () => {
         navigate(`/login/${slug}`);
     }, [navigate, slug]);
 
-    const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(() =>
-        calculateClassStats(classes || []),
-        [classes]);
+    const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(
+        () => calculateClassStats(classes || []),
+        [classes],
+    );
 
-    const { studentsWithStats, top10Students, arenaStudents } = useMemo(() =>
-        calculateStudentStats(classes || []),
-        [classes]);
+    const { studentsWithStats, top10Students, arenaStudents } = useMemo(
+        () => calculateStudentStats(classes || []),
+        [classes],
+    );
 
     const isSuperUser = checkIsSuperUser(user?.role);
     const isCampaignActive = campaign?.is_active ?? false;
-    
+
     // "Frozen" logically means: Data stops updating OR we are hidden by Kiosk
-    const isFrozen = (!isCampaignActive || !!settings?.is_frozen) && !isSuperUser;
+    const isFrozen = (!isCampaignActive || !!settings?.is_frozen) &&
+        !isSuperUser;
     const effectiveIsFrozen = isFrozen || isHiddenByKiosk;
 
     // Use merged settings with defaults to avoid `as any`
     const mergedSettings = useMemo(() => ({
         ...DEFAULT_SETTINGS,
-        ...settings
+        ...settings,
     }), [settings]);
 
-    const { activeBurst, setActiveBurst, highlightClassId } = useCompetitionEvents(
-        sortedClasses,
-        studentsWithStats,
-        totalInstitutionScore,
-        mergedSettings.goals_config || [],
-        mergedSettings as AppSettings,
-        effectiveIsFrozen,
-        updateCommentary
-    );
+    const { activeBurst, setActiveBurst, highlightClassId } =
+        useCompetitionEvents(
+            sortedClasses,
+            studentsWithStats,
+            totalInstitutionScore,
+            mergedSettings.goals_config || [],
+            mergedSettings as AppSettings,
+            effectiveIsFrozen,
+            updateCommentary,
+        );
 
     // Memoized burst dismiss handler
     const handleDismissBurst = useCallback(() => {
@@ -178,7 +202,7 @@ export const Dashboard: React.FC = () => {
 
     if (!settings || !campaign) return null;
 
-    const commentary = settings.current_commentary || '';
+    const commentary = settings.current_commentary || "";
 
     return (
         <DashboardErrorBoundary>
@@ -186,7 +210,7 @@ export const Dashboard: React.FC = () => {
                 isVisible={!!settings?.rotation_enabled && !isKioskStarted}
                 onStart={handleStartKiosk}
             />
-            
+
             <div className="flex flex-col h-screen w-full overflow-hidden bg-black relative">
                 <BackgroundMusic
                     url={settings.background_music_url}
@@ -196,8 +220,8 @@ export const Dashboard: React.FC = () => {
                 />
 
                 <div className="flex-1 relative min-h-0">
-                    <KioskRotator 
-                        settings={settings} 
+                    <KioskRotator
+                        settings={settings}
                         currentIndex={kioskIndex}
                     >
                         <GradientBackground
@@ -210,11 +234,11 @@ export const Dashboard: React.FC = () => {
 
                                 {/* Optimization: ShareableLeaderboard is heavy (off-screen render). Only render if requested. */}
                                 {isSharing && (
-                                    <ShareableLeaderboard 
-                                        id="share-leaderboard-capture" 
-                                        settings={settings} 
-                                        topClasses={sortedClasses} 
-                                        top10Students={top10Students} 
+                                    <ShareableLeaderboard
+                                        id="share-leaderboard-capture"
+                                        settings={settings}
+                                        topClasses={sortedClasses}
+                                        top10Students={top10Students}
                                     />
                                 )}
 
@@ -223,7 +247,8 @@ export const Dashboard: React.FC = () => {
                                         data={activeBurst}
                                         onDismiss={handleDismissBurst}
                                         volume={settings.burst_volume}
-                                        soundsEnabled={settings.burst_sounds_enabled}
+                                        soundsEnabled={settings
+                                            .burst_sounds_enabled}
                                     />
                                 )}
 
@@ -248,10 +273,14 @@ export const Dashboard: React.FC = () => {
                                         <div className="order-2 lg:order-1 flex flex-col min-h-[320px] lg:overflow-hidden">
                                             <MissionMeter
                                                 totalScore={totalInstitutionScore}
-                                                goals={settings.goals_config || []}
-                                                legacyTargetScore={settings.target_score}
-                                                legacyImageUrl={settings.logo_url}
-                                                competitionName={settings.competition_name}
+                                                goals={settings.goals_config ||
+                                                    []}
+                                                legacyTargetScore={settings
+                                                    .target_score}
+                                                legacyImageUrl={settings
+                                                    .logo_url}
+                                                competitionName={settings
+                                                    .competition_name}
                                                 classes={classes || []}
                                                 settings={settings}
                                                 campaignId={campaign?.id}
@@ -279,9 +308,12 @@ export const Dashboard: React.FC = () => {
                     </KioskRotator>
                 </div>
 
-                <div className="shrink-0 z-[60] bg-[var(--bg-card)]/40 backdrop-blur-xl border-t border-[var(--border-subtle)]/30 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]">
+                <div className="shrink-0 z-[60] bg-[var(--bg-card)]/40 backdrop-blur-xl border-t border-[var(--border-subtle)]/30 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] overflow-hidden">
                     <VersionFooter
-                        musicState={{ isPlaying: isMusicPlaying, onToggle: handleMusicToggle }}
+                        musicState={{
+                            isPlaying: isMusicPlaying,
+                            onToggle: handleMusicToggle,
+                        }}
                         onAdminClick={handleAdminClick}
                     />
                 </div>
