@@ -11,6 +11,7 @@ interface RotationItem {
 interface UseKioskRotationOptions {
     settings: AppSettings | null;
     isKioskStarted: boolean;
+    paused?: boolean;
 }
 
 interface UseKioskRotationReturn {
@@ -27,13 +28,14 @@ interface UseKioskRotationReturn {
 export function useKioskRotation({
     settings,
     isKioskStarted,
+    paused = false,
 }: UseKioskRotationOptions): UseKioskRotationReturn {
     const [kioskIndex, setKioskIndex] = useState(0);
     const timerRef = useRef<number | undefined>(undefined);
 
     const config = settings?.rotation_config || [];
     const rotationEnabled = settings?.rotation_enabled && config.length > 0 &&
-        isKioskStarted;
+        isKioskStarted && !paused;
 
     useEffect(() => {
         // Clear any existing timer

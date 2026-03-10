@@ -1,21 +1,22 @@
-import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HashRouter } from 'react-router-dom';
-import { LanguageProvider } from './LanguageContext';
-import { AuthProvider } from './AuthContext';
-import { ToastProvider } from '../hooks/useToast';
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HashRouter } from "react-router-dom";
+import { LanguageProvider } from "./LanguageContext";
+import { AuthProvider } from "./AuthContext";
+import { ToastProvider } from "../hooks/useToast";
 
 // Senior Dev Note: Configured for long-running dashboard displays (TVs)
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 3,
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      refetchOnWindowFocus: true,
-      refetchOnReconnect: true, // Critical for public dashboards on unstable WiFi
-      staleTime: 1000 * 60 * 1, // 1 minute
+    defaultOptions: {
+        queries: {
+            retry: 3,
+            retryDelay: (attemptIndex) =>
+                Math.min(1000 * 2 ** attemptIndex, 30000),
+            refetchOnWindowFocus: true,
+            refetchOnReconnect: true, // Critical for public dashboards on unstable WiFi
+            staleTime: 1000 * 60 * 1, // 1 minute
+        },
     },
-  },
 });
 
 interface AppProvidersProps {

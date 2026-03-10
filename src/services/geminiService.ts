@@ -1,7 +1,10 @@
 import { supabase } from "../supabaseClient";
-import { ClassRoom, ActionLog, AppSettings } from "../types";
-import { t, Language } from "../utils/i18n";
+import { ActionLog, AppSettings, ClassRoom } from "../types";
+import { Language, t } from "../utils/i18n";
 import { AI_CONSTANTS } from "../constants";
+
+// Prevent spamming console if we know the key is expired for this session
+let isAiKeyExpired = false;
 
 // Helper to call our secure Supabase Edge Function
 const callGeminiFunction = async (payload: {
@@ -9,17 +12,22 @@ const callGeminiFunction = async (payload: {
     systemInstruction?: string;
     model?: string;
     jsonSchema?: any;
-}, lang: Language = 'he'): Promise<string> => {
+}, lang: Language = "he"): Promise<string> => {
+    if (isAiKeyExpired) return ""; // Fail fast and silent
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), AI_CONSTANTS.API_TIMEOUT_MS);
+    const timeoutId = setTimeout(
+        () => controller.abort(),
+        AI_CONSTANTS.API_TIMEOUT_MS,
+    );
 
     try {
-        const { data, error } = await supabase.functions.invoke('ask-gemini', {
+        const { data, error } = await supabase.functions.invoke("ask-gemini", {
             body: {
                 ...payload,
-                model: payload.model || 'gemini-2.5-flash-lite-preview-09-2025' // Default to 2.5 Flash Lite
+                model: payload.model || "gemini-2.5-flash-lite-preview-09-2025", // Default to 2.5 Flash Lite
             },
-            signal: controller.signal
+            signal: controller.signal,
         });
 
         clearTimeout(timeoutId);
@@ -28,7 +36,7 @@ const callGeminiFunction = async (payload: {
             console.error("Supabase function connection error:", error.message);
             throw error;
         }
-        
+
         if (data?.error) {
             console.error("AI Edge Function internal error:", data.error);
             throw new Error(data.error);
@@ -38,100 +46,148 @@ const callGeminiFunction = async (payload: {
     } catch (err: any) {
         clearTimeout(timeoutId);
         console.error("Secure AI call failed:", err);
-        
-        if (err.name === 'AbortError') {
-            throw new Error(t('ai_communication_error', lang) + " (Timeout)");
+
+        if (err.name === "AbortError") {
+            throw new Error(t("ai_communication_error", lang) + " (Timeout)");
         }
 
         const msg = err.message || "";
-        if (msg.includes('Failed to send a request') || msg.includes('FunctionsFetchError')) {
-            throw new Error(t('ai_server_connection_error', lang));
+        if (
+            msg.includes("Failed to send a request") ||
+            msg.includes("FunctionsFetchError")
+        ) {
+            throw new Error(t("ai_server_connection_error", lang));
         }
-        if (msg.includes('API_KEY')) {
-            throw new Error(t('ai_api_key_error', lang));
+        if (msg.includes("API_KEY")) {
+            // Enhanced handling for expired/invalid keys
+            if (msg.includes("expired") || msg.includes("INVALID_ARGUMENT")) {
+                isAiKeyExpired = true; // Stop future calls in this session
+                throw new Error(t("ai_api_key_error", lang) + " (Key Expired)");
+            }
+            throw new Error(t("ai_api_key_error", lang));
         }
         throw err;
     }
 };
 
-export const testGeminiConnection = async (overrideKey?: string, lang: Language = 'he'): Promise<{ success: boolean; message: string }> => {
+export const testGeminiConnection = async (
+    overrideKey?: string,
+    lang: Language = "he",
+): Promise<{ success: boolean; message: string }> => {
     try {
         if (overrideKey) {
             const { GoogleGenAI } = await import("@google/genai");
             const ai = new GoogleGenAI({ apiKey: overrideKey }) as any;
-            const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash-lite-preview-09-2025' });
+            const model = ai.getGenerativeModel({
+                model: "gemini-2.5-flash-lite-preview-09-2025",
+            });
             await model.generateContent("ping");
-            return { success: true, message: t('ai_connection_success_provided_key', lang) };
+            return {
+                success: true,
+                message: t("ai_connection_success_provided_key", lang),
+            };
         }
 
         const text = await callGeminiFunction({ prompt: "ping" }, lang);
-        return { success: !!text, message: text ? t('ai_connection_success_server', lang) : t('ai_empty_response', lang) };
+        return {
+            success: !!text,
+            message: text
+                ? t("ai_connection_success_server", lang)
+                : t("ai_empty_response", lang),
+        };
     } catch (error: any) {
-        return { success: false, message: error.message || t('ai_communication_error', lang) };
+        return {
+            success: false,
+            message: error.message || t("ai_communication_error", lang),
+        };
     }
 };
 
 // Sanitize input for AI prompts
 const sanitizeForAI = (input: string): string => {
-  if (!input) return '';
-  return input
-    .replace(/[<>]/g, '') // Remove HTML tags
-    .replace(/javascript:/gi, '') // Remove JS protocols
-    .replace(/on\w+=/gi, '') // Remove event handlers
-    .substring(0, 200) // Limit length
-    .trim();
+    if (!input) return "";
+    return input
+        .replace(/[<>]/g, "") // Remove HTML tags
+        .replace(/javascript:/gi, "") // Remove JS protocols
+        .replace(/on\w+=/gi, "") // Remove event handlers
+        .substring(0, 200) // Limit length
+        .trim();
 };
 
 export const generateCompetitionCommentary = async (
-  topClasses: ClassRoom[],
-  recentAction: string,
-  settings: AppSettings,
-  totalInstitutionScore: number,
-  actionNote?: string,
-  lang: Language = 'he',
-  contributors?: string[]
+    topClasses: ClassRoom[],
+    recentAction: string,
+    settings: AppSettings,
+    totalInstitutionScore: number,
+    actionNote?: string,
+    lang: Language = "he",
+    contributors?: string[],
 ): Promise<string> => {
-  // Sanitize all inputs
-  const sanitizedLeaders = topClasses.slice(0, 3).map(c => sanitizeForAI(c.name)).filter(Boolean).join(", ");
-  const sanitizedContributors = contributors && contributors.length > 0 
-    ? contributors.map(sanitizeForAI).filter(Boolean).join(", ") 
-    : sanitizedLeaders;
-  const sanitizedAction = sanitizeForAI(recentAction);
-  const sanitizedNote = sanitizeForAI(actionNote || '');
-  const keywords = settings.ai_keywords?.length ? `${t('ai_keyword_instruction', lang, { keywords: settings.ai_keywords.join(", ") })} ` : '';
-  
-  const prompt = `${keywords}Recent Contributors: ${sanitizedContributors}. Total Score: ${totalInstitutionScore}. Goal Progress: ${sanitizedAction}. Note: ${sanitizedNote}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
-  
-  try {
-      return await callGeminiFunction({
-          prompt,
-          systemInstruction: settings.ai_custom_prompt || t('ai_instruction_commentator', lang),
-          model: 'gemini-2.5-flash-lite-preview-09-2025'
-      }, lang);
-  } catch (err) {
-      return t('ai_commentary_fallback', lang);
-  }
+    // Sanitize all inputs
+    const sanitizedLeaders = topClasses.slice(0, 3).map((c) =>
+        sanitizeForAI(c.name)
+    ).filter(Boolean).join(", ");
+    const sanitizedContributors = contributors && contributors.length > 0
+        ? contributors.map(sanitizeForAI).filter(Boolean).join(", ")
+        : sanitizedLeaders;
+    const sanitizedAction = sanitizeForAI(recentAction);
+    const sanitizedNote = sanitizeForAI(actionNote || "");
+    const keywords = settings.ai_keywords?.length
+        ? `${
+            t("ai_keyword_instruction", lang, {
+                keywords: settings.ai_keywords.join(", "),
+            })
+        } `
+        : "";
+
+    const prompt =
+        `${keywords}Recent Contributors: ${sanitizedContributors}. Total Score: ${totalInstitutionScore}. Goal Progress: ${sanitizedAction}. Note: ${sanitizedNote}. Task: Congratulate the contributors (names only) in exactly 3-5 Hebrew words.`;
+
+    try {
+        return await callGeminiFunction({
+            prompt,
+            systemInstruction: settings.ai_custom_prompt ||
+                t("ai_instruction_commentator", lang),
+            model: "gemini-2.5-flash-lite-preview-09-2025",
+        }, lang);
+    } catch (err) {
+        return t("ai_commentary_fallback", lang);
+    }
 };
 
-export const generateFillerMessages = async (schoolName: string, competitionName: string, lang: Language = 'he', keywords?: string[]): Promise<string[]> => {
+export const generateFillerMessages = async (
+    schoolName: string,
+    competitionName: string,
+    lang: Language = "he",
+    keywords?: string[],
+): Promise<string[]> => {
     const fallbacks = [
-        t('ai_fallback_1', lang),
-        t('ai_fallback_2', lang),
-        t('ai_fallback_3', lang),
-        t('ai_fallback_4', lang),
-        t('ai_fallback_5', lang)
+        t("ai_fallback_1", lang),
+        t("ai_fallback_2", lang),
+        t("ai_fallback_3", lang),
+        t("ai_fallback_4", lang),
+        t("ai_fallback_5", lang),
     ];
     try {
-        const keywordInstruction = keywords?.length ? ` ${t('ai_keyword_instruction', lang, { keywords: keywords.join(", ") })}` : '';
+        const keywordInstruction = keywords?.length
+            ? ` ${
+                t("ai_keyword_instruction", lang, {
+                    keywords: keywords.join(", "),
+                })
+            }`
+            : "";
         const text = await callGeminiFunction({
-            prompt: t('ai_prompt_generate_filler', lang, { schoolName, competitionName }) + keywordInstruction,
+            prompt: t("ai_prompt_generate_filler", lang, {
+                schoolName,
+                competitionName,
+            }) + keywordInstruction,
             jsonSchema: {
                 type: "array",
-                items: { type: "string" }
+                items: { type: "string" },
             },
-            model: 'gemini-2.5-flash-lite-preview-09-2025'
+            model: "gemini-2.5-flash-lite-preview-09-2025",
         }, lang);
-        
+
         if (!text) return fallbacks;
         return JSON.parse(text) || fallbacks;
     } catch (e) {
@@ -140,51 +196,59 @@ export const generateFillerMessages = async (schoolName: string, competitionName
 };
 
 export const generateAdminSummary = async (
-  logs: ActionLog[],
-  settings: AppSettings,
-  lang: Language = 'he',
-  campaignId: string
+    logs: ActionLog[],
+    settings: AppSettings,
+    lang: Language = "he",
+    campaignId: string,
 ): Promise<string> => {
-  const threshold = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-  if (settings.ai_summary && settings.ai_summary_updated_at) {
-    const lastUpdate = new Date(settings.ai_summary_updated_at).getTime();
-    const now = new Date().getTime();
-    if (now - lastUpdate < threshold) {
-      return settings.ai_summary;
+    const threshold = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    if (settings.ai_summary && settings.ai_summary_updated_at) {
+        const lastUpdate = new Date(settings.ai_summary_updated_at).getTime();
+        const now = new Date().getTime();
+        if (now - lastUpdate < threshold) {
+            return settings.ai_summary;
+        }
     }
-  }
 
-  // Clean logs to remove IDs and internal data that might confuse the AI or end up in the summary
-  const cleanedLogs = logs.slice(0, 25).map(log => ({
-      timestamp: log.created_at,
-      event: log.description,
-      points: log.points,
-      performer: log.teacher_name || 'System',
-      note: log.note || ''
-  }));
+    // Clean logs to remove IDs and internal data that might confuse the AI or end up in the summary
+    const cleanedLogs = logs.slice(0, 25).map((log) => ({
+        timestamp: log.created_at,
+        event: log.description,
+        points: log.points,
+        performer: log.teacher_name || "System",
+        note: log.note || "",
+    }));
 
-  const keywordInstruction = settings.ai_keywords?.length ? ` ${t('ai_keyword_instruction', lang, { keywords: settings.ai_keywords.join(", ") })}` : '';
-  const prompt = t('ai_prompt_summarize', lang, { data: JSON.stringify(cleanedLogs) }) + keywordInstruction;
+    const keywordInstruction = settings.ai_keywords?.length
+        ? ` ${
+            t("ai_keyword_instruction", lang, {
+                keywords: settings.ai_keywords.join(", "),
+            })
+        }`
+        : "";
+    const prompt =
+        t("ai_prompt_summarize", lang, { data: JSON.stringify(cleanedLogs) }) +
+        keywordInstruction;
 
-  const summary = await callGeminiFunction({
-      prompt,
-      systemInstruction: t('ai_instruction_admin', lang),
-      model: 'gemini-2.5-flash-lite-preview-09-2025'
-  }, lang);
+    const summary = await callGeminiFunction({
+        prompt,
+        systemInstruction: t("ai_instruction_admin", lang),
+        model: "gemini-2.5-flash-lite-preview-09-2025",
+    }, lang);
 
-  if (summary && campaignId) {
-    const { error } = await supabase
-      .from('app_settings')
-      .update({
-        ai_summary: summary,
-        ai_summary_updated_at: new Date().toISOString(),
-      })
-      .eq('campaign_id', campaignId);
+    if (summary && campaignId) {
+        const { error } = await supabase
+            .from("app_settings")
+            .update({
+                ai_summary: summary,
+                ai_summary_updated_at: new Date().toISOString(),
+            })
+            .eq("campaign_id", campaignId);
 
-    if (error) {
-      console.error('Failed to save AI summary', error);
+        if (error) {
+            console.error("Failed to save AI summary", error);
+        }
     }
-  }
 
-  return summary;
+    return summary;
 };

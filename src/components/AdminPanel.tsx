@@ -1,61 +1,124 @@
-import React, { useMemo, Suspense, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { UserProfile, TickerMessage } from '../types';
-import { SettingsIcon, UsersIcon, TargetIcon, RefreshIcon, CalculatorIcon, ClockIcon } from './ui/Icons';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useCampaign } from '../hooks/useCampaign';
-import { useClasses } from '../hooks/useClasses';
-import { useTicker } from '../hooks/useTicker';
-import { useLogs } from '../hooks/useLogs';
-import { useCompetitionMutations } from '../hooks/useCompetitionMutations';
-import { FrozenOverlay } from './ui/FrozenOverlay';
-import { isAdmin as checkIsAdmin, isSuperUser as checkIsSuperUser } from '../config';
-import { SaveNotificationProvider, useSaveNotification } from '../contexts/SaveNotificationContext';
-import { useLanguage } from '../hooks/useLanguage';
-import { useToast } from '../hooks/useToast';
-import { generateRoleBasedShareMessage } from '../utils/sharingUtils';
-import { WorkspaceLayout, NavItem } from './layouts/WorkspaceLayout';
-import { Settings, Users, Target } from 'lucide-react';
-import { SaveNotificationBadge } from './ui/SaveNotificationBadge';
+import React, { Suspense, useCallback, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { TickerMessage, UserProfile } from "../types";
+import {
+  CalculatorIcon,
+  ClockIcon,
+  RefreshIcon,
+  SettingsIcon,
+  TargetIcon,
+  UsersIcon,
+  WheelIcon,
+} from "./ui/Icons";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCampaign } from "../hooks/useCampaign";
+import { useClasses } from "../hooks/useClasses";
+import { useTicker } from "../hooks/useTicker";
+import { useLogs } from "../hooks/useLogs";
+import { useCompetitionMutations } from "../hooks/useCompetitionMutations";
+import { FrozenOverlay } from "./ui/FrozenOverlay";
+import {
+  isAdmin as checkIsAdmin,
+  isSuperUser as checkIsSuperUser,
+} from "../config";
+import {
+  SaveNotificationProvider,
+  useSaveNotification,
+} from "../contexts/SaveNotificationContext";
+import { useLanguage } from "../hooks/useLanguage";
+import { useToast } from "../hooks/useToast";
+import { generateRoleBasedShareMessage } from "../utils/sharingUtils";
+import { NavItem, WorkspaceLayout } from "./layouts/WorkspaceLayout";
+import { Settings, Target, Users } from "lucide-react";
+import { SaveNotificationBadge } from "./ui/SaveNotificationBadge";
 
 // Motion component with proper typing
 const MotionDiv = motion.div;
 
-const PointsManager = React.lazy(() => import('./admin/PointsManager').then(module => ({ default: module.PointsManager })));
-const UsersManager = React.lazy(() => import('./admin/UsersManager').then(module => ({ default: module.UsersManager })));
-const SchoolSettings = React.lazy(() => import('./admin/SchoolSettings').then(module => ({ default: module.SchoolSettings })));
-const ClassesManager = React.lazy(() => import('./admin/ClassesManager').then(module => ({ default: module.ClassesManager })));
-const ActionLogPanel = React.lazy(() => import('./admin/ActionLogPanel').then(module => ({ default: module.ActionLogPanel })));
-const DataManagement = React.lazy(() => import('./admin/DataManagement').then(module => ({ default: module.DataManagement })));
-const GoalsManagement = React.lazy(() => import('./admin/GoalsManagement').then(module => ({ default: module.GoalsManagement })));
-const AiSettings = React.lazy(() => import('./admin/AiSettings').then(module => ({ default: module.AiSettings })));
-const MessagesManager = React.lazy(() => import('./admin/MessagesManager').then(module => ({ default: module.MessagesManager })));
-
+const PointsManager = React.lazy(() =>
+  import("./admin/PointsManager").then((module) => ({
+    default: module.PointsManager,
+  }))
+);
+const UsersManager = React.lazy(() =>
+  import("./admin/UsersManager").then((module) => ({
+    default: module.UsersManager,
+  }))
+);
+const SchoolSettings = React.lazy(() =>
+  import("./admin/SchoolSettings").then((module) => ({
+    default: module.SchoolSettings,
+  }))
+);
+const ClassesManager = React.lazy(() =>
+  import("./admin/ClassesManager").then((module) => ({
+    default: module.ClassesManager,
+  }))
+);
+const ActionLogPanel = React.lazy(() =>
+  import("./admin/ActionLogPanel").then((module) => ({
+    default: module.ActionLogPanel,
+  }))
+);
+const DataManagement = React.lazy(() =>
+  import("./admin/DataManagement").then((module) => ({
+    default: module.DataManagement,
+  }))
+);
+const GoalsManagement = React.lazy(() =>
+  import("./admin/GoalsManagement").then((module) => ({
+    default: module.GoalsManagement,
+  }))
+);
+const AiSettings = React.lazy(() =>
+  import("./admin/AiSettings").then((module) => ({
+    default: module.AiSettings,
+  }))
+);
+const MessagesManager = React.lazy(() =>
+  import("./admin/MessagesManager").then((module) => ({
+    default: module.MessagesManager,
+  }))
+);
+const LuckyWheelManager = React.lazy(() =>
+  import("./admin/LuckyWheelManager").then((module) => ({
+    default: module.LuckyWheelManager,
+  }))
+);
 
 interface AdminPanelProps {
   user: UserProfile;
   onLogout: () => void;
   onViewDashboard: () => void;
   isSuperAdmin?: boolean; // This will come from useAuth usually
-  initialTab?: 'points' | 'settings';
-  campaignRole?: 'admin' | 'teacher' | 'superuser' | null;
+  initialTab?: "points" | "settings";
+  campaignRole?: "admin" | "teacher" | "superuser" | null;
 }
 
-type TabType = 'settings' | 'points' | 'goals' | 'data-management' | 'logs';
+type TabType =
+  | "settings"
+  | "points"
+  | "goals"
+  | "data-management"
+  | "logs"
+  | "lucky-wheel";
 
 const LoadingTab = () => {
   const { t } = useLanguage();
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-secondary/50">
       <RefreshIcon className="w-10 h-10 animate-spin" />
-      <span className="font-bold text-sm">{t('loading')}</span>
+      <span className="font-bold text-sm">{t("loading")}</span>
     </div>
   );
 };
 
-
 const AdminPanelInner: React.FC<AdminPanelProps> = ({
-  user, onLogout, onViewDashboard, isSuperAdmin, campaignRole
+  user,
+  onLogout,
+  onViewDashboard,
+  isSuperAdmin,
+  campaignRole,
 }) => {
   const { t, language } = useLanguage();
   const { showToast } = useToast();
@@ -65,30 +128,52 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
   const { campaign, settings } = useCampaign();
   const { classes } = useClasses(campaign?.id);
-  const { tickerMessages, addTickerMessage, deleteTickerMessage, updateTickerMessage } = useTicker(campaign?.id);
+  const {
+    tickerMessages,
+    addTickerMessage,
+    deleteTickerMessage,
+    updateTickerMessage,
+  } = useTicker(campaign?.id);
   const { logs, fetchNextPage: loadMoreLogs } = useLogs(campaign?.id);
-  const { deleteLog, updateLog, updateClassTarget, updateSettingsGoals, updateTabTimestamp, refreshData, updateAiSummary } = useCompetitionMutations(campaign?.id);
+  const {
+    deleteLog,
+    updateLog,
+    updateClassTarget,
+    updateSettingsGoals,
+    updateTabTimestamp,
+    refreshData,
+    updateAiSummary,
+  } = useCompetitionMutations(campaign?.id);
 
-  const isAdmin = checkIsAdmin(user.role, campaignRole);
   const isSuper = checkIsSuperUser(user.role) || isSuperAdmin;
+  const isAdmin = checkIsAdmin(user.role, campaignRole) || isSuper;
 
   const activeTab = useMemo(() => {
-    if (activeTabFromUrl === 'school') return 'settings';
-    if (['settings', 'points', 'goals', 'data-management', 'logs'].includes(activeTabFromUrl)) {
+    if (activeTabFromUrl === "school") return "settings";
+    if (
+      ["settings", "points", "goals", "data-management", "logs", "lucky-wheel"]
+        .includes(activeTabFromUrl)
+    ) {
       return activeTabFromUrl as TabType;
     }
-    return isSuper || isAdmin ? 'settings' : 'points';
+    return isSuper || isAdmin ? "settings" : "points";
   }, [activeTabFromUrl, isSuper, isAdmin]);
 
   const activeNotification = notifications.get(activeTab);
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
-  const handleUpdateTickerMessage = useCallback(async (id: string, updates: Partial<TickerMessage>) => {
-    await updateTickerMessage({ id, ...updates });
-  }, [updateTickerMessage]);
+  const handleUpdateTickerMessage = useCallback(
+    async (id: string, updates: Partial<TickerMessage>) => {
+      await updateTickerMessage({ id, ...updates });
+    },
+    [updateTickerMessage],
+  );
 
-  const totalInstitutionScore = useMemo(() => (classes || []).reduce((sum, cls) => sum + (cls.score || 0), 0), [classes]);
+  const totalInstitutionScore = useMemo(
+    () => (classes || []).reduce((sum, cls) => sum + (cls.score || 0), 0),
+    [classes],
+  );
 
   const handleTabChange = useCallback((tab: string) => {
     navigate(`/admin/${slug}/${tab}`);
@@ -100,7 +185,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
       await refreshData();
       return true;
     } catch (err) {
-      console.error('Refresh failed:', err);
+      console.error("Refresh failed:", err);
       return false;
     } finally {
       setIsRefreshing(false);
@@ -112,42 +197,75 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
 
     try {
       const message = generateRoleBasedShareMessage({
-        role: campaignRole || 'teacher',
+        role: campaignRole || "teacher",
         campaign: campaign,
-        institutionName: settings?.school_name || t('educational_institution'),
+        institutionName: settings?.school_name || t("educational_institution"),
         origin: window.location.origin,
-        language: language
+        language: language,
       });
       await navigator.clipboard.writeText(message);
-      showToast(t('copied_to_clipboard'), 'success');
+      showToast(t("copied_to_clipboard"), "success");
     } catch (err) {
-      console.error('Share failed:', err);
-      showToast(t('copy_error'), 'error');
+      console.error("Share failed:", err);
+      showToast(t("copy_error"), "error");
     }
   }, [campaign, campaignRole, settings?.school_name, t, language, showToast]);
 
-  const navItems: NavItem[] = useMemo(() => [
-    { id: 'settings', label: t('tab_settings' as any), icon: Settings, adminOnly: true },
-    { id: 'data-management', label: t('tab_data_management' as any), icon: Users, adminOnly: true },
-    { divider: true, id: 'divider-1', label: '', icon: () => null },
-    { id: 'goals', label: t('tab_goals' as any), icon: Target, adminOnly: true },
-    { id: 'points', label: t('tab_points' as any), icon: CalculatorIcon, adminOnly: false },
-    { divider: true, id: 'divider-2', label: '', icon: () => null },
-    { id: 'logs', label: t('tab_logs' as any), icon: ClockIcon, adminOnly: false },
-  ].filter(item => {
-    if (item.divider) return true;
-    if (item.adminOnly && !isAdmin) return false;
-    return true;
-  }), [isAdmin, t]);
+  const navItems: NavItem[] = useMemo(() =>
+    [
+      {
+        id: "settings",
+        label: t("tab_settings" as any),
+        icon: Settings,
+        adminOnly: true,
+      },
+      {
+        id: "data-management",
+        label: t("tab_data_management" as any),
+        icon: Users,
+        adminOnly: true,
+      },
+      { divider: true, id: "divider-1", label: "", icon: () => null },
+      {
+        id: "goals",
+        label: t("tab_goals" as any),
+        icon: Target,
+        adminOnly: true,
+      },
+      {
+        id: "points",
+        label: t("tab_points" as any),
+        icon: CalculatorIcon,
+        adminOnly: false,
+      },
+      { divider: true, id: "divider-2", label: "", icon: () => null },
+      {
+        id: "logs",
+        label: t("tab_logs" as any),
+        icon: ClockIcon,
+        adminOnly: false,
+      },
+      { divider: true, id: "divider-3", label: "", icon: () => null },
+      {
+        id: "lucky-wheel",
+        label: t("tab_lucky_wheel"),
+        icon: WheelIcon,
+        adminOnly: true,
+      },
+    ].filter((item) => {
+      if (item.divider) return true;
+      if (item.adminOnly && !isAdmin) return false;
+      return true;
+    }), [isAdmin, t]);
 
   const userRoleLabel = useMemo(() => {
-    if (campaignRole === 'superuser') return t('role_super_user');
-    if (campaignRole === 'admin') return t('role_admin');
-    return t('role_teacher');
+    if (campaignRole === "superuser") return t("role_super_user");
+    if (campaignRole === "admin") return t("role_admin");
+    return t("role_teacher");
   }, [campaignRole, t]);
 
   const userInitials = useMemo(() => {
-    const name = user.full_name?.trim() || 'U';
+    const name = user.full_name?.trim() || "U";
     const parts = name.split(/\s+/);
     if (parts.length >= 2) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -156,19 +274,58 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   }, [user.full_name]);
 
   const headerConfig = useMemo(() => {
-    const configs: Record<TabType, { icon: any; colorVar: string; title: string; desc: string; updatedAt?: string }> = {
-      'settings': { icon: SettingsIcon, colorVar: 'var(--acc-settings)', title: t('tab_settings' as any), desc: t('settings_title' as any), updatedAt: settings?.settings_updated_at },
-      'points': { icon: CalculatorIcon, colorVar: 'var(--acc-points)', title: t('tab_points' as any), desc: t('points_mgmt_desc' as any), updatedAt: settings?.logs_updated_at },
-      'goals': { icon: TargetIcon, colorVar: 'var(--acc-goals)', title: t('tab_goals' as any), desc: t('goals_mgmt_desc' as any), updatedAt: settings?.goals_updated_at },
-      'data-management': { icon: UsersIcon, colorVar: 'var(--acc-data)', title: t('tab_data_management' as any), desc: t('classes_management_desc' as any), updatedAt: settings?.classes_updated_at },
-      'logs': { icon: ClockIcon, colorVar: 'var(--acc-logs)', title: t('tab_logs' as any), desc: t('activity_log_description' as any), updatedAt: settings?.logs_updated_at },
+    const configs: Record<
+      TabType,
+      {
+        icon: any;
+        colorVar: string;
+        title: string;
+        desc: string;
+        updatedAt?: string;
+      }
+    > = {
+      "settings": {
+        icon: SettingsIcon,
+        colorVar: "var(--acc-settings)",
+        title: t("tab_settings" as any),
+        desc: t("settings_title" as any),
+        updatedAt: settings?.settings_updated_at,
+      },
+      "points": {
+        icon: CalculatorIcon,
+        colorVar: "var(--acc-points)",
+        title: t("tab_points" as any),
+        desc: t("points_mgmt_desc" as any),
+        updatedAt: settings?.logs_updated_at,
+      },
+      "goals": {
+        icon: TargetIcon,
+        colorVar: "var(--acc-goals)",
+        title: t("tab_goals" as any),
+        desc: t("goals_mgmt_desc" as any),
+        updatedAt: settings?.goals_updated_at,
+      },
+      "data-management": {
+        icon: UsersIcon,
+        colorVar: "var(--acc-data)",
+        title: t("tab_data_management" as any),
+        desc: t("classes_management_desc" as any),
+        updatedAt: settings?.classes_updated_at,
+      },
+      "logs": {
+        icon: ClockIcon,
+        colorVar: "var(--acc-logs)",
+        title: t("tab_logs" as any),
+        desc: t("activity_log_description" as any),
+        updatedAt: settings?.logs_updated_at,
+      },
     };
-    return configs[activeTab] || configs['points'];
+    return configs[activeTab] || configs["points"];
   }, [activeTab, settings, t]);
 
   const breadcrumbs = useMemo(() => [
-    { label: t('admin_panel'), href: `/admin/${slug}` },
-    { label: headerConfig.title }
+    { label: t("admin_panel"), href: `/admin/${slug}` },
+    { label: headerConfig.title },
   ], [slug, headerConfig.title, t]);
 
   if (!settings || !campaign) return <LoadingTab />;
@@ -176,13 +333,13 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
   return (
     <WorkspaceLayout
       user={{
-        full_name: user.full_name || '',
+        full_name: user.full_name || "",
         initials: userInitials,
-        roleLabel: userRoleLabel
+        roleLabel: userRoleLabel,
       }}
       institution={{
         name: settings.school_name || "WinWin",
-        logoUrl: settings.logo_url
+        logoUrl: settings.logo_url,
       }}
       navItems={navItems}
       activeTab={activeTab}
@@ -198,22 +355,30 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
       isRefreshing={isRefreshing}
       onRefresh={handleRefresh}
       onShare={handleShare}
-      headerActions={
-        activeNotification && (
-          <SaveNotificationBadge
-            notification={activeNotification}
-            onDismiss={() => dismiss(activeTab)}
-          />
-        )
-      }
+      headerActions={activeNotification && (
+        <SaveNotificationBadge
+          notification={activeNotification}
+          onDismiss={() => dismiss(activeTab)}
+        />
+      )}
     >
       <FrozenOverlay isFrozen={!campaign?.is_active && !isSuper} />
       <Suspense fallback={<LoadingTab />}>
-        <AnimatePresence mode='wait'>
-          <MotionDiv key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-            {activeTab === 'settings' && isAdmin && (
+        <AnimatePresence mode="wait">
+          <MotionDiv
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === "settings" && isAdmin && (
               <div className="space-y-[var(--admin-section-gap)] pb-12">
-                <SchoolSettings settings={settings} onRefresh={refreshData} totalScore={totalInstitutionScore} />
+                <SchoolSettings
+                  settings={settings}
+                  onRefresh={refreshData}
+                  totalScore={totalInstitutionScore}
+                />
                 <MessagesManager
                   messages={tickerMessages || []}
                   onAdd={addTickerMessage}
@@ -223,37 +388,68 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 <AiSettings settings={settings} onRefresh={refreshData} />
               </div>
             )}
-            {activeTab === 'points' && (
+            {activeTab === "points" && (
               <div className="space-y-[var(--admin-section-gap)] pb-12">
-                <PointsManager user={user} campaignRole={campaignRole} onSave={() => updateTabTimestamp('logs')} />
+                <PointsManager
+                  user={user}
+                  campaignRole={campaignRole}
+                  onSave={() => updateTabTimestamp("logs")}
+                />
               </div>
             )}
-            {activeTab === 'goals' && isAdmin && (
+            {activeTab === "goals" && isAdmin && (
               <div className="pb-12">
-                <GoalsManagement settings={settings} classes={classes || []} totalScore={totalInstitutionScore} onUpdateSettings={updateSettingsGoals} onUpdateClassTarget={updateClassTarget} />
+                <GoalsManagement
+                  settings={settings}
+                  classes={classes || []}
+                  totalScore={totalInstitutionScore}
+                  onUpdateSettings={updateSettingsGoals}
+                  onUpdateClassTarget={updateClassTarget}
+                />
               </div>
             )}
 
-            {activeTab === 'data-management' && isAdmin && (
+            {activeTab === "data-management" && isAdmin && (
               <div className="space-y-[var(--admin-section-gap)] pb-12">
-                <UsersManager classes={classes || []} currentCampaign={campaign} currentUser={user} onRefresh={refreshData} onSave={() => updateTabTimestamp('users')} />
-                <ClassesManager classes={classes || []} settings={settings} onRefresh={refreshData} onSave={() => updateTabTimestamp('classes')} />
-                <DataManagement settings={settings} onSave={() => updateTabTimestamp('settings')} onRefresh={refreshData} />
+                <UsersManager
+                  classes={classes || []}
+                  currentCampaign={campaign}
+                  currentUser={user}
+                  onRefresh={refreshData}
+                  onSave={() => updateTabTimestamp("users")}
+                />
+                <ClassesManager
+                  classes={classes || []}
+                  settings={settings}
+                  onRefresh={refreshData}
+                  onSave={() => updateTabTimestamp("classes")}
+                />
+                <DataManagement
+                  settings={settings}
+                  onSave={() => updateTabTimestamp("settings")}
+                  onRefresh={refreshData}
+                />
               </div>
             )}
-            {activeTab === 'logs' && (
+            {activeTab === "logs" && (
               <div className="pb-12 h-full">
                 <ActionLogPanel
-                logs={logs}
-                onLoadMore={loadMoreLogs}
-                onDelete={deleteLog}
-                onUpdate={(id, description, points) => updateLog({ id, description, points })}
-                onUpdateSummary={updateAiSummary}
-                currentUser={user}
-                settings={settings}
-                isAdmin={isAdmin}
-                onSave={() => updateTabTimestamp('logs')}
-              />
+                  logs={logs}
+                  onLoadMore={loadMoreLogs}
+                  onDelete={deleteLog}
+                  onUpdate={(id, description, points) =>
+                    updateLog({ id, description, points })}
+                  onUpdateSummary={updateAiSummary}
+                  currentUser={user}
+                  settings={settings}
+                  isAdmin={isAdmin}
+                  onSave={() => updateTabTimestamp("logs")}
+                />
+              </div>
+            )}
+            {activeTab === "lucky-wheel" && isAdmin && (
+              <div className="space-y-[var(--admin-section-gap)] pb-12">
+                <LuckyWheelManager />
               </div>
             )}
           </MotionDiv>

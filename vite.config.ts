@@ -61,20 +61,6 @@ export default defineConfig(({ mode }) => {
                 }
               },
               {
-                urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/,
-                handler: 'StaleWhileRevalidate',
-                options: {
-                  cacheName: 'supabase-rest-cache',
-                  expiration: {
-                    maxEntries: 100,
-                    maxAgeSeconds: 60 * 60 * 24 // 1 day
-                  },
-                  cacheableResponse: {
-                    statuses: [0, 200]
-                  }
-                }
-              },
-              {
                 urlPattern: /^https:\/\/.*\.supabase\.co\/(rest|rpc|storage)\/v1\/.*/,
                 handler: 'NetworkOnly',
                 method: 'POST',
@@ -88,7 +74,7 @@ export default defineConfig(({ mode }) => {
                 }
               },
               {
-                urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/,
+                urlPattern: /^https:\/\/.*\.supabase\.co\/(rest|rpc|storage)\/v1\/.*/,
                 handler: 'NetworkOnly',
                 method: 'PATCH',
                 options: {
@@ -99,6 +85,10 @@ export default defineConfig(({ mode }) => {
                     }
                   }
                 }
+              },
+              {
+                urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/,
+                handler: 'NetworkOnly'
               },
               {
                 urlPattern: /^https:\/\/.*\.supabase\.co\/auth\/v1\/.*/,

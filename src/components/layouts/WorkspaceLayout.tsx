@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useTheme } from '@/hooks/useTheme';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Logo } from '@/components/ui/Logo';
-import { 
-  Menu, 
-  LogOut, 
-  ArrowLeft, 
+import React, { useState } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useTheme } from "@/hooks/useTheme";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/Logo";
+import {
+  ArrowLeft,
+  LogOut,
+  Menu,
+  Moon,
+  RefreshCw,
+  Share2,
+  Sun,
   Trophy,
-  Sun, 
-  Moon, 
-  Share2, 
-  RefreshCw
-} from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { VersionFooter } from '@/components/ui/VersionFooter';
-import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
-import { formatLastSaved } from '@/utils/dateUtils';
-import { LastSavedPill } from '@/components/ui/LastSavedPill';
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { VersionFooter } from "@/components/ui/VersionFooter";
+import { BreadcrumbItem, Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { formatLastSaved } from "@/utils/dateUtils";
+import { LastSavedPill } from "@/components/ui/LastSavedPill";
+import { usePagePresence } from "@/hooks/usePagePresence";
+import { useParams } from "react-router-dom";
+import { useCampaign } from "@/hooks/useCampaign";
 
 export interface NavItem {
   id: string;
@@ -59,24 +68,29 @@ export interface WorkspaceLayoutProps {
   lastSavedAt?: string;
 }
 
-const NavLink: React.FC<{ 
-  item: NavItem; 
-  isActive: boolean; 
-  onClick: () => void; 
+const NavLink: React.FC<{
+  item: NavItem;
+  isActive: boolean;
+  onClick: () => void;
   isCollapsed: boolean;
-  dir: 'rtl' | 'ltr';
+  dir: "rtl" | "ltr";
 }> = ({ item, isActive, onClick, isCollapsed, dir }) => (
   <Button
-    variant={isActive ? 'secondary' : 'ghost'}
+    variant={isActive ? "secondary" : "ghost"}
     onClick={onClick}
     className={cn(
-      'w-full h-11 transition-all duration-200 hover:bg-accent/50 active:scale-[0.98]',
-      isActive && 'font-bold shadow-sm bg-secondary',
-      isCollapsed ? 'justify-center px-0' : 'justify-start gap-3 px-3'
+      "w-full h-11 transition-all duration-200 hover:bg-accent/50 active:scale-[0.98]",
+      isActive && "font-bold shadow-sm bg-secondary",
+      isCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
     )}
     title={isCollapsed ? item.label : undefined}
   >
-    <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
+    <item.icon
+      className={cn(
+        "h-5 w-5 shrink-0",
+        isActive ? "text-primary" : "text-muted-foreground",
+      )}
+    />
     {!isCollapsed && <span className="truncate">{item.label}</span>}
   </Button>
 );
@@ -100,22 +114,30 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
   onShare,
   showVersion = true,
   breadcrumbs,
-  lastSavedAt
+  lastSavedAt,
 }) => {
   const { t, dir, language } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { campaign } = useCampaign();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useLocalStorage('workspace-sidebar-collapsed', false);
+  const [isCollapsed, setIsCollapsed] = useLocalStorage(
+    "workspace-sidebar-collapsed",
+    false,
+  );
+
+  const { viewerCount } = usePagePresence(campaign?.id, "dashboard");
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const sidebarContent = (collapsed: boolean) => (
     <div className="flex flex-col h-full bg-card border-border">
       {/* Sidebar Header */}
-      <div className={cn(
-        "h-16 flex items-center border-b border-border transition-all duration-300",
-        collapsed ? "justify-center" : "px-4 gap-3"
-      )}>
+      <div
+        className={cn(
+          "h-16 flex items-center border-b border-border transition-all duration-300",
+          collapsed ? "justify-center" : "px-4 gap-3",
+        )}
+      >
         <Button
           variant="ghost"
           size="icon"
@@ -125,68 +147,81 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
           <Menu className="h-5 w-5" />
         </Button>
         {!collapsed && (
-          <span className="font-bold text-lg truncate">{t('admin_panel')}</span>
+          <span className="font-bold text-lg truncate">{t("admin_panel")}</span>
         )}
       </div>
 
       {/* Navigation Items */}
       <nav className="flex-1 overflow-y-auto p-3 flex flex-col gap-1 custom-scrollbar">
         {navItems.map((item, idx) => (
-          item.divider ? (
-            <div key={`div-${idx}`} className="my-2 border-t border-border/50" />
-          ) : (
-            <NavLink
-              key={item.id}
-              item={item}
-              isActive={activeTab === item.id}
-              onClick={() => {
-                onTabChange(item.id);
-                setIsMobileMenuOpen(false);
-              }}
-              isCollapsed={collapsed}
-              dir={dir as any}
-            />
-          )
+          item.divider
+            ? (
+              <div
+                key={`div-${idx}`}
+                className="my-2 border-t border-border/50"
+              />
+            )
+            : (
+              <NavLink
+                key={item.id}
+                item={item}
+                isActive={activeTab === item.id}
+                onClick={() => {
+                  onTabChange(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
+                isCollapsed={collapsed}
+                dir={dir as any}
+              />
+            )
         ))}
       </nav>
 
       {/* Sidebar Footer */}
-      <div className={cn("p-3 border-t border-border flex flex-col gap-1", collapsed && "items-center")}>
+      <div
+        className={cn(
+          "p-3 border-t border-border flex flex-col gap-1",
+          collapsed && "items-center",
+        )}
+      >
         <Button
           variant="ghost"
           onClick={onViewDashboard}
           className={cn(
             "w-full h-10 hover:bg-accent/50 transition-all text-sm",
-            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3"
+            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
           )}
-          title={collapsed ? t('return_to_dashboard') : undefined}
+          title={collapsed ? t("return_to_dashboard") : undefined}
         >
           <Trophy className="h-4 w-4 text-amber-500" />
-          {!collapsed && <span>{t('return_to_dashboard')}</span>}
+          {!collapsed && <span>{t("return_to_dashboard")}</span>}
         </Button>
         <Button
           variant="ghost"
           onClick={onLogout}
           className={cn(
             "w-full h-10 text-destructive hover:bg-destructive/10 transition-all text-sm",
-            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3"
+            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
           )}
-          title={collapsed ? t('logout') : undefined}
+          title={collapsed ? t("logout") : undefined}
         >
           <LogOut className="h-4 w-4" />
-          {!collapsed && <span>{t('logout')}</span>}
+          {!collapsed && <span>{t("logout")}</span>}
         </Button>
       </div>
     </div>
   );
 
   return (
-    <div className="flex min-h-screen bg-muted/30 text-foreground selection:bg-primary/20" dir={dir}>
+    <div
+      className="flex min-h-screen bg-muted/30 text-foreground selection:bg-primary/20"
+      dir={dir}
+    >
       {/* Desktop Sidebar Container */}
-      <aside 
+      <aside
         className={cn(
           "hidden lg:block border-e border-border sticky top-0 h-screen transition-all duration-300 ease-in-out z-40",
-          isCollapsed ? "w-16" : "w-64"
+          isCollapsed ? "w-16" : "w-64",
         )}
       >
         {sidebarContent(isCollapsed)}
@@ -203,8 +238,8 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent 
-                side={dir === 'rtl' ? 'right' : 'left'} 
+              <SheetContent
+                side={dir === "rtl" ? "right" : "left"}
                 className="p-0 w-72 border-none"
               >
                 <SheetHeader className="sr-only">
@@ -215,17 +250,17 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
             </Sheet>
 
             <div className="flex items-center gap-3">
-               <Logo 
-                  src={institution.logoUrl} 
-                  className="w-8 h-8 lg:w-9 lg:h-9 border border-border rounded-lg shadow-sm" 
-                  fallbackIcon="school"
-                  padding="p-1"
-               />
-               <div className="hidden sm:block">
-                  <h2 className="text-sm lg:text-base font-bold leading-none truncate max-w-[150px] lg:max-w-[200px]">
-                    {institution.name}
-                  </h2>
-               </div>
+              <Logo
+                src={institution.logoUrl}
+                className="w-8 h-8 lg:w-9 lg:h-9 border border-border rounded-lg shadow-sm"
+                fallbackIcon="school"
+                padding="p-1"
+              />
+              <div className="hidden sm:block">
+                <h2 className="text-sm lg:text-base font-bold leading-none truncate max-w-[150px] lg:max-w-[200px]">
+                  {institution.name}
+                </h2>
+              </div>
             </div>
           </div>
 
@@ -233,30 +268,70 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
             {/* Action Buttons */}
             <div className="flex items-center gap-1 border-e border-border pe-2 me-2">
               {onRefresh && (
-                <Button variant="ghost" size="icon" onClick={onRefresh} disabled={isRefreshing} className="h-9 w-9" aria-label={t('refresh')}>
-                  <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onRefresh}
+                  disabled={isRefreshing}
+                  className="h-9 w-9"
+                  aria-label={t("refresh")}
+                >
+                  <RefreshCw
+                    className={cn("h-4 w-4", isRefreshing && "animate-spin")}
+                  />
                 </Button>
               )}
               {onShare && (
-                <Button variant="ghost" size="icon" onClick={onShare} className="h-9 w-9" aria-label={t('copy_link')}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onShare}
+                  className="h-9 w-9"
+                  aria-label={t("copy_link")}
+                >
                   <Share2 className="h-4 w-4" />
                 </Button>
               )}
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9" aria-label={t('toggle_theme')}>
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="h-9 w-9"
+                aria-label={t("toggle_theme")}
+              >
+                {theme === "dark"
+                  ? <Sun className="h-4 w-4" />
+                  : <Moon className="h-4 w-4" />}
               </Button>
+            </div>
+
+            {/* Viewer Count Badge */}
+            <div
+              className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full border border-border/50 shadow-sm"
+              title={t("active_viewers" as any)}
+            >
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-muted-foreground whitespace-nowrap">
+                {viewerCount} {t("viewers" as any)}
+              </span>
             </div>
 
             {/* Profile */}
             <div className="flex items-center gap-2 lg:gap-3">
               <div className="hidden md:block text-end">
-                <p className="text-xs lg:text-sm font-bold leading-none">{user.full_name}</p>
-                <p className="text-[10px] lg:text-xs text-primary font-medium mt-1 uppercase tracking-wider opacity-80">{user.roleLabel}</p>
+                <p className="text-xs lg:text-sm font-bold leading-none">
+                  {user.full_name}
+                </p>
+                <p className="text-[10px] lg:text-xs text-primary font-medium mt-1 uppercase tracking-wider opacity-80">
+                  {user.roleLabel}
+                </p>
               </div>
-              <div className={cn(
-                "w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ring-1 ring-border border bg-gradient-to-br from-primary/10 to-accent/10 no-select no-drag",
-                theme === 'light' ? 'text-black' : 'text-white'
-              )}>
+              <div
+                className={cn(
+                  "w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm ring-1 ring-border border bg-gradient-to-br from-primary/10 to-accent/10 no-select no-drag",
+                  theme === "light" ? "text-black" : "text-white",
+                )}
+              >
                 {user.initials}
               </div>
             </div>
@@ -271,7 +346,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4 lg:gap-6">
                   {HeaderIcon && (
-                    <div 
+                    <div
                       className="p-2.5 lg:p-3 rounded-xl bg-muted shadow-sm border border-border/50 flex items-center justify-center shrink-0"
                       style={{ color: headerColorVar }}
                     >
@@ -295,9 +370,9 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                   </div>
                 )}
                 {!headerActions && lastSavedAt && (
-                  <LastSavedPill 
-                    timestamp={lastSavedAt} 
-                    className="self-end" 
+                  <LastSavedPill
+                    timestamp={lastSavedAt}
+                    className="self-end"
                   />
                 )}
               </div>

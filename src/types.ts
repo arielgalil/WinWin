@@ -131,6 +131,7 @@ export interface AppSettings {
   burst_notifications_enabled?: boolean;
   burst_volume?: number;
   enabled_burst_types?: string[];
+  active_lucky_wheel_id?: string | null;
 }
 
 export interface LogSnapshot {
@@ -173,4 +174,48 @@ export interface BurstNotificationData {
   subTitle?: string;
   value?: string | number;
   icon?: React.ReactNode;
+}
+
+// ── Lucky Wheel ──────────────────────────────────────────────────
+
+export interface WheelFilterCriteria {
+  class_ids?: string[];
+  min_score?: number;
+  max_score?: number;
+  exclude_previous_winners?: boolean;
+}
+
+export interface LuckyWheelTemplate {
+  id: string;
+  campaign_id: string;
+  name: string;
+  filter_criteria: WheelFilterCriteria;
+  participant_ids: string[];
+  participant_names: string[];
+  last_activated_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LuckyWheelWinner {
+  id: string;
+  template_id: string | null;
+  campaign_id: string;
+  student_id: string | null;
+  student_name: string;
+  class_name?: string;
+  won_at: string;
+  round_number: number;
+  wheel_name?: string;
+}
+
+/** Broadcast payload for remote wheel control */
+export interface LuckyWheelControlState {
+  action: "ACTIVATE" | "SPIN" | "RESET" | "DEACTIVATE";
+  template_id?: string;
+  participant_names?: string[];
+  winner_index?: number;
+  winner_name?: string;
+  wheel_name?: string;
+  round_number?: number;
 }

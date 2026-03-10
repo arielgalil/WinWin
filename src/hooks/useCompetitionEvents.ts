@@ -65,8 +65,10 @@ export const useCompetitionEvents = (
                     contributors,
                 );
                 if (commentary) onUpdateCommentary(commentary);
-            } catch (e) {
-                console.error("AI automated commentary failed", e);
+            } catch (e: any) {
+                if (!e?.message?.includes("Key Expired")) {
+                    console.error("AI automated commentary failed", e);
+                }
             } finally {
                 setTimeout(() => {
                     isGeneratingAi.current = false;

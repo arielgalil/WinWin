@@ -21,18 +21,15 @@ export const useCampaignRole = <T = string | null | undefined>(
           .select('role')
           .eq('campaign_id', campaignId)
           .eq('user_id', userId)
-          .single();
+          .maybeSingle();
         
         if (error) {
-          if (error.code === 'PGRST116') {
-            return null;
-          }
           throw error;
         }
-        return data?.role;
+        return data?.role ?? null;
       } catch (err) {
         console.error('Unexpected error in role query:', err);
-        return undefined;
+        return null;
       }
     },
     enabled: !!campaignId && !!userId,

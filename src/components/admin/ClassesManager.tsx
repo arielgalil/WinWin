@@ -340,6 +340,7 @@ export const ClassesManager: React.FC<ClassesManagerProps> = ({ classes, setting
                             variant="secondary"
                             size="md"
                             icon={<UploadIcon className="w-4 h-4" />}
+                            title={t('import_excel_tooltip')}
                         >
                             {t('smart_import')}
                         </AdminButton>

@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FormattedNumber } from './ui/FormattedNumber';
 import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
+import { useAuth } from '../hooks/useAuth';
 import { VersionFooter } from './ui/VersionFooter';
 
 const { useNavigate } = ReactRouterDOM as any;
@@ -35,21 +36,43 @@ interface CampaignSelectorProps {
 export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
     const { t, dir } = useLanguage();
     const navigate = useNavigate();
+    const { hardReset } = useAuth();
+    
     const { data: campaigns = [], isLoading, error: fetchError, refetch: fetchCampaigns } = useQuery({
         queryKey: ['campaign-selector-list'],
         queryFn: async () => {
-            const { data, error } = await supabase
-                .from('campaigns')
-                .select(`
-                    *,
-                    app_settings (school_name, logo_url, primary_color, secondary_color, background_brightness),
-                    classes (score)
-                `)
-                .order('created_at', { ascending: false });
+            const fetchWithRetry = async (attempt = 1): Promise<any[]> => {
+                try {
+                    const { data, error } = await Promise.race([
+                        supabase
+                            .from('campaigns')
+                            .select(`
+                                *,
+                                app_settings (school_name, logo_url, primary_color, secondary_color, background_brightness),
+                                classes (score)
+                            `)
+                            .order('created_at', { ascending: false }),
+                        new Promise<never>((_, reject) => 
+                            setTimeout(() => reject(new Error('Connection Timeout')), 10000)
+                        )
+                    ]);
 
-            if (error) throw error;
+                    if (error) throw error;
+                    return data || [];
+                } catch (err) {
+                    if (attempt < 3) {
+                        const delay = 1000 * attempt;
+                        console.warn(`Campaign list fetch failed (${err instanceof Error ? err.message : 'Unknown'}), retrying in ${delay}ms... (Attempt ${attempt})`);
+                        await new Promise(r => setTimeout(r, delay));
+                        return fetchWithRetry(attempt + 1);
+                    }
+                    throw err;
+                }
+            };
 
-            return (data || []).map(camp => {
+            const data = await fetchWithRetry();
+
+            return data.map(camp => {
                 const settings = Array.isArray(camp.app_settings) ? camp.app_settings[0] : camp.app_settings;
                 const classes = Array.isArray(camp.classes) ? camp.classes : [];
 
@@ -62,7 +85,20 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
             });
         },
         staleTime: 1000 * 60 * 5, // 5 minutes cache
+        retry: 2
     });
+
+    // Handle stuck loading state with a timeout effect
+    const [showStuckButton, setShowStuckButton] = React.useState(false);
+    React.useEffect(() => {
+        let timer: any;
+        if (isLoading) {
+            timer = setTimeout(() => setShowStuckButton(true), 6000);
+        } else {
+            setShowStuckButton(false);
+        }
+        return () => clearTimeout(timer);
+    }, [isLoading]);
 
     return (
         <div className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden selection:bg-primary/30 relative" dir={dir}>
@@ -98,18 +134,36 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                     {isLoading ? (
                         <MotionDiv key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center py-32 gap-6">
                             <RefreshIcon className="w-14 h-14 text-primary animate-spin" />
-                            <span className="text-muted-foreground font-black text-xs tracking-widest uppercase">{t('connecting_to_db')}</span>
+                            <div className="flex flex-col items-center gap-3">
+                                <span className="text-muted-foreground font-black text-xs tracking-widest uppercase">{t('connecting_to_db')}</span>
+                                {showStuckButton && (
+                                    <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                        <button 
+                                            onClick={() => fetchCampaigns()}
+                                            className="bg-primary/10 text-primary px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-wider hover:bg-primary hover:text-white transition-all shadow-sm"
+                                        >
+                                            {t('retry')}
+                                        </button>
+                                        <button 
+                                            onClick={hardReset}
+                                            className="text-muted-foreground/60 text-[10px] font-bold underline hover:text-red-500 transition-colors"
+                                        >
+                                            {t('hard_reset')}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </MotionDiv>
                     ) : fetchError ? (
                         <MotionDiv key="error" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-16 bg-red-500/10 rounded-[var(--radius-container)] border border-red-500/20 max-w-xl mx-auto shadow-2xl px-8">
                             <AlertIcon className="w-16 h-16 text-red-600 mx-auto mb-6" />
                             <h3 className="text-2xl font-black text-red-600 mb-3">{t('data_load_error')}</h3>
-                            <button onClick={fetchCampaigns} className="bg-red-600 text-white px-8 py-4 rounded-[var(--radius-main)] font-black flex items-center justify-center gap-3 mx-auto transition-all active:scale-95 shadow-lg">
+                            <button onClick={() => fetchCampaigns()} className="bg-red-600 text-white px-8 py-4 rounded-[var(--radius-main)] font-black flex items-center justify-center gap-3 mx-auto transition-all active:scale-95 shadow-lg">
                                 <RefreshIcon className="w-5 h-5" /> {t('retry')}
                             </button>
                         </MotionDiv>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
                             {campaigns.map((camp, idx) => {
                                 const vibrantColors = [
                                     'from-blue-600 to-indigo-700',
@@ -175,7 +229,12 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                     )}
                 </AnimatePresence>
             </main>
-            <VersionFooter />
+
+            <div className="mt-auto">
+                <VersionFooter />
+            </div>
         </div>
     );
 };
+
+export default CampaignSelector;

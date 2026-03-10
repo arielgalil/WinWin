@@ -14,6 +14,17 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     queryClient.invalidateQueries({ queryKey: ["settings", campaignId] });
   }, [queryClient, campaignId]);
 
+  const broadcastSettingsUpdate = useCallback(async () => {
+    if (!campaignId) return;
+    const channel = supabase.channel(`wheel_control_${campaignId}`);
+    await channel.send({
+      type: "broadcast",
+      event: "settings_updated",
+      payload: { timestamp: new Date().toISOString() },
+    });
+    // supabase.removeChannel(channel); // Keep it simple, or let it GC
+  }, [campaignId]);
+
   const addPoints = useCallback(
     async (
       payload: {
@@ -115,8 +126,9 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
       }).eq("campaign_id", campaignId);
       if (error) console.error("Goals update error:", error);
       invalidate();
+      broadcastSettingsUpdate();
     },
-    [campaignId, invalidate],
+    [campaignId, invalidate, broadcastSettingsUpdate],
   );
 
   const toggleFreeze = useCallback(async (isFrozen: boolean) => {
@@ -125,8 +137,11 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
       is_frozen: isFrozen,
     }).eq("campaign_id", campaignId);
     if (error) console.error("Freeze toggle error:", error);
-    else invalidate();
-  }, [campaignId, invalidate]);
+    else {
+      invalidate();
+      broadcastSettingsUpdate();
+    }
+  }, [campaignId, invalidate, broadcastSettingsUpdate]);
 
   const updateTabTimestamp = useCallback(
     async (tab: "settings" | "users" | "goals" | "classes" | "logs") => {
@@ -136,9 +151,12 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
         [column]: new Date().toISOString(),
       }).eq("campaign_id", campaignId);
       if (error) console.error(`Timestamp update failed for ${tab}`, error);
-      else invalidate();
+      else {
+        invalidate();
+        broadcastSettingsUpdate();
+      }
     },
-    [campaignId, invalidate],
+    [campaignId, invalidate, broadcastSettingsUpdate],
   );
 
   const updateAiSummary = useCallback(async (text: string) => {

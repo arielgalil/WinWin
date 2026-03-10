@@ -42,19 +42,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setAuthLoading(state);
     }, []);
 
-    const fetchUserProfile = useCallback(async (userId: string, userEmail: string) => {
+    const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0) => {
         if (userRef.current?.id === userId) {
             updateLoadingState(false, "Already loaded");
             return;
         }
 
         try {
-            logger.debug(`[AUTH] Fetching profile for ID: ${userId}`);
+            logger.debug(`[AUTH] Fetching profile for ID: ${userId} (Attempt: ${retryCount + 1})`);
 
-            const { data: profileData, error: profileError } = await Promise.race([
-                supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
-                new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Profile Timeout')), TIMEOUTS.authProfileFetchMs))
-            ]);
+            // REMOVED: Promise.race with manual timeout. Let the network/Supabase timeout handle it
+            // to be more resilient to deep cold starts (sometimes > 15s).
+            const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .maybeSingle();
 
             if (profileError) throw profileError;
 
@@ -73,8 +76,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUser(profileData as UserProfile);
                 userRef.current = profileData as UserProfile;
             }
+            
+            // Success - ensure loading is false
+            updateLoadingState(false, "Profile process finished");
         } catch (err) {
-            console.error("[AUTH] Profile load failed, applying safety fallback:", err);
+            // Retry logic: 2 retries (Total 3 attempts)
+            if (retryCount < 2) {
+                const delay = 1000 * (retryCount + 1); // Exponential-ish backoff
+                console.warn(`[AUTH] Profile fetch failed (${err instanceof Error ? err.message : 'Unknown error'}), retrying in ${delay}ms... (Attempt ${retryCount + 1})`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return fetchUserProfile(userId, userEmail, retryCount + 1);
+            }
+
+            console.error("[AUTH] Profile load failed after retries, applying safety fallback:", err);
             if (!userRef.current) {
                 const fallback: UserProfile = {
                     id: userId,
@@ -86,8 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 setUser(fallback);
                 userRef.current = fallback;
             }
-        } finally {
-            updateLoadingState(false, "Profile process finished");
+            updateLoadingState(false, "Profile fallback applied");
         }
     }, [updateLoadingState]);
 

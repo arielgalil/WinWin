@@ -23,7 +23,7 @@ const getEnvVar = (key: string, fallback: string = ""): string => {
 
 export const CONFIG = {
   // Use env variable set by Vite, with fallback for development
-  APP_VERSION: getEnvVar("APP_VERSION", "3.6.0"),
+  APP_VERSION: getEnvVar("APP_VERSION", "3.6.1"),
 
   SUPABASE: {
     URL: getEnvVar("SUPABASE_URL"),
@@ -34,8 +34,8 @@ export const CONFIG = {
 export const TIMEOUTS = {
   loadingScreenOptionsMs: 4000,
   toastDurationMs: 4000,
-  authProfileFetchMs: 6000,
-  authSafetyTimeoutMs: 8000,
+  authProfileFetchMs: 15000,
+  authSafetyTimeoutMs: 18000,
 };
 
 /**

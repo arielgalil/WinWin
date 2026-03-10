@@ -36,7 +36,7 @@ export const useLogs = (campaignId: string | undefined) => {
         .from('action_logs')
         .select('is_cancelled')
         .eq('id', id)
-        .single();
+        .maybeSingle();
     
     if (fetchErr) throw fetchErr;
     

@@ -42,6 +42,10 @@ import { useKioskRotation } from "../hooks/useKioskRotation";
 import { useToast } from "../hooks/useToast";
 import { logger } from "../utils/logger";
 import { AppSettings } from "../types";
+import { useLuckyWheelListener } from "../hooks/useLuckyWheelControl";
+import { LuckyWheelOverlay } from "./dashboard/LuckyWheelOverlay";
+import { supabase } from "../supabaseClient";
+import { usePagePresence } from "../hooks/usePagePresence";
 
 // Default settings to avoid `as any` cast
 const DEFAULT_SETTINGS: Partial<AppSettings> = {
@@ -54,7 +58,7 @@ const DEFAULT_SETTINGS: Partial<AppSettings> = {
 
 export const Dashboard: React.FC = () => {
     useIdleMode(5000); // 5s idle to hide cursor/interactions
-    const { campaign, settings } = useCampaign();
+    const { campaign, settings, refreshSettings } = useCampaign();
     const { classes } = useClasses(campaign?.id);
     const { tickerMessages } = useTicker(campaign?.id);
     const { updateCommentary } = useCompetitionMutations(campaign?.id);
@@ -75,6 +79,19 @@ export const Dashboard: React.FC = () => {
     const [isMusicPlaying, setIsMusicPlaying] = useState(isKioskStarted);
     const [isSharing, setIsSharing] = useState(false);
 
+    // Lucky Wheel remote control
+    const { wheelState } = useLuckyWheelListener(campaign?.id);
+    const [wheelParticipants, setWheelParticipants] = useState<string[]>([]);
+    const [wheelWinnerIndex, setWheelWinnerIndex] = useState<number | null>(
+        null,
+    );
+    const [wheelWinnerName, setWheelWinnerName] = useState<string | undefined>();
+    const [wheelActive, setWheelActive] = useState(false);
+    const [wheelName, setWheelName] = useState<string | undefined>();
+    const [wheelRound, setWheelRound] = useState(1);
+    const wheelCloseTimerRef = useRef<number | undefined>(undefined);
+    const lastDeactivatedIdRef = useRef<string | null>(null);
+
     // Auto-start timer ref for cleanup
     const autoStartTimerRef = useRef<number | undefined>(undefined);
 
@@ -82,7 +99,11 @@ export const Dashboard: React.FC = () => {
     const { kioskIndex, isHiddenByKiosk } = useKioskRotation({
         settings,
         isKioskStarted,
+        paused: wheelActive,
     });
+
+    // Track presence on the dashboard
+    usePagePresence(campaign?.id, "dashboard");
 
     // Mark session as persistent after initial animations
     useEffect(() => {
@@ -200,6 +221,156 @@ export const Dashboard: React.FC = () => {
         setActiveBurst(null);
     }, [setActiveBurst]);
 
+    // Handle spin complete from the wheel
+    const handleWheelSpinComplete = useCallback(
+        (index: number, name: string) => {
+            logger.info(
+                `[Dashboard] Wheel spin complete: ${name} (index ${index})`,
+            );
+
+            // Show celebratory toast
+            showToast(
+                settings?.language === "he"
+                    ? `מזל טוב ל${name}! 🎉`
+                    : `Congratulations to ${name}! 🎉`,
+                "success",
+            );
+
+            // Auto-hide the winner celebration after 10 seconds of inactivity to return to the idle wheel
+            if (wheelCloseTimerRef.current) {
+                window.clearTimeout(wheelCloseTimerRef.current);
+            }
+            wheelCloseTimerRef.current = window.setTimeout(() => {
+                logger.info(
+                    "[Dashboard] Resetting wheel winner view to idle after announcement",
+                );
+                setWheelWinnerIndex(null);
+                wheelCloseTimerRef.current = undefined;
+            }, 10000);
+        },
+        [showToast, settings?.language],
+    );
+
+    // Handle wheel broadcast commands
+    useEffect(() => {
+        if (!wheelState) return;
+        logger.info(
+            "[Dashboard] Processing wheel command:",
+            wheelState.action,
+            wheelState,
+        );
+        switch (wheelState.action) {
+            case "ACTIVATE":
+                setWheelParticipants(wheelState.participant_names || []);
+                setWheelWinnerIndex(null);
+                setWheelWinnerName(undefined);
+                setWheelActive(true);
+                setWheelName(wheelState.wheel_name);
+                setWheelRound(wheelState.round_number || 1);
+                break;
+            case "SPIN":
+                // Clear any pending auto-close timer when a new spin starts
+                if (wheelCloseTimerRef.current) {
+                    window.clearTimeout(wheelCloseTimerRef.current);
+                    wheelCloseTimerRef.current = undefined;
+                }
+                setWheelWinnerIndex(wheelState.winner_index ?? null);
+                setWheelWinnerName(wheelState.winner_name);
+                setWheelRound(wheelState.round_number || wheelRound);
+                break;
+            case "RESET":
+                setWheelWinnerIndex(null);
+                setWheelWinnerName(undefined);
+                break;
+            case "DEACTIVATE":
+                setWheelActive(false);
+                setWheelParticipants([]);
+                setWheelWinnerIndex(null);
+                setWheelWinnerName(undefined);
+                if (settings?.active_lucky_wheel_id) {
+                    lastDeactivatedIdRef.current =
+                        settings.active_lucky_wheel_id;
+                }
+                break;
+        }
+    }, [wheelState]);
+
+    // Handle settings update broadcast
+    useEffect(() => {
+        if (!campaign?.id) return;
+
+        // Use a consistent channel naming convention or the same channel as wheel control
+        const channel = supabase
+            .channel(`lucky_wheel_control_${campaign.id}`) // Keep consistent with hook
+            .on("broadcast", { event: "settings_updated" }, () => {
+                logger.info(
+                    "[Dashboard] Settings updated signal received, refreshing...",
+                );
+                refreshSettings();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [campaign?.id, refreshSettings]);
+
+    // Restore wheel state from DB if active_lucky_wheel_id is present in settings
+    useEffect(() => {
+        const activeWheelId = settings?.active_lucky_wheel_id;
+
+        // Reset our "last deactivated" flag once the DB actually updates to null or a different ID
+        if (!activeWheelId || activeWheelId !== lastDeactivatedIdRef.current) {
+            lastDeactivatedIdRef.current = null;
+        }
+
+        if (!activeWheelId) {
+            if (wheelActive) setWheelActive(false);
+            return;
+        }
+
+        logger.debug(
+            "[Dashboard] Found active_lucky_wheel_id in settings:",
+            activeWheelId,
+        );
+
+        // If we have an active wheel ID but it's not active locally, and we haven't JUST deactivated this specific ID
+        if (
+            activeWheelId && !wheelActive && campaign?.id &&
+            activeWheelId !== lastDeactivatedIdRef.current
+        ) {
+            const restoreWheel = async () => {
+                try {
+                    const { data, error } = await supabase
+                        .from("lucky_wheel_templates")
+                        .select("*")
+                        .eq("id", activeWheelId)
+                        .maybeSingle();
+
+                    if (error) throw error;
+                    if (data) {
+                        logger.info(
+                            "[Dashboard] Restoring active wheel from DB:",
+                            data.name,
+                        );
+                        setWheelParticipants(data.participant_names || []);
+                        setWheelName(data.name);
+                        setWheelActive(true);
+                    }
+                } catch (err) {
+                    logger.error(
+                        "[Dashboard] Error restoring wheel from DB:",
+                        err,
+                    );
+                }
+            };
+            restoreWheel();
+        } // Auto-close if settings say it's null but we are active
+        else if (!activeWheelId && wheelActive) {
+            setWheelActive(false);
+        }
+    }, [settings?.active_lucky_wheel_id, campaign?.id, wheelActive]);
+
     if (!settings || !campaign) return null;
 
     const commentary = settings.current_commentary || "";
@@ -214,12 +385,26 @@ export const Dashboard: React.FC = () => {
                 )}
             />
 
+            {/* Lucky Wheel Overlay */}
+            <LuckyWheelOverlay
+                isActive={wheelActive}
+                participants={wheelParticipants}
+                winnerIndex={wheelWinnerIndex}
+                winnerName={wheelWinnerName}
+                primaryColor={settings.primary_color}
+                secondaryColor={settings.secondary_color}
+                wheelName={wheelName}
+                roundNumber={wheelRound}
+                onSpinComplete={handleWheelSpinComplete}
+            />
+
             <div className="flex flex-col h-screen w-full overflow-hidden bg-black relative">
                 <BackgroundMusic
                     url={settings.background_music_url}
                     mode={settings.background_music_mode}
                     volume={settings.background_music_volume}
-                    isPlaying={isMusicPlaying && !isHiddenByKiosk}
+                    isPlaying={isMusicPlaying && !isHiddenByKiosk &&
+                        !wheelActive}
                 />
 
                 <div className="flex-1 relative min-h-0">

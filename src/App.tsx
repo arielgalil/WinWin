@@ -217,9 +217,20 @@ import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
 const App: React.FC = () => {
     const { t, dir } = useLanguage();
-    const { authLoading } = useAuth();
+    const { authLoading, setAuthLoading } = useAuth();
     const { theme } = useTheme();
     useAutoUpdate();
+
+    // Safety: Force loading to false if it hangs for more than 10 seconds
+    useEffect(() => {
+        if (authLoading) {
+            const timer = setTimeout(() => {
+                console.warn("[APP] Auth loading safety triggered - unlocking UI");
+                setAuthLoading(false);
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [authLoading, setAuthLoading]);
 
     useEffect(() => {
         prewarmKioskAssets();
