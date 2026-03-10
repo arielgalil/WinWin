@@ -319,6 +319,13 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         desc: t("activity_log_description" as any),
         updatedAt: settings?.logs_updated_at,
       },
+      "lucky-wheel": {
+        icon: WheelIcon,
+        colorVar: "var(--acc-primary)",
+        title: t("tab_lucky_wheel" as any),
+        desc: t("lucky_wheel_mgmt_desc" as any),
+        updatedAt: settings?.settings_updated_at,
+      },
     };
     return configs[activeTab] || configs["points"];
   }, [activeTab, settings, t]);

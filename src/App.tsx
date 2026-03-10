@@ -41,15 +41,15 @@ const LanguageSync: React.FC = () => {
 
 const CampaignContext: React.FC<{ children: React.ReactNode; skeletonType?: 'dashboard' | 'admin' | 'vote' }> = ({ children, skeletonType = 'generic' }) => {
     const { t } = useLanguage();
-    const { campaign, isLoadingCampaign, isCampaignError, campaignFetchError } = useCampaign();
+    const { campaign, settings, isLoadingCampaign, isLoadingSettings, isCampaignError, campaignFetchError } = useCampaign();
 
     // Show error only if loading is complete and there's an error
-    if (!isLoadingCampaign && (isCampaignError || !campaign)) {
+    if (!isLoadingCampaign && !isLoadingSettings && (isCampaignError || !campaign || !settings)) {
         return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
     }
 
     // Show skeleton while loading - don't block render!
-    if (isLoadingCampaign) {
+    if (isLoadingCampaign || isLoadingSettings) {
         return <PageSkeleton type={skeletonType} message={t('loading_campaign_data')} />;
     }
 

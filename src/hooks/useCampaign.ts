@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
@@ -146,34 +146,50 @@ export const useCampaign = <T = AppSettings>(
     [queryClient, campaignId],
   );
 
-  // Safety return for components that don't need campaign data (e.g. Super Admin)
-  if (!slug) {
-    return {
-      campaign: null,
-      campaignId: undefined,
-      settings: null,
-      isLoadingCampaign: false,
-      isLoadingSettings: false,
-      isFetchingCampaign: false,
-      isFetchingSettings: false,
-      isCampaignError: false,
-      campaignFetchError: null,
-      refreshCampaign: () => Promise.resolve(),
-      refreshSettings: () => Promise.resolve(),
-    };
-  }
+  return useMemo(() => {
+    // Safety return for components that don't need campaign data (e.g. Super Admin)
+    if (!slug) {
+      return {
+        campaign: null,
+        campaignId: undefined,
+        settings: null,
+        isLoadingCampaign: false,
+        isLoadingSettings: false,
+        isFetchingCampaign: false,
+        isFetchingSettings: false,
+        isCampaignError: false,
+        campaignFetchError: null,
+        refreshCampaign: () => Promise.resolve(),
+        refreshSettings: () => Promise.resolve(),
+      };
+    }
 
-  return {
+    return {
+      campaign,
+      campaignId,
+      settings,
+      isLoadingCampaign: isLoadingCampaign && !initialData,
+      isLoadingSettings: isLoadingSettings && !initialData,
+      isFetchingCampaign,
+      isFetchingSettings,
+      isCampaignError,
+      campaignFetchError,
+      refreshCampaign,
+      refreshSettings,
+    };
+  }, [
+    slug,
     campaign,
     campaignId,
     settings,
-    isLoadingCampaign: isLoadingCampaign && !initialData,
-    isLoadingSettings: isLoadingSettings && !initialData,
+    isLoadingCampaign,
+    isLoadingSettings,
     isFetchingCampaign,
     isFetchingSettings,
     isCampaignError,
     campaignFetchError,
     refreshCampaign,
     refreshSettings,
-  };
+    initialData
+  ]);
 };
