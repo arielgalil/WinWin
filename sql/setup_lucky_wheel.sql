@@ -33,20 +33,26 @@ ALTER TABLE lucky_wheel_winners ENABLE ROW LEVEL SECURITY;
 
 DO $$
 BEGIN
+    -- Templates
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Authenticated users can read wheel templates' AND tablename = 'lucky_wheel_templates') THEN
-        CREATE POLICY "Authenticated users can read wheel templates" ON lucky_wheel_templates FOR SELECT USING (true);
+        CREATE POLICY "Authenticated users can read wheel templates" ON lucky_wheel_templates 
+        FOR SELECT USING (is_super_admin() OR is_campaign_member(campaign_id));
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Admins can manage wheel templates' AND tablename = 'lucky_wheel_templates') THEN
-        CREATE POLICY "Admins can manage wheel templates" ON lucky_wheel_templates FOR ALL USING (true);
+        CREATE POLICY "Admins can manage wheel templates" ON lucky_wheel_templates 
+        FOR ALL USING (is_super_admin() OR is_campaign_admin(campaign_id));
     END IF;
 
+    -- Winners
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Authenticated users can read wheel winners' AND tablename = 'lucky_wheel_winners') THEN
-        CREATE POLICY "Authenticated users can read wheel winners" ON lucky_wheel_winners FOR SELECT USING (true);
+        CREATE POLICY "Authenticated users can read wheel winners" ON lucky_wheel_winners 
+        FOR SELECT USING (is_super_admin() OR is_campaign_member(campaign_id));
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Admins can manage wheel winners' AND tablename = 'lucky_wheel_winners') THEN
-        CREATE POLICY "Admins can manage wheel winners" ON lucky_wheel_winners FOR ALL USING (true);
+        CREATE POLICY "Admins can manage wheel winners" ON lucky_wheel_winners 
+        FOR ALL USING (is_super_admin() OR is_campaign_admin(campaign_id));
     END IF;
 END $$;
 

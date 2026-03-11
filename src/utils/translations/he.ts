@@ -11,6 +11,8 @@ export const he = {
     logout: "יציאה מהחשבון",
     refresh: "רענון נתונים",
     toggle_theme: "שינוי ערכת נושא",
+    switch_to_light_mode: "שנה למצב בהיר",
+    switch_to_dark_mode: "שנה למצב כהה",
     points_label: "ניקוד",
     updating: "מעדכן...",
     uploading: "מעלה...",
@@ -39,6 +41,8 @@ export const he = {
     yesterday: "אתמול",
     file_empty_error: "הקובץ ריק",
     all_campaigns: "כל התחרויות",
+    all_classes: "כל הכיתות",
+    unassigned: "ללא שיוך",
     dashboard: "לוח תחרות",
     admin_panel: "ניהול תחרות",
     super_admin_title: "🌱 מערכת תחרויות מצמיחה - פאנל משתמש על",
@@ -195,6 +199,8 @@ export const he = {
     competition_access_denied: "הגישה נדחתה. אין לך הרשאה לגשת לתחרות זו.",
     identifying_permissions: "מזהה הרשאות...",
     loading_system: "טוען מערכת...",
+    optimizing_connection: "מבצע אופטימיזציה לחיבור...",
+    update_available_reloading: "גרסה חדשה זמינה. המערכת תתרענן בעוד 60 שניות...",
 
     // Login
     login_platform_title: "מערכת תחרויות %{app_name}",

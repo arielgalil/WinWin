@@ -40,7 +40,10 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
     const [newUserPassword, setNewUserPassword] = useState('');
     const [newUserRole, setNewUserRole] = useState<'admin' | 'teacher'>('teacher');
     const [newUserClassId, setNewUserClassId] = useState<string>('');
+    const [newUserClassIds, setNewUserClassIds] = useState<string[]>([]);
     const [userCreationStatus, setUserCreationStatus] = useState<string>('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const [isBulkImporting, setIsBulkImporting] = useState(false);
 
     const { showToast } = useToast();
@@ -66,7 +69,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
             .select(`
             user_id,
             role,
-            profiles:user_id (id, email, full_name, class_id, role)
+            profiles:user_id (id, email, full_name, class_id, class_ids, role)
         `)
             .eq('campaign_id', currentCampaign.id);
 
@@ -80,6 +83,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
             email: item.profiles?.email || t('sync_pending'),
             full_name: item.profiles?.full_name || (item.user_id === currentUser?.id ? currentUser?.full_name : t('new_user_label')),
             class_id: item.profiles?.class_id,
+            class_ids: item.profiles?.class_ids || [],
             role: item.profiles?.role === 'superuser' ? 'superuser' : item.role
         }));
 
@@ -95,6 +99,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
         e.preventDefault();
         if (!currentCampaign) return;
 
+        setIsSaving(true);
         setUserCreationStatus(t('creating_user'));
         const normalizedEmail = cleanEmail(newUserEmail);
         let createdUserId: string | null = null;
@@ -109,7 +114,9 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
             });
 
             if (authError) {
-                if (authError.message.includes("already registered") || authError.message.includes("unique constraint")) {
+                if (authError.message.includes("already registered") || 
+                    authError.message.includes("unique constraint") || 
+                    authError.status === 422) {
                     setUserCreationStatus(t('user_exists_connecting'));
                     const { data: rpcData, error: rpcError } = await supabase.rpc('add_existing_user_to_campaign', {
                         target_email: normalizedEmail,
@@ -142,21 +149,38 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                 setUserCreationStatus(t('user_created_joined_success'));
             }
 
-            if (createdUserId && newUserClassId) {
+            if (createdUserId) {
+                const profileUpdate: any = {
+                    full_name: newUserFullName
+                };
+
+                if (newUserRole === 'teacher') {
+                    profileUpdate.class_id = newUserClassId || (newUserClassIds.length > 0 ? newUserClassIds[0] : null);
+                    profileUpdate.class_ids = newUserClassIds;
+                }
+
                 const { error: profileError } = await supabase
                     .from('profiles')
-                    .update({ class_id: newUserClassId })
+                    .update(profileUpdate)
                     .eq('id', createdUserId);
 
-                if (profileError) console.error("Failed to assign class:", profileError);
+                if (profileError) console.error("Failed to update profile:", profileError);
             }
 
             triggerSave('data-management');
             if (onSave) await onSave();
-            resetCreateForm();
+            
+            setTimeout(() => {
+                resetCreateForm();
+                setIsSaving(false);
+                setUserCreationStatus('');
+            }, 1500);
 
         } catch (err: any) {
+            console.error("User creation error:", err);
             setUserCreationStatus(getErrorMessage(err));
+            showToast(getErrorMessage(err), 'error');
+            setIsSaving(false);
         }
     };
 
@@ -165,6 +189,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
         setNewUserPassword('');
         setNewUserFullName('');
         setNewUserClassId('');
+        setNewUserClassIds([]);
         fetchUsers();
         if (onRefresh) onRefresh();
     };
@@ -172,27 +197,42 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
     const saveUserChanges = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentCampaign || !editingUser) return;
+        setIsUpdating(true);
         try {
-            await supabase.from('profiles').update({
-                full_name: editFormData.full_name,
-                class_id: editFormData.class_id || null
-            }).eq('id', editingUser.id);
+            const profileUpdate: any = {
+                id: editingUser.id,
+                full_name: editFormData.full_name
+            };
+
+            // Only update classes if teacher
+            if (editFormData.role === 'teacher') {
+                // Derive primary class_id from the new selection if available, otherwise keep current or null
+                const newClassIds = editFormData.class_ids || [];
+                profileUpdate.class_id = newClassIds.length > 0 ? newClassIds[0] : null;
+                profileUpdate.class_ids = newClassIds;
+            }
+
+            const { error: profileError } = await supabase.from('profiles').upsert(profileUpdate, { onConflict: 'id' });
+            if (profileError) throw profileError;
 
             if (editFormData.role && editFormData.role !== 'superuser') {
-                await supabase.from('campaign_users').update({
+                const { error: campaignError } = await supabase.from('campaign_users').update({
                     role: editFormData.role
                 }).match({ user_id: editingUser.id, campaign_id: currentCampaign.id });
+                if (campaignError) throw campaignError;
             }
 
             setEditingUser(null);
             setEditFormData({});
-            setUserCreationStatus(t('user_details_updated'));
-            fetchUsers();
             showToast(t('user_details_updated'), 'success');
+            fetchUsers();
             triggerSave('data-management');
             if (onSave) await onSave();
         } catch (err: any) {
+            console.error("Save user changes error:", err);
             showToast(getErrorMessage(err, 'update_error_msg'), 'error');
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -310,19 +350,53 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                             <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('role_label')}</label>
                             <select
                                 value={newUserRole}
-                                onChange={e => setNewUserRole(e.target.value as any)}
+                                onChange={e => {
+                                    const role = e.target.value as any;
+                                    setNewUserRole(role);
+                                    if (role === 'admin') setNewUserClassIds([]);
+                                }}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-bold shadow-sm"
                             >
                                 <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
                                 <option value="teacher" className="bg-[var(--bg-card)]">{t('role_teacher_short')}</option>
                             </select>
                         </div>
+                        
+                        {newUserRole === 'teacher' && (
+                            <div className="md:col-span-5 grid grid-cols-1 md:grid-cols-5 gap-4">
+                                <div className="md:col-span-4 space-y-1.5">
+                                    <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('group_header')}</label>
+                                    <div className="flex flex-wrap gap-2 p-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)]/50">
+                                        {alphabeticalClasses.map(cls => (
+                                            <button
+                                                key={cls.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    if (newUserClassIds.includes(cls.id)) {
+                                                        setNewUserClassIds(newUserClassIds.filter(id => id !== cls.id));
+                                                    } else {
+                                                        setNewUserClassIds([...newUserClassIds, cls.id]);
+                                                    }
+                                                }}
+                                                className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all border ${
+                                                    newUserClassIds.includes(cls.id)
+                                                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-md scale-105'
+                                                        : 'bg-[var(--bg-surface)] text-[var(--text-muted)] border-[var(--border-main)] hover:border-indigo-300'
+                                                }`}
+                                            >
+                                                {cls.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex items-end">
                             <AdminButton
                                 type="submit"
                                 variant="primary"
                                 size="md"
-                                isLoading={!!userCreationStatus}
+                                isLoading={isSaving}
                                 icon={<PlusIcon className="w-4 h-4" />}
                                 className="w-full h-[42px]"
                             >
@@ -375,9 +449,28 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                             key: 'class_id',
                             header: t('group_header'),
                             render: (u) => (
-                                <span className="font-bold text-[var(--text-main)] opacity-80">
-                                    {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
-                                </span>
+                                <div className="flex flex-wrap gap-1">
+                                    {u.role === 'admin' || u.role === 'superuser' ? (
+                                        <span className="text-[11px] text-[var(--text-muted)] font-bold italic">{t('all_classes')}</span>
+                                    ) : (
+                                        <>
+                                            {u.class_ids && u.class_ids.length > 0 ? (
+                                                u.class_ids.map(id => {
+                                                    const cls = classes.find(c => c.id === id);
+                                                    return cls ? (
+                                                        <span key={id} className="px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-[10px] font-bold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm">
+                                                            {cls.name}
+                                                        </span>
+                                                    ) : null;
+                                                })
+                                            ) : (
+                                                <span className="font-bold text-[var(--text-main)] opacity-80">
+                                                    {u.class_id ? classes.find(c => c.id === u.class_id)?.name : '-'}
+                                                </span>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                             )
                         }
                     ]}
@@ -426,7 +519,11 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                                 <select 
                                     className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
                                     value={editFormData.role} 
-                                    onChange={e => setEditFormData({ ...editFormData, role: e.target.value as any })}
+                                    onChange={e => {
+                                        const role = e.target.value as any;
+                                        setEditFormData({ ...editFormData, role });
+                                        if (role === 'admin') setEditFormData({ ...editFormData, role, class_ids: [] });
+                                    }}
                                     disabled={editingUser?.role === 'superuser'}
                                 >
                                     <option value="admin" className="bg-[var(--bg-card)]">{t('role_admin_short')}</option>
@@ -435,22 +532,38 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                                 </select>
                             </div>
 
-                            <div className="space-y-1">
-                                <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_header')}</label>
-                                <select 
-                                    className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-bold)] outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" 
-                                    value={editFormData.class_id || ''} 
-                                    onChange={e => setEditFormData({ ...editFormData, class_id: e.target.value })}
-                                >
-                                    <option value="" className="bg-[var(--bg-card)]">{t('no_assignment')}</option>
-                                    {alphabeticalClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
-                                </select>
-                            </div>
+                            {editFormData.role === 'teacher' && (
+                                <div className="md:col-span-2 space-y-1 mt-4">
+                                    <label className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">{t('group_header')}</label>
+                                    <div className="flex flex-wrap gap-2 p-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)]/50">
+                                        {alphabeticalClasses.map(cls => (
+                                            <button
+                                                key={cls.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    const currentIds = editFormData.class_ids || [];
+                                                    const newIds = currentIds.includes(cls.id)
+                                                        ? currentIds.filter(id => id !== cls.id)
+                                                        : [...currentIds, cls.id];
+                                                    setEditFormData({ ...editFormData, class_ids: newIds });
+                                                }}
+                                                className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all border ${
+                                                    (editFormData.class_ids || []).includes(cls.id)
+                                                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-md scale-105'
+                                                        : 'bg-[var(--bg-surface)] text-[var(--text-muted)] border-[var(--border-main)] hover:border-indigo-300'
+                                                }`}
+                                            >
+                                                {cls.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     
                     <div className="flex gap-3 pt-4 border-t border-[var(--border-subtle)]">
-                        <AdminButton type="submit" variant="success" size="md" className="flex-1">
+                        <AdminButton type="submit" variant="success" size="md" className="flex-1" isLoading={isUpdating}>
                             {t('save')}
                         </AdminButton>
                         <AdminButton type="button" variant="secondary" size="md" onClick={() => { setEditingUser(null); setEditFormData({}); }} className="flex-1">

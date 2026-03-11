@@ -19,10 +19,11 @@ interface DashboardHeaderProps {
     totalInstitutionScore: number;
     sortedClasses?: (ClassRoom & { rank: number })[];
     topStudents?: (Student & { rank: number })[];
+    onCapture?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-    settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = []
+export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
+    settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = [], onCapture
 }) => {
     const { t } = useLanguage();
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -180,4 +181,4 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </div>
         </div>
     );
-};
+});

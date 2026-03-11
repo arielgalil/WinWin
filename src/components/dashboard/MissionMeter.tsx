@@ -29,7 +29,7 @@ interface MissionMeterProps {
     campaignId?: string;
 }
 
-export const MissionMeter: React.FC<MissionMeterProps> = ({
+export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
     totalScore,
     goals,
     legacyTargetScore,
@@ -261,10 +261,29 @@ const shoutoutMessage = useMemo(() => {
 
 {/* 1. Centered Image (Top) - 65% Height */}
                 <div className="flex flex-col items-center justify-center h-[65%]">
-                    <div className="relative w-full max-w-[240px] aspect-square group shadow-[0_15px_40px_rgba(0,0,0,0.4)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20 bg-black/60">
-                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white">?</span>
+                    <div className="relative w-full max-w-[240px] aspect-square group shadow-[0_15px_40px_rgba(0,0,0,0.4)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20">
+                        {/* Background Blurred Layer - More vibrant and visible */}
+                        <div className="absolute inset-0 blur-xl opacity-70 scale-110">
+                            {displayGoal.image_type === 'upload' && displayGoal.image_value ? (
+                                <img src={displayGoal.image_value} alt="" className="w-full h-full object-cover brightness-110" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-500/40 to-purple-500/40">
+                                    <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl">
+                                        {displayGoal.image_value || '🏆'}
+                                    </span>
+                                </div>
+                            )}
                         </div>
+
+                        {/* Glass Overlay for depth */}
+                        <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+
+                        {/* Question Mark Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white/50">?</span>
+                        </div>
+
+                        {/* Masked Reveal Layer */}
                         <div className="absolute inset-0" style={{ mask: 'url(#iris-mask)', WebkitMask: 'url(#iris-mask)' }}>
                             {displayGoal.image_type === 'upload' && displayGoal.image_value ? (
                                 <img src={displayGoal.image_value} alt={displayGoal.name} className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110" />
@@ -362,4 +381,4 @@ const shoutoutMessage = useMemo(() => {
             </div>
         </div>
     );
-};
+});

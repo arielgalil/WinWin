@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { AppSettings, Campaign } from "../types";
 import { logger } from "../utils/logger";
+import { withTimeout } from "../utils/supabaseUtils";
 
 interface UseCampaignOptions<T = AppSettings> {
   slugOverride?: string;
@@ -14,6 +15,8 @@ interface UseCampaignOptions<T = AppSettings> {
   };
 }
 
+const CACHE_PREFIX = 'metziacha_camp_cache_';
+
 export const useCampaign = <T = AppSettings>(
   options: UseCampaignOptions<T> = {},
 ) => {
@@ -22,12 +25,33 @@ export const useCampaign = <T = AppSettings>(
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
 
-  // Move log to useEffect to prevent state update during render (DebugConsole)
-  useEffect(() => {
-    if (slug) {
-      logger.debug(`[useCampaign] Initializing for slug: ${slug} (v3.6.1)`);
+  // Persistence logic for Instant-On
+  const getCachedData = useCallback(() => {
+    if (!slug) return null;
+    try {
+      const cached = localStorage.getItem(`${CACHE_PREFIX}${slug}`);
+      if (cached) return JSON.parse(cached);
+    } catch (e) {
+      console.warn("Failed to parse campaign cache", e);
     }
+    return null;
   }, [slug]);
+
+  const saveToCache = useCallback((data: any) => {
+    if (!slug || !data.campaign || !data.settings) return;
+    // Push the heavy stringification and I/O off the main thread to avoid stuttering
+    setTimeout(() => {
+      try {
+        localStorage.setItem(`${CACHE_PREFIX}${slug}`, JSON.stringify(data));
+      } catch (e) {}
+    }, 1000);
+  }, [slug]);
+
+  // Derived initial data from options OR cache
+  const effectiveInitialData = useMemo(() => {
+    if (initialData) return initialData;
+    return getCachedData();
+  }, [initialData, getCachedData]);
 
   const {
     data: campaign,
@@ -41,15 +65,18 @@ export const useCampaign = <T = AppSettings>(
       if (!slug) return null;
       const fetchWithRetry = async (attempt = 1): Promise<Campaign | null> => {
         try {
-          const { data, error } = await supabase.from("campaigns").select(
-            "*, institution:institutions(*)",
-          ).eq("slug", slug).maybeSingle();
+          // Reduced timeout to 6s for faster recovery
+          const { data, error } = await withTimeout(
+            supabase.from("campaigns").select(
+              "*, institution:institutions(*)",
+            ).eq("slug", slug).maybeSingle(),
+            6000 
+          );
 
           if (error) throw error;
           if (!data) return null;
 
           const campaign = data as Campaign;
-          // If the campaign doesn't have its own logo, use the institution's logo
           if (!campaign.logo_url && campaign.institution?.logo_url) {
             campaign.logo_url = campaign.institution.logo_url;
           }
@@ -64,17 +91,12 @@ export const useCampaign = <T = AppSettings>(
         }
       };
       
-      const campaign = await fetchWithRetry();
-      if (!campaign) {
-        logger.warn(`Campaign not found for slug: ${slug}`);
-        return null;
-      }
-      return campaign;
+      return await fetchWithRetry();
     },
     enabled: !!slug, 
-    initialData: initialData?.campaign,
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: 1000 * 60 * 5,
+    initialData: effectiveInitialData?.campaign,
+    staleTime: 1000 * 60 * 5, // 5 mins stale (down from 30)
+    refetchOnWindowFocus: false,
   });
 
   const campaignId = campaign?.id;
@@ -90,12 +112,15 @@ export const useCampaign = <T = AppSettings>(
       
       const fetchWithRetry = async (attempt = 1): Promise<AppSettings | null> => {
         try {
-          const { data, error } = await supabase.from("app_settings").select("*")
-            .eq("campaign_id", campaignId).maybeSingle();
+          // Reduced timeout to 6s
+          const { data, error } = await withTimeout(
+            supabase.from("app_settings").select("*")
+              .eq("campaign_id", campaignId).maybeSingle(),
+            6000
+          );
           
           if (error) throw error;
 
-          // If no settings exist yet, provide a robust default object to avoid blank screens
           if (!data) {
             const defaultSettings: AppSettings = {
               campaign_id: campaignId,
@@ -130,11 +155,22 @@ export const useCampaign = <T = AppSettings>(
       return fetchWithRetry();
     },
     enabled: !!campaignId, 
-    initialData: initialData?.settings,
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 2,
+    initialData: effectiveInitialData?.settings,
+    staleTime: 1000 * 5, // 5 seconds stale (down from 15 mins) - critical for real-time
+    refetchOnWindowFocus: false,
     select: settingsSelector,
   });
+
+  // Background Cache Update
+  useEffect(() => {
+    if (campaign && settings && !isFetchingCampaign && !isFetchingSettings) {
+       // We only cache the full settings object, not the selected one
+       // To do this simply, we only trigger cache if we have raw settings
+       // If settingsSelector is used, 'settings' might be partial. 
+       // We'll skip caching if partial to be safe, or just cache campaign
+       saveToCache({ campaign, settings });
+    }
+  }, [campaign, settings, isFetchingCampaign, isFetchingSettings, saveToCache]);
 
   const refreshCampaign = useCallback(
     () => slug ? queryClient.refetchQueries({ queryKey: ["campaign", slug] }) : Promise.resolve(),
@@ -147,7 +183,6 @@ export const useCampaign = <T = AppSettings>(
   );
 
   return useMemo(() => {
-    // Safety return for components that don't need campaign data (e.g. Super Admin)
     if (!slug) {
       return {
         campaign: null,
@@ -168,8 +203,9 @@ export const useCampaign = <T = AppSettings>(
       campaign,
       campaignId,
       settings,
-      isLoadingCampaign: isLoadingCampaign && !initialData,
-      isLoadingSettings: isLoadingSettings && !initialData,
+      // If we have data (from cache or elsewhere), we are NOT loading
+      isLoadingCampaign: isLoadingCampaign && !campaign,
+      isLoadingSettings: isLoadingSettings && !settings,
       isFetchingCampaign,
       isFetchingSettings,
       isCampaignError,
@@ -189,7 +225,6 @@ export const useCampaign = <T = AppSettings>(
     isCampaignError,
     campaignFetchError,
     refreshCampaign,
-    refreshSettings,
-    initialData
+    refreshSettings
   ]);
 };

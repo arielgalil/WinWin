@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+    BugIcon,
     CalculatorIcon,
     CrownIcon,
     LockIcon,
     LogoutIcon,
     MoonIcon,
     SettingsIcon,
-    ShieldAlertIcon,
     SproutIcon,
     SunIcon,
     TrophyIcon,
     Volume2Icon,
     VolumeXIcon,
     XIcon,
-    ZapIcon,
 } from "./Icons";
 import { useAuth } from "../../hooks/useAuth";
 import { useCampaign } from "../../hooks/useCampaign";
@@ -32,16 +31,24 @@ interface VersionFooterProps {
     };
     className?: string;
     onAdminClick?: () => void;
+    isDebugOpen?: boolean;
+    onDebugToggle?: () => void;
 }
 
 export const VersionFooter: React.FC<VersionFooterProps> = ({
     musicState,
     className = "",
     onAdminClick,
+    isDebugOpen = false,
+    onDebugToggle,
 }) => {
     const { t } = useLanguage();
     const { user, logout: handleLogout } = useAuth();
     const { theme, toggleTheme } = useTheme();
+
+    const [internalDebugOpen, setInternalDebugOpen] = useState(false);
+    const resolvedIsDebugOpen = isDebugOpen !== undefined ? isDebugOpen : internalDebugOpen;
+    const handleDebugToggle = onDebugToggle || (() => setInternalDebugOpen(!internalDebugOpen));
 
     // Simple fallback for router functionality
     const [fallbackSlug, setFallbackSlug] = useState("");
@@ -71,7 +78,6 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     const [isLowPerf, setIsLowPerf] = useState(
         localStorage.getItem("winwin_low_perf") === "true",
     );
-    const [isDebugOpen, setIsDebugOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -150,16 +156,9 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     });
 
     return (
-        <>
-            <DebugConsole
-                isOpen={isDebugOpen}
-                onClose={() => setIsDebugOpen(false)}
-            />
-
-            {/* Footer Container: Small padding to prevent scale/shadow from hitting viewport edges */}
-            <footer
-                className={`w-full bg-transparent py-1 shrink-0 z-50 flex items-center ${className}`}
-            >
+        <footer
+            className={`w-full bg-transparent py-1 shrink-0 z-50 flex items-center ${className}`}
+        >
                 <div className="max-w-[1920px] mx-auto flex justify-center px-4 w-full">
                     <nav className="bg-transparent border-0 h-8 flex items-center gap-4 px-4 rounded-full shadow-none transition-all">
                         {/* 1. Branding (Right Side) */}
@@ -184,8 +183,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     title={t("score_board")}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isBoardActive
-                                            ? "text-[var(--text-primary)] drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                                            ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
+                                            : "text-muted-foreground hover:text-foreground"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -204,8 +203,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     title={t("enter_points")}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isVoteActive
-                                            ? "text-[var(--text-primary)] drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                                            ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
+                                            : "text-muted-foreground hover:text-foreground"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -222,8 +221,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     title={t("manage")}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isManageActive
-                                            ? "text-[var(--text-primary)] drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                                            ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
+                                            : "text-muted-foreground hover:text-foreground"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -231,14 +230,14 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 </button>
                             )}
 
-                            {/* 3. Utility Icons (Music, TV Mode, Debug, Super) */}
+                            {/* 3. Utility Icons (Music, Debug, Super) */}
                             {musicState && (
                                 <button
                                     onClick={musicState.onToggle}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         musicState.isPlaying
-                                            ? "text-[var(--text-primary)] drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                                            ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
+                                            : "text-muted-foreground hover:text-foreground"
                                     } ${getNavButtonClass()}`}
                                     title={t("music")}
                                     style={getNavButtonStyle()}
@@ -249,28 +248,13 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 </button>
                             )}
 
-                            {isBoardActive && (
-                                <button
-                                    onClick={() => setIsLowPerf(!isLowPerf)}
-                                    className={`w-6 h-6 flex items-center justify-center ${
-                                        isLowPerf
-                                            ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                            : "text-foreground/60 opacity-80"
-                                    } ${getNavButtonClass()}`}
-                                    title={t("tv_mode")}
-                                    style={getNavButtonStyle()}
-                                >
-                                    <ZapIcon className="w-4 h-4" />
-                                </button>
-                            )}
-
                             {isSuperUser && (
                                 <button
                                     onClick={() => navigate("/super")}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         fallbackPath === "/super"
                                             ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                            : "text-foreground/60 opacity-80"
+                                            : "text-muted-foreground hover:text-foreground"
                                     } ${getNavButtonClass()}`}
                                     title={t("system_admin")}
                                     style={getNavButtonStyle()}
@@ -279,17 +263,17 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 </button>
                             )}
 
-                            <button
-                                onClick={() => setIsDebugOpen(!isDebugOpen)}
-                                className={`w-6 h-6 flex items-center justify-center ${
-                                    isDebugOpen
-                                        ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                        : "text-foreground/60 opacity-80"
-                                } ${getNavButtonClass()}`}
-                                title={t("debug")}
-                                style={getNavButtonStyle()}
-                            >
-                                <ShieldAlertIcon className="w-4 h-4" />
+                             <button
+                                 onClick={handleDebugToggle}
+                                 className={`w-6 h-6 flex items-center justify-center ${
+                                     resolvedIsDebugOpen
+                                         ? "text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 opacity-100 animate-pulse"
+                                         : "text-muted-foreground hover:text-foreground"
+                                 } ${getNavButtonClass()}`}
+                                 title={t("debug")}
+                                 style={getNavButtonStyle()}
+                             >
+                                <BugIcon className="w-4 h-4" />
                             </button>
                         </div>
 
@@ -303,7 +287,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                         className={`w-6 h-6 flex items-center justify-center ${
                                             fallbackPath.includes("/login")
                                                 ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                                : "text-foreground/60 opacity-80"
+                                                : "text-muted-foreground hover:text-foreground"
                                         } ${getNavButtonClass()}`}
                                         style={getNavButtonStyle()}
                                     >
@@ -347,16 +331,24 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                             })()}
                                         </button>
 
+                                        {/* Mobile Backdrop */}
+                                        {isProfileMenuOpen && (
+                                            <div 
+                                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] md:hidden"
+                                                onClick={() => setIsProfileMenuOpen(false)}
+                                            />
+                                        )}
+
                                         {/* Profile Menu */}
                                         {isProfileMenuOpen && (
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-[var(--bg-card)]/95 backdrop-blur-xl border border-[var(--border-subtle)] rounded-lg shadow-2xl p-3 z-50">
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-[var(--bg-card)]/98 backdrop-blur-2xl border border-[var(--border-main)] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 z-[100] animate-in fade-in slide-in-from-bottom-2 duration-200">
                                                 {/* User Info with Close Button */}
-                                                <div className="border-b border-[var(--border-subtle)] pb-3 mb-3 flex items-center justify-between">
+                                                <div className="border-b border-[var(--border-subtle)] pb-4 mb-4 flex items-center justify-between">
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="text-[var(--text-main)] font-black text-sm truncate">
+                                                        <div className="text-[var(--text-main)] font-black text-base truncate">
                                                             {user.full_name}
                                                         </div>
-                                                        <div className="text-[var(--text-muted)] text-xs capitalize">
+                                                        <div className="text-[var(--text-muted)] text-xs font-bold uppercase tracking-wider mt-0.5">
                                                             {user.role ===
                                                                     "superuser"
                                                                 ? t("role_super_user")
@@ -374,15 +366,15 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                             setIsProfileMenuOpen(
                                                                 false,
                                                             )}
-                                                        className="w-5 h-5 flex items-center justify-center text-white/60 hover:text-white/100 hover:bg-white/10 rounded transition-colors flex-shrink-0 ms-2"
+                                                        className="w-7 h-7 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded-full transition-colors flex-shrink-0 ms-2"
                                                         title="Close"
                                                     >
-                                                        <XIcon className="w-3 h-3" />
+                                                        <XIcon className="w-4 h-4" />
                                                     </button>
                                                 </div>
 
                                                 {/* Menu Items */}
-                                                <div className="space-y-1">
+                                                <div className="space-y-1.5 font-bold">
                                                     {/* All Competitions */}
                                                     <button
                                                         onClick={() =>
@@ -461,29 +453,12 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                         </button>
                                                     )}
 
-                                                    {/* TV Mode - Only on leaderboard */}
-                                                    {isBoardActive && (
-                                                        <button
-                                                            onClick={() =>
-                                                                setIsLowPerf(
-                                                                    !isLowPerf,
-                                                                )}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
-                                                        >
-                                                            <ZapIcon className="w-4 h-4" />
-                                                            {t("tv_mode")}
-                                                        </button>
-                                                    )}
-
                                                     {/* Debug Console */}
                                                     <button
-                                                        onClick={() =>
-                                                            setIsDebugOpen(
-                                                                !isDebugOpen,
-                                                            )}
+                                                        onClick={onDebugToggle}
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
-                                                        <ShieldAlertIcon className="w-4 h-4" />
+                                                        <BugIcon className="w-4 h-4" />
                                                         {t("debug")}
                                                     </button>
 
@@ -520,8 +495,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             {/* 5. Theme Toggle (End-aligned) */}
                             <button
                                 onClick={toggleTheme}
-                                title={t("toggle_theme")}
-                                className={`w-6 h-6 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] ${getNavButtonClass()}`}
+                                title={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")}
+                                className={`w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground ${getNavButtonClass()}`}
                                 style={getNavButtonStyle()}
                             >
                                 {theme === "dark"
@@ -531,7 +506,17 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </div>
                     </nav>
                 </div>
+                
+                <DebugConsole 
+                    isOpen={resolvedIsDebugOpen} 
+                    onClose={() => {
+                        if (onDebugToggle) {
+                            onDebugToggle();
+                        } else {
+                            setInternalDebugOpen(false);
+                        }
+                    }} 
+                />
             </footer>
-        </>
     );
 };

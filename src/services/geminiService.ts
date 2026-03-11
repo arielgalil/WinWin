@@ -38,35 +38,23 @@ const callGeminiFunction = async (payload: {
         }
 
         if (data?.error) {
-            console.error("AI Edge Function internal error:", data.error);
-            throw new Error(data.error);
+            console.warn("[AI] Function returned error (non-critical):", data.error);
+            return ""; 
         }
 
         return data.text || "";
     } catch (err: any) {
         clearTimeout(timeoutId);
-        console.error("Secure AI call failed:", err);
-
-        if (err.name === "AbortError") {
-            throw new Error(t("ai_communication_error", lang) + " (Timeout)");
-        }
-
+        
         const msg = err.message || "";
-        if (
-            msg.includes("Failed to send a request") ||
-            msg.includes("FunctionsFetchError")
-        ) {
-            throw new Error(t("ai_server_connection_error", lang));
+        if (msg.includes("API_KEY") || msg.includes("expired") || msg.includes("INVALID_ARGUMENT") || msg.includes("400")) {
+            isAiKeyExpired = true; 
+            console.warn("[AI] Key expired or invalid - silencing AI.");
+            return ""; 
         }
-        if (msg.includes("API_KEY")) {
-            // Enhanced handling for expired/invalid keys
-            if (msg.includes("expired") || msg.includes("INVALID_ARGUMENT")) {
-                isAiKeyExpired = true; // Stop future calls in this session
-                throw new Error(t("ai_api_key_error", lang) + " (Key Expired)");
-            }
-            throw new Error(t("ai_api_key_error", lang));
-        }
-        throw err;
+
+        console.warn("[AI] Secure call failed (silenced):", msg);
+        return "";
     }
 };
 

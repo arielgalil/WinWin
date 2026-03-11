@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"/c/Users/WIN10/האחסון שלי/projects/win2grow\" && grep -n \"queryClient.invalidateQueries\\\\|refetchQueries\" src/hooks/*.ts --count | sort -t: -k2 -rn)"
+    ]
+  }
+}

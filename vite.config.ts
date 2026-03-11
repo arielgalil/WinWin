@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         react(), 
         tailwindcss(),
         VitePWA({
-          registerType: 'autoUpdate',
+          registerType: 'prompt',
           includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'favicon-96x96.png'],
           workbox: {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
@@ -48,7 +48,7 @@ export default defineConfig(({ mode }) => {
               },
               {
                 urlPattern: /^https:\/\/(aistudiocdn\.com|esm\.sh|cdn\.sheetjs\.com)\/.*/i,
-                handler: 'CacheFirst',
+                handler: 'StaleWhileRevalidate',
                 options: {
                   cacheName: 'external-libs-cache',
                   expiration: {

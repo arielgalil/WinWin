@@ -100,7 +100,7 @@ describe('ProtectedRoute', () => {
         expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
 
-    it('renders children if user is authenticated and authorized', () => {
+    it('renders children if user is authenticated and authorized (admin)', () => {
         vi.mocked(useAuth).mockReturnValue({ user: { id: '1' } } as any);
         vi.mocked(useAuthPermissions).mockReturnValue({
             canAccessAdmin: true,
@@ -116,6 +116,25 @@ describe('ProtectedRoute', () => {
 
         expect(screen.getByTestId('protected-content')).toBeInTheDocument();
         expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('error-screen')).not.toBeInTheDocument();
+    });
+
+    it('renders children if teacher accesses a route that allows both teacher and admin', () => {
+        vi.mocked(useAuth).mockReturnValue({ user: { id: 'teacher-1' } } as any);
+        vi.mocked(useAuthPermissions).mockReturnValue({
+            canAccessAdmin: false,
+            canAccessVote: true,
+        } as any);
+        vi.mocked(useCampaign).mockReturnValue({ isLoadingCampaign: false } as any);
+        vi.mocked(useParams).mockReturnValue({ slug: 'test-campaign' } as any);
+
+        render(
+            <ProtectedRoute allowedRoles={['teacher', 'admin', 'superuser']}>
+                <div data-testid="protected-content">Content</div>
+            </ProtectedRoute>
+        );
+
+        expect(screen.getByTestId('protected-content')).toBeInTheDocument();
         expect(screen.queryByTestId('error-screen')).not.toBeInTheDocument();
     });
 });

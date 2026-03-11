@@ -36,6 +36,7 @@ export const TIMEOUTS = {
   toastDurationMs: 4000,
   authProfileFetchMs: 15000,
   authSafetyTimeoutMs: 18000,
+  slowConnectionThresholdMs: 3500,
 };
 
 /**

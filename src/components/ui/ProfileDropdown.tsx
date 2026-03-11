@@ -116,15 +116,6 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                     </button>
                 )}
 
-                {/* TV Mode */}
-                <button
-                    onClick={() => {}}
-                    className="w-full flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded text-xs transition-colors text-start"
-                >
-                    <span className="w-3 h-3 flex items-center justify-center">⚡</span>
-                    {t('tv_mode')}
-                </button>
-
                 {/* Debug Console */}
                 <button
                     onClick={() => {}}

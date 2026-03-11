@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabaseClient";
 import { logger } from "../utils/logger";
@@ -9,16 +9,6 @@ export const useRealtimeSubscriptions = (
 ) => {
   const queryClient = useQueryClient();
   const channelRef = useRef<any>(null);
-
-  const invalidate = useCallback(() => {
-    if (!campaignId) return;
-    queryClient.invalidateQueries({ queryKey: ["classes", campaignId] });
-    queryClient.invalidateQueries({ queryKey: ["logs", campaignId] });
-    queryClient.invalidateQueries({ queryKey: ["ticker", campaignId] });
-    queryClient.invalidateQueries({ queryKey: ["settings", campaignId] });
-    queryClient.invalidateQueries({ queryKey: ["campaign", campaignId] });
-    onRealtimeUpdate?.();
-  }, [queryClient, campaignId, onRealtimeUpdate]);
 
   useEffect(() => {
     if (!campaignId) return;
@@ -33,44 +23,58 @@ export const useRealtimeSubscriptions = (
     const channel = supabase.channel(`realtime_${campaignId}`);
     channelRef.current = channel;
 
-    // Set up subscriptions with proper error handling
+    // Helper to trigger optional callback
+    const triggerUpdate = () => onRealtimeUpdate?.();
+
+    // Set up subscriptions with proper error handling and specific invalidations
     const subscriptions = [
       {
         table: "classes",
         handler: (payload: any) => {
           logger.debug("Realtime: Classes update received", payload);
-          // invalidate() already handles all queries including classes
-          invalidate();
+          queryClient.invalidateQueries({ queryKey: ["classes", campaignId] });
+          triggerUpdate();
         },
       },
       {
         table: "students",
         handler: (payload: any) => {
           logger.debug("Realtime: Students update received", payload);
-          // Students affect classes scores, so invalidate handles this
-          invalidate();
+          // Students affect classes scores, so invalidate classes
+          queryClient.invalidateQueries({ queryKey: ["classes", campaignId] });
+          triggerUpdate();
         },
       },
       {
         table: "action_logs",
-        handler: () => invalidate(),
+        handler: (payload: any) => {
+          logger.debug("Realtime: Action logs update received", payload);
+          queryClient.invalidateQueries({ queryKey: ["logs", campaignId] });
+          triggerUpdate();
+        },
       },
       {
         table: "app_settings",
         handler: (payload: any) => {
           logger.debug("Realtime: Settings update received", payload);
-          invalidate();
+          queryClient.invalidateQueries({ queryKey: ["settings", campaignId] });
+          triggerUpdate();
         },
       },
       {
         table: "ticker_messages",
-        handler: () => invalidate(),
+        handler: (payload: any) => {
+          logger.debug("Realtime: Ticker messages update received", payload);
+          queryClient.invalidateQueries({ queryKey: ["ticker", campaignId] });
+          triggerUpdate();
+        },
       },
       {
         table: "campaigns",
         handler: (payload: any) => {
           logger.info("Realtime: Campaign update received", payload);
-          invalidate();
+          queryClient.invalidateQueries({ queryKey: ["campaign", campaignId] });
+          triggerUpdate();
         },
       },
     ];
@@ -108,7 +112,8 @@ export const useRealtimeSubscriptions = (
         channelRef.current = null;
       }
     };
-  }, [campaignId, invalidate, queryClient]);
+  }, [campaignId, queryClient, onRealtimeUpdate]);
 
-  return { invalidate };
+  // We don't expose a blanket invalidate function anymore to enforce specific invalidations
+  return {};
 };

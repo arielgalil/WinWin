@@ -23,6 +23,7 @@ import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
 import { useAutoUpdate } from './hooks/useAutoUpdate';
 import { prewarmKioskAssets } from './utils/pwaUtils';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const LanguageSync: React.FC = () => {
     const { settings: campaignLanguage } = useCampaign({
@@ -43,14 +44,14 @@ const CampaignContext: React.FC<{ children: React.ReactNode; skeletonType?: 'das
     const { t } = useLanguage();
     const { campaign, settings, isLoadingCampaign, isLoadingSettings, isCampaignError, campaignFetchError } = useCampaign();
 
+    // Show skeleton while loading - ONLY if we don't have data at all
+    if ((isLoadingCampaign || isLoadingSettings) && !campaign) {
+        return <PageSkeleton type={skeletonType} message={t('loading_campaign_data')} />;
+    }
+
     // Show error only if loading is complete and there's an error
     if (!isLoadingCampaign && !isLoadingSettings && (isCampaignError || !campaign || !settings)) {
         return <ErrorScreen message={campaignFetchError instanceof Error ? campaignFetchError.message : t('campaign_not_found')} />;
-    }
-
-    // Show skeleton while loading - don't block render!
-    if (isLoadingCampaign || isLoadingSettings) {
-        return <PageSkeleton type={skeletonType} message={t('loading_campaign_data')} />;
     }
 
     return (
@@ -120,6 +121,7 @@ const VoteRoute = () => {
                 user={user}
                 userRole={campaignRole || undefined}
                 onLogout={async () => { await logout(); navigate('/'); }}
+                onViewDashboard={() => navigate(`/comp/${slug}`)}
             />
         </CampaignContext>
     );
@@ -150,7 +152,7 @@ const LoginRoute = () => {
     // Fallback for settings if manual construction is needed (legacy support for state shape)
     const activeSettings = settings || (campaign ? { campaign_id: campaign.id, competition_name: campaign.name, logo_url: campaign.logo_url } : undefined);
 
-    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
+    const { campaignRole, isLoadingRole } = useCampaignRole(campaign?.id, user?.id);
     const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
 
     // If it's a branded route, we MUST wait for the data to avoid generic flash or false "Access Denied".
@@ -160,10 +162,14 @@ const LoginRoute = () => {
     const isActuallyFetching = isLoadingCampaign || isLoadingSettings || isFetchingCampaign || isFetchingSettings;
     const hasBrandingData = !!activeSettings?.primary_color;
 
+    // IMPORTANT: We also need to know if the role is still being loaded to avoid false "Access Denied"
+    const isRoleLoading = isLoadingRole && !!user && !!campaign;
+
     useEffect(() => {
-        if (user && !authLoading && !isActuallyFetching) {
+        if (user && !authLoading && !isActuallyFetching && !isRoleLoading) {
             if (slug) {
-                if (campaignRole) {
+                // If we have a role, or we are super user, redirect accordingly
+                if (campaignRole || isSuper) {
                     if (canAccessAdmin) {
                         if (location.pathname !== `/admin/${slug}`) navigate(`/admin/${slug}`, { replace: true });
                     }
@@ -183,13 +189,14 @@ const LoginRoute = () => {
                 }
             }
         }
-    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching]);
+    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching, isRoleLoading]);
 
-    if (isBranded && isActuallyFetching && !hasBrandingData) {
+    if (isBranded && (isActuallyFetching || isRoleLoading) && !hasBrandingData) {
         return <LoadingScreen message={t('loading_campaign_data')} />;
     }
 
-    if (slug && user && !isActuallyFetching && campaignRole === null) {
+    // Only show access denied if we ARE NOT loading anything, we HAVE a user, but we definitely HAVE NO role
+    if (slug && user && !isActuallyFetching && !isRoleLoading && !campaignRole && !isSuper) {
         return (
             <>
                 <DynamicTitle settings={activeSettings} campaign={campaign} pageName={t('error')} />
@@ -215,31 +222,57 @@ const LoginRoute = () => {
 
 import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 
+import { ServiceWorkerManager } from './components/ui/ServiceWorkerManager';
+import { useRealtimeUpdate } from './hooks/useRealtimeUpdate';
+
 const App: React.FC = () => {
     const { t, dir } = useLanguage();
-    const { authLoading, setAuthLoading } = useAuth();
+    const { user, authLoading, authStatus, isSlowConnection } = useAuth();
     const { theme } = useTheme();
-    useAutoUpdate();
+    const [showSW, setShowSW] = React.useState(false);
 
-    // Safety: Force loading to false if it hangs for more than 10 seconds
-    useEffect(() => {
-        if (authLoading) {
-            const timer = setTimeout(() => {
-                console.warn("[APP] Auth loading safety triggered - unlocking UI");
-                setAuthLoading(false);
-            }, 10000);
-            return () => clearTimeout(timer);
-        }
-    }, [authLoading, setAuthLoading]);
+    // Subscribe to system updates via Supabase Realtime
+    useRealtimeUpdate();
 
     useEffect(() => {
-        prewarmKioskAssets();
+        // Delay Service Worker registration by 2 seconds to give priority to main app logic and auth
+        const timer = setTimeout(() => {
+            setShowSW(true);
+        }, 2000);
+        return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        // Delay pre-warming even further
+        const timer = setTimeout(() => {
+            prewarmKioskAssets();
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Initial Loading State - ONLY show full skeleton if we have no user found yet in cache
+    if (authLoading && !user && (authStatus === 'checking-session' || authStatus === 'fetching-profile' || authStatus === 'idle')) {
+        return (
+            <div className="h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-page)]" dir={dir}>
+                <PageSkeleton type="generic" message={t('loading_system')} />
+                {isSlowConnection && (
+                    <div className="fixed bottom-12 left-0 right-0 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-700 px-6">
+                        <div className="bg-[var(--bg-card)]/90 backdrop-blur-sm border border-[var(--border-default)] px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+                            <div className="w-5 h-5 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+                            <span className="text-[var(--text-secondary)] text-sm font-medium tracking-wide">
+                                {t('optimizing_connection')}
+                            </span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    }
 
     return (
         <RouteErrorBoundary>
             <OfflineIndicator />
-            <PwaReloadPrompt />
+            {showSW && <ServiceWorkerManager />}
             <div className="flex flex-col h-screen selection:bg-cyan-500/30 overflow-hidden transition-colors duration-300 bg-[var(--bg-page)]" dir={dir}>
                 <div className="flex-1 flex flex-col min-h-0 relative">
                     <React.Suspense fallback={<PageSkeleton type="generic" message={t('loading_system')} />}>

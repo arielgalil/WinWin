@@ -27,6 +27,10 @@ interface LuckyWheelProps {
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
     /** Current round number */
     roundNumber?: number;
+    /** Synchronized start timestamp (UNIX ms) */
+    startAtMs?: number;
+    /** Expected duration of the animation (ms) */
+    durationMs?: number;
 }
 
 // Number of visible names in the magnifying glass
@@ -42,6 +46,8 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     winnerName: externalWinnerName,
     onSpinComplete,
     roundNumber = 1,
+    startAtMs,
+    durationMs,
 }) => {
     const { t } = useLanguage();
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -56,6 +62,15 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     const [currentAngle, setCurrentAngle] = useState(0);
     const [showWinner, setShowWinner] = useState(false);
     const [winnerName, setWinnerName] = useState("");
+
+    // Refs for synchronization parameters
+    const startAtMsRef = useRef<number | undefined>(startAtMs);
+    const durationMsRef = useRef<number | undefined>(durationMs);
+
+    useEffect(() => {
+        startAtMsRef.current = startAtMs;
+        durationMsRef.current = durationMs;
+    }, [startAtMs, durationMs]);
 
     // Keep a ref to the latest onSpinComplete to avoid triggering re-renders
     const onSpinCompleteRef = useRef(onSpinComplete);
@@ -78,27 +93,31 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         const subsetSize = MAX_SEGMENTS;
         const realWinnerIndex = winnerIndex ?? 0;
         // If we have an external winner name, use it. Otherwise use the name from participants[realWinnerIndex]
-        const winnerNameStr = externalWinnerName || participants[realWinnerIndex];
+        const winnerNameStr = externalWinnerName ||
+            participants[realWinnerIndex];
 
         // Pick a stable subset of other participants
         const others = participants.filter((p, i) =>
             i !== realWinnerIndex && p !== winnerNameStr
         );
-        // Deterministic shuffle based on participant names length (stable for a given list)
-        const seed = participants.length;
-        const shuffledOthers = [...others].sort((a, b) =>
-            (a.length * 13 + a.charCodeAt(0)) % 7 -
-            (b.length * 13 + b.charCodeAt(0)) % 7
-        );
 
-        const subset = shuffledOthers.slice(0, subsetSize - 1);
+        // DETERMINISTIC seeded "shuffle" based on participant count to ensure ALL screens see same segments
+        const seed = participants.length + (winnerNameStr.length * 7);
+        const seededOthers = [...others].sort((a, b) => {
+            const valA = (a.length * seed + a.charCodeAt(0)) % 1000;
+            const valB = (b.length * seed + b.charCodeAt(0)) % 1000;
+            return valA - valB;
+        });
+
+        const subset = seededOthers.slice(0, subsetSize - 1);
         subset.push(winnerNameStr);
 
-        // Re-shuffle so winner isn't always at the end
-        const finalDisplay = subset.sort((
-            a,
-            b,
-        ) => (a.charCodeAt(0) - b.charCodeAt(0)));
+        // Deterministic sort for the final display
+        const finalDisplay = subset.sort((a, b) => {
+            const valA = (a.length * 13 + a.charCodeAt(0)) % 1000;
+            const valB = (b.length * 13 + b.charCodeAt(0)) % 1000;
+            return valA - valB;
+        });
 
         const newWinnerIdx = finalDisplay.indexOf(winnerNameStr);
 
@@ -114,6 +133,15 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         () => generateSegmentColors(count, primaryColor, secondaryColor),
         [count, primaryColor, secondaryColor],
     );
+
+    // Keep refs of props used in animation to avoid re-creating the animate function
+    // which causes the spin to restart if settings/colors update mid-spin.
+    const externalWinnerNameRef = useRef(externalWinnerName);
+    const displayWinnerIndexRef = useRef(displayWinnerIndex);
+    useEffect(() => {
+        externalWinnerNameRef.current = externalWinnerName;
+        displayWinnerIndexRef.current = displayWinnerIndex;
+    }, [externalWinnerName, displayWinnerIndex]);
 
     // ── Draw wheel on Canvas ──────────────────────────────────────
     const drawWheel = useCallback(
@@ -137,8 +165,6 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
 
             // Draw segments
             for (let i = 0; i < count; i++) {
-                // 3 o'clock is 0 rad. CurrentAngle is CCW offset.
-                // We draw segments centered at segmentArc * i
                 const startAngle = angle + segmentArc * i - segmentArc / 2;
                 const endAngle = startAngle + segmentArc;
 
@@ -149,7 +175,6 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 ctx.fillStyle = colors[i];
                 ctx.fill();
 
-                // Segment border
                 ctx.strokeStyle = "rgba(255,255,255,0.15)";
                 ctx.lineWidth = 1;
                 ctx.stroke();
@@ -163,55 +188,79 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             ctx.strokeStyle = "rgba(255,255,255,0.3)";
             ctx.lineWidth = 2;
             ctx.stroke();
-
-            // Outer ring glow
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
-            ctx.strokeStyle = "rgba(255,255,255,0.08)";
-            ctx.lineWidth = 6;
-            ctx.stroke();
         },
         [count, segmentArc, colors],
     );
 
     // ── Animation loop ────────────────────────────────────────────
     const animate = useCallback(
-        (time: number) => {
+        () => {
             if (!simRef.current) return;
 
-            const dt = lastTimeRef.current === 0
-                ? 0.016
-                : (time - lastTimeRef.current) / 1000;
-            lastTimeRef.current = time;
+            // Wait if we have a synchronized start time in the future
+            const now = Date.now();
+            if (startAtMsRef.current && now < startAtMsRef.current) {
+                rafRef.current = requestAnimationFrame(animate);
+                return;
+            }
 
-            // Clamp dt to avoid jumps if tab was backgrounded
-            const clampedDt = Math.min(dt, 0.05);
-            const result = simRef.current.step(clampedDt);
+            // Calculate exact wall-clock elapsed time in seconds
+            let dt = 0;
+            if (startAtMsRef.current) {
+                dt = (now - startAtMsRef.current) / 1000;
+            } else {
+                // Fallback for non-synchronized legacy spins
+                if (lastTimeRef.current === 0) {
+                    lastTimeRef.current = now;
+                }
+                dt = (now - lastTimeRef.current) / 1000;
+            }
+
+            // Clamp dt slightly to prevent simulation explosions if suspended,
+            // though not strictly necessary since the sim uses absolute elapsed time,
+            // but the step takes elapsed directly now.
+            const result = simRef.current.step(dt);
 
             setCurrentAngle(result.angle);
             setPhase(result.phase);
             drawWheel(result.angle);
 
             if (result.phase === "done") {
-                const idx = segmentAtPointer(result.angle, count);
-                const name = externalWinnerName ||
-                    displayParticipants[idx] || "";
-                setWinnerName(name);
-                setTimeout(() => setShowWinner(true), 400);
-                // Return the real winner index from the original list if needed,
-                // but for saving we usually just need the name.
-                onSpinCompleteRef.current?.(idx, name);
-                return; // stop loop
+                // Determine winner name from refs/state at the moment of completion
+                const finalWinnerName = externalWinnerNameRef.current ||
+                    "Winner";
+                setWinnerName(finalWinnerName);
+
+                // Trigger celebration
+                setTimeout(() => {
+                    setShowWinner(true);
+                }, 400);
+
+                onSpinCompleteRef.current?.(
+                    displayWinnerIndexRef.current ?? 0,
+                    finalWinnerName,
+                );
+                return;
             }
 
             rafRef.current = requestAnimationFrame(animate);
         },
-        [drawWheel, count, displayParticipants, externalWinnerName],
+        [drawWheel, count], // Minimal dependencies to prevent re-creation
     );
 
     // ── Start spin when roundNumber or winner changes ────────────────
+    const lastTriggerRef = useRef<string>("");
     useEffect(() => {
         if (displayWinnerIndex == null || count === 0) return;
+
+        // Prevent accidental restarts if the same trigger hits again
+        const triggerKey = `${displayWinnerIndex}-${roundNumber}-${count}`;
+        if (lastTriggerRef.current === triggerKey) return;
+        lastTriggerRef.current = triggerKey;
+
+        // Reset state for a fresh spin
+        setShowWinner(false);
+        setWinnerName("");
 
         const sim = createWheelSimulation({
             segmentCount: count,
@@ -220,9 +269,9 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         simRef.current = sim;
         sim.start();
 
-        setShowWinner(false);
-        setWinnerName("");
+        // 0 indicates the animation should compute its own start time if startAtMs is missing
         lastTimeRef.current = 0;
+
         rafRef.current = requestAnimationFrame(animate);
 
         return () => {

@@ -67,6 +67,7 @@ export interface UserProfile {
   email: string;
   role: "admin" | "teacher" | "superuser";
   class_id: string | null;
+  class_ids?: string[] | null;
   full_name: string;
 }
 
@@ -218,4 +219,6 @@ export interface LuckyWheelControlState {
   winner_name?: string;
   wheel_name?: string;
   round_number?: number;
+  start_at_ms?: number;
+  duration_ms?: number;
 }

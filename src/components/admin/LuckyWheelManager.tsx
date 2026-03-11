@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLuckyWheelTemplates } from "../../hooks/useLuckyWheelTemplates";
 import { useLuckyWheelAdmin } from "../../hooks/useLuckyWheelControl";
@@ -22,6 +28,7 @@ import {
     Users,
     Zap,
 } from "lucide-react";
+import { createWheelSimulation } from "../../utils/wheelPhysics";
 
 // ── Helpers ─────────────────────────────────────────────────────
 
@@ -54,6 +61,7 @@ export const LuckyWheelManager: React.FC = () => {
         duplicateTemplate,
         saveWinner,
         deleteWinner,
+        deleteAllWinners,
         recordActivation,
         isCreating,
     } = useLuckyWheelTemplates(campaignId);
@@ -69,6 +77,22 @@ export const LuckyWheelManager: React.FC = () => {
         null,
     );
     const [liveRound, setLiveRound] = useState(1);
+
+    const lastDeactivatedIdRef = useRef<string | null>(null);
+
+    // Restore liveTemplate from settings
+    React.useEffect(() => {
+        const activeId = settings?.active_lucky_wheel_id;
+        if (
+            activeId && !liveTemplate && templates.length > 0 &&
+            activeId !== lastDeactivatedIdRef.current
+        ) {
+            const tmpl = templates.find((t) => t.id === activeId);
+            if (tmpl) {
+                setLiveTemplate(tmpl);
+            }
+        }
+    }, [settings?.active_lucky_wheel_id, templates, liveTemplate]);
 
     // All students from all classes
     const allStudents = useMemo<Student[]>(() => {
@@ -131,20 +155,27 @@ export const LuckyWheelManager: React.FC = () => {
     // ── Live control ──
     const handleActivate = useCallback(
         async (template: LuckyWheelTemplate) => {
+            if (!campaignId) {
+                showToast(t("error_no_campaign"), "error");
+                return;
+            }
             setLiveTemplate(template);
             setLiveRound(1);
+            
+            // This hook function performs BOTH the broadcast AND the DB update to app_settings
             await wheelAdmin.activateWheel(
                 template.id,
                 template.participant_names,
                 template.name,
             );
+            
             await recordActivation(template.id);
             showToast(
                 t("wheel_activated_toast", { name: template.name }),
                 "success",
             );
         },
-        [wheelAdmin, recordActivation, showToast, t],
+        [wheelAdmin, recordActivation, showToast, t, campaignId],
     );
 
     const handleSpin = useCallback(async () => {
@@ -153,27 +184,52 @@ export const LuckyWheelManager: React.FC = () => {
             Math.random() * liveTemplate.participant_names.length,
         );
         const winnerName = liveTemplate.participant_names[idx];
-        await wheelAdmin.spinWheel(idx, winnerName, liveRound);
-        // Save winner after a suitable delay for animation
+
+        // 1. Pre-calculate animation duration
+        const dummySim = createWheelSimulation({
+            segmentCount: liveTemplate.participant_names.length,
+            winnerIndex: idx,
+        });
+        // physics duration is in seconds
+        const physicsDurationSec = dummySim.getDuration();
+        const durationMs = Math.ceil(physicsDurationSec * 1000);
+
+        // 2. Set synchronized start time (300ms buffer for network)
+        const startAtMs = Date.now() + 300;
+
+        // 3. Broadcast the synchronized spin event
+        await wheelAdmin.spinWheel(
+            idx,
+            winnerName,
+            liveRound,
+            startAtMs,
+            durationMs,
+        );
+
+        // 4. Save winner immediately to DB
+        try {
+            const winnerId = liveTemplate.participant_ids[idx];
+
+            // Find student class for denormalization
+            const student = allStudents.find((s) => s.name === winnerName);
+            const className = classes?.find((c) => c.id === student?.class_id)
+                ?.name;
+            await saveWinner({
+                template_id: liveTemplate.id,
+                student_id: student?.id ?? null,
+                student_name: winnerName,
+                class_name: className,
+                round_number: liveRound,
+                wheel_name: liveTemplate.name,
+            });
+        } catch (e) {
+            console.error("Failed to save winner", e);
+        }
+
+        // 5. Update local state and template for NEXT round
+        // Wait until celebration finishes (duration + 10s celebration buffer)
         setTimeout(async () => {
             try {
-                const winnerName = liveTemplate.participant_names[idx];
-                const winnerId = liveTemplate.participant_ids[idx];
-
-                // Find student class for denormalization
-                const student = allStudents.find((s) => s.name === winnerName);
-                const className = classes?.find((c) =>
-                    c.id === student?.class_id
-                )?.name;
-                await saveWinner({
-                    template_id: liveTemplate.id,
-                    student_id: student?.id ?? null,
-                    student_name: winnerName,
-                    class_name: className,
-                    round_number: liveRound,
-                    wheel_name: liveTemplate.name,
-                });
-
                 // Remove the winner from the live template so they don't win again
                 const newNames = [...liveTemplate.participant_names];
                 const newIds = [...liveTemplate.participant_ids];
@@ -188,7 +244,8 @@ export const LuckyWheelManager: React.FC = () => {
 
                 setLiveTemplate(updatedTemplate);
 
-                // Optionally auto-update the dashboard with the new list so the wheel shrinks
+                // Auto-update the dashboard with the new list so the wheel shrinks
+                // This will issue a new ACTIVATE command, resetting it for the next spin
                 await wheelAdmin.activateWheel(
                     updatedTemplate.id,
                     updatedTemplate.participant_names,
@@ -196,9 +253,9 @@ export const LuckyWheelManager: React.FC = () => {
                     liveRound + 1,
                 );
             } catch (e) {
-                console.error("Failed to save winner", e);
+                console.error("Failed to shrink wheel", e);
             }
-        }, 8000); // animation takes ~7s
+        }, durationMs + 10000);
     }, [liveTemplate, liveRound, wheelAdmin, saveWinner, allStudents, classes]);
 
     const handleNextRound = useCallback(async () => {
@@ -246,6 +303,21 @@ export const LuckyWheelManager: React.FC = () => {
             });
         },
         [deleteWinner, showToast, t, openConfirmation],
+    );
+
+    const handleDeleteAllWinners = useCallback(
+        async () => {
+            openConfirmation({
+                title: t("confirm_delete_all_winners", { defaultValue: "מחיקת כל הזוכים" } as any),
+                message: t("confirm_delete_all_winners_desc", { defaultValue: "האם את/ה בטוח/ה שברצונך למחוק את כל היסטוריית הזכיות? פעולה זו תימחק לצמיתות את כל הרשומות." } as any),
+                isDanger: true,
+                onConfirm: async () => {
+                    await deleteAllWinners();
+                    showToast(t("deleted_successfully"), "success");
+                },
+            });
+        },
+        [deleteAllWinners, showToast, t, openConfirmation],
     );
 
     const handleDuplicate = useCallback(
@@ -510,9 +582,18 @@ export const LuckyWheelManager: React.FC = () => {
             {/* Winner History */}
             {winners.length > 0 && (
                 <div>
-                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-3">
-                        {t("winner_history_title")}
-                    </h3>
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-bold text-[var(--text-main)]">
+                            {t("winner_history_title")}
+                        </h3>
+                        <button
+                            onClick={handleDeleteAllWinners}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg text-sm font-bold transition-colors"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            {t("delete_all" as any) || "מחק את כולם"}
+                        </button>
+                    </div>
                     <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-[var(--card-shadow)]">
                         <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                             <table className="w-full text-sm">
@@ -554,10 +635,17 @@ export const LuckyWheelManager: React.FC = () => {
                                             <td className="px-4 py-2.5 text-[var(--text-muted)]">
                                                 #{w.round_number}
                                             </td>
-                                            <td className="px-4 py-2.5 text-[var(--text-muted)] text-xs">
+                                            <td className="px-4 py-2.5 text-[var(--text-muted)] text-xs whitespace-nowrap">
                                                 {new Date(w.won_at)
-                                                    .toLocaleDateString(
+                                                    .toLocaleString(
                                                         "he-IL",
+                                                        {
+                                                            day: "2-digit",
+                                                            month: "2-digit",
+                                                            year: "numeric",
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        }
                                                     )}
                                             </td>
                                             <td className="px-2 py-1">

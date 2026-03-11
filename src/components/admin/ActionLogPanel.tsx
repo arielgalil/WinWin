@@ -213,7 +213,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                         icon={<RefreshIcon className="w-6 h-6" />}
                         className="flex-1 flex flex-col min-h-0 overflow-hidden"
                     >
-                        <div className="custom-scrollbar overflow-x-auto flex-1 h-full -mx-4 sm:-mx-6">
+                        <div className="custom-scrollbar overflow-x-auto flex-1 h-full">
                             <table className="w-full text-right border-collapse">
                                 <thead className="sticky top-0 bg-[var(--bg-surface)] z-10 text-[var(--text-main)] text-[var(--fs-sm)] font-[var(--fw-bold)] uppercase tracking-wider shadow-sm border-b border-[var(--border-main)]">
                                     <tr>

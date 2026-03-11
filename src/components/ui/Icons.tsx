@@ -280,5 +280,8 @@ export const EyeOffIcon = ({ className }: IconProps) => (
   <MaterialIcon name="visibility_off" className={className} />
 );
 export const WheelIcon = ({ className }: IconProps) => (
-  <MaterialIcon name="ferris_wheel" className={className} />
+  <MaterialIcon name="attractions" className={className} />
+);
+export const BugIcon = ({ className }: IconProps) => (
+  <MaterialIcon name="bug_report" className={className} />
 );

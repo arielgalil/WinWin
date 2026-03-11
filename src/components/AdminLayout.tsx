@@ -184,7 +184,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
                 <span className="sr-only">Open sidebar</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className={cn("w-72 p-0 flex flex-col bg-card border-border", dir === 'rtl' ? "data-[state=open]:right-0 data-[state=open]:left-auto" : "data-[state=open]:left-0 data-[state=open]:right-auto")}>
+            <SheetContent 
+              side={dir === 'rtl' ? 'right' : 'left'} 
+              className="w-full sm:w-80 p-0 flex flex-col bg-card border-border shadow-2xl"
+            >
               <SheetHeader className={cn(
                 "p-4 border-b border-border h-16 flex-row items-center gap-3 ps-12"
               )}>
@@ -221,7 +224,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
             <Button variant="ghost" size="icon" onClick={onShare} title={t('copy_link')} className="text-foreground">
               <Share2 className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} title={t('toggle_theme')} aria-label={t('toggle_theme')} className="text-foreground">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} title={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")} aria-label={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")} className="text-foreground">
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
           </div>

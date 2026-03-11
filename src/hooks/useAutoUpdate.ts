@@ -1,19 +1,11 @@
 import { useEffect } from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
 
-export const useAutoUpdate = () => {
-    const {
-        needRefresh: [needRefresh],
-        updateServiceWorker,
-    } = useRegisterSW({
-        onRegistered(r) {
-            console.log('[PWA] Service Worker registered: ', r);
-        },
-        onRegisterError(error) {
-            console.error('[PWA] Service Worker registration error: ', error);
-        },
-    });
+interface AutoUpdateProps {
+    needRefresh: boolean;
+    updateServiceWorker: (reloadPage?: boolean) => Promise<void>;
+}
 
+export const useAutoUpdate = ({ needRefresh, updateServiceWorker }: AutoUpdateProps) => {
     useEffect(() => {
         if (needRefresh) {
             console.log('[Kiosk-Update] New version detected. Preparing automatic refresh...');

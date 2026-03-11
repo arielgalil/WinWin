@@ -248,6 +248,42 @@ export function createWheelSimulation(config: WheelPhysicsConfig) {
     // Elastic settle state
     const settleAmplitude = TWO_PI / segmentCount * 0.6; // overshoot ~60% of a segment
 
+    // Pre-calculate full exact timings requires simulating it once fast since decel is not closed-form on time
+    function calculateDuration(): number {
+        let simElapsed = 0;
+        let simOmega = 0;
+        let simPhase = "accelerating";
+        let decelStartPhaseElapsed = 0;
+        let settleStartElapsed = 0;
+
+        // Skip to end of cruise
+        simElapsed = t2_cruise;
+        simOmega = cruiseOmega;
+        simPhase = "decelerating";
+        decelStartPhaseElapsed = simElapsed;
+
+        // Simulate deceleration purely mathematically
+        // omega(t) = cruiseOmega * e^(-friction * t)
+        // We want t where omega(t) = decelVelocityThreshold
+        // decelVelocityThreshold / cruiseOmega = e^(-friction * t)
+        // ln(decelVelocityThreshold / cruiseOmega) = -friction * t
+        // t = ln(cruiseOmega / decelVelocityThreshold) / friction
+        const timeToReachThreshold =
+            Math.log(cruiseOmega / decelVelocityThreshold) / friction;
+
+        simElapsed += timeToReachThreshold;
+        settleStartElapsed = simElapsed;
+
+        // Settle done when envelope < 0.001
+        // envelope = settleAmplitude * exp(-dampingRatio * springFreq * t);
+        // 0.001 / settleAmplitude = exp(-dampingRatio * springFreq * t)
+        // t = ln(settleAmplitude / 0.001) / (dampingRatio * springFreq)
+        const timeToSettle = Math.log(settleAmplitude / 0.001) /
+            (dampingRatio * springFreq);
+
+        return simElapsed + timeToSettle;
+    }
+
     let currentAngle = 0;
     let currentPhase: WheelPhase = "idle";
     let phaseStartTime = 0;
@@ -257,12 +293,12 @@ export function createWheelSimulation(config: WheelPhysicsConfig) {
     let decelStartAngle = 0;
     let settleStartTime = 0;
 
-    function step(dt: number): SimulationResult {
+    function step(realElapsed: number): SimulationResult {
         if (currentPhase === "idle" || currentPhase === "done") {
             return { angle: currentAngle, omega: 0, phase: currentPhase };
         }
 
-        elapsed += dt;
+        elapsed = realElapsed;
         let omega = 0;
 
         if (currentPhase === "accelerating") {
@@ -347,7 +383,13 @@ export function createWheelSimulation(config: WheelPhysicsConfig) {
         elapsed = 0;
     }
 
-    return { step, start, reset, getTargetAngle: () => targetAngle };
+    return {
+        step,
+        start,
+        reset,
+        getTargetAngle: () => targetAngle,
+        getDuration: calculateDuration,
+    };
 }
 
 /**

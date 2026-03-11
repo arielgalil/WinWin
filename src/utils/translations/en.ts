@@ -11,6 +11,8 @@ export const en = {
     logout: "Logout",
     refresh: "Refresh Data",
     toggle_theme: "Toggle Theme",
+    switch_to_light_mode: "Switch to Light Mode",
+    switch_to_dark_mode: "Switch to Dark Mode",
     points_label: "Points",
     updating: "Updating...",
     uploading: "Uploading...",
@@ -35,6 +37,8 @@ export const en = {
     yesterday: "Yesterday",
     file_empty_error: "The file is empty",
     all_campaigns: "All Campaigns",
+    all_classes: "All Classes",
+    unassigned: "Unassigned",
     dashboard: "Dashboard",
     admin_panel: "Admin Panel",
     super_admin_title: "🌱 Sprout Competition System - Super Admin Panel",
@@ -212,6 +216,8 @@ export const en = {
         "Access denied. You don't have permission to access this competition.",
     identifying_permissions: "Identifying permissions...",
     loading_system: "Loading system...",
+    optimizing_connection: "Optimizing connection...",
+    update_available_reloading: "A new version is available. Reloading in 60 seconds...",
 
     // Login
     login_platform_title: "%{app_name} Competition System",

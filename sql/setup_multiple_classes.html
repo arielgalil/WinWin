@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מערכת תחרויות מצמיחה - תמיכה במספר כיתות למורה</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f7f6; }
+        .card { background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; }
+        h1 { color: #1a237e; border-bottom: 2px solid #1a237e; padding-bottom: 10px; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-x: auto; direction: ltr; font-family: 'Consolas', monospace; }
+        .step { margin-bottom: 30px; }
+        .btn { background: #1a237e; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn:hover { background: #283593; }
+        .warning { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>הוספת תמיכה במספר כיתות למורה</h1>
+        <p>כדי לאפשר למורה להיות אחראי על יותר מכיתה אחת, עלינו להוסיף עמודה חדשה בבסיס הנתונים שתכיל רשימה (מערך) של מזהי כיתות.</p>
+
+        <div class="step">
+            <h3>שלב 1: הרצת הסקריפט ב-Supabase</h3>
+            <p>העתק את הקוד הבא והרץ אותו ב-<strong>SQL Editor</strong> של פרויקט ה-Supabase שלך:</p>
+            <pre id="sql-code">
+-- 1. Add class_ids array column to profiles table
+ALTER TABLE public.profiles 
+ADD COLUMN IF NOT EXISTS class_ids UUID[] DEFAULT '{}';
+
+-- 2. (Optional) Migrate existing class_id to the new array for existing users
+UPDATE public.profiles 
+SET class_ids = ARRAY[class_id]
+WHERE class_id IS NOT NULL 
+AND (class_ids IS NULL OR cardinality(class_ids) = 0);
+
+-- 3. Update the add_existing_user_to_campaign function to handle class_ids if needed
+-- (The UI handles the update, but this ensures the column is queryable)
+            </pre>
+            <button class="btn" onclick="copySql()">העתק קוד SQL</button>
+        </div>
+
+        <div class="warning">
+            <strong>שים לב:</strong> לאחר הרצת הקוד, הממשק יתעדכן אוטומטית ויאפשר לך לבחור מספר כיתות בעת יצירת או עריכת מורה.
+        </div>
+
+        <div class="step">
+            <h3>שלב 2: רענון האפליקציה</h3>
+            <p>לאחר הרצת הסקריפט, רענן את דף הניהול באפליקציה. כעת תוכל לראות רשימת כפתורים לבחירה מרובה של כיתות למורים.</p>
+        </div>
+    </div>
+
+    <script>
+        function copySql() {
+            const code = document.getElementById('sql-code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('הקוד הועתק ללוח!');
+            });
+        }
+    </script>
+</body>
+</html>

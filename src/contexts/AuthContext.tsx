@@ -4,12 +4,18 @@ import { UserProfile } from '../types';
 import { t } from '../utils/i18n';
 import { TIMEOUTS } from '../config';
 import { logger } from '../utils/logger';
+import { withTimeout, promiseTimeout } from '../utils/supabaseUtils';
 
 const SAVED_EMAIL_KEY = 'metziacha_saved_email';
+const CACHED_PROFILE_KEY = 'metziacha_cached_profile';
+
+export type AuthStatus = 'idle' | 'checking-session' | 'fetching-profile' | 'ready' | 'error';
 
 export interface AuthContextType {
     user: UserProfile | null;
     authLoading: boolean;
+    authStatus: AuthStatus;
+    isSlowConnection: boolean;
     setAuthLoading: (val: boolean) => void;
     loginError: string;
     login: (email: string, password: string, remember: boolean) => Promise<boolean>;
@@ -27,68 +33,96 @@ export interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<UserProfile | null>(null);
-    const [authLoading, setAuthLoading] = useState(true);
+    // 1. Synchronous hydration from cache for "Instant-On" UX
+    const [user, setUser] = useState<UserProfile | null>(() => {
+        try {
+            const cached = localStorage.getItem(CACHED_PROFILE_KEY);
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                logger.debug("[AUTH] Hydrating user from cache for instant boot");
+                return parsed;
+            }
+        } catch (e) {
+            console.warn("Failed to parse cached profile", e);
+        }
+        return null;
+    });
+
+    // If we have a cached user, we can bypass the initial skeleton
+    const [authLoading, setAuthLoading] = useState(() => {
+        return !localStorage.getItem(CACHED_PROFILE_KEY);
+    });
+
+    const [authStatus, setAuthStatus] = useState<AuthStatus>('idle');
+    const [isSlowConnection, setIsSlowConnection] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [savedEmail, setSavedEmail] = useState('');
     const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
     const initCalled = useRef(false);
 
-    const userRef = useRef<UserProfile | null>(null);
+    const userRef = useRef<UserProfile | null>(user);
 
     const updateLoadingState = useCallback((state: boolean, reason: string) => {
         logger.debug(`[AUTH-STATE] authLoading -> ${state} (Reason: ${reason})`);
         setAuthLoading(state);
+        if (!state) {
+            setAuthStatus('ready');
+            setIsSlowConnection(false);
+        }
     }, []);
 
     const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0) => {
-        if (userRef.current?.id === userId) {
-            updateLoadingState(false, "Already loaded");
-            return;
-        }
-
+        // Even if already loaded, we might want to refresh the profile in background
+        setAuthStatus('fetching-profile');
         try {
             logger.debug(`[AUTH] Fetching profile for ID: ${userId} (Attempt: ${retryCount + 1})`);
 
-            // REMOVED: Promise.race with manual timeout. Let the network/Supabase timeout handle it
-            // to be more resilient to deep cold starts (sometimes > 15s).
-            const { data: profileData, error: profileError } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .maybeSingle();
+            // Use withTimeout to prevent hanging on profile fetch
+            // Reduced timeout to 8s for better failure recovery
+            const { data: profileData, error: profileError } = await withTimeout(
+                supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .maybeSingle(),
+                8000
+            );
 
             if (profileError) throw profileError;
 
+            let finalProfile: UserProfile;
             if (!profileData) {
                 console.warn("[AUTH] Profile not found, using email fallback");
-                const fallback: UserProfile = {
+                finalProfile = {
                     id: userId,
                     email: userEmail,
                     role: 'teacher',
                     class_id: null,
                     full_name: userEmail.split('@')[0] || t('user_fallback_name')
                 };
-                setUser(fallback);
-                userRef.current = fallback;
             } else {
-                setUser(profileData as UserProfile);
-                userRef.current = profileData as UserProfile;
+                finalProfile = profileData as UserProfile;
             }
+
+            // Cache for next boot
+            localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(finalProfile));
+            setUser(finalProfile);
+            userRef.current = finalProfile;
             
-            // Success - ensure loading is false
             updateLoadingState(false, "Profile process finished");
         } catch (err) {
             // Retry logic: 2 retries (Total 3 attempts)
             if (retryCount < 2) {
-                const delay = 1000 * (retryCount + 1); // Exponential-ish backoff
+                const delay = 1000 * (retryCount + 1);
                 console.warn(`[AUTH] Profile fetch failed (${err instanceof Error ? err.message : 'Unknown error'}), retrying in ${delay}ms... (Attempt ${retryCount + 1})`);
                 await new Promise(resolve => setTimeout(resolve, delay));
                 return fetchUserProfile(userId, userEmail, retryCount + 1);
             }
 
             console.error("[AUTH] Profile load failed after retries, applying safety fallback:", err);
+            
+            // If we don't have a user at all (even from cache), apply emergency fallback
             if (!userRef.current) {
                 const fallback: UserProfile = {
                     id: userId,
@@ -107,20 +141,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const hardReset = async () => {
         logger.info("[AUTH] Initiating NUCLEAR RESET...");
         try {
-            // Safe localStorage clear with try-catch
-            try {
-                localStorage.clear();
-            } catch (e) {
-                console.warn("Failed to clear localStorage:", e);
-            }
-
-            // Safe sessionStorage clear
-            try {
-                sessionStorage.clear();
-            } catch (e) {
-                console.warn("Failed to clear sessionStorage:", e);
-            }
-
+            localStorage.clear();
+            sessionStorage.clear();
+            
             // Safe cookie clear
             try {
                 const cookies = document.cookie.split(";");
@@ -130,9 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
                     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
                 }
-            } catch (e) {
-                console.warn("Failed to clear cookies:", e);
-            }
+            } catch (e) {}
 
             // Safe service worker cleanup
             try {
@@ -142,14 +163,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         await registration.unregister();
                     }
                 }
-            } catch (e) {
-                console.warn("Failed to unregister service workers:", e);
-            }
+            } catch (e) {}
 
             window.location.href = window.location.origin + "/?reset=" + Date.now() + "#/";
             window.location.reload();
         } catch (e) {
-            console.error("Hard reset failed:", e);
             window.location.reload();
         }
     };
@@ -164,24 +182,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setRememberMe(true);
         }
 
+        // Inform UI about slow connection if we're still loading after 4s
+        const slowTimer = setTimeout(() => {
+            if (authLoading) {
+                console.info("[AUTH] Slow connection detected - informing UI");
+                setIsSlowConnection(true);
+            }
+        }, 4000);
+
+        // Final safety fallback (15s)
         const safetyTimer = setTimeout(() => {
             if (authLoading) {
                 updateLoadingState(false, "Safety Timeout");
+                setAuthStatus('error');
             }
-        }, TIMEOUTS.authSafetyTimeoutMs);
+        }, 15000);
 
         const initAuth = async () => {
+            setAuthStatus('checking-session');
             try {
-                const { data: { session } } = await supabase.auth.getSession();
+                // Background session check - reduced timeout to 5s
+                const { data: { session } } = await promiseTimeout(supabase.auth.getSession(), 5000);
+                
                 if (session?.user) {
+                    // Start background profile refresh
                     await fetchUserProfile(session.user.id, session.user.email || '');
                 } else {
+                    // No session found - clear cache and update UI
+                    localStorage.removeItem(CACHED_PROFILE_KEY);
+                    setUser(null);
+                    userRef.current = null;
                     updateLoadingState(false, "No initial session");
                 }
             } catch (err) {
-                updateLoadingState(false, "Init error");
+                console.warn("[AUTH] Initial session check timed out or failed, relying on cache/offline state", err);
+                // If we have a cached user, we stay "logged in" but maybe offline
+                // If we don't have a user, we must unlock to show login
+                if (!userRef.current) {
+                    updateLoadingState(false, "Init error");
+                } else {
+                    // We have cache, just stop the loading spinner
+                    updateLoadingState(false, "Init timeout with cache");
+                }
+                setAuthStatus('ready'); // Treat as ready even if error, to unlock UI
             } finally {
                 clearTimeout(safetyTimer);
+                clearTimeout(slowTimer);
             }
         };
 
@@ -194,6 +240,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     await fetchUserProfile(session.user.id, session.user.email || '');
                 }
             } else if (event === 'SIGNED_OUT') {
+                localStorage.removeItem(CACHED_PROFILE_KEY);
                 setUser(null);
                 userRef.current = null;
                 setIsPasswordRecovery(false);
@@ -204,8 +251,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => {
             subscription.unsubscribe();
             clearTimeout(safetyTimer);
+            clearTimeout(slowTimer);
         };
-    }, [fetchUserProfile, updateLoadingState]); // Removed isPasswordRecovery as it's checked inside the handler which is fine
+    }, [fetchUserProfile, updateLoadingState, authLoading]);
 
     const login = async (email: string, password: string, remember: boolean) => {
         updateLoadingState(true, "Login starting");
@@ -234,11 +282,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateLoadingState(true, "Logout starting");
         try {
             await supabase.auth.signOut();
+            localStorage.removeItem(CACHED_PROFILE_KEY);
             setUser(null);
             userRef.current = null;
-            if (typeof localStorage !== 'undefined') {
-                localStorage.removeItem('metziacha_elevation_token');
-            }
         } finally {
             updateLoadingState(false, "Logout finished");
         }
@@ -247,6 +293,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const value = {
         user,
         authLoading,
+        authStatus,
+        isSlowConnection,
         setAuthLoading: (val: boolean) => setAuthLoading(val),
         loginError,
         login,

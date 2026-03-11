@@ -1,23 +1,24 @@
 import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
-import { useLanguage } from '../../hooks/useLanguage';
 import { RefreshIcon, XIcon } from './Icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../hooks/useLanguage';
 
-export const PwaReloadPrompt: React.FC = () => {
+interface PwaReloadPromptProps {
+    offlineReady: boolean;
+    needRefresh: boolean;
+    setOfflineReady: (val: boolean) => void;
+    setNeedRefresh: (val: boolean) => void;
+    updateServiceWorker: (reloadPage?: boolean) => Promise<void>;
+}
+
+export const PwaReloadPrompt: React.FC<PwaReloadPromptProps> = ({
+    offlineReady,
+    needRefresh,
+    setOfflineReady,
+    setNeedRefresh,
+    updateServiceWorker
+}) => {
     const { t } = useLanguage();
-    const {
-        offlineReady: [offlineReady, setOfflineReady],
-        needRefresh: [needRefresh, setNeedRefresh],
-        updateServiceWorker,
-    } = useRegisterSW({
-        onRegistered(r) {
-            console.log('SW Registered: ' + r);
-        },
-        onRegisterError(error) {
-            console.log('SW registration error', error);
-        },
-    });
 
     const close = () => {
         setOfflineReady(false);
@@ -26,7 +27,7 @@ export const PwaReloadPrompt: React.FC = () => {
 
     return (
         <AnimatePresence>
-            {(offlineReady || needRefresh) && (
+            {needRefresh && (
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -38,22 +39,20 @@ export const PwaReloadPrompt: React.FC = () => {
                             <RefreshIcon className="w-5 h-5 text-indigo-400" />
                         </div>
                         <p className="text-sm font-black text-white flex-1 tracking-tight">
-                            {offlineReady ? t('pwa_offline_ready') : t('pwa_update_available')}
+                            {t('pwa_update_available')}
                         </p>
                         <button onClick={close} className="p-1.5 hover:bg-white/10 rounded-xl text-white/40 hover:text-white">
                             <XIcon className="w-4 h-4" />
                         </button>
                     </div>
 
-                    {needRefresh && (
-                        <button
-                            onClick={() => updateServiceWorker(true)}
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 text-sm shadow-lg shadow-indigo-900/40"
-                        >
-                            <RefreshIcon className="w-4 h-4" />
-                            {t('pwa_refresh_button')}
-                        </button>
-                    )}
+                    <button
+                        onClick={() => updateServiceWorker(true)}
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 text-sm shadow-lg shadow-indigo-900/40"
+                    >
+                        <RefreshIcon className="w-4 h-4" />
+                        {t('pwa_refresh_button')}
+                    </button>
                 </motion.div>
             )}
         </AnimatePresence>

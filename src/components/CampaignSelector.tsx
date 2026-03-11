@@ -19,6 +19,7 @@ import { Logo } from './ui/Logo';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { VersionFooter } from './ui/VersionFooter';
+import { withTimeout } from '../utils/supabaseUtils';
 
 const { useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
@@ -43,7 +44,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
         queryFn: async () => {
             const fetchWithRetry = async (attempt = 1): Promise<any[]> => {
                 try {
-                    const { data, error } = await Promise.race([
+                    const { data, error } = await withTimeout(
                         supabase
                             .from('campaigns')
                             .select(`
@@ -52,10 +53,8 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                 classes (score)
                             `)
                             .order('created_at', { ascending: false }),
-                        new Promise<never>((_, reject) => 
-                            setTimeout(() => reject(new Error('Connection Timeout')), 10000)
-                        )
-                    ]);
+                        10000 // 10s timeout
+                    );
 
                     if (error) throw error;
                     return data || [];

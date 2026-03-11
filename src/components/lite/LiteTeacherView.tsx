@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UserProfile } from '../../types';
 import { LiteStudentCard } from './LiteStudentCard';
 import { LiteActionDock } from './LiteActionDock';
-import { LogoutIcon, SearchIcon, CheckIcon, AlertIcon, TargetIcon, EditIcon, RefreshIcon } from '../ui/Icons';
+import { LogoutIcon, SearchIcon, CheckIcon, AlertIcon, TargetIcon, EditIcon, RefreshIcon, LayoutDashboardIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GradientBackground } from '../ui/GradientBackground';
 import { useScoreEntry } from '../../hooks/useScoreEntry';
@@ -18,10 +18,11 @@ interface LiteTeacherViewProps {
   user: UserProfile;
   userRole?: 'admin' | 'teacher' | 'superuser' | null;
   onLogout: () => void;
+  onViewDashboard?: () => void;
 }
 
 export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
-  user, userRole, onLogout
+  user, userRole, onLogout, onViewDashboard
 }) => {
   const { t } = useLanguage();
   const isAdmin = checkIsAdmin(user.role, userRole);
@@ -68,6 +69,17 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
     setIsEditingTarget(false);
   };
 
+  const availableClasses = isAdmin 
+    ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')) 
+    : classes.filter(c => (user.class_ids || []).includes(c.id) || c.id === user.class_id);
+
+  // Auto-select first available class if current selection is invalid
+  useEffect(() => {
+    if (availableClasses.length > 0 && !selectedClassId) {
+      setSelectedClassId(availableClasses[0].id);
+    }
+  }, [availableClasses, selectedClassId, setSelectedClassId]);
+
   if (classes.length === 0) {
     return (
       <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--bg-page)] text-[var(--text-main)] gap-4">
@@ -79,9 +91,6 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
   const glassCardStyle = "bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border-main)] shadow-2xl";
   const progressPct = (currentClass?.target_score || 0) > 0 ? Math.min(100, ((currentClass?.score || 0) / currentClass!.target_score!) * 100) : 0;
-
-  // Filter classes shown in dropdown - if admin see all, else only own
-  const availableClasses = isAdmin ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')) : classes.filter(c => c.id === user.class_id);
 
   return (
     <GradientBackground primaryColor={settings.primary_color} secondaryColor={settings.secondary_color} brightness={settings.background_brightness}>
@@ -111,19 +120,48 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
+                {onViewDashboard && (
+                  <button 
+                    onClick={onViewDashboard} 
+                    className="p-2.5 bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 rounded-[var(--radius-main)] border border-indigo-500/20 hover:bg-indigo-600/20 transition-all shadow-sm flex items-center gap-2"
+                    title={t('view_leaderboard')}
+                  >
+                    <LayoutDashboardIcon className="w-5 h-5" />
+                    <span className="hidden sm:inline font-bold text-xs">{t('view_leaderboard')}</span>
+                  </button>
+                )}
                 <button onClick={onLogout} className="p-2.5 bg-[var(--bg-surface)] text-[var(--text-muted)] rounded-[var(--radius-main)] border border-[var(--border-subtle)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-all shadow-sm"><LogoutIcon className="w-5 h-5" /></button>
               </div>
             </div>
 
-            <div className="bg-[var(--bg-surface)] p-2 rounded-[var(--radius-main)] flex gap-2 border border-[var(--border-subtle)]">
-              <select value={selectedClassId || ''} onChange={(e) => { setSelectedClassId(e.target.value); clearSelection(); }} className="flex-1 bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-[var(--fs-base)] py-2 px-4 rounded-[var(--radius-main)] outline-none border border-[var(--border-main)] rtl:text-right ltr:text-left shadow-sm">
-                {availableClasses.map(c => <option key={c.id} value={c.id} className="bg-[var(--bg-card)]">{c.name}</option>)}
-                {availableClasses.length === 0 && <option value="" className="bg-[var(--bg-card)]">{t('no_groups_assigned')}</option>}
-              </select>
-              <button onClick={selectAllFiltered} className={`px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20 shadow-sm'}`}>
-                {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
-              </button>
-              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] shadow-sm'}`}><SearchIcon className="w-5 h-5" /></button>
+            <div className="bg-[var(--bg-surface)] p-3 rounded-[var(--radius-main)] flex flex-col gap-2 border border-[var(--border-subtle)]">
+              <div className="flex flex-wrap gap-2">
+                {availableClasses.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => { setSelectedClassId(c.id); clearSelection(); }}
+                    className={`px-4 py-2 rounded-full font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${
+                      selectedClassId === c.id
+                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-md scale-105'
+                        : 'bg-[var(--bg-input)] text-[var(--text-muted)] border-[var(--border-main)] hover:border-indigo-300'
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+                {availableClasses.length === 0 && (
+                  <span className="text-[var(--text-muted)] text-[var(--fs-sm)] italic px-2">
+                    {t('no_groups_assigned')}
+                  </span>
+                )}
+              </div>
+              
+              <div className="flex gap-2 border-t border-[var(--border-subtle)] pt-2 mt-1">
+                <button onClick={selectAllFiltered} className={`flex-1 px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20 shadow-sm'}`}>
+                  {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
+                </button>
+                <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] shadow-sm'}`}><SearchIcon className="w-5 h-5" /></button>
+              </div>
             </div>
 
             <AnimatePresence>

@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../../hooks/useLanguage";
 import { LuckyWheel } from "./LuckyWheel";
@@ -19,6 +20,10 @@ interface LuckyWheelOverlayProps {
     wheelName?: string;
     /** Current round */
     roundNumber?: number;
+    /** Synchronized start timestamp (UNIX ms) */
+    startAtMs?: number;
+    /** Expected duration of the animation (ms) */
+    durationMs?: number;
     /** Called when spin finishes */
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
 }
@@ -32,12 +37,88 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     secondaryColor,
     wheelName,
     roundNumber = 1,
+    startAtMs,
+    durationMs,
     onSpinComplete,
 }) => {
     const { t } = useLanguage();
+
+    // -- State Locking & Local Lifecycle --
+    const [frozenParticipants, setFrozenParticipants] = useState<string[]>([]);
+    const [frozenWinnerIndex, setFrozenWinnerIndex] = useState<number | null>(
+        null,
+    );
+    const [frozenWinnerName, setFrozenWinnerName] = useState<
+        string | undefined
+    >();
+    const [frozenStartAtMs, setFrozenStartAtMs] = useState<
+        number | undefined
+    >();
+    const [frozenDurationMs, setFrozenDurationMs] = useState<
+        number | undefined
+    >();
+    const [localActive, setLocalActive] = useState(false);
+    const [isBusy, setIsBusy] = useState(false);
+
+    const lockTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        // 1. Explicit Close: If the admin closes the wheel, we respect it immediately
+        if (!isActive) {
+            setLocalActive(false);
+            setIsBusy(false);
+            if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+            return;
+        }
+
+        // 2. Normal Sync: If we are not in the middle of a spin sequence, sync with props
+        if (!isBusy) {
+            setLocalActive(true);
+
+            // Sync data only when not busy
+            if (winnerIndex === null) {
+                setFrozenParticipants(participants);
+                setFrozenWinnerIndex(null);
+                setFrozenWinnerName(undefined);
+                setFrozenStartAtMs(undefined);
+                setFrozenDurationMs(undefined);
+            }
+        }
+
+        // 3. Spin Detection: If a spin starts and we aren't already busy
+        if (isActive && winnerIndex !== null && !isBusy) {
+            setIsBusy(true);
+            setLocalActive(true);
+            setFrozenParticipants(participants);
+            setFrozenWinnerIndex(winnerIndex);
+            setFrozenWinnerName(winnerName);
+            setFrozenStartAtMs(startAtMs);
+            setFrozenDurationMs(durationMs);
+
+            if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+            lockTimerRef.current = setTimeout(() => {
+                setIsBusy(false);
+                // When the lock expires, the next render will sync with the latest props
+                // (e.g., it will show the empty wheel for the next round if the admin already reset it)
+            }, (durationMs || 10000) + 1000);
+        }
+
+        return () => {
+            if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
+        };
+    }, [
+        isActive,
+        winnerIndex,
+        participants,
+        winnerName,
+        isBusy,
+        startAtMs,
+        durationMs,
+    ]);
+
     return (
         <AnimatePresence>
-            {isActive && participants.length > 0 && (
+            {localActive && frozenParticipants.length > 0 && (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -56,7 +137,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                         </h1>
                         <p className="text-white/50 text-sm mt-1">
                             {t("participants_count_label", {
-                                count: participants.length,
+                                count: frozenParticipants.length,
                             })} • {t("round_prefix")} #{roundNumber}
                         </p>
                     </motion.div>
@@ -74,18 +155,20 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                         className="w-full h-full max-w-[550px] max-h-[85vh] p-4 pt-20 pb-20 flex items-center justify-center"
                     >
                         <LuckyWheel
-                            participants={participants}
+                            participants={frozenParticipants}
                             primaryColor={primaryColor}
                             secondaryColor={secondaryColor}
-                            winnerIndex={winnerIndex}
-                            winnerName={winnerName}
+                            winnerIndex={frozenWinnerIndex}
+                            winnerName={frozenWinnerName}
                             roundNumber={roundNumber}
+                            startAtMs={frozenStartAtMs}
+                            durationMs={frozenDurationMs}
                             onSpinComplete={onSpinComplete}
                         />
                     </motion.div>
 
                     {/* Waiting indicator */}
-                    {winnerIndex == null && (
+                    {frozenWinnerIndex == null && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

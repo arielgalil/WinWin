@@ -194,6 +194,24 @@ export function useLuckyWheelTemplates(campaignId?: string) {
         onError: (err) => logger.error("Failed to delete wheel winner", err),
     });
 
+    // ── Delete ALL winners ──
+    const deleteAllWinners = useMutation({
+        mutationFn: async () => {
+            if (!campaignId) throw new Error("No campaign");
+            const { error } = await supabase
+                .from("lucky_wheel_winners")
+                .delete()
+                .eq("campaign_id", campaignId);
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["wheel-winners", campaignId],
+            });
+        },
+        onError: (err) => logger.error("Failed to delete all wheel winners", err),
+    });
+
     // ── Save winner ──
     const saveWinner = useMutation({
         mutationFn: async (
@@ -247,6 +265,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
         duplicateTemplate: duplicateTemplate.mutateAsync,
         saveWinner: saveWinner.mutateAsync,
         deleteWinner: deleteWinner.mutateAsync,
+        deleteAllWinners: deleteAllWinners.mutateAsync,
         recordActivation: recordActivation.mutateAsync,
         isCreating: createTemplate.isPending,
     };

@@ -32,25 +32,31 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
     }, [campaignId]);
 
     const broadcast = useCallback(
-        async (payload: LuckyWheelControlState) => {
+        async (payload: any, event: string = "wheel_command") => {
             if (!channelRef.current) {
                 logger.error("[WheelAdmin] No broadcast channel available");
                 return;
             }
             const status = await channelRef.current.send({
                 type: "broadcast",
-                event: "wheel_command",
+                event,
                 payload,
             });
             if (status !== "ok") {
                 logger.error(`[WheelAdmin] Broadcast FAILED: ${status}`, {
+                    event,
                     action: payload.action,
                 });
             } else {
-                logger.info(`[WheelAdmin] Broadcast sent: ${payload.action}`, {
-                    status,
-                    round: payload.round_number,
-                });
+                logger.info(
+                    `[WheelAdmin] Broadcast sent: ${event} ${
+                        payload.action || ""
+                    }`,
+                    {
+                        status,
+                        round: payload.round_number,
+                    },
+                );
             }
         },
         [],
@@ -61,6 +67,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             templateId: string,
             participantNames: string[],
             wheelName?: string,
+            roundNumber: number = 1,
         ) => {
             // Send broadcast for immediate response
             await broadcast({
@@ -68,7 +75,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                 template_id: templateId,
                 participant_names: participantNames,
                 wheel_name: wheelName,
-                round_number: 1,
+                round_number: roundNumber,
             });
 
             // Persist to DB for reliability/refresh
@@ -83,6 +90,9 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                         "[WheelAdmin] Failed to persist activation:",
                         error,
                     );
+                } else {
+                    // Force refresh for clients that missed the direct ACTIVATE broadcast
+                    await broadcast({}, "settings_updated");
                 }
             }
         },
@@ -90,13 +100,20 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
     );
 
     const spinWheel = useCallback(
-        (winnerIndex: number, winnerName: string, roundNumber: number) =>
-            broadcast({
-                action: "SPIN",
-                winner_index: winnerIndex,
-                winner_name: winnerName,
-                round_number: roundNumber,
-            }),
+        (
+            winnerIndex: number,
+            winnerName: string,
+            roundNumber: number,
+            startAtMs: number,
+            durationMs: number,
+        ) => broadcast({
+            action: "SPIN",
+            winner_index: winnerIndex,
+            winner_name: winnerName,
+            round_number: roundNumber,
+            start_at_ms: startAtMs,
+            duration_ms: durationMs,
+        }),
         [broadcast],
     );
 
@@ -120,6 +137,9 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                         "[WheelAdmin] Failed to persist deactivation:",
                         error,
                     );
+                } else {
+                    // Force refresh for clients
+                    await broadcast({}, "settings_updated");
                 }
             }
         },

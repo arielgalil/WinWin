@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { XIcon, TrashIcon, CopyIcon, ShieldAlertIcon } from './Icons';
+import { XIcon, TrashIcon, CopyIcon, BugIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
 
 const MotionDiv = motion.div as any;
@@ -46,28 +46,29 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-end justify-center p-4 pointer-events-none" dir={dir}>
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 sm:p-8" dir={dir}>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
           <MotionDiv
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            className="w-full max-w-2xl h-[60vh] bg-slate-950/95 border border-white/20 rounded-[2rem] shadow-2xl flex flex-col pointer-events-auto overflow-hidden backdrop-blur-xl"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="w-full max-w-2xl h-[80vh] bg-slate-950 border border-white/10 rounded-3xl shadow-2xl flex flex-col pointer-events-auto overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40">
-              <div className="flex items-center gap-3 text-red-400">
-                <ShieldAlertIcon className="w-5 h-5" />
-                <span className="font-black text-sm uppercase tracking-widest">Mobile Console Logs</span>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-slate-900/50">
+              <div className="flex items-center gap-3 text-red-500">
+                <BugIcon className="w-6 h-6" />
+                <span className="font-black text-sm uppercase tracking-tighter">System Debug Console</span>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={copyToClipboard} className="p-2 hover:bg-white/10 rounded-xl text-blue-400" title={t('copy_all')}>
-                  <CopyIcon className="w-4 h-4" />
+                <button onClick={copyToClipboard} className="p-2 hover:bg-white/10 rounded-xl text-blue-400 transition-colors" title={t('copy_all')}>
+                  <CopyIcon className="w-5 h-5" />
                 </button>
-                <button onClick={clearLogs} className="p-2 hover:bg-white/10 rounded-xl text-slate-400" title={t('clear_action')}>
-                  <TrashIcon className="w-4 h-4" />
+                <button onClick={clearLogs} className="p-2 hover:bg-white/10 rounded-xl text-slate-400 transition-colors" title={t('clear_action')}>
+                  <TrashIcon className="w-5 h-5" />
                 </button>
-                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl text-white">
-                  <XIcon className="w-5 h-5" />
+                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors">
+                  <XIcon className="w-6 h-6" />
                 </button>
               </div>
             </div>

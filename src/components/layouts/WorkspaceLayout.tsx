@@ -79,7 +79,7 @@ const NavLink: React.FC<{
     variant={isActive ? "secondary" : "ghost"}
     onClick={onClick}
     className={cn(
-      "w-full h-11 transition-all duration-200 hover:bg-accent/50 active:scale-[0.98]",
+      "w-full h-11 transition-all duration-200 hover:bg-accent active:scale-[0.98]",
       isActive && "font-bold shadow-sm bg-secondary",
       isCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
     )}
@@ -142,7 +142,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
           variant="ghost"
           size="icon"
           onClick={toggleSidebar}
-          className="hidden lg:flex hover:bg-accent/50 shrink-0"
+          className="hidden lg:flex hover:bg-accent shrink-0"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -188,7 +188,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
           variant="ghost"
           onClick={onViewDashboard}
           className={cn(
-            "w-full h-10 hover:bg-accent/50 transition-all text-sm",
+            "w-full h-10 hover:bg-accent transition-all text-sm",
             collapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
           )}
           title={collapsed ? t("return_to_dashboard") : undefined}
@@ -240,7 +240,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
               </SheetTrigger>
               <SheetContent
                 side={dir === "rtl" ? "right" : "left"}
-                className="p-0 w-72 border-none"
+                className="p-0 w-full sm:w-80 border-none shadow-2xl"
               >
                 <SheetHeader className="sr-only">
                   <SheetTitle>Navigation Menu</SheetTitle>
@@ -297,7 +297,8 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                 size="icon"
                 onClick={toggleTheme}
                 className="h-9 w-9"
-                aria-label={t("toggle_theme")}
+                title={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")}
+                aria-label={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")}
               >
                 {theme === "dark"
                   ? <Sun className="h-4 w-4" />
@@ -381,16 +382,16 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
         )}
 
         {/* Main Content Scrollable Area */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+        <main className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative z-0">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full flex-1">
             {children}
           </div>
-          {showVersion && (
-            <div className="mt-auto">
-              <VersionFooter />
-            </div>
-          )}
         </main>
+        {showVersion && (
+          <div className="z-10 bg-[var(--bg-page)]/90 backdrop-blur-sm border-t border-border/50">
+            <VersionFooter />
+          </div>
+        )}
       </div>
     </div>
   );
