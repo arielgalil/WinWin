@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from './dialog';
-import { Button } from './button';
 import { Trash2, AlertTriangle } from 'lucide-react';
+import { AdminModal } from './AdminModal';
 import { cn } from '@/lib/utils';
 
 interface DeleteConfirmDialogProps {
@@ -32,44 +24,37 @@ export function DeleteConfirmDialog({
   cancelText = 'ביטול',
   isDanger = true,
 }: DeleteConfirmDialogProps) {
+  const icon = isDanger ? <Trash2 className="h-7 w-7" /> : <AlertTriangle className="h-7 w-7" />;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className={cn(
-        "sm:max-w-[425px]",
-        isDanger && "border-destructive/50 border-2 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
-      )}>
-        <DialogHeader>
-          <div className={cn(
-            "mx-auto flex h-12 w-12 items-center justify-center rounded-full mb-4",
-            isDanger ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
-          )}>
-            {isDanger ? <Trash2 className="h-6 w-6" /> : <AlertTriangle className="h-6 w-6" />}
-          </div>
-          <DialogTitle className="text-center text-xl">{title}</DialogTitle>
-          <DialogDescription className="text-center pt-2 text-muted-foreground">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="flex gap-2 sm:gap-0 mt-4">
-          <Button
-            variant="secondary"
-            onClick={() => onOpenChange(false)}
-            className="flex-1 h-11"
-          >
-            {cancelText}
-          </Button>
-          <Button
-            variant={isDanger ? "secondary" : "default"}
-            onClick={onConfirm}
-            className={cn(
-                "flex-1 h-11 font-bold",
-                isDanger && "hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
-            )}
-          >
-            {confirmText}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AdminModal
+      isOpen={isOpen}
+      onClose={() => onOpenChange(false)}
+      title={title}
+      description={description}
+      size="sm"
+      variant={isDanger ? 'danger' : 'default'}
+      icon={icon}
+    >
+      <div className="flex gap-3 pt-2">
+        <button
+          onClick={() => onOpenChange(false)}
+          className="flex-1 h-11 rounded-[var(--radius-main)] bg-[var(--bg-surface)] text-[var(--text-secondary)] font-bold hover:bg-[var(--bg-hover)] transition-all border border-[var(--border-main)]"
+        >
+          {cancelText}
+        </button>
+        <button
+          onClick={onConfirm}
+          className={cn(
+            'flex-1 h-11 rounded-[var(--radius-main)] font-bold transition-all border',
+            isDanger
+              ? 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--status-danger-border)] hover:text-white border-[var(--border-main)]'
+              : 'bg-[var(--primary-base)] hover:bg-[var(--primary-hover)] text-white border-transparent'
+          )}
+        >
+          {confirmText}
+        </button>
+      </div>
+    </AdminModal>
   );
 }

@@ -25,32 +25,32 @@ export const AdminCard: React.FC<AdminCardProps> = ({
     return (
         <div
             className={cn(
-                'bg-card border border-border rounded-[var(--radius-container)] overflow-hidden shadow-lg transition-all hover:shadow-xl',
+                'bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-container)] overflow-hidden shadow-lg transition-all hover:shadow-xl',
                 className
             )}
         >
             {(title || description || icon || actions) && (
                 <div
                     className={cn(
-                        'p-5 flex justify-between items-center border-b border-border bg-muted/30',
+                        'p-5 flex justify-between items-center border-b border-[var(--border-main)] bg-[var(--bg-surface)]',
                         headerClassName
                     )}
                 >
                     <div className="flex items-center gap-4">
                         {icon && (
-                            <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center shadow-md border border-border shrink-0">
+                            <div className="w-12 h-12 rounded-full bg-[var(--bg-page)] flex items-center justify-center shadow-md border border-[var(--border-main)] shrink-0">
                                 {icon}
                             </div>
                         )}
                         {(title || description) && (
                             <div>
                                 {title && (
-                                    <h3 className="font-black text-xl text-foreground leading-none">
+                                    <h3 className="font-black text-xl text-[var(--text-main)] leading-none">
                                         {title}
                                     </h3>
                                 )}
                                 {description && (
-                                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">
+                                    <p className="text-xs text-[var(--text-muted)] uppercase tracking-widest font-bold mt-1">
                                         {description}
                                     </p>
                                 )}

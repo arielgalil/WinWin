@@ -22,9 +22,9 @@ export const AdminActionButton: React.FC<AdminActionButtonProps> = ({
   const baseStyles = `p-2 ${circular ? 'rounded-full hover:scale-110 shadow-md' : 'rounded-[var(--radius-main)]'} transition-all flex items-center justify-center min-h-[44px] min-w-[44px] active:scale-95 disabled:opacity-50 disabled:pointer-events-none`;
   
   const variantStyles = {
-    edit: "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-500/20",
-    delete: "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20",
-    secondary: "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20"
+    edit: "bg-[var(--action-edit-bg)] text-[var(--action-edit-text)] hover:bg-[var(--action-edit-hover)]",
+    delete: "bg-[var(--action-delete-bg)] text-[var(--action-delete-text)] hover:bg-[var(--action-delete-hover)]",
+    secondary: "bg-[var(--action-secondary-bg)] text-[var(--action-secondary-text)] hover:bg-[var(--action-secondary-hover)]"
   };
 
   return (
