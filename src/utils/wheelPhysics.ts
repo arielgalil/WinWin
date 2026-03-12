@@ -1,13 +1,32 @@
 /**
- * wheelPhysics.ts - Pure-function physics engine for the Lucky Wheel.
+ * wheelPhysics.ts - Smooth easing-based physics engine for the Lucky Wheel.
  *
- * Three-phase motion model:
- *  1. Acceleration  — exponential ramp-up to max angular velocity
- *  2. Cruising+Friction — constant speed then exponential decay
- *  3. Elastic settle — damped spring oscillation locking onto target segment
+ * Three-phase motion model with cosine ease-in/out:
+ *  1. Acceleration  — cosine ease-in (0 → peak velocity)
+ *  2. Cruising      — constant peak velocity
+ *  3. Deceleration  — cosine ease-out (peak velocity → 0, stops EXACTLY on target)
+ *
+ * The angle is computed analytically as a function of total elapsed time.
+ * This guarantees C¹ continuity everywhere (no position or velocity jumps),
+ * and the wheel always lands precisely on the winner segment.
  *
  * All angles are in RADIANS. Positive = clockwise.
  */
+
+// ── Phase fractions (must sum to 1.0) ────────────────────────────
+const ACCEL_FRAC = 0.15;                              // 15% — ramp up
+const DECEL_FRAC = 0.40;                              // 40% — slow down (viewers see it landing)
+const CRUISE_FRAC = 1 - ACCEL_FRAC - DECEL_FRAC;     // 45% — full speed
+
+// Normalized peak velocity (angle/time units) so ∫₀¹ v(u) du = 1.
+//   Accel contributes:  V_NORM × 2·ACCEL_FRAC/π
+//   Cruise contributes: V_NORM × CRUISE_FRAC
+//   Decel contributes:  V_NORM × 2·DECEL_FRAC/π
+const V_NORM = 1 / (2 * (ACCEL_FRAC + DECEL_FRAC) / Math.PI + CRUISE_FRAC);
+
+// Target peak angular velocity in rad/s (≈ 2 rev/s — fast enough to be exciting,
+// slow enough that segments remain visible during cruise).
+const PEAK_OMEGA = 13; // rad/s
 
 // ── Config ──────────────────────────────────────────────────────
 
@@ -18,25 +37,16 @@ export interface WheelPhysicsConfig {
     winnerIndex: number;
     /** Minimum full rotations before deceleration */
     minFullRotations?: number;
-    /** Acceleration time constant (seconds) */
+    // Legacy params kept for API compatibility — ignored by the new engine
     accelTau?: number;
-    /** Max angular velocity (radians/second) */
     maxOmega?: number;
-    /** Friction coefficient for deceleration */
     friction?: number;
-    /** Spring damping ratio (< 1 = underdamped = bouncy) */
     dampingRatio?: number;
-    /** Spring natural frequency */
     springFreq?: number;
 }
 
 const DEFAULTS = {
-    minFullRotations: 3,
-    accelTau: 0.35,
-    maxOmega: 35, // ~5.5 revolutions/sec
-    friction: 1.2,
-    dampingRatio: 0.25,
-    springFreq: 12,
+    minFullRotations: 8, // enough rotations for an exciting spin (~4-5 s)
 };
 
 // ── Phase types ──────────────────────────────────────────────────
@@ -46,58 +56,46 @@ export type WheelPhase =
     | "accelerating"
     | "cruising"
     | "decelerating"
-    | "settling"
+    | "settling"   // kept for API compatibility — maps to "decelerating" internally
     | "done";
 
 export interface WheelState {
-    angle: number; // current angle in radians
-    omega: number; // current angular velocity
+    angle: number;
+    omega: number;
     phase: WheelPhase;
-    elapsed: number; // total elapsed since spin started
+    elapsed: number;
 }
 
 // ── Pure math helpers ────────────────────────────────────────────
 
 const TWO_PI = 2 * Math.PI;
 
-/**
- * Normalise angle to [0, 2π).
- */
 export function normalizeAngle(angle: number): number {
     const mod = angle % TWO_PI;
     return mod < 0 ? mod + TWO_PI : mod;
 }
 
-/**
- * Compute the center angle of a given segment index.
- * Segments are equally spaced; index 0 is at top (12-o'clock after rotation offset).
- */
 export function segmentCenterAngle(
     index: number,
     segmentCount: number,
 ): number {
     const segmentArc = TWO_PI / segmentCount;
-    // index 0 center is at 0 rad (3 o'clock)
     return segmentArc * index;
 }
 
 /**
- * Given a current angle, determine which segment is at the "pointer" position.
- * Pointer is at π/2 rad (6 o'clock / bottom). Wheel rotates CW (positive angle).
+ * Given a current wheel angle, determine which segment is at the pointer (6 o'clock).
  */
 export function segmentAtPointer(angle: number, segmentCount: number): number {
     const segmentArc = TWO_PI / segmentCount;
     const normalised = normalizeAngle(angle);
-    // Pointer is at π/2 rad (6 o'clock / bottom).
-    // The segment 'i' at the pointer satisfies: (normalised + i*arc) % 2PI = PI/2.
-    // So pointerAngle = (PI/2 - normalised) mod 2PI.
     const pointerAngle = normalizeAngle(Math.PI / 2 - normalised);
     return Math.round(pointerAngle / segmentArc) % segmentCount;
 }
 
 /**
- * Compute the target angle that places the winner segment center at the pointer.
- * Pointer is at π/2 rad (6 o'clock / bottom). The result includes the minimum rotations offset.
+ * Compute the target angle that places the winner segment at the pointer (6 o'clock).
+ * Includes enough full rotations to feel like a real spin.
  */
 export function computeTargetAngle(
     winnerIndex: number,
@@ -106,62 +104,36 @@ export function computeTargetAngle(
     currentAngle: number,
 ): number {
     const segmentArc = TWO_PI / segmentCount;
-    // Winner center must end up at pointer (π/2 rad = 6 o'clock / bottom).
-    // Since wheel is CW, rotate until winner segment reaches π/2.
     const winnerCenter = segmentArc * winnerIndex;
     const baseTarget = normalizeAngle(Math.PI / 2 - winnerCenter);
 
-    // Add full rotations so target > currentAngle + minRotations * 2π
     const minAngle = currentAngle + minRotations * TWO_PI;
     const rotationsNeeded = Math.ceil((minAngle - baseTarget) / TWO_PI);
     return baseTarget + rotationsNeeded * TWO_PI;
 }
 
-// ── Phase computations (pure) ────────────────────────────────────
+// ── Legacy math helpers (kept for backward-compat with tests) ────
 
-/**
- * Acceleration phase: exponential ramp to maxOmega.
- * Returns angular velocity at time t.
- */
 export function accelOmega(t: number, maxOmega: number, tau: number): number {
     return maxOmega * (1 - Math.exp(-t / tau));
 }
 
-/**
- * Integrated angle during acceleration phase [0..t].
- */
 export function accelAngle(t: number, maxOmega: number, tau: number): number {
-    // integral of maxOmega * (1 - e^(-t/τ)) dt = maxOmega * (t + τ*e^(-t/τ) - τ)
     return maxOmega * (t + tau * Math.exp(-t / tau) - tau);
 }
 
-/**
- * Deceleration phase: exponential friction.
- * omega(t) = omega0 * e^(-μt)
- */
 export function decelOmega(t: number, omega0: number, mu: number): number {
     return omega0 * Math.exp(-mu * t);
 }
 
-/**
- * Integrated angle during deceleration phase [0..t].
- */
 export function decelAngle(t: number, omega0: number, mu: number): number {
-    // integral of omega0 * e^(-μt) dt = (omega0/μ) * (1 - e^(-μt))
     return (omega0 / mu) * (1 - Math.exp(-mu * t));
 }
 
-/**
- * Total distance the deceleration phase covers (t→∞).
- */
 export function decelTotalDistance(omega0: number, mu: number): number {
     return omega0 / mu;
 }
 
-/**
- * Elastic settle phase: damped spring oscillation around target angle.
- * θ(t) = θ_target + A * e^(-ζωnt) * sin(ωd*t)
- */
 export function elasticAngle(
     t: number,
     targetAngle: number,
@@ -174,9 +146,6 @@ export function elasticAngle(
         amplitude * Math.exp(-zeta * omegaN * t) * Math.sin(omegaD * t);
 }
 
-/**
- * Angular velocity during elastic settle (derivative of elasticAngle).
- */
 export function elasticOmega(
     t: number,
     amplitude: number,
@@ -190,7 +159,7 @@ export function elasticOmega(
     );
 }
 
-// ── Simulation stepper ───────────────────────────────────────────
+// ── Simulation result ────────────────────────────────────────────
 
 export interface SimulationResult {
     angle: number;
@@ -198,187 +167,95 @@ export interface SimulationResult {
     phase: WheelPhase;
 }
 
+// ── Easing helpers (internal) ─────────────────────────────────────
+
 /**
- * Creates a wheel simulation given config. Returns a `step(dt)` function
- * that advances the simulation by dt seconds and returns current state.
- *
- * This is designed to work with requestAnimationFrame — call step(dt)
- * each frame where dt is the time delta in seconds.
+ * Maps normalized time u ∈ [0,1] to normalized distance ∈ [0,1].
+ * Cosine ease-in → linear cruise → cosine ease-out.
+ * Continuously differentiable at all transition points.
  */
+function easeProgress(u: number): number {
+    if (u <= ACCEL_FRAC) {
+        // Cosine ease-in: v(u) = V_NORM · sin(π·u / (2·ACCEL_FRAC))
+        // Integrated: V_NORM · (2·ACCEL_FRAC/π) · (1 − cos(π·u / (2·ACCEL_FRAC)))
+        return V_NORM * (2 * ACCEL_FRAC / Math.PI) *
+            (1 - Math.cos(Math.PI * u / (2 * ACCEL_FRAC)));
+    }
+    const accelEnd = V_NORM * (2 * ACCEL_FRAC / Math.PI);
+    if (u <= 1 - DECEL_FRAC) {
+        // Linear cruise
+        return accelEnd + V_NORM * (u - ACCEL_FRAC);
+    }
+    // Cosine ease-out: v(u) = V_NORM · cos(π·(u−decelStart) / (2·DECEL_FRAC))
+    // Integrated from decelStart: V_NORM · (2·DECEL_FRAC/π) · sin(π·t / (2·DECEL_FRAC))
+    const cruiseEnd = accelEnd + V_NORM * CRUISE_FRAC;
+    const decelU = u - (1 - DECEL_FRAC);
+    return cruiseEnd + V_NORM * (2 * DECEL_FRAC / Math.PI) *
+        Math.sin(Math.PI * decelU / (2 * DECEL_FRAC));
+}
+
+/** Normalized angular velocity at u ∈ [0,1] (in totalAngle/totalDuration units). */
+function easeVelocityNorm(u: number): number {
+    if (u <= ACCEL_FRAC) {
+        return V_NORM * Math.sin(Math.PI * u / (2 * ACCEL_FRAC));
+    } else if (u <= 1 - DECEL_FRAC) {
+        return V_NORM;
+    } else {
+        const decelU = u - (1 - DECEL_FRAC);
+        return V_NORM * Math.cos(Math.PI * decelU / (2 * DECEL_FRAC));
+    }
+}
+
+// ── Simulation factory ───────────────────────────────────────────
+
 export function createWheelSimulation(config: WheelPhysicsConfig) {
     const {
         segmentCount,
         winnerIndex,
         minFullRotations = DEFAULTS.minFullRotations,
-        accelTau = DEFAULTS.accelTau,
-        maxOmega = DEFAULTS.maxOmega,
-        friction = DEFAULTS.friction,
-        dampingRatio = DEFAULTS.dampingRatio,
-        springFreq = DEFAULTS.springFreq,
     } = config;
 
-    // Pre-compute phase thresholds
-    const accelDuration = accelTau * 5; // ~99.3% of max velocity
-    const cruiseOmega = accelOmega(accelDuration, maxOmega, accelTau);
-    const accelDistance = accelAngle(accelDuration, maxOmega, accelTau);
-
-    // We need to figure out how long to cruise + decel to land on the target.
-    // Target angle = distance from angle-after-accel that lands winner at pointer.
+    // Exact angle the wheel must rotate to land winner at pointer (6 o'clock).
+    // currentAngle=0 since we always start from rest.
     const targetAngle = computeTargetAngle(
         winnerIndex,
         segmentCount,
         minFullRotations,
-        accelDistance,
+        0,
     );
-    const totalNeededAfterAccel = targetAngle - accelDistance;
 
-    // Decel covers omega0/mu total distance. We cruise the remainder.
-    const decelDistance = decelTotalDistance(cruiseOmega, friction);
-    const cruiseDistance = Math.max(0, totalNeededAfterAccel - decelDistance);
-    const cruiseDuration = cruiseDistance / cruiseOmega;
+    // Total duration derived from desired peak angular velocity.
+    //   peak ω = V_NORM · totalAngle / totalDuration  →  totalDuration = V_NORM · totalAngle / PEAK_OMEGA
+    const totalDuration = (V_NORM * targetAngle) / PEAK_OMEGA;
 
-    // Phase boundaries (cumulative time)
-    const t1_accel = accelDuration;
-    const t2_cruise = t1_accel + cruiseDuration;
-    // Decel has no hard boundary; we switch to settle when velocity is low enough
-    const decelVelocityThreshold = 0.5; // rad/s
-
-    // Elastic settle state
-    const settleAmplitude = TWO_PI / segmentCount * 0.6; // overshoot ~60% of a segment
-
-    // Pre-calculate full exact timings requires simulating it once fast since decel is not closed-form on time
-    function calculateDuration(): number {
-        let simElapsed = 0;
-        let simOmega = 0;
-        let simPhase = "accelerating";
-        let decelStartPhaseElapsed = 0;
-        let settleStartElapsed = 0;
-
-        // Skip to end of cruise
-        simElapsed = t2_cruise;
-        simOmega = cruiseOmega;
-        simPhase = "decelerating";
-        decelStartPhaseElapsed = simElapsed;
-
-        // Simulate deceleration purely mathematically
-        // omega(t) = cruiseOmega * e^(-friction * t)
-        // We want t where omega(t) = decelVelocityThreshold
-        // decelVelocityThreshold / cruiseOmega = e^(-friction * t)
-        // ln(decelVelocityThreshold / cruiseOmega) = -friction * t
-        // t = ln(cruiseOmega / decelVelocityThreshold) / friction
-        const timeToReachThreshold =
-            Math.log(cruiseOmega / decelVelocityThreshold) / friction;
-
-        simElapsed += timeToReachThreshold;
-        settleStartElapsed = simElapsed;
-
-        // Settle done when envelope < 0.001
-        // envelope = settleAmplitude * exp(-dampingRatio * springFreq * t);
-        // 0.001 / settleAmplitude = exp(-dampingRatio * springFreq * t)
-        // t = ln(settleAmplitude / 0.001) / (dampingRatio * springFreq)
-        const timeToSettle = Math.log(settleAmplitude / 0.001) /
-            (dampingRatio * springFreq);
-
-        return simElapsed + timeToSettle;
-    }
-
-    let currentAngle = 0;
-    let currentPhase: WheelPhase = "idle";
-    let phaseStartTime = 0;
-    let elapsed = 0;
-
-    // Phase-local accumulators
-    let decelStartAngle = 0;
-    let settleStartTime = 0;
+    let started = false;
 
     function step(realElapsed: number): SimulationResult {
-        if (currentPhase === "idle" || currentPhase === "done") {
-            return { angle: currentAngle, omega: 0, phase: currentPhase };
+        if (!started) {
+            return { angle: 0, omega: 0, phase: "idle" };
         }
 
-        elapsed = realElapsed;
-        let omega = 0;
+        const u = Math.min(1, realElapsed / totalDuration);
+        const angle = targetAngle * easeProgress(u);
+        const omega = u < 1
+            ? (targetAngle / totalDuration) * easeVelocityNorm(u)
+            : 0;
 
-        if (currentPhase === "accelerating") {
-            const t = elapsed;
-            if (t >= t1_accel) {
-                currentAngle = accelDistance;
-                currentPhase = cruiseDuration > 0 ? "cruising" : "decelerating";
-                phaseStartTime = elapsed;
-                if (currentPhase === "decelerating") {
-                    decelStartAngle = currentAngle;
-                }
-                omega = cruiseOmega;
-            } else {
-                currentAngle = accelAngle(t, maxOmega, accelTau);
-                omega = accelOmega(t, maxOmega, accelTau);
-            }
-        }
+        let phase: WheelPhase;
+        if (u < ACCEL_FRAC) phase = "accelerating";
+        else if (u < 1 - DECEL_FRAC) phase = "cruising";
+        else if (u < 1) phase = "decelerating";
+        else phase = "done";
 
-        if (currentPhase === "cruising") {
-            const t = elapsed - phaseStartTime;
-            if (t >= cruiseDuration) {
-                currentAngle = accelDistance + cruiseDistance;
-                currentPhase = "decelerating";
-                phaseStartTime = elapsed;
-                decelStartAngle = currentAngle;
-                omega = cruiseOmega;
-            } else {
-                currentAngle = accelDistance + cruiseOmega * t;
-                omega = cruiseOmega;
-            }
-        }
-
-        if (currentPhase === "decelerating") {
-            const t = elapsed - phaseStartTime;
-            omega = decelOmega(t, cruiseOmega, friction);
-            currentAngle = decelStartAngle +
-                decelAngle(t, cruiseOmega, friction);
-
-            if (omega < decelVelocityThreshold) {
-                currentPhase = "settling";
-                settleStartTime = elapsed;
-            }
-        }
-
-        if (currentPhase === "settling") {
-            const t = elapsed - settleStartTime;
-            currentAngle = elasticAngle(
-                t,
-                targetAngle,
-                settleAmplitude,
-                dampingRatio,
-                springFreq,
-            );
-            omega = elasticOmega(t, settleAmplitude, dampingRatio, springFreq);
-
-            // Done when amplitude is negligible
-            const envelopeAmplitude = settleAmplitude *
-                Math.exp(-dampingRatio * springFreq * t);
-            if (envelopeAmplitude < 0.001) {
-                currentAngle = targetAngle;
-                currentPhase = "done";
-                omega = 0;
-            }
-        }
-
-        return { angle: currentAngle, omega, phase: currentPhase };
+        return { angle, omega, phase };
     }
 
     function start() {
-        currentAngle = 0;
-        currentPhase = "accelerating";
-        phaseStartTime = 0;
-        elapsed = 0;
-        decelStartAngle = 0;
-        settleStartTime = 0;
+        started = true;
     }
 
     function reset() {
-        currentAngle = 0;
-        currentPhase = "idle";
-        phaseStartTime = 0;
-        elapsed = 0;
+        started = false;
     }
 
     return {
@@ -386,7 +263,7 @@ export function createWheelSimulation(config: WheelPhysicsConfig) {
         start,
         reset,
         getTargetAngle: () => targetAngle,
-        getDuration: calculateDuration,
+        getDuration: () => totalDuration,
     };
 }
 
@@ -413,7 +290,6 @@ export function generateSegmentColors(
     return colors;
 }
 
-/** Lighten a hex color by a percentage */
 function lighten(hex: string, percent: number): string {
     const rgb = hexToRgb(hex);
     const factor = percent / 100;
@@ -424,7 +300,6 @@ function lighten(hex: string, percent: number): string {
     );
 }
 
-/** Darken a hex color by a percentage */
 function darken(hex: string, percent: number): string {
     const rgb = hexToRgb(hex);
     const factor = 1 - percent / 100;
