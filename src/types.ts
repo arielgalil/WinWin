@@ -33,6 +33,7 @@ export interface Campaign {
   price?: number;
   amount_paid?: number;
   payment_status?: "paid" | "partial" | "pending" | "cancelled";
+  ai_enabled?: boolean;
 }
 
 export interface TickerMessage {
@@ -133,6 +134,14 @@ export interface AppSettings {
   burst_volume?: number;
   enabled_burst_types?: string[];
   active_lucky_wheel_id?: string | null;
+  active_spin?: {
+    winner_index: number;
+    winner_name: string;
+    round_number: number;
+    start_at_ms: number;
+    duration_ms: number;
+    participant_names: string[];
+  } | null;
 }
 
 export interface LogSnapshot {
@@ -217,6 +226,7 @@ export interface LuckyWheelControlState {
   participant_names?: string[];
   winner_index?: number;
   winner_name?: string;
+  winner_class?: string;
   wheel_name?: string;
   round_number?: number;
   start_at_ms?: number;

@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
     createWheelSimulation,
     generateSegmentColors,
-    normalizeAngle,
     segmentAtPointer,
     WheelPhase,
 } from "../../utils/wheelPhysics";
@@ -23,6 +22,8 @@ interface LuckyWheelProps {
     winnerIndex: number | null;
     /** Absolute truth name of the winner from admin */
     winnerName?: string;
+    /** Winner's class name */
+    winnerClass?: string;
     /** Called when wheel fully settled on winner */
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
     /** Called whenever the wheel phase changes */
@@ -35,9 +36,6 @@ interface LuckyWheelProps {
     durationMs?: number;
 }
 
-// Number of visible names in the magnifying glass
-const MAGNIFIER_VISIBLE = 3;
-
 // ── Component ────────────────────────────────────────────────────
 
 export const LuckyWheel: React.FC<LuckyWheelProps> = ({
@@ -46,6 +44,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     secondaryColor = "#818cf8",
     winnerIndex,
     winnerName: externalWinnerName,
+    winnerClass,
     onSpinComplete,
     onPhaseChange,
     roundNumber = 1,
@@ -370,17 +369,17 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 </div>
             )}
 
-            {/* Winner celebration overlay */}
+            {/* Winner celebration overlay — fixed to cover the entire screen */}
             <AnimatePresence>
                 {showWinner && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 flex items-center justify-center"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center"
                     >
-                        <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
-                        <Confetti isActive={true} />
+                        <div className="absolute inset-0 bg-black/75 backdrop-blur-xl" />
+                        <Confetti />
                         <motion.div
                             initial={{ scale: 0, rotate: -10 }}
                             animate={{ scale: 1, rotate: 0 }}
@@ -407,10 +406,20 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                             >
                                 {winnerName}
                             </motion.h2>
+                            {winnerClass && (
+                                <motion.p
+                                    initial={{ y: 15, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.45 }}
+                                    className="text-white/70 text-xl font-semibold mb-1"
+                                >
+                                    {winnerClass}
+                                </motion.p>
+                            )}
                             <motion.p
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.5 }}
+                                transition={{ delay: 0.6 }}
                                 className="text-amber-400 text-lg font-bold"
                             >
                                 🎉 {t("round_prefix")} #{roundNumber}

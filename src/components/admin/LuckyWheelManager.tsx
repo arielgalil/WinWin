@@ -6,6 +6,7 @@ import React, {
     useState,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLuckyWheelTemplates } from "../../hooks/useLuckyWheelTemplates";
 import { useLuckyWheelAdmin } from "../../hooks/useLuckyWheelControl";
 import { useCampaign } from "../../hooks/useCampaign";
@@ -22,7 +23,6 @@ import {
     FerrisWheel,
     Play,
     Plus,
-    RotateCcw,
     Square,
     Trash2,
     Users,
@@ -67,8 +67,10 @@ export const LuckyWheelManager: React.FC = () => {
     } = useLuckyWheelTemplates(campaignId);
 
     const wheelAdmin = useLuckyWheelAdmin(campaignId);
+    const queryClient = useQueryClient();
 
     // ── Local state ──
+
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState<
         LuckyWheelTemplate | null
@@ -77,8 +79,33 @@ export const LuckyWheelManager: React.FC = () => {
         null,
     );
     const [liveRound, setLiveRound] = useState(1);
+    const [isSpinning, setIsSpinning] = useState(false);
+    const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const lastDeactivatedIdRef = useRef<string | null>(null);
+
+    // Sync with other admin devices via broadcast
+    useEffect(() => {
+        const cmd = wheelAdmin.remoteCommand;
+        if (!cmd) return;
+        if (cmd.action === "ACTIVATE" && cmd.template_id) {
+            const tmpl = templates.find((t) => t.id === cmd.template_id);
+            if (tmpl) setLiveTemplate(tmpl);
+        } else if (cmd.action === "SPIN") {
+            if (cmd.round_number) setLiveRound(cmd.round_number);
+            setIsSpinning(true);
+            if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+            spinTimerRef.current = setTimeout(() => {
+                setIsSpinning(false);
+                queryClient.invalidateQueries({ queryKey: ["wheel-winners", campaignId] });
+            }, (cmd.duration_ms ?? 10000) + 1500);
+        } else if (cmd.action === "DEACTIVATE") {
+            setLiveTemplate(null);
+            setLiveRound(1);
+            setIsSpinning(false);
+            if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+        }
+    }, [wheelAdmin.remoteCommand, templates, campaignId, queryClient]);
 
     // Restore liveTemplate from settings
     React.useEffect(() => {
@@ -110,7 +137,7 @@ export const LuckyWheelManager: React.FC = () => {
                 allStudents,
             );
             if (names.length === 0) {
-                showToast(t("no_participants_match_warning"), "warning");
+                showToast(t("no_participants_match_warning" as any), "info");
                 // fall through — save with empty arrays, criteria preserved
             }
 
@@ -153,7 +180,7 @@ export const LuckyWheelManager: React.FC = () => {
     const handleActivate = useCallback(
         async (template: LuckyWheelTemplate) => {
             if (!campaignId) {
-                showToast(t("error_no_campaign"), "error");
+                showToast(t("error_no_campaign" as any), "error");
                 return;
             }
 
@@ -163,7 +190,7 @@ export const LuckyWheelManager: React.FC = () => {
                 allStudents,
             );
             if (liveNames.length === 0) {
-                showToast(t("wheel_zero_participants_warning"), "warning");
+                showToast(t("wheel_zero_participants_warning" as any), "info");
                 // proceed — empty wheel is visible to admin
             }
             const liveTmpl = { ...template, participant_ids: liveIds, participant_names: liveNames };
@@ -192,6 +219,9 @@ export const LuckyWheelManager: React.FC = () => {
             Math.random() * liveTemplate.participant_names.length,
         );
         const winnerName = liveTemplate.participant_names[idx];
+        const winnerId = liveTemplate.participant_ids[idx];
+        const winnerStudent = allStudents.find((s) => s.id === winnerId || s.name === winnerName);
+        const winnerClassName = classes?.find((c) => c.id === winnerStudent?.class_id)?.name;
 
         // 1. Pre-calculate animation duration
         const dummySim = createWheelSimulation({
@@ -213,7 +243,15 @@ export const LuckyWheelManager: React.FC = () => {
             startAtMs,
             durationMs,
             liveTemplate.participant_names,
+            winnerClassName,
         );
+
+        // 3b. Mark spinning state locally (remote admins get it via remoteCommand effect)
+        setIsSpinning(true);
+        if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+        spinTimerRef.current = setTimeout(() => {
+            setIsSpinning(false);
+        }, durationMs + 1500);
 
         // 4. Remove winner from local state IMMEDIATELY so next spin can't pick them
         const newNames = [...liveTemplate.participant_names];
@@ -226,14 +264,11 @@ export const LuckyWheelManager: React.FC = () => {
 
         // 5. Save winner to DB
         try {
-            const winnerId = liveTemplate.participant_ids[idx];
-            const student = allStudents.find((s) => s.id === winnerId || s.name === winnerName);
-            const className = classes?.find((c) => c.id === student?.class_id)?.name;
             await saveWinner({
                 template_id: liveTemplate.id,
-                student_id: winnerId || student?.id || null,
+                student_id: winnerId || winnerStudent?.id || null,
                 student_name: winnerName,
-                class_name: className,
+                class_name: winnerClassName,
                 round_number: liveRound,
                 wheel_name: liveTemplate.name,
             });
@@ -256,11 +291,6 @@ export const LuckyWheelManager: React.FC = () => {
         }, durationMs + 10000);
     }, [liveTemplate, liveRound, wheelAdmin, saveWinner, allStudents, classes]);
 
-    const handleNextRound = useCallback(async () => {
-        setLiveRound((r) => r + 1);
-        await wheelAdmin.resetWheel();
-    }, [wheelAdmin]);
-
     const handleDeactivate = useCallback(async () => {
         setLiveTemplate(null);
         setLiveRound(1);
@@ -268,7 +298,7 @@ export const LuckyWheelManager: React.FC = () => {
         showToast(t("wheel_deactivated_toast"), "success");
     }, [wheelAdmin, showToast, t]);
 
-    const { modalConfig, openConfirmation, closeConfirmation } =
+    const { modalConfig, openConfirmation } =
         useConfirmation();
 
     const handleDelete = useCallback(
@@ -374,21 +404,18 @@ export const LuckyWheelManager: React.FC = () => {
                             <div className="flex gap-2 flex-wrap">
                                 <button
                                     onClick={handleSpin}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300 active:scale-95 transition-all shadow-lg"
+                                    disabled={isSpinning}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300 active:scale-95 transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
                                 >
-                                    <Zap className="w-4 h-4" />
-                                    {t("spin_btn")}
-                                </button>
-                                <button
-                                    onClick={handleNextRound}
-                                    className="flex items-center gap-2 px-4 py-2.5 bg-white/20 text-white rounded-lg font-medium hover:bg-white/30 active:scale-95 transition-all"
-                                >
-                                    <RotateCcw className="w-4 h-4" />
-                                    {t("next_round_btn")}
+                                    {isSpinning
+                                        ? <RefreshIcon className="w-4 h-4 animate-spin" />
+                                        : <Zap className="w-4 h-4" />}
+                                    {t("spin_btn")} #{liveRound}
                                 </button>
                                 <button
                                     onClick={handleDeactivate}
-                                    className="flex items-center gap-2 px-4 py-2.5 bg-red-500/30 text-white rounded-lg font-medium hover:bg-red-500/50 active:scale-95 transition-all"
+                                    disabled={isSpinning}
+                                    className="flex items-center gap-2 px-4 py-2.5 bg-red-500/30 text-white rounded-lg font-medium hover:bg-red-500/50 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <Square className="w-4 h-4" />
                                     {t("close_wheel_btn")}

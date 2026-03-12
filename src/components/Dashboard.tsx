@@ -6,7 +6,6 @@ import React, {
     useState,
 } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
 import { KIOSK_CONSTANTS } from "../constants";
 import { DashboardHeader } from "./dashboard/DashboardHeader";
 import { Podium } from "./dashboard/Podium";
@@ -31,7 +30,6 @@ import { useClasses } from "../hooks/useClasses";
 import { useTicker } from "../hooks/useTicker";
 import { useCompetitionMutations } from "../hooks/useCompetitionMutations";
 import { useAuth } from "../hooks/useAuth";
-import { useCampaignRole } from "../hooks/useCampaignRole";
 import { useLanguage } from "../hooks/useLanguage";
 import { isSuperUser as checkIsSuperUser } from "../config";
 import { KioskRotator } from "./dashboard/KioskRotator";
@@ -42,10 +40,9 @@ import { usePersistedBoolean } from "../hooks/usePersistedBoolean";
 import { useKioskRotation } from "../hooks/useKioskRotation";
 import { useToast } from "../hooks/useToast";
 import { logger } from "../utils/logger";
-import { AppSettings } from "../types";
+import { AppSettings, ClassRoom, CompetitionGoal } from "../types";
 import { useLuckyWheelListener } from "../hooks/useLuckyWheelControl";
 import { LuckyWheelOverlay } from "./dashboard/LuckyWheelOverlay";
-import { DebugConsole } from "./ui/DebugConsole";
 import { supabase } from "../supabaseClient";
 import { usePagePresence } from "../hooks/usePagePresence";
 import { useRealtimeSubscriptions } from "../hooks/useRealtimeSubscriptions";
@@ -64,12 +61,11 @@ const EMPTY_GOALS: CompetitionGoal[] = [];
 
 export const Dashboard: React.FC = () => {
     useIdleMode(5000); // 5s idle to hide cursor/interactions
-    const { campaign, settings, refreshSettings } = useCampaign();
+    const { campaign, settings } = useCampaign();
     const { classes } = useClasses(campaign?.id);
     const { tickerMessages } = useTicker(campaign?.id);
     const { updateCommentary } = useCompetitionMutations(campaign?.id);
     const { user } = useAuth();
-    const { campaignRole } = useCampaignRole(campaign?.id, user?.id);
     const { slug } = useParams();
     const { t } = useLanguage();
     const navigate = useNavigate();
@@ -94,6 +90,7 @@ export const Dashboard: React.FC = () => {
     const [wheelWinnerName, setWheelWinnerName] = useState<
         string | undefined
     >();
+    const [wheelWinnerClass, setWheelWinnerClass] = useState<string | undefined>();
     const [wheelName, setWheelName] = useState<string | undefined>();
     const [wheelRound, setWheelRound] = useState(1);
     const [wheelStartAtMs, setWheelStartAtMs] = useState<number | undefined>();
@@ -233,6 +230,7 @@ export const Dashboard: React.FC = () => {
             mergedSettings as AppSettings,
             effectiveIsFrozen,
             updateCommentary,
+            campaign,
         );
 
     // Memoized burst dismiss handler
@@ -290,6 +288,7 @@ export const Dashboard: React.FC = () => {
                 setWheelParticipants(wheelState.participant_names || []);
                 setWheelWinnerIndex(null);
                 setWheelWinnerName(undefined);
+                setWheelWinnerClass(undefined);
                 setWheelName(wheelState.wheel_name);
                 setWheelRound(wheelState.round_number || 1);
                 setWheelStartAtMs(undefined);
@@ -306,6 +305,7 @@ export const Dashboard: React.FC = () => {
                 }
                 setWheelWinnerIndex(wheelState.winner_index ?? null);
                 setWheelWinnerName(wheelState.winner_name);
+                setWheelWinnerClass(wheelState.winner_class);
                 setWheelRound(wheelState.round_number || wheelRound);
                 setWheelStartAtMs(wheelState.start_at_ms);
                 setWheelDurationMs(wheelState.duration_ms);
@@ -313,20 +313,25 @@ export const Dashboard: React.FC = () => {
             case "RESET":
                 setWheelWinnerIndex(null);
                 setWheelWinnerName(undefined);
+                setWheelWinnerClass(undefined);
                 isWinnerAnnouncedRef.current = false;
                 break;
             case "DEACTIVATE":
                 // Handled primarily by settings update (Single Source of Truth)
                 setWheelWinnerIndex(null);
                 setWheelWinnerName(undefined);
+                setWheelWinnerClass(undefined);
                 isWinnerAnnouncedRef.current = false;
                 break;
         }
     }, [wheelState, wheelRound]);
 
     // Initialize/Restore wheel participants from DB if not received via broadcast
+    // Also restores an active spin for users who join mid-spin.
     useEffect(() => {
         const activeWheelId = settings?.active_lucky_wheel_id;
+        const activeSpin = settings?.active_spin;
+
         if (activeWheelId && wheelParticipants.length === 0) {
             const restoreWheel = async () => {
                 try {
@@ -345,7 +350,23 @@ export const Dashboard: React.FC = () => {
             };
             restoreWheel();
         }
-    }, [settings?.active_lucky_wheel_id, wheelParticipants.length]);
+
+        // Late-joiner: resume a spin that is still in progress
+        if (
+            activeSpin &&
+            Date.now() < activeSpin.start_at_ms + activeSpin.duration_ms
+        ) {
+            logger.info("[WheelSync] Restoring active spin for late joiner", activeSpin);
+            if (activeSpin.participant_names?.length) {
+                setWheelParticipants(activeSpin.participant_names);
+            }
+            setWheelWinnerIndex(activeSpin.winner_index ?? null);
+            setWheelWinnerName(activeSpin.winner_name);
+            setWheelRound(activeSpin.round_number || 1);
+            setWheelStartAtMs(activeSpin.start_at_ms);
+            setWheelDurationMs(activeSpin.duration_ms);
+        }
+    }, [settings?.active_lucky_wheel_id, settings?.active_spin, wheelParticipants.length]);
 
     if (!settings || !campaign) return null;
 
@@ -367,6 +388,7 @@ export const Dashboard: React.FC = () => {
                 participants={wheelParticipants}
                 winnerIndex={wheelWinnerIndex}
                 winnerName={wheelWinnerName}
+                winnerClass={wheelWinnerClass}
                 primaryColor={settings.primary_color}
                 secondaryColor={settings.secondary_color}
                 wheelName={wheelName}
@@ -449,6 +471,7 @@ export const Dashboard: React.FC = () => {
                                                 classes={classes || EMPTY_CLASSES}
                                                 settings={settings}
                                                 campaignId={campaign?.id}
+                                                aiEnabled={campaign?.ai_enabled !== false}
                                             />
                                         </div>
 

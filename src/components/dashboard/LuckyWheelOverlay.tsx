@@ -17,6 +17,8 @@ interface LuckyWheelOverlayProps {
     winnerIndex: number | null;
     /** Absolute truth winner name from admin */
     winnerName?: string;
+    /** Winner's class name */
+    winnerClass?: string;
     /** Campaign primary color */
     primaryColor?: string;
     /** Campaign secondary color */
@@ -38,6 +40,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     participants,
     winnerIndex,
     winnerName,
+    winnerClass,
     primaryColor,
     secondaryColor,
     wheelName,
@@ -174,6 +177,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                             secondaryColor={secondaryColor}
                             winnerIndex={frozenWinnerIndex}
                             winnerName={frozenWinnerName}
+                            winnerClass={winnerClass}
                             roundNumber={roundNumber}
                             startAtMs={frozenStartAtMs}
                             durationMs={frozenDurationMs}

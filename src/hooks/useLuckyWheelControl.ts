@@ -4,16 +4,22 @@ import { LuckyWheelControlState } from "../types";
 import { logger } from "../utils/logger";
 
 /**
- * Admin-side hook: sends commands to all Dashboard clients via Supabase Broadcast.
+ * Admin-side hook: sends commands to all Dashboard clients via Supabase Broadcast,
+ * and also listens for commands from other admin devices on the same campaign.
  */
 export function useLuckyWheelAdmin(campaignId: string | undefined) {
     const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+    const [remoteCommand, setRemoteCommand] = useState<LuckyWheelControlState | null>(null);
 
     useEffect(() => {
         if (!campaignId) return;
 
         const channel = supabase
             .channel(`lucky_wheel_control_${campaignId}`)
+            .on("broadcast", { event: "wheel_command" }, ({ payload }) => {
+                logger.info("[WheelAdmin] Received remote command:", payload?.action);
+                setRemoteCommand(payload as LuckyWheelControlState);
+            })
             .subscribe((status) => {
                 if (status === "SUBSCRIBED") {
                     logger.info(
@@ -100,23 +106,52 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
     );
 
     const spinWheel = useCallback(
-        (
+        async (
             winnerIndex: number,
             winnerName: string,
             roundNumber: number,
             startAtMs: number,
             durationMs: number,
             participantNames: string[],
-        ) => broadcast({
-            action: "SPIN",
-            winner_index: winnerIndex,
-            winner_name: winnerName,
-            round_number: roundNumber,
-            start_at_ms: startAtMs,
-            duration_ms: durationMs,
-            participant_names: participantNames,
-        }),
-        [broadcast],
+            winnerClass?: string,
+        ) => {
+            await broadcast({
+                action: "SPIN",
+                winner_index: winnerIndex,
+                winner_name: winnerName,
+                winner_class: winnerClass,
+                round_number: roundNumber,
+                start_at_ms: startAtMs,
+                duration_ms: durationMs,
+                participant_names: participantNames,
+            });
+
+            // Persist spin for late joiners (cleared automatically after spin ends)
+            if (campaignId) {
+                await supabase
+                    .from("app_settings")
+                    .update({
+                        active_spin: {
+                            winner_index: winnerIndex,
+                            winner_name: winnerName,
+                            round_number: roundNumber,
+                            start_at_ms: startAtMs,
+                            duration_ms: durationMs,
+                            participant_names: participantNames,
+                        },
+                    })
+                    .eq("campaign_id", campaignId);
+
+                // Auto-clear once the spin animation finishes (+1s buffer)
+                window.setTimeout(async () => {
+                    await supabase
+                        .from("app_settings")
+                        .update({ active_spin: null })
+                        .eq("campaign_id", campaignId);
+                }, durationMs + 1000);
+            }
+        },
+        [broadcast, campaignId],
     );
 
     const resetWheel = useCallback(
@@ -148,7 +183,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
         [broadcast, campaignId],
     );
 
-    return { activateWheel, spinWheel, resetWheel, deactivateWheel };
+    return { activateWheel, spinWheel, resetWheel, deactivateWheel, remoteCommand };
 }
 
 /**
