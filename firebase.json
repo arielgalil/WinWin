@@ -9,6 +9,22 @@
     ],
     "rewrites": [
       {
+        "source": "/comp/**",
+        "function": { "functionId": "ogMeta", "region": "us-central1" }
+      },
+      {
+        "source": "/admin/**",
+        "function": { "functionId": "ogMeta", "region": "us-central1" }
+      },
+      {
+        "source": "/vote/**",
+        "function": { "functionId": "ogMeta", "region": "us-central1" }
+      },
+      {
+        "source": "/login/**",
+        "function": { "functionId": "ogMeta", "region": "us-central1" }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -33,5 +49,20 @@
         ]
       }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix functions install --prefer-offline"
+      ]
+    }
+  ]
 }

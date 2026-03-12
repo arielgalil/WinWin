@@ -1,0 +1,10 @@
+{
+  "name": "win2grow-functions",
+  "description": "Cloud Functions — OG meta tag proxy for social link previews",
+  "engines": { "node": "20" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^6.0.0"
+  },
+  "private": true
+}
