@@ -1,7 +1,6 @@
 import React from 'react';
 import { Trash2, AlertTriangle } from 'lucide-react';
 import { AdminModal } from './AdminModal';
-import { cn } from '@/lib/utils';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -13,6 +12,24 @@ interface DeleteConfirmDialogProps {
   cancelText?: string;
   isDanger?: boolean;
 }
+
+const cancelClass =
+  'flex-1 h-11 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--border-main)] text-[var(--text-secondary)] ' +
+  'hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]/30';
+
+const confirmDangerClass =
+  'flex-1 h-11 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--status-danger-border)]/40 text-[var(--text-main)] ' +
+  'hover:bg-[var(--status-danger-border)] hover:text-white hover:border-[var(--status-danger-border)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-danger-border)]/40';
+
+const confirmDefaultClass =
+  'flex-1 h-11 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--primary-base)]/40 text-[var(--text-main)] ' +
+  'hover:bg-[var(--primary-base)] hover:text-white hover:border-[var(--primary-base)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-base)]/40';
 
 export function DeleteConfirmDialog({
   isOpen,
@@ -39,18 +56,13 @@ export function DeleteConfirmDialog({
       <div className="flex gap-3 pt-2">
         <button
           onClick={() => onOpenChange(false)}
-          className="flex-1 h-11 rounded-[var(--radius-main)] bg-[var(--bg-surface)] text-[var(--text-secondary)] font-bold hover:bg-[var(--bg-hover)] transition-all border border-[var(--border-main)]"
+          className={cancelClass}
         >
           {cancelText}
         </button>
         <button
           onClick={onConfirm}
-          className={cn(
-            'flex-1 h-11 rounded-[var(--radius-main)] font-bold transition-all border',
-            isDanger
-              ? 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--status-danger-border)] hover:text-white border-[var(--border-main)]'
-              : 'bg-[var(--primary-base)] hover:bg-[var(--primary-hover)] text-white border-transparent'
-          )}
+          className={isDanger ? confirmDangerClass : confirmDefaultClass}
         >
           {confirmText}
         </button>

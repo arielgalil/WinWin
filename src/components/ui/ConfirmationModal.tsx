@@ -15,6 +15,24 @@ interface ConfirmationModalProps {
   onCancel: () => void;
 }
 
+const cancelClass =
+  'flex-1 py-3 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--border-main)] text-[var(--text-secondary)] ' +
+  'hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]/30';
+
+const confirmDangerClass =
+  'flex-1 py-3 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--status-danger-border)]/40 text-[var(--text-main)] ' +
+  'hover:bg-[var(--status-danger-border)] hover:text-white hover:border-[var(--status-danger-border)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-danger-border)]/40';
+
+const confirmDefaultClass =
+  'flex-1 py-3 rounded-[var(--radius-main)] font-bold transition-all active:scale-95 ' +
+  'bg-transparent border border-[var(--primary-base)]/40 text-[var(--text-main)] ' +
+  'hover:bg-[var(--primary-base)] hover:text-white hover:border-[var(--primary-base)] ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-base)]/40';
+
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   title,
@@ -59,20 +77,13 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <button
           ref={confirmButtonRef}
           onClick={onConfirm}
-          className={`flex-1 py-3 rounded-[var(--radius-main)] font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 ${
-            isDanger
-              ? 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--status-danger-border)] hover:text-white border border-[var(--border-main)]'
-              : 'bg-[var(--primary-base)] hover:bg-[var(--primary-hover)] text-white'
-          }`}
+          className={isDanger ? confirmDangerClass : confirmDefaultClass}
         >
           {finalConfirmText}
         </button>
 
         {showCancel && (
-          <button
-            onClick={onCancel}
-            className="flex-1 py-3 rounded-[var(--radius-main)] bg-[var(--bg-surface)] text-[var(--text-secondary)] font-bold hover:bg-[var(--bg-hover)] transition-all border border-[var(--border-main)]"
-          >
+          <button onClick={onCancel} className={cancelClass}>
             {finalCancelText}
           </button>
         )}
