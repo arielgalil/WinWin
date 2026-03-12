@@ -70,7 +70,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                         </DialogDescription>
                     )}
                 </DialogHeader>
-                <div className="flex-1 overflow-y-auto custom-scrollbar py-2">
+                <div className="flex-1 overflow-y-auto custom-scrollbar py-2 px-1">
                     {children}
                 </div>
                 {footer && (

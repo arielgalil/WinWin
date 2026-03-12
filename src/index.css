@@ -285,6 +285,7 @@ svg {
   --action-secondary-hover: #e0e7ff;
 
   --focus-ring: #4f46e5;
+  --focus-ring-outline: rgba(79, 70, 229, 0.4);
 
   --acc-settings: #10b981;
   --acc-points: #f97316;
@@ -359,6 +360,7 @@ svg {
   --action-secondary-hover: rgba(99, 102, 241, 0.2);
 
   --focus-ring: #6366f1;
+  --focus-ring-outline: rgba(99, 102, 241, 0.5);
 
   --acc-settings: #34d399;
   --acc-points: #fb923c;
@@ -432,6 +434,7 @@ svg {
     --action-secondary-hover: rgba(99, 102, 241, 0.2);
 
     --focus-ring: #6366f1;
+    --focus-ring-outline: rgba(99, 102, 241, 0.5);
 
     --acc-settings: #34d399;
     --acc-points: #fb923c;
