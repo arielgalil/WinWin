@@ -32,7 +32,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
     const hasFetchedFillers = useRef(false);
 
     useEffect(() => {
-        const updateMaxChars = () => setMaxChars(window.innerWidth < 1024 ? 45 : 80);
+        const updateMaxChars = () => setMaxChars(window.innerWidth < 640 ? 22 : window.innerWidth < 1024 ? 35 : 80);
         updateMaxChars(); window.addEventListener('resize', updateMaxChars);
         return () => window.removeEventListener('resize', updateMaxChars);
     }, []);
@@ -127,7 +127,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 </div>
 
                 {/* 2. Ticker Card (Center on Desktop, Bottom on Mobile) */}
-                <div className="order-3 lg:order-2 w-full lg:flex-1 relative overflow-hidden px-8 py-2 min-h-[45px] lg:min-h-0 flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
+                <div className="order-3 lg:order-2 w-full lg:flex-1 relative overflow-hidden px-8 py-2 h-[55px] lg:h-[65px] flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
                     <AnimatePresence mode="wait">
                         <MotionDiv
                             key={`${currentIndex}-${chunkIdx}`}
@@ -139,7 +139,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                             <div className="shrink-0">
                                 {isAi ? <SparklesIcon className="w-4 h-4 text-yellow-400 animate-pulse" /> : <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />}
                             </div>
-                            <span className={`text-base md:text-lg lg:text-[clamp(1.1rem,1.4vw,1.3rem)] font-black tracking-tight leading-tight line-clamp-2 lg:line-clamp-1 transition-colors text-white ${isAi ? 'text-yellow-100' : ''}`}>
+                            <span className={`text-base md:text-lg lg:text-[clamp(1.1rem,1.4vw,1.3rem)] font-black tracking-tight leading-tight line-clamp-1 transition-colors text-white ${isAi ? 'text-yellow-100' : ''}`}>
                                 {parseFormattedText(currentText).map((part, i) => {
                                     if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('*') && part.endsWith('*'))) {
                                         const content = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
