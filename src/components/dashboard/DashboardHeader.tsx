@@ -101,7 +101,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
             <div className="flex flex-row flex-wrap lg:flex-nowrap items-stretch gap-2.5 z-10 shrink-0">
 
                 {/* 1. Brand Card (Right) */}
-                <div className="order-1 flex items-center justify-start px-3 lg:px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
+                <div className="order-1 flex items-center justify-start px-3 lg:px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 min-w-0 lg:flex-initial lg:w-fit lg:min-w-fit">
                     <div className="flex items-center gap-3 min-w-0 rtl:flex-row ltr:flex-row">
                         <Logo
                             src={settings.logo_url}
@@ -161,7 +161,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 </div>
 
                 {/* 3. Global Score (Left) */}
-                <div className="order-2 lg:order-3 flex items-center justify-end ms-auto gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
+                <div className="order-2 lg:order-3 flex items-center justify-end gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
                         <div className="flex items-center gap-2 text-[12px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>
