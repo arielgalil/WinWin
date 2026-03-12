@@ -83,23 +83,21 @@ export function segmentCenterAngle(
 
 /**
  * Given a current angle, determine which segment is at the "pointer" position.
- * Pointer is at the top (angle 0 after normalisation, but wheel rotates CW
- * so the segment at pointer is at (2π - normalizedAngle)).
+ * Pointer is at π/2 rad (6 o'clock / bottom). Wheel rotates CW (positive angle).
  */
 export function segmentAtPointer(angle: number, segmentCount: number): number {
     const segmentArc = TWO_PI / segmentCount;
     const normalised = normalizeAngle(angle);
-    // Pointer is at 0 rad (3 o'clock).
-    // Wheel rotates CW (positive angle).
-    // The segment 'i' that is at 0 rad is the one where (angle + i*arc) % 2PI = 0.
-    // So i = (2PI - angle) / arc.
-    const pointerAngle = normalizeAngle(TWO_PI - normalised);
+    // Pointer is at π/2 rad (6 o'clock / bottom).
+    // The segment 'i' at the pointer satisfies: (normalised + i*arc) % 2PI = PI/2.
+    // So pointerAngle = (PI/2 - normalised) mod 2PI.
+    const pointerAngle = normalizeAngle(Math.PI / 2 - normalised);
     return Math.round(pointerAngle / segmentArc) % segmentCount;
 }
 
 /**
  * Compute the target angle that places the winner segment center at the pointer.
- * The result includes the minimum rotations offset.
+ * Pointer is at π/2 rad (6 o'clock / bottom). The result includes the minimum rotations offset.
  */
 export function computeTargetAngle(
     winnerIndex: number,
@@ -108,10 +106,10 @@ export function computeTargetAngle(
     currentAngle: number,
 ): number {
     const segmentArc = TWO_PI / segmentCount;
-    // Winner center must end up at pointer (3 o'clock = 0 rad).
-    // Since wheel is CW, target distance:
+    // Winner center must end up at pointer (π/2 rad = 6 o'clock / bottom).
+    // Since wheel is CW, rotate until winner segment reaches π/2.
     const winnerCenter = segmentArc * winnerIndex;
-    const baseTarget = TWO_PI - winnerCenter;
+    const baseTarget = normalizeAngle(Math.PI / 2 - winnerCenter);
 
     // Add full rotations so target > currentAngle + minRotations * 2π
     const minAngle = currentAngle + minRotations * TWO_PI;

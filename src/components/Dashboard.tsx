@@ -301,6 +301,9 @@ export const Dashboard: React.FC = () => {
                     wheelCloseTimerRef.current = undefined;
                 }
                 isWinnerAnnouncedRef.current = false;
+                if (wheelState.participant_names?.length) {
+                    setWheelParticipants(wheelState.participant_names);
+                }
                 setWheelWinnerIndex(wheelState.winner_index ?? null);
                 setWheelWinnerName(wheelState.winner_name);
                 setWheelRound(wheelState.round_number || wheelRound);

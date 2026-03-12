@@ -106,6 +106,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             roundNumber: number,
             startAtMs: number,
             durationMs: number,
+            participantNames: string[],
         ) => broadcast({
             action: "SPIN",
             winner_index: winnerIndex,
@@ -113,6 +114,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             round_number: roundNumber,
             start_at_ms: startAtMs,
             duration_ms: durationMs,
+            participant_names: participantNames,
         }),
         [broadcast],
     );

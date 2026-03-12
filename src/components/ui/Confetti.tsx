@@ -14,28 +14,31 @@ export const Confetti = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const pieces: any[] = [];
-    const numberOfPieces = 200;
+    const isMobile = window.innerWidth < 768;
+    const numberOfPieces = isMobile ? 60 : 120;
     const colors = ['#fde130', '#e91e63', '#00b0ff', '#76ff03', '#ffffff'];
 
-    for (let i = 0; i < numberOfPieces; i++) {
-      pieces.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        rotation: Math.random() * 360,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 10 + 5,
-        speed: Math.random() * 3 + 2,
-        drift: Math.random() * 2 - 1,
-      });
-    }
+    const pieces = Array.from({ length: numberOfPieces }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      rotation: Math.random() * 360,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 8 + 4,
+      speed: Math.random() * 2.5 + 1.5,
+      drift: Math.random() * 1.5 - 0.75,
+      active: true,
+    }));
 
     let animationId: number;
 
     const update = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      pieces.forEach((p) => {
+      let anyActive = false;
+      for (const p of pieces) {
+        if (!p.active) continue;
+        anyActive = true;
+
         ctx.save();
         ctx.translate(p.x + p.size / 2, p.y + p.size / 2);
         ctx.rotate((p.rotation * Math.PI) / 180);
@@ -45,29 +48,22 @@ export const Confetti = () => {
 
         p.y += p.speed;
         p.x += p.drift;
-        p.rotation += 2;
+        p.rotation += 1.5;
 
         if (p.y > canvas.height) {
-          p.y = -20;
-          p.x = Math.random() * canvas.width;
+          p.active = false;
         }
-      });
+      }
 
-      animationId = requestAnimationFrame(update);
+      if (anyActive) {
+        animationId = requestAnimationFrame(update);
+      }
     };
 
-    update();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener('resize', handleResize);
+    animationId = requestAnimationFrame(update);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
 

@@ -409,7 +409,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                 <GoalsManagement
                   settings={settings}
                   classes={classes || []}
-                  totalScore={totalInstitutionScore}
+                  totalInstitutionScore={totalInstitutionScore}
                   onUpdateSettings={updateSettingsGoals}
                   onUpdateClassTarget={updateClassTarget}
                 />

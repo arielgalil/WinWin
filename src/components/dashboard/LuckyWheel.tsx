@@ -25,6 +25,8 @@ interface LuckyWheelProps {
     winnerName?: string;
     /** Called when wheel fully settled on winner */
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
+    /** Called whenever the wheel phase changes */
+    onPhaseChange?: (phase: WheelPhase) => void;
     /** Current round number */
     roundNumber?: number;
     /** Synchronized start timestamp (UNIX ms) */
@@ -45,6 +47,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     winnerIndex,
     winnerName: externalWinnerName,
     onSpinComplete,
+    onPhaseChange,
     roundNumber = 1,
     startAtMs,
     durationMs,
@@ -77,6 +80,12 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     useEffect(() => {
         onSpinCompleteRef.current = onSpinComplete;
     }, [onSpinComplete]);
+
+    const onPhaseChangeRef = useRef(onPhaseChange);
+    useEffect(() => {
+        onPhaseChangeRef.current = onPhaseChange;
+    }, [onPhaseChange]);
+    const lastPhaseRef = useRef<WheelPhase>("idle");
 
     // ── Segment Limiting & Subset Selection ───────────────────
     // If we have too many participants, we pick a subset that includes the winner
@@ -225,6 +234,11 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             setPhase(result.phase);
             drawWheel(result.angle);
 
+            if (result.phase !== lastPhaseRef.current) {
+                lastPhaseRef.current = result.phase;
+                onPhaseChangeRef.current?.(result.phase);
+            }
+
             if (result.phase === "done") {
                 // Determine winner name from refs/state at the moment of completion
                 const finalWinnerName = externalWinnerNameRef.current ||
@@ -302,10 +316,10 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     return (
         <div
             ref={containerRef}
-            className="relative flex flex-col items-center justify-center w-full h-full select-none"
+            className="relative flex flex-col items-center gap-3 select-none w-full"
         >
-            {/* Wheel container */}
-            <div className="relative w-[min(80vw,450px)] aspect-square lg:w-[500px]">
+            {/* Wheel container — capped by both vw and vh so it always fits */}
+            <div className="relative w-[min(80vw,450px,calc(100svh-220px))] aspect-square">
                 {/* Canvas */}
                 <canvas
                     ref={canvasRef}
@@ -313,51 +327,45 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     style={{ willChange: "transform" }}
                 />
 
-                {/* Top Pointer Arrow - Fixed at the top (12 o'clock) */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
+                {/* Bottom Pointer Arrow - Fixed at the bottom (6 o'clock), tip pointing up into wheel */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-40">
                     <div
                         className="w-0 h-0"
                         style={{
                             borderLeft: "16px solid transparent",
                             borderRight: "16px solid transparent",
-                            borderTop: "24px solid #facc15",
-                            filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.5))",
+                            borderBottom: "24px solid #facc15",
+                            filter: "drop-shadow(0 -4px 6px rgba(0,0,0,0.5))",
                         }}
                     />
                 </div>
+            </div>
 
-                {/* MAGNIFIER - NOW POSITIONED BELOW THE WHEEL */}
-                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none w-full max-w-[280px]">
-                    <div className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-3xl p-1.5 shadow-2xl overflow-hidden ring-1 ring-white/5">
-                        <div className="flex items-center gap-2">
-                            {magnifierNames.map((item, i) => (
-                                <div
-                                    key={`${item.name}-${i}`}
-                                    className={`relative flex-1 px-2 py-3 transition-all duration-300 flex items-center justify-center ${
-                                        item.isCurrent
-                                            ? "bg-white/20 scale-105 z-10 rounded-2xl"
-                                            : "opacity-40"
-                                    }`}
-                                >
-                                    <div
-                                        className={`truncate transition-all duration-300 text-center ${
-                                            item.isCurrent
-                                                ? "text-white text-xl font-black drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
-                                                : "text-white/60 text-xs font-bold"
-                                        }`}
-                                    >
-                                        {item.name}
-                                    </div>
+            {/* MAGNIFIER — in normal flow, below wheel with gap, no overlap risk */}
+            <div className="w-full max-w-[280px] pointer-events-none">
+                <div className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-3xl p-1.5 shadow-2xl overflow-hidden ring-1 ring-white/5">
+                    <div className="flex items-stretch gap-1.5">
+                        {magnifierNames.map((item, i) => (
+                            <div
+                                key={`${item.name}-${i}`}
+                                className={`basis-1/3 shrink-0 px-2 py-3 flex items-center justify-center rounded-2xl transition-all duration-300 ${
+                                    item.isCurrent
+                                        ? "bg-white/25 border border-white/40 z-10"
+                                        : "opacity-35"
+                                }`}
+                            >
+                                <div className="truncate text-center text-sm font-bold text-white">
+                                    {item.name}
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
             {/* Phase indicator */}
             {phase !== "idle" && phase !== "done" && (
-                <div className="mt-20 text-white/60 text-xs font-mono animate-pulse">
+                <div className="text-white/60 text-xs font-mono animate-pulse">
                     {t(`phase_${phase}` as any)}
                 </div>
             )}

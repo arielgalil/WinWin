@@ -76,7 +76,8 @@ export function useLuckyWheelTemplates(campaignId?: string) {
         if (criteria.exclude_previous_winners) {
             // Reuse cached winners data instead of a redundant DB query
             const winnerIds = new Set(winners.map((w) => w.student_id).filter(Boolean));
-            filtered = filtered.filter((s) => !winnerIds.has(s.id));
+            const winnerNames = new Set(winners.map((w) => w.student_name).filter(Boolean));
+            filtered = filtered.filter((s) => !winnerIds.has(s.id) && !winnerNames.has(s.name));
         }
 
         return {

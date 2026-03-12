@@ -110,11 +110,8 @@ export const LuckyWheelManager: React.FC = () => {
                 allStudents,
             );
             if (names.length === 0) {
-                showToast(
-                    t("no_participants_match_error"),
-                    "error",
-                );
-                return;
+                showToast(t("no_participants_match_warning"), "warning");
+                // fall through — save with empty arrays, criteria preserved
             }
 
             if (editingTemplate) {
@@ -159,23 +156,34 @@ export const LuckyWheelManager: React.FC = () => {
                 showToast(t("error_no_campaign"), "error");
                 return;
             }
-            setLiveTemplate(template);
+
+            // Re-filter against live student data so activation always reflects current state
+            const { ids: liveIds, names: liveNames } = await filterParticipants(
+                template.filter_criteria,
+                allStudents,
+            );
+            if (liveNames.length === 0) {
+                showToast(t("wheel_zero_participants_warning"), "warning");
+                // proceed — empty wheel is visible to admin
+            }
+            const liveTmpl = { ...template, participant_ids: liveIds, participant_names: liveNames };
+            setLiveTemplate(liveTmpl);
             setLiveRound(1);
-            
+
             // This hook function performs BOTH the broadcast AND the DB update to app_settings
             await wheelAdmin.activateWheel(
-                template.id,
-                template.participant_names,
+                liveTmpl.id,
+                liveNames,
                 template.name,
             );
-            
+
             await recordActivation(template.id);
             showToast(
                 t("wheel_activated_toast", { name: template.name }),
                 "success",
             );
         },
-        [wheelAdmin, recordActivation, showToast, t, campaignId],
+        [wheelAdmin, recordActivation, showToast, t, campaignId, filterParticipants, allStudents],
     );
 
     const handleSpin = useCallback(async () => {
@@ -204,19 +212,26 @@ export const LuckyWheelManager: React.FC = () => {
             liveRound,
             startAtMs,
             durationMs,
+            liveTemplate.participant_names,
         );
 
-        // 4. Save winner immediately to DB
+        // 4. Remove winner from local state IMMEDIATELY so next spin can't pick them
+        const newNames = [...liveTemplate.participant_names];
+        const newIds = [...liveTemplate.participant_ids];
+        newNames.splice(idx, 1);
+        newIds.splice(idx, 1);
+        const updatedTemplate = { ...liveTemplate, participant_names: newNames, participant_ids: newIds };
+        setLiveTemplate(updatedTemplate);
+        setLiveRound((r) => r + 1);
+
+        // 5. Save winner to DB
         try {
             const winnerId = liveTemplate.participant_ids[idx];
-
-            // Find student class for denormalization
-            const student = allStudents.find((s) => s.name === winnerName);
-            const className = classes?.find((c) => c.id === student?.class_id)
-                ?.name;
+            const student = allStudents.find((s) => s.id === winnerId || s.name === winnerName);
+            const className = classes?.find((c) => c.id === student?.class_id)?.name;
             await saveWinner({
                 template_id: liveTemplate.id,
-                student_id: student?.id ?? null,
+                student_id: winnerId || student?.id || null,
                 student_name: winnerName,
                 class_name: className,
                 round_number: liveRound,
@@ -226,26 +241,9 @@ export const LuckyWheelManager: React.FC = () => {
             console.error("Failed to save winner", e);
         }
 
-        // 5. Update local state and template for NEXT round
-        // Wait until celebration finishes (duration + 10s celebration buffer)
+        // 6. After celebration, push updated list to dashboard so the wheel shrinks
         setTimeout(async () => {
             try {
-                // Remove the winner from the live template so they don't win again
-                const newNames = [...liveTemplate.participant_names];
-                const newIds = [...liveTemplate.participant_ids];
-                newNames.splice(idx, 1);
-                newIds.splice(idx, 1);
-
-                const updatedTemplate = {
-                    ...liveTemplate,
-                    participant_names: newNames,
-                    participant_ids: newIds,
-                };
-
-                setLiveTemplate(updatedTemplate);
-
-                // Auto-update the dashboard with the new list so the wheel shrinks
-                // This will issue a new ACTIVATE command, resetting it for the next spin
                 await wheelAdmin.activateWheel(
                     updatedTemplate.id,
                     updatedTemplate.participant_names,
