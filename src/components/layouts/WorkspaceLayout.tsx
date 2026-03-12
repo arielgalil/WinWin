@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
@@ -128,6 +128,18 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
   const { viewerCount } = usePagePresence(campaign?.id, "dashboard");
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
+  // Keep a CSS variable on <body> so Radix Dialog portals (rendered outside this
+  // component tree) can offset their center to match the content area.
+  // Sidebar is at the inline-end (right in RTL, left in LTR).
+  // w-16 = 4rem (collapsed), w-64 = 16rem (expanded).
+  useEffect(() => {
+    const sidebarRem = isCollapsed ? 4 : 16;
+    // RTL: sidebar on right → shift modal left (negative).  LTR: sidebar on left → shift right (positive).
+    const offset = dir === 'rtl' ? -(sidebarRem / 2) : (sidebarRem / 2);
+    document.body.style.setProperty('--sidebar-offset', `${offset}rem`);
+    return () => { document.body.style.removeProperty('--sidebar-offset'); };
+  }, [isCollapsed, dir]);
 
   const sidebarContent = (collapsed: boolean) => (
     <div className="flex flex-col h-full bg-card border-border">
