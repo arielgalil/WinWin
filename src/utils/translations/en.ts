@@ -519,6 +519,7 @@ export const en = {
     manage_students_button: "Manage Students",
     manage_students_title: "Manage Students List",
     search_student_placeholder: "Search student...",
+    search_all_groups: "Search all groups",
     new_student_placeholder: "New student name...",
     close_window: "Close Window",
     students_label: "Students",

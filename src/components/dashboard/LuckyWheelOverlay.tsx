@@ -58,7 +58,9 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
         number | undefined
     >();
     const [localActive, setLocalActive] = useState(false);
-    const [isBusy, setIsBusy] = useState(false);
+    // Use a ref instead of state so the effect never re-runs due to isBusy changing,
+    // which previously caused the lockTimerRef to be cleared mid-spin → permanent lock.
+    const isBusyRef = useRef(false);
 
     const lockTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -66,13 +68,13 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
         // 1. Explicit Close: If the admin closes the wheel, we respect it immediately
         if (!isActive) {
             setLocalActive(false);
-            setIsBusy(false);
+            isBusyRef.current = false;
             if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
             return;
         }
 
         // 2. Normal Sync: If we are not in the middle of a spin sequence, sync with props
-        if (!isBusy) {
+        if (!isBusyRef.current) {
             setLocalActive(true);
 
             // Sync data only when not busy
@@ -86,8 +88,8 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
         }
 
         // 3. Spin Detection: If a spin starts and we aren't already busy
-        if (isActive && winnerIndex !== null && !isBusy) {
-            setIsBusy(true);
+        if (isActive && winnerIndex !== null && !isBusyRef.current) {
+            isBusyRef.current = true;
             setLocalActive(true);
             setFrozenParticipants(participants);
             setFrozenWinnerIndex(winnerIndex);
@@ -97,7 +99,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
 
             if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
             lockTimerRef.current = setTimeout(() => {
-                setIsBusy(false);
+                isBusyRef.current = false;
                 // When the lock expires, the next render will sync with the latest props
                 // (e.g., it will show the empty wheel for the next round if the admin already reset it)
             }, (durationMs || 10000) + 1000);
@@ -111,9 +113,10 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
         winnerIndex,
         participants,
         winnerName,
-        isBusy,
         startAtMs,
         durationMs,
+        // isBusy intentionally omitted — using isBusyRef to prevent the cleanup
+        // from cancelling the spin timer and causing a permanent lock
     ]);
 
     return (

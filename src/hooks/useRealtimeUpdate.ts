@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { useLanguage } from './useLanguage';
 import { useToast } from './useToast';
@@ -11,9 +11,16 @@ export const useRealtimeUpdate = () => {
     const { t } = useLanguage();
     const { showToast } = useToast();
 
+    // Refs so the channel is created once and never torn down due to callback identity changes
+    const tRef = useRef(t);
+    const showToastRef = useRef(showToast);
+    useEffect(() => { tRef.current = t; }, [t]);
+    useEffect(() => { showToastRef.current = showToast; }, [showToast]);
+
     useEffect(() => {
         const currentVersion = import.meta.env.VITE_APP_VERSION;
-        
+        let reloadTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
         const channel = supabase
             .channel('system_updates')
             .on(
@@ -31,10 +38,10 @@ export const useRealtimeUpdate = () => {
 
                     if (newVersion !== currentVersion || forceReload) {
                         console.log(`[REALTIME-UPDATE] Version mismatch: Local(${currentVersion}) vs Remote(${newVersion})`);
-                        
+
                         // Check if we are on a kiosk-like view (Dashboard)
                         const isKiosk = window.location.pathname.includes('/comp/');
-                        
+
                         // Prevent infinite reload loops (safety)
                         const lastReload = sessionStorage.getItem('last_version_reload');
                         const now = Date.now();
@@ -49,9 +56,9 @@ export const useRealtimeUpdate = () => {
                             window.location.reload();
                         } else {
                             // Admin/Teacher view - show notification and reload after delay if idle
-                            showToast(t('update_available_reloading'), 'info');
-                            
-                            setTimeout(() => {
+                            showToastRef.current(tRef.current('update_available_reloading'), 'info');
+
+                            reloadTimeoutId = setTimeout(() => {
                                 console.log("[REALTIME-UPDATE] Refreshing after notification delay...");
                                 sessionStorage.setItem('last_version_reload', now.toString());
                                 window.location.reload();
@@ -68,6 +75,7 @@ export const useRealtimeUpdate = () => {
 
         return () => {
             supabase.removeChannel(channel);
+            if (reloadTimeoutId) clearTimeout(reloadTimeoutId);
         };
-    }, [showToast, t]);
+    }, []); // Empty deps — channel created once on mount, cleaned up on unmount
 };

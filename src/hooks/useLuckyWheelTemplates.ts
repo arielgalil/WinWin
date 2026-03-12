@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabaseClient";
 import {
@@ -54,7 +55,8 @@ export function useLuckyWheelTemplates(campaignId?: string) {
     });
 
     // ── Apply filter criteria against existing students ──
-    const filterParticipants = async (
+    // Uses the already-cached winners query — no extra DB round-trip
+    const filterParticipants = useCallback(async (
         criteria: WheelFilterCriteria,
         allStudents: Student[],
     ): Promise<{ ids: string[]; names: string[] }> => {
@@ -71,14 +73,9 @@ export function useLuckyWheelTemplates(campaignId?: string) {
         if (criteria.max_score != null) {
             filtered = filtered.filter((s) => s.score <= criteria.max_score!);
         }
-        if (criteria.exclude_previous_winners && campaignId) {
-            const { data: prevWinners } = await supabase
-                .from("lucky_wheel_winners")
-                .select("student_id")
-                .eq("campaign_id", campaignId);
-            const winnerIds = new Set(
-                (prevWinners ?? []).map((w) => w.student_id),
-            );
+        if (criteria.exclude_previous_winners) {
+            // Reuse cached winners data instead of a redundant DB query
+            const winnerIds = new Set(winners.map((w) => w.student_id).filter(Boolean));
             filtered = filtered.filter((s) => !winnerIds.has(s.id));
         }
 
@@ -86,7 +83,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             ids: filtered.map((s) => s.id),
             names: filtered.map((s) => s.name),
         };
-    };
+    }, [winners]);
 
     // ── Create template ──
     const createTemplate = useMutation({

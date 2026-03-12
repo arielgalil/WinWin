@@ -69,8 +69,8 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
     setIsEditingTarget(false);
   };
 
-  const availableClasses = isAdmin 
-    ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')) 
+  const availableClasses = isAdmin
+    ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he'))
     : classes.filter(c => (user.class_ids || []).includes(c.id) || c.id === user.class_id);
 
   // Auto-select first available class if current selection is invalid
@@ -79,6 +79,24 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
       setSelectedClassId(availableClasses[0].id);
     }
   }, [availableClasses, selectedClassId, setSelectedClassId]);
+
+  // Global search: search across all available classes when searchTerm >= 2 chars
+  const isGlobalSearch = searchTerm.length >= 2;
+  const globalSearchStudents = isGlobalSearch
+    ? availableClasses
+        .flatMap(c => c.students.map(s => ({ ...s, className: c.name, classId: c.id })))
+        .filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name, 'he'))
+    : [];
+
+  // When selecting a student from global search who belongs to a different class, auto-switch
+  const handleGlobalToggle = (studentId: string, classId: string) => {
+    if (classId !== selectedClassId) {
+      clearSelection();
+      setSelectedClassId(classId);
+    }
+    toggleSelection(studentId);
+  };
 
   if (classes.length === 0) {
     return (
@@ -157,9 +175,16 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
               </div>
               
               <div className="flex gap-2 border-t border-[var(--border-subtle)] pt-2 mt-1">
-                <button onClick={selectAllFiltered} className={`flex-1 px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20 shadow-sm'}`}>
-                  {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
-                </button>
+                {!isGlobalSearch && (
+                  <button onClick={selectAllFiltered} className={`flex-1 px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all ${selectedStudentIds.size > 0 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 active:bg-emerald-500/20 shadow-sm'}`}>
+                    {selectedStudentIds.size > 0 ? t('clear_selection') : t('select_all')}
+                  </button>
+                )}
+                {isGlobalSearch && selectedStudentIds.size > 0 && (
+                  <button onClick={clearSelection} className="flex-1 px-4 py-2 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-[var(--fs-sm)] border transition-all bg-rose-500/10 text-rose-600 border-rose-500/20 active:bg-rose-500/20 shadow-sm">
+                    {t('clear_selection')}
+                  </button>
+                )}
                 <button onClick={() => setIsSearchOpen(!isSearchOpen)} className={`p-2 rounded-[var(--radius-main)] border transition-all ${isSearchOpen || searchTerm ? 'bg-indigo-600 text-white border-indigo-500 shadow-md' : 'bg-[var(--bg-surface)] border-[var(--border-main)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] shadow-sm'}`}><SearchIcon className="w-5 h-5" /></button>
               </div>
             </div>
@@ -213,10 +238,28 @@ export const LiteTeacherView: React.FC<LiteTeacherViewProps> = ({
 
         <main className="px-4 pb-2 flex-1 overflow-y-auto custom-scrollbar">
           <div className={`${glassCardStyle} p-3 rounded-[var(--radius-main)] grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 min-h-[140px] items-start shadow-inner`}>
-            {!searchTerm && currentClass && <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />}
-            {filteredStudents.map(student => <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />)}
-            {filteredStudents.length === 0 && !currentClass && (
-              <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-[var(--fw-bold)]">{t('no_students_found')}</div>
+            {isGlobalSearch ? (
+              globalSearchStudents.length > 0
+                ? globalSearchStudents.map(student => (
+                    <LiteStudentCard
+                      key={student.id}
+                      id={student.id}
+                      name={student.name}
+                      score={student.score}
+                      isSelected={selectedStudentIds.has(student.id)}
+                      onToggle={(id) => handleGlobalToggle(id, student.classId)}
+                      subtitle={student.className}
+                    />
+                  ))
+                : <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-[var(--fw-bold)]">{t('no_students_found')}</div>
+            ) : (
+              <>
+                {currentClass && <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />}
+                {filteredStudents.map(student => <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />)}
+                {filteredStudents.length === 0 && !currentClass && (
+                  <div className="col-span-full py-12 text-center text-[var(--text-muted)] font-[var(--fw-bold)]">{t('no_students_found')}</div>
+                )}
+              </>
             )}
           </div>
         </main>

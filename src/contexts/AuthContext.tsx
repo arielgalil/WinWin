@@ -60,6 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [savedEmail, setSavedEmail] = useState('');
     const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
     const initCalled = useRef(false);
+    // Tracks initAuth() outcome to enable recovery in onAuthStateChange
+    const initAuthStatusRef = useRef<'pending' | 'done' | 'failed'>('pending');
 
     const userRef = useRef<UserProfile | null>(user);
 
@@ -72,27 +74,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0) => {
-        // Even if already loaded, we might want to refresh the profile in background
-        setAuthStatus('fetching-profile');
+    const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0, silent = false) => {
+        // silent=true: background refresh when cached user already displayed — no loading state changes, no retries
+        if (!silent) setAuthStatus('fetching-profile');
         try {
-            logger.debug(`[AUTH] Fetching profile for ID: ${userId} (Attempt: ${retryCount + 1})`);
+            logger.debug(`[AUTH] Fetching profile for ID: ${userId} (Attempt: ${retryCount + 1}, silent: ${silent})`);
 
-            // Use withTimeout to prevent hanging on profile fetch
-            // Reduced timeout to 8s for better failure recovery
+            const timeoutMs = silent ? 5000 : 8000;
             const { data: profileData, error: profileError } = await withTimeout(
                 supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', userId)
                     .maybeSingle(),
-                8000
+                timeoutMs
             );
 
             if (profileError) throw profileError;
 
             let finalProfile: UserProfile;
             if (!profileData) {
+                if (silent) return; // Don't overwrite cached user with a fallback
                 console.warn("[AUTH] Profile not found, using email fallback");
                 finalProfile = {
                     id: userId,
@@ -109,19 +111,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(finalProfile));
             setUser(finalProfile);
             userRef.current = finalProfile;
-            
-            updateLoadingState(false, "Profile process finished");
+
+            if (!silent) updateLoadingState(false, "Profile process finished");
         } catch (err) {
+            if (silent) {
+                // Silent background refresh failed — leave cached user as-is, no UI impact
+                logger.debug(`[AUTH] Silent background refresh failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+                return;
+            }
+
             // Retry logic: 2 retries (Total 3 attempts)
             if (retryCount < 2) {
                 const delay = 1000 * (retryCount + 1);
                 console.warn(`[AUTH] Profile fetch failed (${err instanceof Error ? err.message : 'Unknown error'}), retrying in ${delay}ms... (Attempt ${retryCount + 1})`);
                 await new Promise(resolve => setTimeout(resolve, delay));
-                return fetchUserProfile(userId, userEmail, retryCount + 1);
+                return fetchUserProfile(userId, userEmail, retryCount + 1, false);
             }
 
             console.error("[AUTH] Profile load failed after retries, applying safety fallback:", err);
-            
+
             // If we don't have a user at all (even from cache), apply emergency fallback
             if (!userRef.current) {
                 const fallback: UserProfile = {
@@ -203,10 +211,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             try {
                 // Background session check - reduced timeout to 5s
                 const { data: { session } } = await promiseTimeout(supabase.auth.getSession(), 5000);
-                
+
                 if (session?.user) {
-                    // Start background profile refresh
-                    await fetchUserProfile(session.user.id, session.user.email || '');
+                    // If we already have a cached user displayed, do a silent background refresh
+                    // to avoid blocking the UI with retries (which can take up to 27s)
+                    const silent = !!userRef.current;
+                    await fetchUserProfile(session.user.id, session.user.email || '', 0, silent);
                 } else {
                     // No session found - clear cache and update UI
                     localStorage.removeItem(CACHED_PROFILE_KEY);
@@ -214,8 +224,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     userRef.current = null;
                     updateLoadingState(false, "No initial session");
                 }
+                initAuthStatusRef.current = 'done';
             } catch (err) {
                 console.warn("[AUTH] Initial session check timed out or failed, relying on cache/offline state", err);
+                initAuthStatusRef.current = 'failed'; // Allow onAuthStateChange to recover
                 // If we have a cached user, we stay "logged in" but maybe offline
                 // If we don't have a user, we must unlock to show login
                 if (!userRef.current) {
@@ -236,8 +248,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             logger.debug(`[AUTH-EVENT] ${event}`);
             if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-                if (!isPasswordRecovery) {
-                    await fetchUserProfile(session.user.id, session.user.email || '');
+                // Only recover if initAuth() failed (e.g. getSession() timed out).
+                // Normal flow: initAuth() handles it. login() handles explicit logins.
+                // Set to 'done' immediately to prevent handling multiple recovery events.
+                if (initAuthStatusRef.current === 'failed') {
+                    initAuthStatusRef.current = 'done';
+                    logger.debug('[AUTH] Recovering session via onAuthStateChange after initAuth() failure');
+                    // Silent: no retries, no loading state — just a background profile update
+                    fetchUserProfile(session.user.id, session.user.email || '', 0, true);
                 }
             } else if (event === 'SIGNED_OUT') {
                 localStorage.removeItem(CACHED_PROFILE_KEY);

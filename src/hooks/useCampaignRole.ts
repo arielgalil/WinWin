@@ -17,8 +17,9 @@ export const useCampaignRole = <T = string | null | undefined>(
   const cacheKey = `${ROLE_CACHE_PREFIX}${campaignId}_${userId}`;
 
   const getCachedRole = useCallback(() => {
-    if (!campaignId || !userId) return null;
-    return localStorage.getItem(cacheKey);
+    if (!campaignId || !userId) return undefined;
+    const value = localStorage.getItem(cacheKey);
+    return value ?? undefined; // null from localStorage means key not found → no initial data
   }, [campaignId, userId, cacheKey]);
 
   const saveToCache = useCallback((role: string | null) => {
@@ -27,9 +28,9 @@ export const useCampaignRole = <T = string | null | undefined>(
     else localStorage.setItem(cacheKey, role);
   }, [campaignId, userId, cacheKey]);
 
-  const initialRole = useMemo(() => getCachedRole(), [getCachedRole]);
+  const initialRole = useMemo(() => getCachedRole(), [getCachedRole]) as string | undefined;
 
-  const { data: campaignRole, isLoading: isLoadingRole, isError, error } = useQuery({
+  const { data: campaignRole, isLoading: isLoadingRole, isFetching: isFetchingRole, isError, error } = useQuery({
     queryKey: ['role', campaignId, userId],
     queryFn: async () => {
       if (!campaignId || !userId) return null;
@@ -40,28 +41,31 @@ export const useCampaignRole = <T = string | null | undefined>(
           .eq('campaign_id', campaignId)
           .eq('user_id', userId)
           .maybeSingle();
-        
+
         if (error) {
           throw error;
         }
-        
+
         const role = data?.role ?? null;
         saveToCache(role);
         return role;
       } catch (err) {
         console.error('Unexpected error in role query:', err);
-        return null;
+        // Throw so React Query preserves cached/initialData instead of overwriting with null
+        throw err;
       }
     },
     enabled: !!campaignId && !!userId,
     initialData: initialRole,
     staleTime: 1000 * 60 * 30, // 30 mins
+    retry: 1,
     select: select as any,
   });
 
   return {
     campaignRole: campaignRole as T,
     isLoadingRole: isLoadingRole && campaignRole === undefined,
+    isFetchingRole,
     isError,
     error
   };

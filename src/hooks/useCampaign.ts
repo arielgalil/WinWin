@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
@@ -25,6 +25,8 @@ export const useCampaign = <T = AppSettings>(
   const { slug: urlSlug } = useParams() as { slug: string };
   const slug = slugOverride || urlSlug;
 
+  const cacheTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Persistence logic for Instant-On
   const getCachedData = useCallback(() => {
     if (!slug) return null;
@@ -39,8 +41,9 @@ export const useCampaign = <T = AppSettings>(
 
   const saveToCache = useCallback((data: any) => {
     if (!slug || !data.campaign || !data.settings) return;
-    // Push the heavy stringification and I/O off the main thread to avoid stuttering
-    setTimeout(() => {
+    // Cancel any pending write before scheduling a new one (prevents stale data overwriting fresh data)
+    if (cacheTimerRef.current) clearTimeout(cacheTimerRef.current);
+    cacheTimerRef.current = setTimeout(() => {
       try {
         localStorage.setItem(`${CACHE_PREFIX}${slug}`, JSON.stringify(data));
       } catch (e) {}

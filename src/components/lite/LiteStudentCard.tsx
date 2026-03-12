@@ -11,9 +11,10 @@ interface LiteStudentCardProps {
   isSelected: boolean;
   onToggle: (id: string) => void;
   isClassEntity?: boolean;
+  subtitle?: string;
 }
 
-export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name, score, isSelected, onToggle, isClassEntity = false }) => {
+export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name, score, isSelected, onToggle, isClassEntity = false, subtitle }) => {
 
   const handleClick = () => {
     triggerHaptic('selection');
@@ -49,11 +50,19 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
 
       <div className="flex flex-col items-center justify-center z-10 w-full px-2 h-full py-1">
         {/* Name - Now smaller and at the top */}
-        <span className={`font-[var(--fw-bold)] leading-tight text-center w-full break-words line-clamp-1 mb-1 transition-all duration-300
+        <span className={`font-[var(--fw-bold)] leading-tight text-center w-full break-words line-clamp-1 transition-all duration-300
+            ${subtitle ? 'mb-0' : 'mb-1'}
             ${isSelected ? 'text-white' : 'text-[var(--text-muted)] text-[var(--fs-sm)]'}
         `}>
           {name}
         </span>
+        {subtitle && (
+          <span className={`text-[10px] leading-tight text-center w-full truncate mb-1 transition-all duration-300
+            ${isSelected ? 'text-white/70' : 'text-[var(--text-muted)] opacity-60'}
+          `}>
+            {subtitle}
+          </span>
+        )}
 
         {/* Score Badge - Centered in the card */}
         <div className={`font-[var(--fw-bold)] px-3 py-1.5 rounded-[var(--radius-main)] border transition-all duration-300 shadow-inner min-w-[50px]
@@ -75,5 +84,5 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
     </button>
   );
 }, (prev, next) => {
-  return prev.isSelected === next.isSelected && prev.score === next.score && prev.name === next.name;
+  return prev.isSelected === next.isSelected && prev.score === next.score && prev.name === next.name && prev.subtitle === next.subtitle;
 });

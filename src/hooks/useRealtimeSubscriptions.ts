@@ -9,6 +9,9 @@ export const useRealtimeSubscriptions = (
 ) => {
   const queryClient = useQueryClient();
   const channelRef = useRef<any>(null);
+  // Use a ref so the callback never causes subscription teardown on re-render
+  const onRealtimeUpdateRef = useRef(onRealtimeUpdate);
+  useEffect(() => { onRealtimeUpdateRef.current = onRealtimeUpdate; }, [onRealtimeUpdate]);
 
   useEffect(() => {
     if (!campaignId) return;
@@ -24,7 +27,7 @@ export const useRealtimeSubscriptions = (
     channelRef.current = channel;
 
     // Helper to trigger optional callback
-    const triggerUpdate = () => onRealtimeUpdate?.();
+    const triggerUpdate = () => onRealtimeUpdateRef.current?.();
 
     // Set up subscriptions with proper error handling and specific invalidations
     const subscriptions = [
@@ -112,7 +115,7 @@ export const useRealtimeSubscriptions = (
         channelRef.current = null;
       }
     };
-  }, [campaignId, queryClient, onRealtimeUpdate]);
+  }, [campaignId, queryClient]);
 
   // We don't expose a blanket invalidate function anymore to enforce specific invalidations
   return {};

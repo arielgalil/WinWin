@@ -535,6 +535,7 @@ export const he = {
     manage_students_button: "ניהול תלמידים",
     manage_students_title: "ניהול רשימת תלמידים",
     search_student_placeholder: "חפש תלמיד...",
+    search_all_groups: "חיפוש בכל הקבוצות",
     new_student_placeholder: "שם תלמיד חדש...",
     close_window: "סגור חלון",
     students_label: "תלמידים",

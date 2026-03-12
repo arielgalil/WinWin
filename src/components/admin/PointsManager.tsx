@@ -46,6 +46,23 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
 
   const teacherClasses = isAdmin ? [...classes].sort((a, b) => a.name.localeCompare(b.name, 'he')) : classes.filter(c => c.id === user.class_id);
 
+  // Global search: when searchTerm >= 2 chars, search across all available classes
+  const isGlobalSearch = searchTerm.length >= 2;
+  const globalSearchStudents = isGlobalSearch
+    ? teacherClasses
+        .flatMap(c => c.students.map(s => ({ ...s, className: c.name, classId: c.id })))
+        .filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name, 'he'))
+    : [];
+
+  const handleGlobalToggle = (studentId: string, classId: string) => {
+    if (classId !== selectedClassId) {
+      clearSelection();
+      setSelectedClassId(classId);
+    }
+    toggleSelection(studentId);
+  };
+
   // Trigger notification on successful save
   React.useEffect(() => {
     if (toast?.type === 'success') {
@@ -77,16 +94,18 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
             </div>
           </div>
           <div className="relative flex-1">
-            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('search_student_placeholder')}</label>
+            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">
+              {isGlobalSearch ? t('search_all_groups') || 'חיפוש בכל הקבוצות' : t('search_student_placeholder')}
+            </label>
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 placeholder={t('search_student_placeholder')}
-                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] ps-11 placeholder:text-[var(--text-muted)] opacity-80"
+                className={`w-full px-4 py-3 rounded-[var(--radius-main)] border bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] font-[var(--fw-medium)] ps-11 placeholder:text-[var(--text-muted)] opacity-80 ${isGlobalSearch ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-[var(--border-main)]'}`}
               />
-              <SearchIcon className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50" />
+              <SearchIcon className={`absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isGlobalSearch ? 'text-indigo-500 opacity-100' : 'text-[var(--text-muted)] opacity-50'}`} />
             </div>
           </div>
         </div>
@@ -98,20 +117,42 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
         className="flex-1 min-h-[400px]"
       >
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {!searchTerm && currentClass && (
-            <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />
+          {isGlobalSearch ? (
+            globalSearchStudents.map(student => (
+              <LiteStudentCard
+                key={student.id}
+                id={student.id}
+                name={student.name}
+                score={student.score}
+                isSelected={selectedStudentIds.has(student.id)}
+                onToggle={(id) => handleGlobalToggle(id, student.classId)}
+                subtitle={student.className}
+              />
+            ))
+          ) : (
+            <>
+              {currentClass && (
+                <LiteStudentCard id={CLASS_ENTITY_ID} name={currentClass.name} score={currentClass.score} isSelected={selectedStudentIds.has(CLASS_ENTITY_ID)} onToggle={toggleSelection} isClassEntity={true} />
+              )}
+              {filteredStudents.map(student => (
+                <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />
+              ))}
+            </>
           )}
-          {filteredStudents.map(student => (
-            <LiteStudentCard key={student.id} id={student.id} name={student.name} score={student.score} isSelected={selectedStudentIds.has(student.id)} onToggle={toggleSelection} />
-          ))}
         </div>
-        {filteredStudents.length === 0 && selectedClassId && (
+        {isGlobalSearch && globalSearchStudents.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
             <SearchIcon className="w-16 h-16" />
             <span className="font-[var(--fw-bold)] text-[var(--fs-lg)]">{t('no_students_found')}</span>
           </div>
         )}
-        {!selectedClassId && (
+        {!isGlobalSearch && filteredStudents.length === 0 && selectedClassId && (
+          <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
+            <SearchIcon className="w-16 h-16" />
+            <span className="font-[var(--fw-bold)] text-[var(--fs-lg)]">{t('no_students_found')}</span>
+          </div>
+        )}
+        {!isGlobalSearch && !selectedClassId && (
           <div className="h-full flex flex-col items-center justify-center text-[var(--text-muted)] gap-4 opacity-60">
             <div className="w-16 h-16 rounded-full bg-[var(--bg-surface)] flex items-center justify-center border border-[var(--border-subtle)]">
               <span className="text-[var(--fs-xl)]">?</span>
