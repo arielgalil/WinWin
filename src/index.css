@@ -271,14 +271,14 @@ svg {
   --status-success-glow: rgba(34, 197, 94, 0.2);
   --status-error-bg: #fef2f2;
   --status-error-text: #b91c1c;
-  --status-danger-border: #ef4444;
+  --status-danger-border: #dc2626;
   --status-danger-glow: rgba(239, 68, 68, 0.2);
 
   --action-edit-bg: #f0fdf4;
-  --action-edit-text: #16a34a;
+  --action-edit-text: #15803d;
   --action-edit-hover: #dcfce7;
   --action-delete-bg: #fef2f2;
-  --action-delete-text: #dc2626;
+  --action-delete-text: #b91c1c;
   --action-delete-hover: #fee2e2;
   --action-secondary-bg: #eef2ff;
   --action-secondary-text: #4f46e5;
@@ -287,11 +287,11 @@ svg {
   --focus-ring: #4f46e5;
   --focus-ring-outline: rgba(79, 70, 229, 0.4);
 
-  --acc-settings: #10b981;
-  --acc-points: #f97316;
-  --acc-goals: #8b5cf6;
-  --acc-data: #3b82f6;
-  --acc-logs: #eab308;
+  --acc-settings: #047857;
+  --acc-points: #c2410c;
+  --acc-goals: #7c3aed;
+  --acc-data: #2563eb;
+  --acc-logs: #a16207;
 
   --admin-section-gap: 2rem;
   --card-shadow:
@@ -337,8 +337,8 @@ svg {
   --border-subtle: #1e293b;
   --divide-main: #334155;
 
-  --primary-base: #6366f1;
-  --primary-hover: #818cf8;
+  --primary-base: #4f46e5;
+  --primary-hover: #4338ca;
 
   --status-success-bg: rgba(22, 163, 74, 0.15);
   --status-success-text: #4ade80;
@@ -346,7 +346,7 @@ svg {
   --status-success-glow: rgba(34, 197, 94, 0.2);
   --status-error-bg: rgba(220, 38, 38, 0.15);
   --status-error-text: #f87171;
-  --status-danger-border: #ef4444;
+  --status-danger-border: #dc2626;
   --status-danger-glow: rgba(239, 68, 68, 0.2);
 
   --action-edit-bg: rgba(34, 197, 94, 0.1);
@@ -420,7 +420,7 @@ svg {
     --status-success-glow: rgba(34, 197, 94, 0.2);
     --status-error-bg: rgba(220, 38, 38, 0.15);
     --status-error-text: #f87171;
-    --status-danger-border: #ef4444;
+    --status-danger-border: #dc2626;
     --status-danger-glow: rgba(239, 68, 68, 0.2);
 
     --action-edit-bg: rgba(34, 197, 94, 0.1);
