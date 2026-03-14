@@ -327,8 +327,8 @@ const shoutoutMessage = useMemo(() => {
                 {/* 2. Stats Section - graph + % side by side, text below centered */}
                 <div className="flex-1 flex flex-col gap-2 pt-1 min-h-0">
 
-                    {/* Row 1: SVG graph (left) + % (right) in RTL = % is visually right */}
-                    <div className="flex items-center gap-2" dir="rtl">
+                    {/* Row 1: SVG graph + % centered together */}
+                    <div className="flex items-center justify-center gap-2" dir="rtl">
 
                         {/* Percentage — first in RTL = rightmost visually */}
                         <div className="shrink-0 flex flex-col items-center gap-0.5">
@@ -344,7 +344,7 @@ const shoutoutMessage = useMemo(() => {
                         </div>
 
                         {/* SVG graph — second in RTL = leftmost visually */}
-                        <div className="flex-1">
+                        <div className="w-28 sm:w-32 shrink-0">
                             <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-14 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
                                 <defs>
                                     <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
