@@ -26,7 +26,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
     <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[280px] [isolation:isolate]">
       <DashboardCardHeader 
         title={t('podium_title')}
-        icon={<CrownIcon className="w-3.5 h-3.5" />}
+        icon={<CrownIcon className="w-3.5 h-3.5 text-yellow-400" />}
         iconColorClass="text-yellow-400"
         iconBgClass="bg-yellow-500/10"
         borderColorClass="border-yellow-500/20"

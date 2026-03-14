@@ -19,17 +19,21 @@ interface DashboardHeaderProps {
     totalInstitutionScore: number;
     sortedClasses?: (ClassRoom & { rank: number })[];
     topStudents?: (Student & { rank: number })[];
+    lastWheelWinner?: string;
     onCapture?: () => void;
+    aiEnabled?: boolean;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
-    settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = [], onCapture
+    settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = [], lastWheelWinner, aiEnabled = true
 }) => {
     const { t } = useLanguage();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [maxChars, setMaxChars] = useState(60);
     const [aiFillers, setAiFillers] = useState<string[]>([]);
     const hasFetchedFillers = useRef(false);
+    const lastRandomIndices = useRef({ studentIdx: -1, classIdx: -1 });
+    const [randomIndices, setRandomIndices] = useState({ studentIdx: 0, classIdx: 0 });
 
     useEffect(() => {
         const updateMaxChars = () => setMaxChars(window.innerWidth < 640 ? 22 : window.innerWidth < 1024 ? 35 : 80);
@@ -38,29 +42,60 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
     }, []);
 
     useEffect(() => {
+        if (!aiEnabled) {
+            setAiFillers([]);
+            hasFetchedFillers.current = false;
+            return;
+        }
         if (!settings.school_name || settings.school_name.includes(t('loading').replace('...', ''))) return;
-        if (customMessages.length === 0 && !hasFetchedFillers.current) {
+        if (!hasFetchedFillers.current) {
             hasFetchedFillers.current = true;
-            generateFillerMessages(settings.school_name, settings.competition_name, 'he', settings.ai_keywords)
+            generateFillerMessages(settings.school_name, settings.competition_name, 'he', settings.ai_keywords, settings)
                 .then(setAiFillers);
         }
-    }, [customMessages.length, settings.school_name, settings.competition_name, settings.ai_keywords, t]);
+    }, [aiEnabled, settings.school_name, settings.competition_name, settings.ai_keywords, t]);
 
     const playlist = useMemo(() => {
-        const list = customMessages.length > 0 ? customMessages.map(m => m.text) : aiFillers;
+        const custom = customMessages.map(m => m.text);
+        let list: string[];
+        if (custom.length > 0 && aiFillers.length > 0) {
+            // Interleave: AI, custom, AI, custom...
+            list = [];
+            const maxLen = Math.max(aiFillers.length, custom.length);
+            for (let i = 0; i < maxLen; i++) {
+                if (i < aiFillers.length) list.push(aiFillers[i]);
+                if (i < custom.length) list.push(custom[i]);
+            }
+        } else {
+            list = custom.length > 0 ? custom : aiFillers;
+        }
         const final = commentary ? [commentary, ...list] : list;
         return final.filter(m => m && m.trim().length > 0);
     }, [commentary, customMessages, aiFillers]);
 
+    useEffect(() => {
+        const pickAvoidingLast = (count: number, last: number) => {
+            if (count <= 1) return 0;
+            let idx;
+            do { idx = Math.floor(Math.random() * count); } while (idx === last);
+            return idx;
+        };
+        const sIdx = pickAvoidingLast(topStudents.length, lastRandomIndices.current.studentIdx);
+        const cIdx = pickAvoidingLast(sortedClasses.length, lastRandomIndices.current.classIdx);
+        lastRandomIndices.current = { studentIdx: sIdx, classIdx: cIdx };
+        setRandomIndices({ studentIdx: sIdx, classIdx: cIdx });
+    }, [currentIndex, topStudents.length, sortedClasses.length]);
+
     const chunks = useMemo(() => {
         const rawMsg = playlist[currentIndex % playlist.length] || "...";
         const msg = replaceSmartTags(
-            rawMsg, 
-            settings, 
-            totalInstitutionScore, 
-            sortedClasses, 
-            topStudents, 
-            currentIndex
+            rawMsg,
+            settings,
+            totalInstitutionScore,
+            sortedClasses,
+            topStudents,
+            randomIndices,
+            lastWheelWinner
         );
         
         if (msg.length <= maxChars) return [msg];
@@ -78,7 +113,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
             rem = rem.slice(idx).trim();
         }
         return res;
-    }, [playlist, currentIndex, maxChars, settings, totalInstitutionScore, sortedClasses, topStudents]);
+    }, [playlist, currentIndex, maxChars, settings, totalInstitutionScore, sortedClasses, topStudents, randomIndices, lastWheelWinner]);
 
     const [chunkIdx, setChunkIdx] = useState(0);
     useEffect(() => {
@@ -101,7 +136,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
             <div className="flex flex-row flex-wrap lg:flex-nowrap items-stretch gap-2.5 z-10 shrink-0">
 
                 {/* 1. Brand Card (Right) */}
-                <div className="order-1 flex items-center justify-start px-3 lg:px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-1 min-w-0 lg:flex-initial lg:w-fit lg:min-w-fit">
+                <div className="order-1 flex items-center justify-start px-3 lg:px-5 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[50px] lg:min-h-[56px] flex-1 min-w-0 lg:flex-initial lg:w-fit lg:min-w-fit">
                     <div className="flex items-center gap-3 min-w-0 rtl:flex-row ltr:flex-row">
                         <Logo
                             src={settings.logo_url}
@@ -127,7 +162,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 </div>
 
                 {/* 2. Ticker Card (Center on Desktop, Bottom on Mobile) */}
-                <div className="order-3 lg:order-2 w-full lg:flex-1 relative overflow-hidden px-8 py-2 h-[55px] lg:h-[65px] flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
+                <div className="order-3 lg:order-2 w-full lg:flex-1 relative overflow-hidden px-8 py-2 h-[50px] lg:h-[56px] flex items-center rounded-[var(--radius-container)] border border-white/10 bg-black/40 backdrop-blur-xl shadow-xl">
                     <AnimatePresence mode="wait">
                         <MotionDiv
                             key={`${currentIndex}-${chunkIdx}`}
@@ -137,7 +172,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                             className="flex items-center justify-center lg:justify-start w-full gap-4"
                         >
                             <div className="shrink-0">
-                                {isAi ? <SparklesIcon className="w-4 h-4 text-yellow-400 animate-pulse" /> : <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />}
+                                {isAi ? <SparklesIcon className="w-4 h-4 text-yellow-400" /> : <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]" />}
                             </div>
                             <span className={`text-base md:text-lg lg:text-[clamp(1.1rem,1.4vw,1.3rem)] font-black tracking-tight leading-tight line-clamp-1 transition-colors text-white ${isAi ? 'text-yellow-100' : ''}`}>
                                 {parseFormattedText(currentText).map((part, i) => {
@@ -161,7 +196,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 </div>
 
                 {/* 3. Global Score (Left) */}
-                <div className="order-2 lg:order-3 flex items-center justify-end gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[55px] lg:min-h-[65px] flex-initial w-fit lg:w-fit min-w-fit">
+                <div className="order-2 lg:order-3 flex items-center justify-end gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[50px] lg:min-h-[56px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
                         <div className="flex items-center gap-2 text-[12px] font-bold tracking-tight mb-0.5">
                             <span className="text-white opacity-40 uppercase">{t('cumulative_score')}</span>
@@ -172,8 +207,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                         </span>
                     </div>
 
-                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center shrink-0 border-2 border-white/80">
-                        <SproutIcon className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center shrink-0 border-2 border-white/80 text-emerald-500">
+                        <SproutIcon className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                 </div>
 

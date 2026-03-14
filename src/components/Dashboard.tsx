@@ -40,7 +40,8 @@ import { usePersistedBoolean } from "../hooks/usePersistedBoolean";
 import { useKioskRotation } from "../hooks/useKioskRotation";
 import { useToast } from "../hooks/useToast";
 import { logger } from "../utils/logger";
-import { AppSettings, ClassRoom, CompetitionGoal } from "../types";
+import { AppSettings, ClassRoom, CompetitionGoal, LuckyWheelWinner } from "../types";
+import { useQuery } from "@tanstack/react-query";
 import { useLuckyWheelListener } from "../hooks/useLuckyWheelControl";
 import { LuckyWheelOverlay } from "./dashboard/LuckyWheelOverlay";
 import { supabase } from "../supabaseClient";
@@ -202,7 +203,7 @@ export const Dashboard: React.FC = () => {
         [classes],
     );
 
-    const { studentsWithStats, top10Students, arenaStudents } = useMemo(
+    const { studentsWithStats, arenaStudents } = useMemo(
         () => calculateStudentStats(classes || []),
         [classes],
     );
@@ -220,6 +221,29 @@ export const Dashboard: React.FC = () => {
         ...DEFAULT_SETTINGS,
         ...settings,
     }), [settings]);
+
+    const topNStudents = useMemo(
+        () => studentsWithStats.slice(0, mergedSettings.leaderboard_top_count ?? 10),
+        [studentsWithStats, mergedSettings.leaderboard_top_count],
+    );
+
+    const { data: luckyWheelWinners = [] } = useQuery<LuckyWheelWinner[]>({
+        queryKey: ["wheel-winners-dashboard", campaign?.id],
+        queryFn: async () => {
+            if (!campaign?.id) return [];
+            const { data, error } = await supabase
+                .from("lucky_wheel_winners")
+                .select("*")
+                .eq("campaign_id", campaign.id)
+                .order("won_at", { ascending: false })
+                .limit(200);
+            if (error) throw error;
+            return data ?? [];
+        },
+        enabled: !!campaign?.id,
+        staleTime: 30000,
+        refetchInterval: 60000,
+    });
 
     const { activeBurst, setActiveBurst, highlightClassId } =
         useCompetitionEvents(
@@ -398,7 +422,7 @@ export const Dashboard: React.FC = () => {
                 onSpinComplete={handleWheelSpinComplete}
             />
 
-            <div className="flex flex-col h-screen w-full overflow-hidden bg-black relative">
+            <div className="dashboard-view flex flex-col h-screen w-full overflow-hidden bg-black relative">
                 <BackgroundMusic
                     url={settings.background_music_url}
                     mode={settings.background_music_mode}
@@ -417,7 +441,7 @@ export const Dashboard: React.FC = () => {
                             secondaryColor={settings.secondary_color}
                             brightness={settings.background_brightness}
                         >
-                            <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-2 pt-2 md:px-3 md:pt-3 pb-0">
+                            <div className="flex flex-col h-full w-full overflow-hidden relative z-10 px-3 pt-3 md:px-4 md:pt-4 pb-3 md:pb-4">
                                 <FrozenOverlay isFrozen={isFrozen} />
 
                                 {/* Optimization: ShareableLeaderboard is heavy (off-screen render). Only render if requested. */}
@@ -426,7 +450,7 @@ export const Dashboard: React.FC = () => {
                                         id="share-leaderboard-capture"
                                         settings={settings}
                                         topClasses={sortedClasses}
-                                        top10Students={top10Students}
+                                        top10Students={topNStudents}
                                     />
                                 )}
 
@@ -440,7 +464,7 @@ export const Dashboard: React.FC = () => {
                                     />
                                 )}
 
-                                <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col gap-2 max-w-[1920px] mx-auto w-full custom-scrollbar">
+                                <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col gap-3 max-w-[1920px] mx-auto w-full custom-scrollbar">
                                     <div className="shrink-0 z-20">
                                         <DashboardHeader
                                             settings={settings}
@@ -448,8 +472,10 @@ export const Dashboard: React.FC = () => {
                                             customMessages={tickerMessages}
                                             totalInstitutionScore={totalInstitutionScore}
                                             sortedClasses={sortedClasses}
-                                            topStudents={top10Students}
+                                            topStudents={topNStudents}
+                                            lastWheelWinner={luckyWheelWinners[0]?.student_name}
                                             onCapture={handleCapture}
+                                            aiEnabled={campaign?.ai_enabled !== false}
                                         />
                                     </div>
 
@@ -477,9 +503,11 @@ export const Dashboard: React.FC = () => {
 
                                         <div className="order-3 flex flex-col min-h-[300px] lg:min-h-0 lg:overflow-hidden">
                                             <StudentLeaderboard
-                                                topStudents={top10Students}
+                                                topStudents={topNStudents}
                                                 arenaStudents={arenaStudents}
                                                 settings={settings}
+                                                luckyWheelWinners={luckyWheelWinners}
+                                                momentumCount={mergedSettings.leaderboard_momentum_count ?? 10}
                                             />
                                         </div>
 
