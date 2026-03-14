@@ -146,12 +146,15 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
                     
     
                             {/* Content Wrapper */}
-    
+
                             <div className="relative z-10 flex flex-col h-full">
-    
+
+                                {/* Centered group: rank+name+icon + score */}
+                                <div className="flex-1 flex flex-col justify-center gap-0.5 px-2">
+
                                 {/* Upper Section: Rank + Name + Status Icon */}
-    
-                                <div className="flex items-center justify-between p-2 pb-0 shrink-0">
+
+                                <div className="flex items-center justify-between shrink-0">
     
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-black shrink-0 shadow-lg
     
@@ -184,21 +187,21 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
                     
     
                                 {/* Middle Section: Score (larger font) */}
-    
-                                <div className="flex-1 flex items-center justify-center px-2 py-0">
-    
+
+                                <div className="flex items-center justify-center">
+
                                 <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
-    
+
                                     <FormattedNumber value={currentScore} />
-    
+
                                 </div>
-    
+
                                 </div>
-    
-                    
-    
+
+                                </div>{/* end centered group */}
+
                                 {/* Lower Section: Progress Bar + Percentage (conditional) */}
-    
+
                                 <div className="shrink-0 relative">
     
                                 {hasTarget && targetScore > 0 && (

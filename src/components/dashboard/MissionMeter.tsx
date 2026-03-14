@@ -324,20 +324,34 @@ const shoutoutMessage = useMemo(() => {
                     </div>
                 </div>
 
-                {/* 2. Stats Section (2 Columns) - 50% Height */}
-                <div className="flex-1 grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4 pt-0" dir="rtl">
+                {/* 2. Stats Section - graph + % side by side, text below centered */}
+                <div className="flex-1 flex flex-col gap-2 pt-1 min-h-0">
 
-                    {/* Visual Progress Column (Visually Right) */}
-                    <div className="flex flex-col items-start justify-start pt-0">
-                        <div className="relative w-full h-40 flex flex-col items-center justify-start mt-2">
-                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-16 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
+                    {/* Row 1: SVG graph (left) + % (right) in RTL = % is visually right */}
+                    <div className="flex items-center gap-2" dir="rtl">
+
+                        {/* Percentage — first in RTL = rightmost visually */}
+                        <div className="shrink-0 flex flex-col items-center gap-0.5">
+                            <div className="flex items-baseline gap-0.5">
+                                <span className="text-sm sm:text-base font-black text-white/90">%</span>
+                                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
+                                    <AnimatedCounter value={percentDisplay} />
+                                </h3>
+                            </div>
+                            <span className="text-[10px] sm:text-xs font-bold text-white/70 text-center leading-tight">
+                                {t('from_stage', { stage: displayIndex + 1 })}
+                            </span>
+                        </div>
+
+                        {/* SVG graph — second in RTL = leftmost visually */}
+                        <div className="flex-1">
+                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-14 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
                                 <defs>
                                     <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
                                         <stop offset="0%" stopColor="#4ade80" />
                                         <stop offset="100%" stopColor="#22c55e" />
                                     </linearGradient>
                                 </defs>
-                                {/* Track: solid thin line, no dashes */}
                                 <path d="M 140 85 C 130 10, 30 90, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="10" strokeLinecap="round" />
                                 <MotionPath
                                     ref={pathRef}
@@ -352,31 +366,23 @@ const shoutoutMessage = useMemo(() => {
                                     transition={{ duration: persistentSession ? 0.1 : 2, ease: "easeInOut" }}
                                 />
                             </svg>
-{/* Percentage: Aligned below the path line */}
-                            <div className="absolute bottom-6 flex items-end gap-1" dir="rtl">
-                                <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white/90">%</span>
-                                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
-                                    <AnimatedCounter value={percentDisplay} />
-                                </h3>
-                                <span className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-black text-white/90 pb-1"> {t('from_stage', { stage: displayIndex + 1 })}</span>
-</div>
                         </div>
                     </div>
 
-                    {/* Content Logic Column (Visually Left) */}
-                    <div className="flex flex-col justify-center items-start text-right">
+                    {/* Row 2: Additional text — centered */}
+                    <div className="flex flex-col items-center text-center gap-1" dir="rtl">
                         {isCompleted && displayIndex === sortedGoals.length - 1 ? (
-                            <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base font-black text-white drop-shadow-lg animate-bounce py-2" dir="rtl">
+                            <div className="text-xs sm:text-sm font-black text-white drop-shadow-lg animate-bounce">
                                 {t('reached_peak', { emoji: celebrationEmoji })}
                             </div>
                         ) : (
-                            <div className="text-xs xs:text-xs sm:text-xs md:text-sm lg:text-sm font-black text-white/90 mb-1 brightness-125" dir="rtl">
-                                {t('more_points')} <span className="text-xs xs:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">{missingPoints.toLocaleString()}</span> {t('points_short')} {t('to_label')}!
+                            <div className="text-xs sm:text-sm font-black text-white/90 brightness-125">
+                                {t('more_points')} <span className="text-sm sm:text-base">{missingPoints.toLocaleString()}</span> {t('points_short')} {t('to_label')}!
                             </div>
                         )}
 
                         {aiEnabled && shoutoutMessage && (
-                            <div className="mt-1 text-sm xs:text-xs sm:text-sm md:text-base font-bold text-green-300 leading-tight border-r-2 border-green-500/40 pr-2 sm:pr-3 drop-shadow-sm max-w-[120px] xs:max-w-[150px] sm:max-w-[180px] animate-in fade-in slide-in-from-right duration-1000" dir="rtl">
+                            <div className="text-xs sm:text-sm font-bold text-green-300 leading-tight drop-shadow-sm animate-in fade-in duration-1000 px-2">
                                 "{shoutoutMessage}"
                             </div>
                         )}
