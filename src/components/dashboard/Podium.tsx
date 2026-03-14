@@ -39,7 +39,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
           const rank = (cls as any).rank || (idx === 1 ? 1 : idx === 0 ? 2 : 3);
 
           let height = 'h-[30%]';
-          let barStyle = 'bg-gradient-to-b from-orange-600/40 to-transparent border-t-2 border-orange-400/50';
+          let barStyle = 'bg-gradient-to-b from-orange-600/40 to-transparent border-t-2 border-x border-orange-400/50 border-x-orange-400/20';
           let badge = (
             <div className="w-8 h-8 rounded-full bg-orange-950/40 border border-orange-400/40 flex items-center justify-center font-bold text-base text-orange-200 backdrop-blur-md">
               3
@@ -48,7 +48,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
 
           if (rank === 1) {
             height = 'h-[65%]';
-            barStyle = 'bg-gradient-to-b from-yellow-500/40 to-transparent border-t-2 border-yellow-400/50 shadow-[0_0_50px_rgba(234,179,8,0.1)]';
+            barStyle = 'bg-gradient-to-b from-yellow-500/40 to-transparent border-t-2 border-x border-yellow-400/50 border-x-yellow-400/20 shadow-[0_0_50px_rgba(234,179,8,0.1)]';
             badge = (
               <div className="animate-float-smooth">
                 <LeaderIcon />
@@ -56,7 +56,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
             );
           } else if (rank === 2) {
             height = 'h-[50%]';
-            barStyle = 'bg-gradient-to-b from-slate-400/40 to-transparent border-t-2 border-slate-300/50';
+            barStyle = 'bg-gradient-to-b from-slate-400/40 to-transparent border-t-2 border-x border-slate-300/50 border-x-slate-300/20';
             badge = (
 <div className="w-8 h-8 rounded-full bg-slate-800/40 border border-slate-300/40 flex items-center justify-center font-bold text-base text-slate-200 backdrop-blur-md">
               2
@@ -71,10 +71,10 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                 transition={persistentSession ? instantTransition : smoothSpring} 
                 className="mb-2 text-center z-20 w-full px-1"
               >
-                <div className={`font-bold text-white leading-tight mb-0.5 drop-shadow-md line-clamp-2 ${rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)]' : 'text-xs md:text-sm opacity-80'}`}>
+                <div className={`font-bold text-white leading-tight mb-0.5 drop-shadow-md text-outline-md line-clamp-2 ${rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)]' : 'text-xs md:text-sm opacity-80'}`}>
                   {cls.name}
                 </div>
-                <div className={`font-mono font-black tabular-nums ${rank === 1 ? 'text-lg md:text-xl text-yellow-400' : 'text-sm md:text-base text-white/60'}`}>
+                <div className={`font-mono font-black tabular-nums text-outline-sm ${rank === 1 ? 'text-lg md:text-xl text-yellow-400' : 'text-sm md:text-base text-white/60'}`}>
                   <AnimatedCounter value={cls.score || 0} />
                 </div>
               </MotionDiv>

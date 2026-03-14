@@ -27,6 +27,7 @@ interface MissionMeterProps {
     classes?: ClassRoom[];
     settings?: AppSettings;
     campaignId?: string;
+    aiEnabled?: boolean;
 }
 
 export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
@@ -37,7 +38,8 @@ export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
     competitionName,
     classes = [],
     settings,
-    campaignId
+    campaignId,
+    aiEnabled = true
 }) => {
     const { t, language } = useLanguage();
     const persistentSession = useStore(state => state.persistent_session);
@@ -261,8 +263,9 @@ const shoutoutMessage = useMemo(() => {
 
 {/* 1. Centered Image (Top) - 65% Height */}
                 <div className="flex flex-col items-center justify-center h-[65%]">
-                    <div className="relative w-full max-w-[240px] aspect-square group shadow-[0_15px_40px_rgba(0,0,0,0.4)] rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20">
+                    <div className="relative w-full max-w-[240px] aspect-square group rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20" style={{ clipPath: 'inset(0 round 1rem)', transform: 'translateZ(0)' }}>
                         {/* Background Blurred Layer - More vibrant and visible */}
+                        <div className="absolute inset-0 rounded-[var(--radius-container)] overflow-hidden">
                         <div className="absolute inset-0 blur-xl opacity-70 scale-110">
                             {displayGoal.image_type === 'upload' && displayGoal.image_value ? (
                                 <img src={displayGoal.image_value} alt="" className="w-full h-full object-cover brightness-110" />
@@ -273,6 +276,7 @@ const shoutoutMessage = useMemo(() => {
                                     </span>
                                 </div>
                             )}
+                        </div>
                         </div>
 
                         {/* Glass Overlay for depth */}
@@ -325,7 +329,7 @@ const shoutoutMessage = useMemo(() => {
 
                     {/* Visual Progress Column (Visually Right) */}
                     <div className="flex flex-col items-start justify-start pt-0">
-                        <div className="relative w-full h-40 flex flex-col items-center justify-start -mt-4">
+                        <div className="relative w-full h-40 flex flex-col items-center justify-start mt-2">
                             <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-16 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
                                 <defs>
                                     <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
@@ -333,19 +337,19 @@ const shoutoutMessage = useMemo(() => {
                                         <stop offset="100%" stopColor="#22c55e" />
                                     </linearGradient>
                                 </defs>
-                                {/* Future Path: Highly Visible Trail */}
-                                <path d="M 140 85 C 120 5, 40 95, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="16" strokeLinecap="round" strokeDasharray="4 8" />
-                                <MotionPath 
-                                    ref={pathRef} 
-                                    d="M 140 85 C 120 5, 40 95, 20 15" 
-                                    fill="none" 
-                                    stroke="url(#progress-gradient)" 
-                                    strokeWidth="18" 
-                                    strokeLinecap="round" 
-                                    strokeDasharray={pathLength || 1000} 
-                                    initial={persistentSession ? false : { strokeDashoffset: pathLength || 1000 }} 
-                                    animate={{ strokeDashoffset: progressOffset }} 
-                                    transition={{ duration: persistentSession ? 0.1 : 2, ease: "easeInOut" }} 
+                                {/* Track: solid thin line, no dashes */}
+                                <path d="M 140 85 C 130 10, 30 90, 20 15" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="10" strokeLinecap="round" />
+                                <MotionPath
+                                    ref={pathRef}
+                                    d="M 140 85 C 130 10, 30 90, 20 15"
+                                    fill="none"
+                                    stroke="url(#progress-gradient)"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                    strokeDasharray={pathLength || 1000}
+                                    initial={persistentSession ? false : { strokeDashoffset: pathLength || 1000 }}
+                                    animate={{ strokeDashoffset: progressOffset }}
+                                    transition={{ duration: persistentSession ? 0.1 : 2, ease: "easeInOut" }}
                                 />
                             </svg>
 {/* Percentage: Aligned below the path line */}
@@ -371,7 +375,7 @@ const shoutoutMessage = useMemo(() => {
                             </div>
                         )}
 
-                        {shoutoutMessage && (
+                        {aiEnabled && shoutoutMessage && (
                             <div className="mt-1 text-sm xs:text-xs sm:text-sm md:text-base font-bold text-green-300 leading-tight border-r-2 border-green-500/40 pr-2 sm:pr-3 drop-shadow-sm max-w-[120px] xs:max-w-[150px] sm:max-w-[180px] animate-in fade-in slide-in-from-right duration-1000" dir="rtl">
                                 "{shoutoutMessage}"
                             </div>

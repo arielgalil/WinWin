@@ -590,3 +590,37 @@ textarea:focus-visible,
 .animate-float-smooth {
   animation: float 3s ease-in-out infinite;
 }
+
+/* Text outline — legibility on dynamic/colorful backgrounds (dashboard kiosk) */
+.text-outline-sm {
+  text-shadow:
+    -1.5px -1.5px 0 rgba(0,0,0,0.7),
+     1.5px -1.5px 0 rgba(0,0,0,0.7),
+    -1.5px  1.5px 0 rgba(0,0,0,0.7),
+     1.5px  1.5px 0 rgba(0,0,0,0.7);
+}
+
+.text-outline-md {
+  text-shadow:
+    -2.5px -2.5px 0 rgba(0,0,0,0.75),
+     2.5px -2.5px 0 rgba(0,0,0,0.75),
+    -2.5px  2.5px 0 rgba(0,0,0,0.75),
+     2.5px  2.5px 0 rgba(0,0,0,0.75);
+}
+
+/* Dashboard kiosk — subtle 1px outline on all text for legibility on dynamic backgrounds */
+.dashboard-view * {
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.5),
+     1px -1px 0 rgba(0,0,0,0.5),
+    -1px  1px 0 rgba(0,0,0,0.5),
+     1px  1px 0 rgba(0,0,0,0.5);
+}
+
+/* Glass morphism panel — dashboard cards */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}

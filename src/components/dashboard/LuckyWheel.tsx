@@ -297,6 +297,13 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         drawWheel(0);
     }, [drawWheel]);
 
+    // ── Random prize emoji (changes each new winner) ─────────────
+    const prizeEmoji = React.useMemo(() => {
+        const emojis = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
+        return emojis[Math.floor(Math.random() * emojis.length)];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [winnerIndex]);
+
     // ── Compute magnifier names ────────────────────────────────────
     const magnifierNames = React.useMemo(() => {
         if (count === 0) return [];
@@ -396,7 +403,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                                 transition={{ duration: 2, repeat: Infinity }}
                                 className="text-6xl mb-4"
                             >
-                                🏆
+                                {prizeEmoji}
                             </motion.div>
                             <motion.h2
                                 initial={{ y: 30, opacity: 0 }}

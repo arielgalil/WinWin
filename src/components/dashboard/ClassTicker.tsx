@@ -167,7 +167,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                 </div>
     
-                                <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-sm leading-none">
+                                <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-md leading-none">
     
                                     {cls.name}
     
@@ -215,7 +215,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                     </div>
     
-                                    <div className="w-full h-1 bg-white/5 overflow-hidden">
+                                    <div className="w-full h-1 bg-white/15 overflow-hidden rounded-full">
     
                                         <MotionDiv
     
