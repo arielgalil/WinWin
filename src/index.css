@@ -177,7 +177,8 @@ svg {
   -moz-user-drag: none;
   -o-user-drag: none;
   user-drag: none;
-  color: currentColor;
+  /* Note: color intentionally omitted — this unlayered rule would override
+     Tailwind @layer utilities (e.g. text-yellow-400), preventing icon coloring. */
 }
 
 .no-interaction {
