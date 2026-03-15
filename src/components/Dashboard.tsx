@@ -479,39 +479,40 @@ export const Dashboard: React.FC = () => {
                                         />
                                     </div>
 
-                                    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 lg:min-h-0 lg:overflow-hidden pb-0 flex-1 lg:flex-grow">
-                                        <div className="order-1 lg:order-2 flex flex-col min-h-[280px] lg:min-h-0 lg:overflow-hidden">
-                                            <Podium top3Classes={top3Classes} />
+                                    <div className="flex flex-col gap-3 flex-1 min-h-0">
+                                        {/* Top row: 3 panels share all available space */}
+                                        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 flex-1 lg:min-h-0 lg:overflow-hidden">
+                                            <div className="order-1 lg:order-2 flex flex-col min-h-[280px] lg:min-h-0 lg:overflow-hidden">
+                                                <Podium top3Classes={top3Classes} />
+                                            </div>
+
+                                            <div className="order-2 lg:order-1 flex flex-col min-h-[320px] lg:overflow-hidden">
+                                                <MissionMeter
+                                                    totalScore={totalInstitutionScore}
+                                                    goals={mergedSettings.goals_config || EMPTY_GOALS}
+                                                    legacyTargetScore={settings.target_score}
+                                                    legacyImageUrl={settings.logo_url}
+                                                    competitionName={settings.competition_name}
+                                                    classes={classes || EMPTY_CLASSES}
+                                                    settings={settings}
+                                                    campaignId={campaign?.id}
+                                                    aiEnabled={campaign?.ai_enabled !== false}
+                                                />
+                                            </div>
+
+                                            <div className="order-3 flex flex-col min-h-[300px] lg:min-h-0 lg:overflow-hidden">
+                                                <StudentLeaderboard
+                                                    topStudents={topNStudents}
+                                                    arenaStudents={arenaStudents}
+                                                    settings={settings}
+                                                    luckyWheelWinners={luckyWheelWinners}
+                                                    momentumCount={mergedSettings.leaderboard_momentum_count ?? 10}
+                                                />
+                                            </div>
                                         </div>
 
-                                        <div className="order-2 lg:order-1 flex flex-col min-h-[320px] lg:overflow-hidden">
-                                            <MissionMeter
-                                                totalScore={totalInstitutionScore}
-                                                goals={mergedSettings.goals_config || EMPTY_GOALS}
-                                                legacyTargetScore={settings
-                                                    .target_score}
-                                                legacyImageUrl={settings
-                                                    .logo_url}
-                                                competitionName={settings
-                                                    .competition_name}
-                                                classes={classes || EMPTY_CLASSES}
-                                                settings={settings}
-                                                campaignId={campaign?.id}
-                                                aiEnabled={campaign?.ai_enabled !== false}
-                                            />
-                                        </div>
-
-                                        <div className="order-3 flex flex-col min-h-[300px] lg:min-h-0 lg:overflow-hidden">
-                                            <StudentLeaderboard
-                                                topStudents={topNStudents}
-                                                arenaStudents={arenaStudents}
-                                                settings={settings}
-                                                luckyWheelWinners={luckyWheelWinners}
-                                                momentumCount={mergedSettings.leaderboard_momentum_count ?? 10}
-                                            />
-                                        </div>
-
-                                        <div className="order-4 lg:col-span-3 shrink-0 min-h-[144px] lg:min-h-0 lg:overflow-hidden">
+                                        {/* Bottom row: ClassTicker — fixed height, never grows/shrinks */}
+                                        <div className="shrink-0 h-[144px]">
                                             <ClassTicker
                                                 otherClasses={sortedClasses}
                                                 highlightClassId={highlightClassId}

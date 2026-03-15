@@ -28,10 +28,10 @@ async function syncVersion() {
                 const lines = content.split('\n');
                 lines.forEach(line => {
                     if (line.startsWith('VITE_SUPABASE_URL=') || line.startsWith('SUPABASE_URL=')) {
-                        supabaseUrl = line.split('=')[1].trim();
+                        supabaseUrl = line.split('=').slice(1).join('=').trim();
                     }
                     if (line.startsWith('SUPABASE_SERVICE_ROLE_KEY=')) {
-                        serviceKey = line.split('=')[1].trim();
+                        serviceKey = line.split('=').slice(1).join('=').trim();
                     }
                 });
             }

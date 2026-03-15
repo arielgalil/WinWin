@@ -125,7 +125,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                             }}
     
-                            className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden backdrop-blur-xl transition-all duration-500 group [isolation:isolate]
+                            className={`flex-shrink-0 rounded-[var(--radius-container)] h-[calc(100%-2rem)] my-1 flex flex-col border relative overflow-hidden transition-[border-color,box-shadow,transform] duration-500 group [isolation:isolate]
     
                                 ${isHighlighted
     
@@ -251,7 +251,8 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
   return (
     <div
-      className="h-full min-h-[144px] w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/20 bg-slate-900/60"
+      style={{ maskImage: 'none', WebkitMaskImage: 'none' }}
+    className="h-full w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/20 bg-slate-900/60"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="region"
