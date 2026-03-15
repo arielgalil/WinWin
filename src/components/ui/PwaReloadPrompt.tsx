@@ -12,7 +12,7 @@ interface PwaReloadPromptProps {
 }
 
 export const PwaReloadPrompt: React.FC<PwaReloadPromptProps> = ({
-    offlineReady,
+    offlineReady: _offlineReady,
     needRefresh,
     setOfflineReady,
     setNeedRefresh,
@@ -35,19 +35,22 @@ export const PwaReloadPrompt: React.FC<PwaReloadPromptProps> = ({
                     className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[500] w-[calc(100%-2rem)] max-w-sm px-5 py-4 rounded-2xl bg-indigo-950/95 border border-indigo-500/60 backdrop-blur-2xl shadow-2xl flex flex-col gap-3"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-500/20 rounded-xl">
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-indigo-500/20 flex items-center justify-center">
                             <RefreshIcon className="w-5 h-5 text-indigo-400" />
                         </div>
                         <p className="text-sm font-black text-white flex-1 tracking-tight">
                             {t('pwa_update_available')}
                         </p>
-                        <button onClick={close} className="p-1.5 hover:bg-white/10 rounded-xl text-white/40 hover:text-white">
+                        <button onClick={close} className="p-1.5 hover:bg-white/10 rounded-full text-white/40 hover:text-white">
                             <XIcon className="w-4 h-4" />
                         </button>
                     </div>
 
                     <button
-                        onClick={() => updateServiceWorker(true)}
+                        onClick={async () => {
+                            await updateServiceWorker(true);
+                            window.location.reload();
+                        }}
                         className="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 text-sm shadow-lg shadow-indigo-900/40"
                     >
                         <RefreshIcon className="w-4 h-4" />
