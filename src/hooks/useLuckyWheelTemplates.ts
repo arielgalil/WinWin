@@ -59,7 +59,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
     const filterParticipants = useCallback(async (
         criteria: WheelFilterCriteria,
         allStudents: Student[],
-    ): Promise<{ ids: string[]; names: string[] }> => {
+    ): Promise<{ ids: string[]; names: string[]; weights: number[] }> => {
         let filtered = [...allStudents];
 
         if (criteria.class_ids && criteria.class_ids.length > 0) {
@@ -80,9 +80,14 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             filtered = filtered.filter((s) => !winnerIds.has(s.id) && !winnerNames.has(s.name));
         }
 
+        const weights: number[] = (criteria.points_per_ticket && criteria.points_per_ticket > 0)
+            ? filtered.map((s) => Math.max(1, Math.floor(s.score / criteria.points_per_ticket!)))
+            : [];
+
         return {
             ids: filtered.map((s) => s.id),
             names: filtered.map((s) => s.name),
+            weights,
         };
     }, [winners]);
 
@@ -93,6 +98,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             filter_criteria: WheelFilterCriteria;
             participant_ids: string[];
             participant_names: string[];
+            ticket_weights?: number[];
         }) => {
             if (!campaignId) throw new Error("No campaign");
             const { data, error } = await supabase.from("lucky_wheel_templates")
@@ -102,6 +108,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
                     filter_criteria: input.filter_criteria,
                     participant_ids: input.participant_ids,
                     participant_names: input.participant_names,
+                    ticket_weights: input.ticket_weights?.length ? input.ticket_weights : null,
                 }).select().single();
             if (error) throw error;
             return data;
@@ -162,6 +169,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
                     filter_criteria: template.filter_criteria,
                     participant_ids: template.participant_ids,
                     participant_names: template.participant_names,
+                    ticket_weights: template.ticket_weights ?? null,
                 }).select().single();
             if (error) throw error;
             return data;

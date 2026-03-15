@@ -133,6 +133,8 @@ export interface AppSettings {
   burst_notifications_enabled?: boolean;
   burst_volume?: number;
   enabled_burst_types?: string[];
+  leaderboard_top_count?: number;
+  leaderboard_momentum_count?: number;
   active_lucky_wheel_id?: string | null;
   active_spin?: {
     winner_index: number;
@@ -193,6 +195,7 @@ export interface WheelFilterCriteria {
   min_score?: number;
   max_score?: number;
   exclude_previous_winners?: boolean;
+  points_per_ticket?: number;
 }
 
 export interface LuckyWheelTemplate {
@@ -202,6 +205,7 @@ export interface LuckyWheelTemplate {
   filter_criteria: WheelFilterCriteria;
   participant_ids: string[];
   participant_names: string[];
+  ticket_weights?: number[];
   last_activated_at?: string;
   created_at?: string;
   updated_at?: string;

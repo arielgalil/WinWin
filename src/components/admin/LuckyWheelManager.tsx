@@ -132,7 +132,7 @@ export const LuckyWheelManager: React.FC = () => {
     // ── Create / Edit form ──
     const handleSaveTemplate = useCallback(
         async (name: string, criteria: WheelFilterCriteria) => {
-            const { ids, names } = await filterParticipants(
+            const { ids, names, weights } = await filterParticipants(
                 criteria,
                 allStudents,
             );
@@ -148,6 +148,7 @@ export const LuckyWheelManager: React.FC = () => {
                     filter_criteria: criteria,
                     participant_ids: ids,
                     participant_names: names,
+                    ticket_weights: weights.length > 0 ? weights : undefined,
                 });
                 showToast(t("template_updated_toast"), "success");
             } else {
@@ -156,6 +157,7 @@ export const LuckyWheelManager: React.FC = () => {
                     filter_criteria: criteria,
                     participant_ids: ids,
                     participant_names: names,
+                    ticket_weights: weights.length > 0 ? weights : undefined,
                 });
                 showToast(
                     t("template_created_toast", { count: names.length }),
@@ -185,7 +187,7 @@ export const LuckyWheelManager: React.FC = () => {
             }
 
             // Re-filter against live student data so activation always reflects current state
-            const { ids: liveIds, names: liveNames } = await filterParticipants(
+            const { ids: liveIds, names: liveNames, weights: liveWeights } = await filterParticipants(
                 template.filter_criteria,
                 allStudents,
             );
@@ -193,7 +195,12 @@ export const LuckyWheelManager: React.FC = () => {
                 showToast(t("wheel_zero_participants_warning" as any), "info");
                 // proceed — empty wheel is visible to admin
             }
-            const liveTmpl = { ...template, participant_ids: liveIds, participant_names: liveNames };
+            const liveTmpl = {
+                ...template,
+                participant_ids: liveIds,
+                participant_names: liveNames,
+                ticket_weights: liveWeights.length > 0 ? liveWeights : undefined,
+            };
             setLiveTemplate(liveTmpl);
             setLiveRound(1);
 
@@ -215,9 +222,18 @@ export const LuckyWheelManager: React.FC = () => {
 
     const handleSpin = useCallback(async () => {
         if (!liveTemplate) return;
-        const idx = Math.floor(
-            Math.random() * liveTemplate.participant_names.length,
-        );
+        const weights = liveTemplate.ticket_weights;
+        const idx = (weights && weights.length === liveTemplate.participant_names.length)
+            ? (() => {
+                const total = weights.reduce((a, b) => a + b, 0);
+                let r = Math.random() * total;
+                for (let i = 0; i < weights.length; i++) {
+                    r -= weights[i];
+                    if (r <= 0) return i;
+                }
+                return weights.length - 1;
+            })()
+            : Math.floor(Math.random() * liveTemplate.participant_names.length);
         const winnerName = liveTemplate.participant_names[idx];
         const winnerId = liveTemplate.participant_ids[idx];
         const winnerStudent = allStudents.find((s) => s.id === winnerId || s.name === winnerName);
@@ -256,9 +272,16 @@ export const LuckyWheelManager: React.FC = () => {
         // 4. Remove winner from local state IMMEDIATELY so next spin can't pick them
         const newNames = [...liveTemplate.participant_names];
         const newIds = [...liveTemplate.participant_ids];
+        const newWeights = liveTemplate.ticket_weights ? [...liveTemplate.ticket_weights] : undefined;
         newNames.splice(idx, 1);
         newIds.splice(idx, 1);
-        const updatedTemplate = { ...liveTemplate, participant_names: newNames, participant_ids: newIds };
+        if (newWeights) newWeights.splice(idx, 1);
+        const updatedTemplate = {
+            ...liveTemplate,
+            participant_names: newNames,
+            participant_ids: newIds,
+            ticket_weights: newWeights,
+        };
         setLiveTemplate(updatedTemplate);
         setLiveRound((r) => r + 1);
 
@@ -722,7 +745,7 @@ interface TemplateFormDialogProps {
     filterParticipants: (
         criteria: WheelFilterCriteria,
         students: Student[],
-    ) => Promise<{ ids: string[]; names: string[] }>;
+    ) => Promise<{ ids: string[]; names: string[]; weights: number[] }>;
     onSave: (name: string, criteria: WheelFilterCriteria) => void;
     onClose: () => void;
     isSaving: boolean;
@@ -751,7 +774,11 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
     const [excludeWinners, setExcludeWinners] = useState(
         template?.filter_criteria?.exclude_previous_winners || false,
     );
+    const [pointsPerTicket, setPointsPerTicket] = useState<string>(
+        template?.filter_criteria?.points_per_ticket?.toString() || "",
+    );
     const [previewNames, setPreviewNames] = useState<string[]>([]);
+    const [previewWeights, setPreviewWeights] = useState<number[]>([]);
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
     const buildCriteria = useCallback((): WheelFilterCriteria => ({
@@ -759,15 +786,17 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
         min_score: minScore ? Number(minScore) : undefined,
         max_score: maxScore ? Number(maxScore) : undefined,
         exclude_previous_winners: excludeWinners || undefined,
-    }), [selectedClassIds, minScore, maxScore, excludeWinners]);
+        points_per_ticket: pointsPerTicket ? Number(pointsPerTicket) : undefined,
+    }), [selectedClassIds, minScore, maxScore, excludeWinners, pointsPerTicket]);
 
     const handlePreview = useCallback(async () => {
         setIsPreviewLoading(true);
-        const { names } = await filterParticipants(
+        const { names, weights } = await filterParticipants(
             buildCriteria(),
             allStudents,
         );
         setPreviewNames(names);
+        setPreviewWeights(weights);
         setIsPreviewLoading(false);
     }, [filterParticipants, buildCriteria, allStudents]);
 
@@ -782,7 +811,8 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                 ? prev.filter((id) => id !== classId)
                 : [...prev, classId]
         );
-        setPreviewNames([]); // reset preview
+        setPreviewNames([]);
+        setPreviewWeights([]);
     }, []);
 
     return (
@@ -865,6 +895,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                                         parseScoreInput(e.target.value),
                                     );
                                     setPreviewNames([]);
+                                    setPreviewWeights([]);
                                 }}
                                 placeholder="0"
                                 className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-[var(--primary-base)] focus:border-transparent outline-none text-start"
@@ -882,11 +913,33 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                                         parseScoreInput(e.target.value),
                                     );
                                     setPreviewNames([]);
+                                    setPreviewWeights([]);
                                 }}
                                 placeholder="∞"
                                 className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-[var(--primary-base)] focus:border-transparent outline-none text-start"
                             />
                         </div>
+                    </div>
+
+                    {/* Points per ticket — weighted lottery */}
+                    <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                            🎟 נקודות לכרטיס (הגרלה משוקללת)
+                        </label>
+                        <input
+                            type="text"
+                            value={formatScore(pointsPerTicket)}
+                            onChange={(e) => {
+                                setPointsPerTicket(parseScoreInput(e.target.value));
+                                setPreviewNames([]);
+                                setPreviewWeights([]);
+                            }}
+                            placeholder="ריק = סיכוי שווה לכולם"
+                            className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-[var(--primary-base)] focus:border-transparent outline-none text-start"
+                        />
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
+                            למשל: 50 = כל 50 נקודות = כרטיס אחד נוסף
+                        </p>
                     </div>
 
                     {/* Exclude past winners */}
@@ -897,6 +950,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                             onChange={(e) => {
                                 setExcludeWinners(e.target.checked);
                                 setPreviewNames([]);
+                                setPreviewWeights([]);
                             }}
                             className="w-4 h-4 rounded accent-[var(--primary-base)]"
                         />
@@ -922,7 +976,12 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                                 <div className="text-xs font-bold text-[var(--text-muted)] mb-1">
                                     {t("preview_participants_btn", {
                                         count: previewNames.length,
-                                    })}:
+                                    })}
+                                    {previewWeights.length > 0 && (
+                                        <span className="ms-1 text-amber-500">
+                                            • {previewWeights.reduce((a, b) => a + b, 0)} 🎟 סה״כ כרטיסים
+                                        </span>
+                                    )}:
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                     {previewNames.map((n, i) => (
@@ -930,7 +989,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                                             key={i}
                                             className="text-xs bg-[var(--bg-card)] text-[var(--text-main)] px-2 py-0.5 rounded-full border border-[var(--border-subtle)]"
                                         >
-                                            {n}
+                                            {n}{previewWeights[i] != null ? ` (${previewWeights[i]}🎟)` : ""}
                                         </span>
                                     ))}
                                 </div>
