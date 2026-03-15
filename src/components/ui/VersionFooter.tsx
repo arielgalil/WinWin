@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
     BugIcon,
     CalculatorIcon,
@@ -33,21 +34,23 @@ interface VersionFooterProps {
     onAdminClick?: () => void;
     isDebugOpen?: boolean;
     onDebugToggle?: () => void;
+    viewerCount?: number;
 }
 
 export const VersionFooter: React.FC<VersionFooterProps> = ({
     musicState,
     className = "",
-    onAdminClick,
+    onAdminClick: _onAdminClick,
     isDebugOpen = false,
     onDebugToggle,
+    viewerCount,
 }) => {
     const { t } = useLanguage();
     const { user, logout: handleLogout } = useAuth();
     const { theme, toggleTheme } = useTheme();
 
     const [internalDebugOpen, setInternalDebugOpen] = useState(false);
-    const resolvedIsDebugOpen = isDebugOpen !== undefined ? isDebugOpen : internalDebugOpen;
+    const resolvedIsDebugOpen = onDebugToggle !== undefined ? isDebugOpen : internalDebugOpen;
     const handleDebugToggle = onDebugToggle || (() => setInternalDebugOpen(!internalDebugOpen));
 
     // Simple fallback for router functionality
@@ -75,11 +78,13 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     const { campaignId } = useCampaign({ slugOverride: fallbackSlug });
     const { campaignRole } = useCampaignRole(campaignId, user?.id);
 
-    const [isLowPerf, setIsLowPerf] = useState(
+    const [isLowPerf] = useState(
         localStorage.getItem("winwin_low_perf") === "true",
     );
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const profileMenuRef = useRef<HTMLDivElement>(null);
+    const avatarButtonRef = useRef<HTMLButtonElement>(null);
+    const [menuPos, setMenuPos] = useState({ bottom: 0, left: 0 });
 
     useEffect(() => {
         if (isLowPerf) {
@@ -94,8 +99,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
-                profileMenuRef.current &&
-                !profileMenuRef.current.contains(event.target as Node)
+                avatarButtonRef.current &&
+                !avatarButtonRef.current.contains(event.target as Node)
             ) {
                 setIsProfileMenuOpen(false);
             }
@@ -147,7 +152,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     const getNavButtonClass = () => `
         shrink-0 outline-none focus:outline-none focus:ring-0
         hover:scale-110 hover:drop-shadow-[0_0_12px_var(--primary-base)]
-        transition-all duration-300 hover:text-[var(--text-main)]
+        transition-all duration-300 hover:text-zinc-100
     `;
 
     const getNavButtonStyle = () => ({
@@ -157,19 +162,29 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
 
     return (
         <footer
-            className={`w-full bg-transparent py-1 shrink-0 z-50 flex items-center ${className}`}
+            className={`w-full bg-zinc-900 py-0.5 shrink-0 z-50 flex items-center ${className}`}
         >
-                <div className="max-w-[1920px] mx-auto flex justify-center px-4 w-full">
-                    <nav className="bg-transparent border-0 h-8 flex items-center gap-4 px-4 rounded-full shadow-none transition-all">
+                <div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 w-full">
+                    {/* Left: live viewer count */}
+                    <div className="w-24 shrink-0 flex items-center">
+                        {viewerCount !== undefined && viewerCount > 0 && (
+                            <span className="flex items-center gap-1 text-[10px] font-bold text-zinc-500">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                                {viewerCount}
+                            </span>
+                        )}
+                    </div>
+
+                    <nav className="h-6 flex items-center gap-4 px-4 transition-all">
                         {/* 1. Branding (Right Side) */}
                         <button
                             onClick={() => navigate("/")}
-                            className={`flex items-center gap-1.5 sm:gap-2 text-foreground/90 hover:text-foreground ${getNavButtonClass()}`}
+                            className={`flex items-center gap-1.5 sm:gap-2 text-zinc-100 hover:text-zinc-100 ${getNavButtonClass()}`}
                             title={t("nav_home")}
                             style={getNavButtonStyle()}
                         >
                             <SproutIcon className="w-4 h-4 drop-shadow-[0_0_8px_var(--primary-base)]" />
-                            <span className="hidden sm:inline font-black text-[10px] tracking-tight uppercase whitespace-nowrap transition-colors leading-none translate-y-[0.5px] text-[var(--text-main)]">
+                            <span className="hidden sm:inline font-black text-[10px] tracking-tight uppercase whitespace-nowrap transition-colors leading-none translate-y-[0.5px] text-zinc-100">
                                 {t("app_name")}
                             </span>
                         </button>
@@ -184,7 +199,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isBoardActive
                                             ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            : "text-zinc-400 hover:text-zinc-100"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -204,7 +219,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isVoteActive
                                             ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            : "text-zinc-400 hover:text-zinc-100"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -222,7 +237,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         isManageActive
                                             ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            : "text-zinc-400 hover:text-zinc-100"
                                     } ${getNavButtonClass()}`}
                                     style={getNavButtonStyle()}
                                 >
@@ -237,7 +252,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         musicState.isPlaying
                                             ? "text-primary drop-shadow-[0_0_12px_var(--primary-base)] scale-110"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            : "text-zinc-400 hover:text-zinc-100"
                                     } ${getNavButtonClass()}`}
                                     title={t("music")}
                                     style={getNavButtonStyle()}
@@ -253,8 +268,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                     onClick={() => navigate("/super")}
                                     className={`w-6 h-6 flex items-center justify-center ${
                                         fallbackPath === "/super"
-                                            ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                            : "text-muted-foreground hover:text-foreground"
+                                            ? "text-zinc-100 drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
+                                            : "text-zinc-400 hover:text-zinc-100"
                                     } ${getNavButtonClass()}`}
                                     title={t("system_admin")}
                                     style={getNavButtonStyle()}
@@ -268,7 +283,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                  className={`w-6 h-6 flex items-center justify-center ${
                                      resolvedIsDebugOpen
                                          ? "text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.9)] scale-110 opacity-100 animate-pulse"
-                                         : "text-muted-foreground hover:text-foreground"
+                                         : "text-zinc-400 hover:text-zinc-100"
                                  } ${getNavButtonClass()}`}
                                  title={t("debug")}
                                  style={getNavButtonStyle()}
@@ -286,8 +301,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                         title={t("login_title")}
                                         className={`w-6 h-6 flex items-center justify-center ${
                                             fallbackPath.includes("/login")
-                                                ? "text-foreground drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
-                                                : "text-muted-foreground hover:text-foreground"
+                                                ? "text-zinc-100 drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] scale-110 opacity-100"
+                                                : "text-zinc-400 hover:text-zinc-100"
                                         } ${getNavButtonClass()}`}
                                         style={getNavButtonStyle()}
                                     >
@@ -296,16 +311,23 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                 )
                                 : (
                                     <div
-                                        className="relative"
+                                        className="relative z-[110]"
                                         ref={profileMenuRef}
                                     >
                                         <button
-                                            onClick={() =>
-                                                setIsProfileMenuOpen(
-                                                    !isProfileMenuOpen,
-                                                )}
+                                            ref={avatarButtonRef}
+                                            onClick={() => {
+                                                if (!isProfileMenuOpen && avatarButtonRef.current) {
+                                                    const rect = avatarButtonRef.current.getBoundingClientRect();
+                                                    setMenuPos({
+                                                        bottom: window.innerHeight - rect.top + 8,
+                                                        left: rect.left + rect.width / 2,
+                                                    });
+                                                }
+                                                setIsProfileMenuOpen(!isProfileMenuOpen);
+                                            }}
                                             title={user.full_name}
-                                            className="w-5 h-5 rounded-full bg-transparent border-[1.5px] border-foreground flex items-center justify-center text-[8px] font-extrabold text-foreground transition-all shrink-0 outline-none focus:outline-none opacity-80 hover:opacity-100 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] hover:scale-110 focus:ring-0"
+                                            className="w-5 h-5 rounded-full bg-transparent border-[1.5px] border-zinc-300 flex items-center justify-center text-[8px] font-extrabold text-zinc-100 transition-all shrink-0 outline-none focus:outline-none opacity-80 hover:opacity-100 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.9)] hover:scale-110 focus:ring-0"
                                             style={{
                                                 transition:
                                                     "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -331,24 +353,24 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                             })()}
                                         </button>
 
-                                        {/* Mobile Backdrop */}
-                                        {isProfileMenuOpen && (
-                                            <div 
-                                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] md:hidden"
+                                        {/* Profile Menu via Portal */}
+                                        {isProfileMenuOpen && createPortal(
+                                            <>
+                                            <div
+                                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] md:hidden"
                                                 onClick={() => setIsProfileMenuOpen(false)}
                                             />
-                                        )}
-
-                                        {/* Profile Menu */}
-                                        {isProfileMenuOpen && (
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-[var(--bg-card)]/98 backdrop-blur-2xl border border-[var(--border-main)] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-4 z-[100] animate-in fade-in slide-in-from-bottom-2 duration-200">
+                                            <div
+                                                className="fixed w-56 bg-[var(--bg-card)] backdrop-blur-2xl border border-[var(--border-main)] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-4 z-[9999] animate-in fade-in slide-in-from-bottom-2 duration-200"
+                                                style={{ bottom: menuPos.bottom, left: menuPos.left, transform: 'translateX(-50%)' }}
+                                            >
                                                 {/* User Info with Close Button */}
                                                 <div className="border-b border-[var(--border-subtle)] pb-4 mb-4 flex items-center justify-between">
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="text-[var(--text-main)] font-black text-base truncate">
+                                                        <div className="text-zinc-100 font-black text-base truncate">
                                                             {user.full_name}
                                                         </div>
-                                                        <div className="text-[var(--text-muted)] text-xs font-bold uppercase tracking-wider mt-0.5">
+                                                        <div className="text-zinc-400 text-xs font-bold uppercase tracking-wider mt-0.5">
                                                             {user.role ===
                                                                     "superuser"
                                                                 ? t("role_super_user")
@@ -366,7 +388,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                             setIsProfileMenuOpen(
                                                                 false,
                                                             )}
-                                                        className="w-7 h-7 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded-full transition-colors flex-shrink-0 ms-2"
+                                                        className="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded-full transition-colors flex-shrink-0 ms-2"
                                                         title="Close"
                                                     >
                                                         <XIcon className="w-4 h-4" />
@@ -379,7 +401,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                     <button
                                                         onClick={() =>
                                                             navigate("/")}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
                                                         <SproutIcon className="w-4 h-4" />
                                                         {t("all_campaigns")}
@@ -394,7 +416,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                                 navigate(
                                                                     `/comp/${fallbackSlug}`,
                                                                 )}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                         >
                                                             <TrophyIcon className="w-4 h-4" />
                                                             {t("dashboard")}
@@ -410,7 +432,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                                         ? `/admin/${fallbackSlug}/points`
                                                                         : `/vote/${fallbackSlug}`,
                                                                 )}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                         >
                                                             <CalculatorIcon className="w-4 h-4" />
                                                             {t("enter_points")}
@@ -425,7 +447,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                                 navigate(
                                                                     `/admin/${fallbackSlug}/settings`,
                                                                 )}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                         >
                                                             <SettingsIcon className="w-4 h-4" />
                                                             {t("admin_panel")}
@@ -439,7 +461,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                         <button
                                                             onClick={musicState
                                                                 .onToggle}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                         >
                                                             {musicState
                                                                     .isPlaying
@@ -456,7 +478,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                     {/* Debug Console */}
                                                     <button
                                                         onClick={onDebugToggle}
-                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
                                                         <BugIcon className="w-4 h-4" />
                                                         {t("debug")}
@@ -469,7 +491,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                                 navigate(
                                                                     "/super",
                                                                 )}
-                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
+                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                         >
                                                             <CrownIcon className="w-4 h-4" />
                                                             {t("system_admin")}
@@ -488,6 +510,8 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                     </button>
                                                 </div>
                                             </div>
+                                            </>,
+                                            document.body
                                         )}
                                     </div>
                                 )}
@@ -496,7 +520,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             <button
                                 onClick={toggleTheme}
                                 title={theme === "dark" ? t("switch_to_light_mode") : t("switch_to_dark_mode")}
-                                className={`w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground ${getNavButtonClass()}`}
+                                className={`w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-zinc-100 ${getNavButtonClass()}`}
                                 style={getNavButtonStyle()}
                             >
                                 {theme === "dark"
@@ -505,6 +529,9 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             </button>
                         </div>
                     </nav>
+
+                    {/* Right: spacer to balance left side */}
+                    <div className="w-24 shrink-0" />
                 </div>
                 
                 <DebugConsole 

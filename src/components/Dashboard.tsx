@@ -117,7 +117,7 @@ export const Dashboard: React.FC = () => {
     });
 
     // Track presence on the dashboard
-    usePagePresence(campaign?.id, "dashboard");
+    const { viewerCount } = usePagePresence(campaign?.id, "dashboard");
     
     // Subscribe to realtime updates for settings, logs, etc.
     useRealtimeSubscriptions(campaign?.id);
@@ -532,6 +532,7 @@ export const Dashboard: React.FC = () => {
                             onToggle: handleMusicToggle,
                         }}
                         onAdminClick={handleAdminClick}
+                        viewerCount={viewerCount}
                     />
                 </div>
             </div>

@@ -13,6 +13,8 @@ interface LogEntry {
   msg: string;
 }
 
+const APP_VERSION = (import.meta as any).env?.VITE_APP_VERSION ?? '—';
+
 export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { t, dir } = useLanguage();
   const [logs, setLogs] = useState<LogEntry[]>((window as any).__LOGS__ || []);
@@ -58,7 +60,10 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-slate-900/50">
               <div className="flex items-center gap-3 text-red-500">
                 <BugIcon className="w-6 h-6" />
-                <span className="font-black text-sm uppercase tracking-tighter">System Debug Console</span>
+                <div>
+                  <span className="font-black text-sm uppercase tracking-tighter">System Debug Console</span>
+                  <span className="ms-2 text-[10px] text-zinc-500 font-mono normal-case tracking-normal">v{APP_VERSION}</span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={copyToClipboard} className="p-2 hover:bg-white/10 rounded-xl text-blue-400 transition-colors" title={t('copy_all')}>
@@ -90,10 +95,6 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               )}
             </div>
 
-            {/* Instructions */}
-            <div className={`px-6 py-2 bg-black/60 text-[9px] text-slate-500 font-bold border-t border-white/5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-              {t('debug_tip')}
-            </div>
           </MotionDiv>
         </div>
       )}
