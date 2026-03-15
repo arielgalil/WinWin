@@ -5,6 +5,7 @@ import { MedalIcon, TrendUpIcon, StarIcon } from '../ui/Icons';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { AppSettings, LuckyWheelWinner } from '../../types';
 import { DashboardCardHeader } from './DashboardCardHeader';
 
@@ -90,7 +91,9 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
     const [isHovered, setIsHovered] = useState(false);
 
     // ── Student search / pin state ─────────────────────────────
-    const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
+    const lsKey = `w2g_pinned_ids_${settings.campaign_id ?? 'default'}`;
+    const [pinnedArr, setPinnedArr] = useLocalStorage<string[]>(lsKey, []);
+    const pinnedIds = useMemo(() => new Set(pinnedArr), [pinnedArr]);
     const [searchOpen, setSearchOpen] = useState(false);
     const [query, setQuery] = useState('');
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -104,12 +107,12 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
     useEffect(() => { if (pinnedIds.size > 0) setShowPulse(false); }, [pinnedIds.size]);
 
     const togglePin = useCallback((id: string) => {
-        setPinnedIds(prev => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id); else next.add(id);
-            return next;
+        setPinnedArr(prev => {
+            const set = new Set(prev);
+            if (set.has(id)) set.delete(id); else set.add(id);
+            return Array.from(set);
         });
-    }, []);
+    }, [setPinnedArr]);
 
     // All students available for search (top + arena, deduplicated)
     const allSearchable = useMemo(() => {

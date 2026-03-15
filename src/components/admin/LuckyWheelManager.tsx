@@ -129,6 +129,22 @@ export const LuckyWheelManager: React.FC = () => {
         );
     }, [classes]);
 
+    // ── Live participant counts per template (recalculated on student/winner changes) ──
+    const [liveCounts, setLiveCounts] = useState<Record<string, number>>({});
+    useEffect(() => {
+        if (!templates.length) return;
+        let cancelled = false;
+        (async () => {
+            const counts: Record<string, number> = {};
+            for (const tmpl of templates) {
+                const { names } = await filterParticipants(tmpl.filter_criteria, allStudents);
+                counts[tmpl.id] = names.length;
+            }
+            if (!cancelled) setLiveCounts(counts);
+        })();
+        return () => { cancelled = true; };
+    }, [templates, allStudents, filterParticipants]);
+
     // ── Create / Edit form ──
     const handleSaveTemplate = useCallback(
         async (name: string, criteria: WheelFilterCriteria) => {
@@ -528,9 +544,7 @@ export const LuckyWheelManager: React.FC = () => {
                                             <Users className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                                             <span className="text-sm text-[var(--text-muted)]">
                                                 {t("participants_count_label", {
-                                                    count:
-                                                        tmpl.participant_names
-                                                            .length,
+                                                    count: liveCounts[tmpl.id] ?? tmpl.participant_names.length,
                                                 })}
                                             </span>
                                         </div>
