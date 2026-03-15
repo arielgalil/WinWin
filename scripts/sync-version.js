@@ -39,12 +39,21 @@ async function syncVersion() {
     }
 
     if (!supabaseUrl || !serviceKey) {
-        console.error('Error: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables.');
-        process.exit(1);
+        console.warn('Warning: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY — skipping version sync.');
+        return;
     }
 
-    // 3. Update Supabase
-    const supabase = createClient(supabaseUrl, serviceKey);
+    // Sanity check: service role JWTs are long; anon keys are shorter
+    // A Supabase service role JWT is typically 500+ chars
+    if (serviceKey.length < 200) {
+        console.warn(`Warning: SUPABASE_SERVICE_ROLE_KEY looks too short (${serviceKey.length} chars) — may be anon key. Skipping version sync.`);
+        return;
+    }
+
+    // 3. Update Supabase (server-side client — no session persistence)
+    const supabase = createClient(supabaseUrl, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false }
+    });
 
     const { error } = await supabase
         .from('system_config')
@@ -55,11 +64,12 @@ async function syncVersion() {
                 timestamp: new Date().toISOString(),
                 force_reload: false
             }
-        });
+        }, { onConflict: 'key' });
 
     if (error) {
-        console.error('Error updating Supabase:', error.message);
-        process.exit(1);
+        console.warn(`Warning: Could not sync version to Supabase — ${error.message}`);
+        console.warn('Build continues. To fix: run sql/fix_system_config_rls.sql in Supabase SQL editor.');
+        return;
     }
 
     console.log(`Successfully updated system_config with version ${version}`);
