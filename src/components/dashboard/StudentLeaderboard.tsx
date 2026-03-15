@@ -360,7 +360,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             key={student.id}
                                             student={student}
                                             badge={isMomentumMode ? <TrendUpIcon className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> : student.rank}
-                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-black' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}
+                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-green-600' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}
                                             rowBg={
                                                 isMomentumMode
                                                     ? 'bg-white/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'
