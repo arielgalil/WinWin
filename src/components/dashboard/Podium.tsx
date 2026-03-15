@@ -71,10 +71,18 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                 transition={persistentSession ? instantTransition : smoothSpring} 
                 className="mb-2 text-center z-20 w-full px-1"
               >
-                <div className={`font-bold text-white leading-tight mb-0.5 drop-shadow-md text-outline-md line-clamp-2 ${rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)]' : 'text-xs md:text-sm opacity-80'}`}>
+                <div className={`font-bold leading-tight mb-0.5 drop-shadow-md text-outline-md line-clamp-2 ${
+                  rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)] text-yellow-300' :
+                  rank === 2 ? 'text-xs md:text-sm text-slate-300' :
+                              'text-xs md:text-sm text-orange-300'
+                }`}>
                   {cls.name}
                 </div>
-                <div className={`font-mono font-black tabular-nums text-outline-sm ${rank === 1 ? 'text-lg md:text-xl text-yellow-400' : 'text-sm md:text-base text-white/60'}`}>
+                <div className={`font-mono font-black tabular-nums text-outline-sm ${
+                  rank === 1 ? 'text-lg md:text-xl text-yellow-400' :
+                  rank === 2 ? 'text-sm md:text-base text-slate-300' :
+                              'text-sm md:text-base text-orange-300'
+                }`}>
                   <AnimatedCounter value={cls.score || 0} />
                 </div>
               </MotionDiv>

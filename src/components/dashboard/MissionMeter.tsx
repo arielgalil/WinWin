@@ -338,7 +338,7 @@ const shoutoutMessage = useMemo(() => {
                                     <AnimatedCounter value={percentDisplay} />
                                 </h3>
                             </div>
-                            <span className="text-[10px] sm:text-xs font-bold text-white/70 text-center leading-tight">
+                            <span className="text-[10px] sm:text-xs font-bold text-white/90 text-center leading-tight">
                                 {t('from_stage', { stage: displayIndex + 1 })}
                             </span>
                         </div>
