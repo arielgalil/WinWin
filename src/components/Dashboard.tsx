@@ -42,8 +42,8 @@ import { useToast } from "../hooks/useToast";
 import { logger } from "../utils/logger";
 import { AppSettings, ClassRoom, CompetitionGoal, LuckyWheelWinner } from "../types";
 import { useQuery } from "@tanstack/react-query";
-import { useLuckyWheelListener } from "../hooks/useLuckyWheelControl";
 import { LuckyWheelOverlay } from "./dashboard/LuckyWheelOverlay";
+import { useWheelManager } from "../hooks/useWheelManager";
 import { supabase } from "../supabaseClient";
 import { usePagePresence } from "../hooks/usePagePresence";
 import { useRealtimeSubscriptions } from "../hooks/useRealtimeSubscriptions";
@@ -82,29 +82,26 @@ export const Dashboard: React.FC = () => {
     const [isMusicPlaying, setIsMusicPlaying] = useState(isKioskStarted);
     const [isSharing, setIsSharing] = useState(false);
 
-    // Lucky Wheel remote control
-    const { wheelState } = useLuckyWheelListener(campaign?.id);
-    const [wheelParticipants, setWheelParticipants] = useState<string[]>([]);
-    const [wheelWinnerIndex, setWheelWinnerIndex] = useState<number | null>(
-        null,
-    );
-    const [wheelWinnerName, setWheelWinnerName] = useState<
-        string | undefined
-    >();
-    const [wheelWinnerClass, setWheelWinnerClass] = useState<string | undefined>();
-    const [wheelName, setWheelName] = useState<string | undefined>();
-    const [wheelRound, setWheelRound] = useState(1);
-    const [wheelStartAtMs, setWheelStartAtMs] = useState<number | undefined>();
-    const [wheelDurationMs, setWheelDurationMs] = useState<
-        number | undefined
-    >();
-    const wheelCloseTimerRef = useRef<number | undefined>(undefined);
+    // Lucky Wheel — all state & logic managed by the hook
+    const {
+        wheelParticipants,
+        wheelWinnerIndex,
+        wheelWinnerName,
+        wheelWinnerClass,
+        wheelName,
+        wheelRound,
+        wheelStartAtMs,
+        wheelDurationMs,
+        handleWheelSpinComplete,
+    } = useWheelManager({
+        campaignId: campaign?.id,
+        activeLuckyWheelId: settings?.active_lucky_wheel_id,
+        activeSpin: settings?.active_spin,
+        language: settings?.language,
+    });
 
     // Single source of truth for "is the wheel open?"
     const wheelActive = !!settings?.active_lucky_wheel_id;
-
-    // Critical: Winner Lock prevents ACTIVATE from clearing the screen while winner is still being celebrated
-    const isWinnerAnnouncedRef = useRef(false);
 
     // Auto-start timer ref for cleanup
     const autoStartTimerRef = useRef<number | undefined>(undefined);
@@ -262,135 +259,6 @@ export const Dashboard: React.FC = () => {
         setActiveBurst(null);
     }, [setActiveBurst]);
 
-    // Handle spin complete from the wheel
-    const handleWheelSpinComplete = useCallback(
-        (index: number, name: string) => {
-            logger.info(
-                `[WheelSync] Spin complete: ${name} (index ${index})`,
-            );
-            isWinnerAnnouncedRef.current = true;
-
-            // Show celebratory toast
-            showToast(
-                settings?.language === "he"
-                    ? `מזל טוב ל${name}! 🎉`
-                    : `Congratulations to ${name}! 🎉`,
-                "success",
-            );
-
-            // Auto-hide the winner celebration after 10 seconds of inactivity to return to the idle wheel
-            if (wheelCloseTimerRef.current) {
-                window.clearTimeout(wheelCloseTimerRef.current);
-            }
-            wheelCloseTimerRef.current = window.setTimeout(() => {
-                logger.info(
-                    "[WheelSync] Resetting winner view to idle",
-                );
-                setWheelWinnerIndex(null);
-                isWinnerAnnouncedRef.current = false;
-                wheelCloseTimerRef.current = undefined;
-            }, 10000);
-        },
-        [showToast, settings?.language],
-    );
-
-    // Handle wheel broadcast commands
-    useEffect(() => {
-        if (!wheelState) return;
-
-        logger.debug(`[WheelSync] Command: ${wheelState.action}`, wheelState);
-
-        switch (wheelState.action) {
-            case "ACTIVATE":
-                // If we are currently celebrating a winner, don't clear the screen yet
-                if (isWinnerAnnouncedRef.current) {
-                    logger.warn(
-                        "[WheelSync] Ignoring ACTIVATE during winner celebration",
-                    );
-                    return;
-                }
-                setWheelParticipants(wheelState.participant_names || []);
-                setWheelWinnerIndex(null);
-                setWheelWinnerName(undefined);
-                setWheelWinnerClass(undefined);
-                setWheelName(wheelState.wheel_name);
-                setWheelRound(wheelState.round_number || 1);
-                setWheelStartAtMs(undefined);
-                setWheelDurationMs(undefined);
-                break;
-            case "SPIN":
-                if (wheelCloseTimerRef.current) {
-                    window.clearTimeout(wheelCloseTimerRef.current);
-                    wheelCloseTimerRef.current = undefined;
-                }
-                isWinnerAnnouncedRef.current = false;
-                if (wheelState.participant_names?.length) {
-                    setWheelParticipants(wheelState.participant_names);
-                }
-                setWheelWinnerIndex(wheelState.winner_index ?? null);
-                setWheelWinnerName(wheelState.winner_name);
-                setWheelWinnerClass(wheelState.winner_class);
-                setWheelRound(wheelState.round_number || wheelRound);
-                setWheelStartAtMs(wheelState.start_at_ms);
-                setWheelDurationMs(wheelState.duration_ms);
-                break;
-            case "RESET":
-                setWheelWinnerIndex(null);
-                setWheelWinnerName(undefined);
-                setWheelWinnerClass(undefined);
-                isWinnerAnnouncedRef.current = false;
-                break;
-            case "DEACTIVATE":
-                // Handled primarily by settings update (Single Source of Truth)
-                setWheelWinnerIndex(null);
-                setWheelWinnerName(undefined);
-                setWheelWinnerClass(undefined);
-                isWinnerAnnouncedRef.current = false;
-                break;
-        }
-    }, [wheelState, wheelRound]);
-
-    // Initialize/Restore wheel participants from DB if not received via broadcast
-    // Also restores an active spin for users who join mid-spin.
-    useEffect(() => {
-        const activeWheelId = settings?.active_lucky_wheel_id;
-        const activeSpin = settings?.active_spin;
-
-        if (activeWheelId && wheelParticipants.length === 0) {
-            const restoreWheel = async () => {
-                try {
-                    const { data } = await supabase
-                        .from("lucky_wheel_templates")
-                        .select("*")
-                        .eq("id", activeWheelId)
-                        .maybeSingle();
-                    if (data) {
-                        setWheelParticipants(data.participant_names || []);
-                        setWheelName(data.name);
-                    }
-                } catch (err) {
-                    logger.error("[WheelSync] Restoration error:", err);
-                }
-            };
-            restoreWheel();
-        }
-
-        // Late-joiner: resume a spin that is still in progress
-        if (
-            activeSpin &&
-            Date.now() < activeSpin.start_at_ms + activeSpin.duration_ms
-        ) {
-            logger.info("[WheelSync] Restoring active spin for late joiner", activeSpin);
-            if (activeSpin.participant_names?.length) {
-                setWheelParticipants(activeSpin.participant_names);
-            }
-            setWheelWinnerIndex(activeSpin.winner_index ?? null);
-            setWheelWinnerName(activeSpin.winner_name);
-            setWheelRound(activeSpin.round_number || 1);
-            setWheelStartAtMs(activeSpin.start_at_ms);
-            setWheelDurationMs(activeSpin.duration_ms);
-        }
-    }, [settings?.active_lucky_wheel_id, settings?.active_spin, wheelParticipants.length]);
 
     if (!settings || !campaign) return null;
 
