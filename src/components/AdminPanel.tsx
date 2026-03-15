@@ -16,6 +16,7 @@ import { useClasses } from "../hooks/useClasses";
 import { useTicker } from "../hooks/useTicker";
 import { useLogs } from "../hooks/useLogs";
 import { useCompetitionMutations } from "../hooks/useCompetitionMutations";
+import { useRealtimeSubscriptions } from "../hooks/useRealtimeSubscriptions";
 import { FrozenOverlay } from "./ui/FrozenOverlay";
 import {
   isAdmin as checkIsAdmin,
@@ -145,12 +146,15 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
     updateAiSummary,
   } = useCompetitionMutations(campaign?.id);
 
-  const isSuper = checkIsSuperUser(user.role) || isSuperAdmin;
-  const isAdmin = checkIsAdmin(user.role, campaignRole) || isSuper;
+  useRealtimeSubscriptions(campaign?.id);
+
+  const isSuper = !!(checkIsSuperUser(user.role) || isSuperAdmin);
+  const isAdmin = !!(checkIsAdmin(user.role, campaignRole) || isSuper);
 
   const activeTab = useMemo(() => {
     if (activeTabFromUrl === "school") return "settings";
     if (
+      activeTabFromUrl &&
       ["settings", "points", "goals", "data-management", "logs", "lucky-wheel"]
         .includes(activeTabFromUrl)
     ) {
@@ -392,7 +396,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                   onDelete={deleteTickerMessage}
                   onUpdate={handleUpdateTickerMessage}
                 />
-                <AiSettings settings={settings} onRefresh={refreshData} />
+                <AiSettings settings={settings} campaign={campaign} onRefresh={refreshData} />
               </div>
             )}
             {activeTab === "points" && (
@@ -449,6 +453,8 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
                   onUpdateSummary={updateAiSummary}
                   currentUser={user}
                   settings={settings}
+                  campaign={campaign}
+                  classes={classes || []}
                   isAdmin={isAdmin}
                   onSave={() => updateTabTimestamp("logs")}
                 />

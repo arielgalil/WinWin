@@ -52,13 +52,13 @@ export const LiteStudentCard: React.FC<LiteStudentCardProps> = memo(({ id, name,
         {/* Name - Now smaller and at the top */}
         <span className={`font-[var(--fw-bold)] leading-tight text-center w-full break-words line-clamp-1 transition-all duration-300
             ${subtitle ? 'mb-0' : 'mb-1'}
-            ${isSelected ? 'text-white' : 'text-[var(--text-muted)] text-[var(--fs-sm)]'}
+            ${isSelected ? 'text-white' : 'text-[var(--text-main)] text-[var(--fs-sm)]'}
         `}>
           {name}
         </span>
         {subtitle && (
           <span className={`text-[10px] leading-tight text-center w-full truncate mb-1 transition-all duration-300
-            ${isSelected ? 'text-white/70' : 'text-[var(--text-muted)] opacity-60'}
+            ${isSelected ? 'text-white/70' : 'text-[var(--text-muted)]'}
           `}>
             {subtitle}
           </span>

@@ -164,16 +164,9 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
         <footer
             className={`w-full bg-zinc-900 py-0.5 shrink-0 z-50 flex items-center ${className}`}
         >
-                <div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 w-full">
-                    {/* Left: live viewer count */}
-                    <div className="w-24 shrink-0 flex items-center">
-                        {viewerCount !== undefined && viewerCount > 0 && (
-                            <span className="flex items-center gap-1 text-[10px] font-bold text-zinc-500">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                                {viewerCount}
-                            </span>
-                        )}
-                    </div>
+                <div className="max-w-[1920px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center px-4 w-full">
+                    {/* Left: empty spacer */}
+                    <div />
 
                     <nav className="h-6 flex items-center gap-4 px-4 transition-all">
                         {/* 1. Branding (Right Side) */}
@@ -530,8 +523,15 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </div>
                     </nav>
 
-                    {/* Right: spacer to balance left side */}
-                    <div className="w-24 shrink-0" />
+                    {/* Right: live viewer count */}
+                    <div className="flex items-center justify-end">
+                        {viewerCount !== undefined && viewerCount > 0 && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-zinc-500 leading-none">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 self-center" />
+                                {viewerCount}
+                            </span>
+                        )}
+                    </div>
                 </div>
                 
                 <DebugConsole 

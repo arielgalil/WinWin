@@ -2,6 +2,10 @@
 
 @import "tailwindcss";
 
+/* Use class-based dark mode so app theme (.dark/.light) controls Tailwind dark: variants,
+   not the OS prefers-color-scheme. This prevents dark: classes firing when app is in light mode. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans:
     "Noto Sans Hebrew", "Heebo", ui-sans-serif, system-ui, sans-serif;

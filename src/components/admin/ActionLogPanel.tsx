@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ActionLog, UserProfile, AppSettings } from '../../types';
+import { ActionLog, UserProfile, AppSettings, Campaign, ClassRoom } from '../../types';
 import { SparklesIcon, RefreshIcon, CopyIcon, CheckIcon, EditIcon, XIcon, UndoIcon, SaveIcon, TrashIcon, AlertIcon } from '../ui/Icons';
 import { generateAdminSummary } from '../../services/geminiService';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,6 +24,8 @@ interface ActionLogPanelProps {
     onUpdateSummary?: (text: string) => Promise<void>;
     currentUser?: UserProfile;
     settings: AppSettings;
+    campaign?: Campaign;
+    classes?: ClassRoom[];
     isAdmin: boolean;
     onSave?: () => Promise<void>;
 }
@@ -36,6 +38,8 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     onUpdateSummary,
     currentUser,
     settings,
+    campaign,
+    classes,
     isAdmin,
     onSave
 }) => {
@@ -75,12 +79,12 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         }
     }, [settings.ai_summary]);
 
-    // Auto-generate summary on mount if logs exist AND NO summary exists in settings
+    // Auto-generate summary on mount if logs exist AND NO summary exists in settings AND AI is enabled
     useEffect(() => {
-        if (logs.length > 0 && !settings.ai_summary && !isLoadingAI) {
+        if (logs.length > 0 && !settings.ai_summary && !isLoadingAI && campaign?.ai_enabled !== false) {
             handleGenerateSummary();
         }
-    }, [logs.length]);
+    }, [logs.length, campaign?.ai_enabled]);
 
     const showStatus = (type: 'success' | 'error', text: string) => {
         setActionStatus({ type, text });
@@ -88,7 +92,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
     };
 
     const handleGenerateSummary = async () => {
-        if (logs.length === 0) return;
+        if (logs.length === 0 || campaign?.ai_enabled === false) return;
         setIsLoadingAI(true);
         setIsCopied(false);
         try {
@@ -165,11 +169,29 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
         setEditForm({ points: log.points, desc: log.description });
     };
 
+    const getLogContext = (log: ActionLog): { studentName?: string; className?: string } => {
+        if (!classes) return {};
+        const cls = classes.find(c => c.id === log.class_id);
+        const student = log.student_id ? cls?.students.find(s => s.id === log.student_id) : undefined;
+        return { studentName: student?.name, className: cls?.name };
+    };
+
     const getInitials = (name?: string) => {
         if (!name) return '??';
         const parts = name.trim().split(/\s+/);
         if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
         return name.slice(0, 2).toUpperCase();
+    };
+
+    const getDateLabel = (dateStr: string): string => {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterdayStart = new Date(todayStart.getTime() - 86400000);
+        const logStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        if (logStart.getTime() === todayStart.getTime()) return t('today');
+        if (logStart.getTime() === yesterdayStart.getTime()) return t('yesterday');
+        return date.toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US', { weekday: 'long', day: '2-digit', month: '2-digit' });
     };
 
     const renderFormattedSummary = (text: string) => {
@@ -225,13 +247,24 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[var(--border-subtle)]">
-                                    {logs.map((log) => {
+                                    {logs.map((log, index) => {
                                         const isMine = log.user_id === currentUser?.id;
                                         const isCancelled = log.is_cancelled;
                                         const isEditing = editingLogId === log.id;
+                                        const currentDateLabel = getDateLabel(log.created_at);
+                                        const prevDateLabel = index > 0 ? getDateLabel(logs[index - 1].created_at) : null;
+                                        const showDateSeparator = index === 0 || currentDateLabel !== prevDateLabel;
 
                                         return (
-                                            <tr key={log.id} className={`group hover:bg-[var(--bg-hover)] transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
+                                            <React.Fragment key={log.id}>
+                                            {showDateSeparator && (
+                                                <tr>
+                                                    <td colSpan={isAdmin ? 5 : 4} className="px-4 pt-4 pb-1">
+                                                        <span className="text-[var(--fs-xs)] font-[var(--fw-bold)] uppercase tracking-widest text-[var(--text-muted)]">{currentDateLabel}</span>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            <tr className={`group hover:bg-[var(--bg-hover)] transition-colors ${isCancelled ? 'opacity-50 grayscale' : ''}`}>
                                                 <td className="p-4 text-[var(--fs-sm)] text-[var(--text-main)] font-mono font-[var(--fw-medium)]">
                                                     {new Date(log.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                                 </td>
@@ -246,9 +279,21 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                 <td className="p-4">
                                                     {isEditing ? (
                                                         <input value={editForm.desc || ''} onChange={e => setEditForm(prev => ({ ...prev, desc: e.target.value }))} className="w-full px-3 py-1.5 rounded-lg border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--fs-base)] text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm" />
-                                                    ) : (
-                                                        <span className="text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-medium)] line-clamp-1 opacity-90">{log.description}</span>
-                                                    )}
+                                                    ) : (() => {
+                                                        const { studentName, className } = getLogContext(log);
+                                                        return (
+                                                            <div className="flex flex-col gap-0.5">
+                                                                <span className="text-[var(--fs-base)] text-[var(--text-main)] font-[var(--fw-bold)] line-clamp-1">
+                                                                    {studentName
+                                                                        ? `${studentName}${className ? ` · ${className}` : ''}`
+                                                                        : className || log.description}
+                                                                </span>
+                                                                {log.note && (
+                                                                    <span className="text-[var(--fs-xs)] text-[var(--text-muted)] line-clamp-1">{log.note}</span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })()}
                                                 </td>
                                                 <td className="p-4 text-center">
                                                     {isEditing ? (
@@ -277,6 +322,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                     </td>
                                                 )}
                                             </tr>
+                                            </React.Fragment>
                                         );
                                     })}
                                     <tr ref={bottomRef}><td colSpan={5} className="p-6 text-center text-[var(--text-muted)] text-[var(--fs-sm)] font-[var(--fw-bold)] uppercase tracking-widest">{t('end_of_list')}</td></tr>
@@ -293,10 +339,20 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                             icon={<SparklesIcon className="w-6 h-6 text-indigo-500 animate-pulse" />}
                             className="flex flex-col"
                         >
+                            {campaign?.ai_enabled === false && (
+                                <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-lg bg-red-500/5 border border-red-500/20">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" />
+                                    <div>
+                                        <p className="text-[var(--fs-xs)] font-[var(--fw-bold)] text-red-600 dark:text-red-400 uppercase tracking-wider">{t('ai_status_label')}</p>
+                                        <p className="text-[var(--fs-sm)] text-red-600 dark:text-red-400">{t('ai_disabled_status')}</p>
+                                    </div>
+                                </div>
+                            )}
                             <div className="flex flex-wrap justify-end gap-3 mb-6">
-                                <AdminButton 
-                                    onClick={handleGenerateSummary} 
-                                    isLoading={isLoadingAI} 
+                                <AdminButton
+                                    onClick={handleGenerateSummary}
+                                    isLoading={isLoadingAI}
+                                    disabled={campaign?.ai_enabled === false}
                                     variant="primary"
                                     size="md"
                                     className="flex-1 min-w-[140px]"

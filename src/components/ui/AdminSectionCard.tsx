@@ -41,7 +41,7 @@ export const AdminSectionCard: React.FC<AdminSectionCardProps> = ({
                 )}
             </div>
 
-            <div className="mt-8">
+            <div className="mt-3">
                 {children}
             </div>
         </div>

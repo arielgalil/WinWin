@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/Logo";
 import {
-  ArrowLeft,
   LogOut,
   Menu,
   Moon,
@@ -24,10 +23,8 @@ import {
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { VersionFooter } from "@/components/ui/VersionFooter";
 import { BreadcrumbItem, Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { formatLastSaved } from "@/utils/dateUtils";
 import { LastSavedPill } from "@/components/ui/LastSavedPill";
 import { usePagePresence } from "@/hooks/usePagePresence";
-import { useParams } from "react-router-dom";
 import { useCampaign } from "@/hooks/useCampaign";
 
 export interface NavItem {
@@ -73,8 +70,7 @@ const NavLink: React.FC<{
   isActive: boolean;
   onClick: () => void;
   isCollapsed: boolean;
-  dir: "rtl" | "ltr";
-}> = ({ item, isActive, onClick, isCollapsed, dir }) => (
+}> = ({ item, isActive, onClick, isCollapsed }) => (
   <Button
     variant={isActive ? "secondary" : "ghost"}
     onClick={onClick}
@@ -116,7 +112,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
   breadcrumbs,
   lastSavedAt,
 }) => {
-  const { t, dir, language } = useLanguage();
+  const { t, dir } = useLanguage();
   const { theme, toggleTheme } = useTheme();
   const { campaign } = useCampaign();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -183,7 +179,6 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                   setIsMobileMenuOpen(false);
                 }}
                 isCollapsed={collapsed}
-                dir={dir as any}
               />
             )
         ))}
@@ -320,11 +315,11 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
 
             {/* Viewer Count Badge */}
             <div
-              className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full border border-border/50 shadow-sm"
+              className="inline-flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full border border-border/50 shadow-sm"
               title={t("active_viewers" as any)}
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-muted-foreground whitespace-nowrap">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0 self-center" />
+              <span className="text-xs font-bold text-muted-foreground whitespace-nowrap leading-none">
                 {viewerCount} {t("viewers" as any)}
               </span>
             </div>
