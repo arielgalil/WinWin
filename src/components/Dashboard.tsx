@@ -94,6 +94,8 @@ export const Dashboard: React.FC = () => {
     const [wheelWinnerClass, setWheelWinnerClass] = useState<string | undefined>();
     const [wheelName, setWheelName] = useState<string | undefined>();
     const [wheelRound, setWheelRound] = useState(1);
+    const [wheelPlaceNumber, setWheelPlaceNumber] = useState<number | null | undefined>(undefined);
+    const [wheelTotalRounds, setWheelTotalRounds] = useState<number | undefined>(undefined);
     const [wheelStartAtMs, setWheelStartAtMs] = useState<number | undefined>();
     const [wheelDurationMs, setWheelDurationMs] = useState<
         number | undefined
@@ -331,6 +333,8 @@ export const Dashboard: React.FC = () => {
                 setWheelWinnerName(wheelState.winner_name);
                 setWheelWinnerClass(wheelState.winner_class);
                 setWheelRound(wheelState.round_number || wheelRound);
+                setWheelPlaceNumber(wheelState.place_number);
+                if (wheelState.total_rounds != null) setWheelTotalRounds(wheelState.total_rounds);
                 setWheelStartAtMs(wheelState.start_at_ms);
                 setWheelDurationMs(wheelState.duration_ms);
                 break;
@@ -415,8 +419,11 @@ export const Dashboard: React.FC = () => {
                 winnerClass={wheelWinnerClass}
                 primaryColor={settings.primary_color}
                 secondaryColor={settings.secondary_color}
+                logoUrl={settings.logo_url ?? campaign.logo_url ?? undefined}
                 wheelName={wheelName}
                 roundNumber={wheelRound}
+                placeNumber={wheelPlaceNumber}
+                totalRounds={wheelTotalRounds}
                 startAtMs={wheelStartAtMs}
                 durationMs={wheelDurationMs}
                 onSpinComplete={handleWheelSpinComplete}
@@ -482,11 +489,11 @@ export const Dashboard: React.FC = () => {
                                     <div className="flex flex-col gap-3 flex-1 min-h-0">
                                         {/* Top row: 3 panels share all available space */}
                                         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 flex-1 lg:min-h-0 lg:overflow-hidden">
-                                            <div className="order-1 lg:order-2 flex flex-col min-h-[280px] lg:min-h-0 lg:overflow-hidden">
+                                            <div className="order-1 lg:order-2 flex flex-col min-h-[230px] lg:min-h-0 lg:overflow-hidden">
                                                 <Podium top3Classes={top3Classes} />
                                             </div>
 
-                                            <div className="order-2 lg:order-1 flex flex-col min-h-[320px] lg:overflow-hidden">
+                                            <div className="order-2 lg:order-1 flex flex-col min-h-[260px] lg:overflow-hidden">
                                                 <MissionMeter
                                                     totalScore={totalInstitutionScore}
                                                     goals={mergedSettings.goals_config || EMPTY_GOALS}

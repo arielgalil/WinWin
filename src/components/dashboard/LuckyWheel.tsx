@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
     createWheelSimulation,
     generateSegmentColors,
-    segmentAtPointer,
     WheelPhase,
 } from "../../utils/wheelPhysics";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -16,6 +15,8 @@ interface LuckyWheelProps {
     participants: string[];
     /** Campaign primary color (hex) */
     primaryColor?: string;
+    /** Campaign logo URL — drawn at wheel center */
+    logoUrl?: string;
     /** Campaign secondary color (hex) */
     secondaryColor?: string;
     /** Index of the pre-determined winner — triggers spin when set */
@@ -30,6 +31,10 @@ interface LuckyWheelProps {
     onPhaseChange?: (phase: WheelPhase) => void;
     /** Current round number */
     roundNumber?: number;
+    /** Computed place (1 = first, null = bonus) */
+    placeNumber?: number | null;
+    /** Total planned rounds */
+    totalRounds?: number;
     /** Synchronized start timestamp (UNIX ms) */
     startAtMs?: number;
     /** Expected duration of the animation (ms) */
@@ -42,12 +47,15 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     participants,
     primaryColor = "#6366f1",
     secondaryColor = "#818cf8",
+    logoUrl,
     winnerIndex,
     winnerName: externalWinnerName,
     winnerClass,
     onSpinComplete,
     onPhaseChange,
     roundNumber = 1,
+    placeNumber,
+    totalRounds,
     startAtMs,
     durationMs,
 }) => {
@@ -59,6 +67,9 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         null,
     );
     const lastTimeRef = useRef<number>(0);
+    const drawWheelCallbackRef = useRef<(angle: number) => void>(() => {});
+    const currentAngleForLogoRef = useRef<number>(0);
+    const logoWrapperRef = useRef<HTMLDivElement>(null);
 
     const [phase, setPhase] = useState<WheelPhase>("idle");
     const [currentAngle, setCurrentAngle] = useState(0);
@@ -87,53 +98,61 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     const lastPhaseRef = useRef<WheelPhase>("idle");
 
     // ── Segment Limiting & Subset Selection ───────────────────
-    // If we have too many participants, we pick a subset that includes the winner
+    // If we have too many participants, we pick a subset that includes the winner.
+    // Also rotates the array each round so the wheel starts at a different position.
     const { displayParticipants, displayWinnerIndex } = React.useMemo(() => {
         const MAX_SEGMENTS = 40;
+        let base: string[];
+        let baseWinnerIdx: number | null;
+
         if (participants.length <= MAX_SEGMENTS) {
-            return {
-                displayParticipants: participants,
-                displayWinnerIndex: winnerIndex,
-            };
+            base = participants;
+            baseWinnerIdx = winnerIndex;
+        } else {
+            const subsetSize = MAX_SEGMENTS;
+            const realWinnerIndex = winnerIndex ?? 0;
+            const winnerNameStr = externalWinnerName || participants[realWinnerIndex];
+
+            const others = participants.filter((p, i) =>
+                i !== realWinnerIndex && p !== winnerNameStr
+            );
+
+            const seed = participants.length + (winnerNameStr.length * 7);
+            const seededOthers = [...others].sort((a, b) => {
+                const valA = (a.length * seed + a.charCodeAt(0)) % 1000;
+                const valB = (b.length * seed + b.charCodeAt(0)) % 1000;
+                return valA - valB;
+            });
+
+            const subset = seededOthers.slice(0, subsetSize - 1);
+            subset.push(winnerNameStr);
+
+            const finalDisplay = subset.sort((a, b) => {
+                const valA = (a.length * 13 + a.charCodeAt(0)) % 1000;
+                const valB = (b.length * 13 + b.charCodeAt(0)) % 1000;
+                return valA - valB;
+            });
+
+            base = finalDisplay;
+            baseWinnerIdx = winnerIndex != null ? finalDisplay.indexOf(winnerNameStr) : null;
         }
 
-        // Limit to MAX_SEGMENTS
-        const subsetSize = MAX_SEGMENTS;
-        const realWinnerIndex = winnerIndex ?? 0;
-        // If we have an external winner name, use it. Otherwise use the name from participants[realWinnerIndex]
-        const winnerNameStr = externalWinnerName ||
-            participants[realWinnerIndex];
-
-        // Pick a stable subset of other participants
-        const others = participants.filter((p, i) =>
-            i !== realWinnerIndex && p !== winnerNameStr
-        );
-
-        // DETERMINISTIC seeded "shuffle" based on participant count to ensure ALL screens see same segments
-        const seed = participants.length + (winnerNameStr.length * 7);
-        const seededOthers = [...others].sort((a, b) => {
-            const valA = (a.length * seed + a.charCodeAt(0)) % 1000;
-            const valB = (b.length * seed + b.charCodeAt(0)) % 1000;
-            return valA - valB;
-        });
-
-        const subset = seededOthers.slice(0, subsetSize - 1);
-        subset.push(winnerNameStr);
-
-        // Deterministic sort for the final display
-        const finalDisplay = subset.sort((a, b) => {
-            const valA = (a.length * 13 + a.charCodeAt(0)) % 1000;
-            const valB = (b.length * 13 + b.charCodeAt(0)) % 1000;
-            return valA - valB;
-        });
-
-        const newWinnerIdx = finalDisplay.indexOf(winnerNameStr);
+        // Rotate array per-round so wheel starts at a different position each spin.
+        // Uses (roundNumber * 7) % count — deterministic across all devices.
+        const count = base.length;
+        const rotationOffset = count > 1 ? (roundNumber * 7) % count : 0;
+        const rotated = rotationOffset > 0
+            ? [...base.slice(rotationOffset), ...base.slice(0, rotationOffset)]
+            : base;
+        const rotatedWinnerIdx = baseWinnerIdx != null
+            ? (baseWinnerIdx - rotationOffset + count) % count
+            : null;
 
         return {
-            displayParticipants: finalDisplay,
-            displayWinnerIndex: winnerIndex != null ? newWinnerIdx : null,
+            displayParticipants: rotated,
+            displayWinnerIndex: rotatedWinnerIdx,
         };
-    }, [participants, winnerIndex, externalWinnerName]);
+    }, [participants, winnerIndex, externalWinnerName, roundNumber]);
 
     const count = displayParticipants.length;
     const segmentArc = (2 * Math.PI) / count;
@@ -154,6 +173,12 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     // ── Draw wheel on Canvas ──────────────────────────────────────
     const drawWheel = useCallback(
         (angle: number) => {
+            currentAngleForLogoRef.current = angle;
+            // Rotate logo in sync with wheel — direct DOM update to skip React re-render
+            if (logoWrapperRef.current) {
+                logoWrapperRef.current.style.transform =
+                    `translate(-50%, -50%) rotate(${angle}rad)`;
+            }
             const canvas = canvasRef.current;
             if (!canvas || count === 0) return;
             const ctx = canvas.getContext("2d");
@@ -188,17 +213,23 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 ctx.stroke();
             }
 
-            // Center circle
+            // Center hub — white backplate so logo (or fallback) looks clean, not black
+            const hubRadius = radius * 0.13;
             ctx.beginPath();
-            ctx.arc(cx, cy, radius * 0.08, 0, Math.PI * 2);
-            ctx.fillStyle = "#1e1b4b";
+            ctx.arc(cx, cy, hubRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ffffff";
             ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.3)";
+            ctx.strokeStyle = "rgba(255,255,255,0.6)";
             ctx.lineWidth = 2;
             ctx.stroke();
         },
         [count, segmentArc, colors],
     );
+
+    // ── Keep drawWheelCallbackRef in sync (used by logo redraw on load) ──────
+    useEffect(() => {
+        drawWheelCallbackRef.current = drawWheel;
+    }, [drawWheel]);
 
     // ── Animation loop ────────────────────────────────────────────
     const animate = useCallback(
@@ -304,20 +335,24 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [winnerIndex]);
 
-    // ── Compute magnifier names ────────────────────────────────────
-    const magnifierNames = React.useMemo(() => {
-        if (count === 0) return [];
-        const centerIdx = segmentAtPointer(currentAngle, count);
-        const names: { name: string; isCurrent: boolean }[] = [];
-        for (let offset = -1; offset <= 1; offset++) {
-            const idx = ((centerIdx + offset) % count + count) % count;
-            names.push({
-                name: displayParticipants[idx],
-                isCurrent: offset === 0,
-            });
-        }
-        return names;
-    }, [currentAngle, count, displayParticipants]);
+    // ── Compute 3-slot names data ─────────────────────────────────
+    // Always exactly 3 names: left (just passed), center (current), right (next to arrive).
+    // Clockwise wheel → at the bottom (pointer) segments move RIGHT→LEFT:
+    //   right slot = centerIdx-1 (approaching from right)
+    //   left slot  = centerIdx+1 (just exited to left)
+    const namesData = React.useMemo(() => {
+        if (count === 0 || segmentArc === 0) return null;
+        const norm = ((Math.PI / 2 - currentAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const segPos = norm / segmentArc;
+        const centerIdx = Math.round(segPos) % count;
+        const frac = Math.round(segPos) - segPos; // [-0.5, +0.5]
+        return {
+            left:   displayParticipants[(centerIdx + 1) % count],
+            center: displayParticipants[centerIdx],
+            right:  displayParticipants[((centerIdx - 1) + count) % count],
+            frac,
+        };
+    }, [currentAngle, count, segmentArc, displayParticipants]);
 
     return (
         <div
@@ -326,12 +361,35 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         >
             {/* Wheel container — capped by both vw and vh so it always fits */}
             <div className="relative w-[min(80vw,450px,calc(100svh-220px))] aspect-square">
-                {/* Canvas */}
+                {/* Canvas — explicit z-index so logo overlay is definitively on top */}
                 <canvas
                     ref={canvasRef}
-                    className="w-full h-full rounded-full"
-                    style={{ willChange: "transform" }}
+                    className="absolute inset-0 w-full h-full rounded-full"
+                    style={{ zIndex: 1 }}
                 />
+
+                {/* Logo overlay — rotates with the wheel via direct DOM transform */}
+                <div
+                    ref={logoWrapperRef}
+                    className="absolute rounded-full pointer-events-none flex items-center justify-center overflow-hidden bg-white"
+                    style={{
+                        width: "22%",
+                        height: "22%",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        zIndex: 2,
+                    }}
+                >
+                    {logoUrl && (
+                        <img
+                            src={logoUrl}
+                            alt=""
+                            className="w-full h-full object-contain"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        />
+                    )}
+                </div>
 
                 {/* Bottom Pointer Arrow - Fixed at the bottom (6 o'clock), tip pointing up into wheel */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-40">
@@ -347,27 +405,71 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 </div>
             </div>
 
-            {/* MAGNIFIER — in normal flow, below wheel with gap, no overlap risk */}
-            <div className="w-full max-w-[280px] pointer-events-none">
-                <div className="bg-white/10 backdrop-blur-3xl border border-white/20 rounded-3xl p-1.5 shadow-2xl overflow-hidden ring-1 ring-white/5">
-                    <div className="flex items-stretch gap-1.5">
-                        {magnifierNames.map((item, i) => (
-                            <div
-                                key={`${item.name}-${i}`}
-                                className={`basis-1/3 shrink-0 px-2 py-3 flex items-center justify-center rounded-2xl transition-all duration-300 ${
-                                    item.isCurrent
-                                        ? "bg-white/25 border border-white/40 z-10"
-                                        : "opacity-35"
-                                }`}
-                            >
-                                <div className="truncate text-center text-sm font-bold text-white">
-                                    {item.name}
-                                </div>
-                            </div>
-                        ))}
+            {/* NAMES STRIP — always exactly 3 names: left | CENTER | right */}
+            {namesData && (
+                <div className="w-full max-w-[min(80vw,450px,calc(100svh-220px))] flex items-center pointer-events-none py-1">
+                    {/* Left — just passed */}
+                    <div className="flex-1 flex justify-center overflow-hidden px-1">
+                        <span
+                            style={{
+                                fontSize: "0.85rem",
+                                fontWeight: 700,
+                                color: "white",
+                                opacity: 0.55,
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                maxWidth: "100%",
+                                display: "block",
+                                textAlign: "center",
+                            }}
+                        >
+                            {namesData.left}
+                        </span>
+                    </div>
+
+                    {/* Center — current segment under arrow */}
+                    <div className="flex-[1.6] flex justify-center overflow-hidden px-1">
+                        <span
+                            style={{
+                                fontSize: "1.35rem",
+                                fontWeight: 900,
+                                color: "white",
+                                opacity: 1,
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                maxWidth: "100%",
+                                display: "block",
+                                textAlign: "center",
+                                textShadow: "0 0 16px rgba(255,255,255,0.8)",
+                            }}
+                        >
+                            {namesData.center}
+                        </span>
+                    </div>
+
+                    {/* Right — next to arrive */}
+                    <div className="flex-1 flex justify-center overflow-hidden px-1">
+                        <span
+                            style={{
+                                fontSize: "0.85rem",
+                                fontWeight: 700,
+                                color: "white",
+                                opacity: 0.55,
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                maxWidth: "100%",
+                                display: "block",
+                                textAlign: "center",
+                            }}
+                        >
+                            {namesData.right}
+                        </span>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Phase indicator */}
             {phase !== "idle" && phase !== "done" && (
@@ -429,7 +531,11 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                                 transition={{ delay: 0.6 }}
                                 className="text-amber-400 text-lg font-bold"
                             >
-                                🎉 {t("round_prefix")} #{roundNumber}
+                                {placeNumber != null
+                                    ? `🏆 ${t("place_label" as any, { place: placeNumber, total: totalRounds ?? placeNumber })}`
+                                    : placeNumber === null
+                                        ? `🎁 ${t("bonus_label" as any, { round: roundNumber })}`
+                                        : `🎉 ${t("round_prefix")} #${roundNumber}`}
                             </motion.p>
                         </motion.div>
                     </motion.div>
