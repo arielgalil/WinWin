@@ -14,7 +14,7 @@ import { useConfirmation } from '../../hooks/useConfirmation';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 import { AdminButton } from '../ui/AdminButton';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface ActionLogPanelProps {
     logs: ActionLog[];

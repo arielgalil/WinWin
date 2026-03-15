@@ -14,9 +14,10 @@ import {
     IrisConfig 
 } from '../../utils/irisGeometry';
 import { useCompetitionMutations } from '../../hooks/useCompetitionMutations';
+import { MISSION_METER_CONSTANTS } from '../../constants';
 
-const MotionPath = motion.path as any;
-const MotionCircle = motion.circle as any;
+const MotionPath = motion.path;
+const MotionCircle = motion.circle;
 
 interface MissionMeterProps {
     totalScore: number;
@@ -145,7 +146,7 @@ export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
         setCelebratingGoalIndex(indexToCelebrate);
         setTimeout(() => {
             setCelebratingGoalIndex(null);
-        }, 7000);
+        }, MISSION_METER_CONSTANTS.CELEBRATION_TIMEOUT_MS);
     };
 
     const displayIndex = celebratingGoalIndex !== null ? celebratingGoalIndex : activeIndex;
@@ -187,12 +188,14 @@ export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
 
 
     // Multi-Iris Calibrated Reveal - uses Monte Carlo to compute accurate coverage
-    // If complete, force full reveal; otherwise calibrate scale for accurate percentage
+    // If complete, force full reveal; otherwise calibrate scale for accurate percentage.
+    // progressPct is rounded to 1% increments to avoid expensive recalculation on every point scored.
+    const progressPctRounded = Math.round(progressPct * MISSION_METER_CONSTANTS.PROGRESS_ROUNDING_PRECISION) / MISSION_METER_CONSTANTS.PROGRESS_ROUNDING_PRECISION;
     const finalK = useMemo(() => {
-        if (isCelebrationMode || progressPct >= 1) return 2.0;
-        if (irises.length === 0 || progressPct <= 0) return 0;
-        return calibrateIrisScale(irises, progressPct, DEFAULT_CORNER_RADIUS);
-    }, [irises, progressPct, isCelebrationMode]);
+        if (isCelebrationMode || progressPctRounded >= 1) return 2.0;
+        if (irises.length === 0 || progressPctRounded <= 0) return 0;
+        return calibrateIrisScale(irises, progressPctRounded, DEFAULT_CORNER_RADIUS);
+    }, [irises, progressPctRounded, isCelebrationMode]);
 
 
 
@@ -235,7 +238,7 @@ const shoutoutMessage = useMemo(() => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     return (
-        <div ref={containerRef} className={`
+        <div ref={containerRef} role="region" aria-label={headerText} className={`
         glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'

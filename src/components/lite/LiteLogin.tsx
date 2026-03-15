@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Logo } from '../ui/Logo';
 import { VersionFooter } from '../ui/VersionFooter';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface LiteLoginProps {
   onLogin: (email: string, pass: string, remember: boolean) => Promise<boolean>;

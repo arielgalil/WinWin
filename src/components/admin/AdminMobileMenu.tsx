@@ -7,7 +7,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
 import { Logo } from '../ui/Logo';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface AdminMobileMenuProps {
   isOpen: boolean;
@@ -170,7 +170,7 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
                                           className="flex flex-col items-center justify-center p-4 rounded-[var(--radius-container)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] gap-2 shadow-sm transition-all"
                                       >
                                           {theme === 'dark' ? <SunIcon className="w-6 h-6 text-amber-500" /> : <MoonIcon className="w-6 h-6 text-indigo-500" />}
-                                          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)]">{theme === 'dark' ? t('light_mode' as any) : t('dark_mode' as any)}</span>
+                                          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)]">{theme === 'dark' ? t('light_mode') : t('dark_mode')}</span>
                                       </button>
                                       <button
                                           onClick={() => { onShare(); setIsOpen(false); }}

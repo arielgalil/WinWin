@@ -21,8 +21,8 @@ import { useAuth } from '../hooks/useAuth';
 import { VersionFooter } from './ui/VersionFooter';
 import { withTimeout } from '../utils/supabaseUtils';
 
-const { useNavigate } = ReactRouterDOM as any;
-const MotionDiv = motion.div as any;
+const { useNavigate } = ReactRouterDOM;
+const MotionDiv = motion.div;
 
 interface ExtendedCampaign extends Campaign {
     school_name?: string;

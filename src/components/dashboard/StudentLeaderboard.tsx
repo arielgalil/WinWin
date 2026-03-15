@@ -7,11 +7,11 @@ import { useAutoScroll } from '../../hooks/useAutoScroll';
 import { useLanguage } from '../../hooks/useLanguage';
 import { AppSettings, LuckyWheelWinner } from '../../types';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { LUCKY_WHEEL_CONSTANTS } from '../../constants';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
-const PRIZE_EMOJIS = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
-const getPrizeEmoji = (roundNumber: number) => PRIZE_EMOJIS[(roundNumber - 1) % PRIZE_EMOJIS.length];
+const getPrizeEmoji = (roundNumber: number) => LUCKY_WHEEL_CONSTANTS.PRIZE_EMOJIS[(roundNumber - 1) % LUCKY_WHEEL_CONSTANTS.PRIZE_EMOJIS.length];
 
 interface EnrichedStudent {
     id: string;

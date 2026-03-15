@@ -61,6 +61,7 @@ export interface ClassRoom {
   target_score?: number;
   students: Student[];
   campaign_id?: string;
+  rank?: number;
 }
 
 export interface UserProfile {

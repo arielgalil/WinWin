@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const MotionCircle = motion.circle as any;
+const MotionCircle = motion.circle;
 
 interface CircularProgressProps {
   value: number;

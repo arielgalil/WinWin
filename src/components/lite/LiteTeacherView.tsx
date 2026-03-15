@@ -12,7 +12,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { isAdmin as checkIsAdmin } from '../../config';
 import { VersionFooter } from '../ui/VersionFooter';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface LiteTeacherViewProps {
   user: UserProfile;

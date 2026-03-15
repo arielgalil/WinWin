@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, TrashIcon, CopyIcon, BugIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface LogEntry {
   id: number;
@@ -15,12 +15,12 @@ interface LogEntry {
 
 export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { t, dir } = useLanguage();
-  const [logs, setLogs] = useState<LogEntry[]>((window as any).__LOGS__ || []);
+  const [logs, setLogs] = useState<LogEntry[]>((window).__LOGS__ || []);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleNewLog = () => {
-      setLogs([...((window as any).__LOGS__ || [])]);
+      setLogs([...((window).__LOGS__ || [])]);
     };
     window.addEventListener('app-log-added', handleNewLog);
     return () => window.removeEventListener('app-log-added', handleNewLog);
@@ -33,7 +33,7 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   }, [logs]);
 
   const clearLogs = () => {
-    (window as any).__LOGS__ = [];
+    (window).__LOGS__ = [];
     setLogs([]);
   };
 

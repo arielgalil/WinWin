@@ -18,7 +18,7 @@ import { normalizeString } from '../../utils/stringUtils';
 import { useErrorFormatter } from '../../utils/errorUtils';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface ClassesManagerProps {
     classes: ClassRoom[];

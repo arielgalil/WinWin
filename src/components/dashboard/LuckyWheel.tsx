@@ -8,6 +8,7 @@ import {
 } from "../../utils/wheelPhysics";
 import { useLanguage } from "../../hooks/useLanguage";
 import { Confetti } from "../ui/Confetti";
+import { LUCKY_WHEEL_CONSTANTS } from "../../constants";
 
 // ── Types ───────────────────────────────────────────────────────
 
@@ -299,7 +300,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
 
     // ── Random prize emoji (changes each new winner) ─────────────
     const prizeEmoji = React.useMemo(() => {
-        const emojis = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
+        const emojis = LUCKY_WHEEL_CONSTANTS.PRIZE_EMOJIS;
         return emojis[Math.floor(Math.random() * emojis.length)];
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [winnerIndex]);
@@ -323,6 +324,8 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         <div
             ref={containerRef}
             className="relative flex flex-col items-center gap-3 select-none w-full"
+            role="region"
+            aria-label="גלגל מזל"
         >
             {/* Wheel container — capped by both vw and vh so it always fits */}
             <div className="relative w-[min(80vw,450px,calc(100svh-220px))] aspect-square">
@@ -331,6 +334,8 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     ref={canvasRef}
                     className="w-full h-full rounded-full"
                     style={{ willChange: "transform" }}
+                    role="img"
+                    aria-label={phase === "done" && winnerName ? `הזוכה: ${winnerName}` : "גלגל מזל מסתובב"}
                 />
 
                 {/* Bottom Pointer Arrow - Fixed at the bottom (6 o'clock), tip pointing up into wheel */}

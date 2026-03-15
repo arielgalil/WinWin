@@ -5,7 +5,7 @@ import { AdminSectionCard } from '../../ui/AdminSectionCard';
 import { RefreshIcon, PlusIcon, XIcon, GlobeIcon, ClockIcon, EditIcon, CheckIcon, LayoutDashboardIcon, EyeIcon, EyeOffIcon } from '../../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 import { KIOSK_CONSTANTS } from '../../../constants';
 
@@ -102,12 +102,12 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
         onUpdate({ rotation_enabled: !enabled });
     };
 
-    const dashboardLabel = `${t('competition_dashboard' as any)} ${competitionName}${institutionName ? ` - ${institutionName}` : ''}`;
+    const dashboardLabel = `${t('competition_dashboard')} ${competitionName}${institutionName ? ` - ${institutionName}` : ''}`;
 
     return (
         <AdminSectionCard
-            title={t('kiosk_rotation_title' as any)}
-            description={t('kiosk_rotation_desc' as any)}
+            title={t('kiosk_rotation_title')}
+            description={t('kiosk_rotation_desc')}
             icon={<RefreshIcon className="w-6 h-6" />}
             rightAction={
                 <div className="flex items-center gap-3">
@@ -128,7 +128,7 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider">
-                            {t('rotation_urls_label' as any)}
+                            {t('rotation_urls_label')}
                         </label>
                         
                         <div className="flex gap-2 items-stretch h-12">
@@ -181,7 +181,7 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                                             <div className="min-w-0">
                                                 <p className="text-[var(--fs-sm)] truncate font-bold" style={{ color: 'var(--text-main, black)' }}>{dashboardLabel}</p>
                                                 <p className="text-[var(--fs-xs)] text-indigo-800 dark:text-indigo-400/80 flex items-center gap-1">
-                                                    <ClockIcon className="w-3 h-3" /> {dashboardDuration} {t('seconds' as any)}
+                                                    <ClockIcon className="w-3 h-3" /> {dashboardDuration} {t('seconds')}
                                                 </p>
                                             </div>
                                         </div>
@@ -238,7 +238,7 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                                                     <div className="min-w-0">
                                                         <p className={`text-[var(--fs-sm)] truncate font-medium ${item.hidden ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-main)]'}`}>{item.url}</p>
                                                         <p className="text-[var(--fs-xs)] text-[var(--text-muted)] flex items-center gap-1">
-                                                            <ClockIcon className="w-3 h-3" /> {item.duration} {t('seconds' as any)}
+                                                            <ClockIcon className="w-3 h-3" /> {item.duration} {t('seconds')}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -264,7 +264,7 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                             </AnimatePresence>
                             {externalConfig.length === 0 && (
                                 <div className="text-center py-6 text-[var(--text-muted)] italic border-2 border-dashed border-[var(--border-subtle)] rounded-xl bg-[var(--bg-surface)]/50">
-                                    {t('add_external_sites' as any)}
+                                    {t('add_external_sites')}
                                 </div>
                             )}
                         </div>
@@ -274,11 +274,11 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                         <div className="p-5 bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl shadow-sm">
                             <h4 className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-indigo-900 dark:text-indigo-100 mb-2 flex items-center gap-2">
                                 <ClockIcon className="w-4 h-4" />
-                                {t('global_kiosk_settings' as any)}
+                                {t('global_kiosk_settings')}
                             </h4>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-[var(--fs-xs)] text-[var(--text-muted)] uppercase tracking-wider font-bold">{t('default_interval_label' as any)}</span>
+                                    <span className="text-[var(--fs-xs)] text-[var(--text-muted)] uppercase tracking-wider font-bold">{t('default_interval_label')}</span>
                                     <span className="text-[var(--fs-sm)] font-bold text-indigo-600">{rotationInterval}s</span>
                                 </div>
                                 <input
@@ -288,17 +288,17 @@ export const KioskRotationSection: React.FC<KioskRotationSectionProps> = ({
                                     className="w-full h-1.5 bg-indigo-200 dark:bg-indigo-900 rounded-full appearance-none cursor-pointer accent-indigo-600"
                                 />
                                 <p className="text-[var(--fs-xs)] text-indigo-600/70 italic leading-relaxed">
-                                    {t('global_interval_desc' as any)}
+                                    {t('global_interval_desc')}
                                 </p>
                             </div>
                         </div>
 
                         <div className="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-[var(--radius-main)] space-y-3 shadow-sm">
                             <p className="text-[var(--fs-sm)] text-amber-700 dark:text-amber-400 font-[var(--fw-medium)] leading-relaxed">
-                                💡 <strong>{t('kiosk_tip_title' as any)}</strong> {t('kiosk_tip_desc' as any)}
+                                💡 <strong>{t('kiosk_tip_title')}</strong> {t('kiosk_tip_desc')}
                             </p>
                             <p className="text-[var(--fs-xs)] text-amber-600/80 dark:text-amber-500/60 italic leading-snug">
-                                {t('kiosk_security_note' as any)}
+                                {t('kiosk_security_note')}
                             </p>
                         </div>
                     </div>

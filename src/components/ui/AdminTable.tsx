@@ -3,8 +3,8 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Fix for framer-motion type mismatch
-const MotionDiv = motion.div as any;
-const MotionTr = motion.tr as any;
+const MotionDiv = motion.div;
+const MotionTr = motion.tr;
 
 export interface Column<T> {
   key: string;

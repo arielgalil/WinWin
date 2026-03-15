@@ -13,9 +13,9 @@ import { Confetti } from "./Confetti";
 import { FormattedNumber } from "./FormattedNumber";
 import { useLanguage } from "../../hooks/useLanguage";
 
-const MotionDiv = motion.div as any;
-const MotionH2 = motion.h2 as any;
-const MotionH3 = motion.h3 as any;
+const MotionDiv = motion.div;
+const MotionH2 = motion.h2;
+const MotionH3 = motion.h3;
 
 interface BurstNotificationProps {
     data: BurstNotificationData | null;

@@ -8,7 +8,7 @@ import { triggerHaptic } from '../../utils/haptics';
 import { useLanguage } from '../../hooks/useLanguage';
 
 // Fix for framer-motion type mismatch
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface LiteActionDockProps {
     selectedCount: number;

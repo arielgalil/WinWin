@@ -11,7 +11,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { isAdmin as checkIsAdmin } from '../../config';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface PointsManagerProps {
   user: UserProfile;

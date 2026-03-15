@@ -6,8 +6,9 @@ import { motion } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { TICKER_CONSTANTS } from '../../constants';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface ClassTickerProps {
   otherClasses: ClassRoom[];
@@ -20,8 +21,8 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
   const [duration, setDuration] = useState(40);
   const [isHovered, setIsHovered] = useState(false);
 
-  const CARD_WIDTH = 190;
-  const MARGIN_RIGHT = 12;
+  const CARD_WIDTH = TICKER_CONSTANTS.CARD_WIDTH_PX;
+  const MARGIN_RIGHT = TICKER_CONSTANTS.CARD_MARGIN_RIGHT_PX;
 
   // Generate consistent group icon for each class based on their ID
   const getGroupIcon = (cls: ClassRoom) => {
@@ -38,9 +39,9 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     }
 
     let baseList = [...otherClasses];
-    if (baseList.length < 10) {
+    if (baseList.length < TICKER_CONSTANTS.MIN_CARDS_FOR_LOOP) {
       let safetyCounter = 0;
-      while (baseList.length < 10 && safetyCounter < 5) {
+      while (baseList.length < TICKER_CONSTANTS.MIN_CARDS_FOR_LOOP && safetyCounter < 5) {
         baseList = [...baseList, ...otherClasses];
         safetyCounter++;
       }
@@ -51,10 +52,9 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
     const totalWidthPx = finalList.length * (CARD_WIDTH + MARGIN_RIGHT);
     const singleCycleWidth = totalWidthPx / 2;
-    const speedPxPerSec = 35;
 
-    const calculatedDuration = singleCycleWidth / speedPxPerSec;
-    setDuration(isFinite(calculatedDuration) && calculatedDuration > 0 ? calculatedDuration : 40);
+    const calculatedDuration = singleCycleWidth / TICKER_CONSTANTS.SPEED_PX_PER_SEC;
+    setDuration(isFinite(calculatedDuration) && calculatedDuration > 0 ? calculatedDuration : TICKER_CONSTANTS.MIN_DURATION_SEC);
 
   }, [otherClasses]);
 
@@ -65,7 +65,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
     const uniqueKey = `ticker-${cls.id}-${index}`;
     const isHighlighted = highlightClassId === cls.id;
-    const displayRank = (cls as any).rank || '?';
+    const displayRank = (cls).rank || '?';
 
     const currentScore = cls.score || 0;
     const targetScore = cls.target_score || 0;
@@ -271,7 +271,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
         <div
           className="flex items-center absolute left-0 animate-scroll-horizontal-reverse will-change-transform h-full pl-4"
           style={{
-            animationDuration: `${Math.max(20, duration)}s`,
+            animationDuration: `${Math.max(TICKER_CONSTANTS.MIN_DURATION_SEC, duration)}s`,
             width: 'max-content',
             transform: 'translateZ(0)',
             animationPlayState: isHovered ? 'paused' : 'running'

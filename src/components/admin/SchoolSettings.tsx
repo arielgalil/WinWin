@@ -34,7 +34,7 @@ import { VisualDesignSection } from "./settings/VisualDesignSection";
 import { KioskRotationSection } from "./settings/KioskRotationSection";
 import { BurstSettingsSection } from "./settings/BurstSettingsSection";
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface SchoolSettingsProps {
     settings: AppSettings;
@@ -386,7 +386,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
                                             })}
                                         className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-small font-mono shadow-sm"
                                         placeholder={t(
-                                            "logo_upload_placeholder" as any,
+                                            "logo_upload_placeholder",
                                         )}
                                     />
                                     <div className="flex gap-3">
@@ -566,9 +566,9 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
                                     <p className="text-body text-blue-600 dark:text-blue-400 font-[var(--fw-medium)] leading-relaxed">
                                         💡{" "}
                                         <strong>
-                                            {t("tip_atmosphere_title" as any)}
+                                            {t("tip_atmosphere_title")}
                                         </strong>{" "}
-                                        {t("tip_atmosphere_desc" as any)
+                                        {t("tip_atmosphere_desc")
                                             .replace("💡 **טיפ:**", "").replace(
                                                 /\*\*/g,
                                                 "",
@@ -790,7 +790,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
                                         size="md"
                                         onClick={() => setFormData(settings)}
                                     >
-                                        {t("cancel" as any)}
+                                        {t("cancel")}
                                     </AdminButton>
                                 )}
                                 <AdminButton

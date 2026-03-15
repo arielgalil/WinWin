@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface GoalsManagementProps {
     settings: AppSettings;

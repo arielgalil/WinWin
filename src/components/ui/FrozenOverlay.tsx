@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
 
 // Fix for framer-motion type mismatch
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface FrozenOverlayProps {
   isFrozen: boolean;

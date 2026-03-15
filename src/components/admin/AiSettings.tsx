@@ -11,7 +11,7 @@ import { useSaveNotification } from '../../contexts/SaveNotificationContext';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminSectionCard } from '../ui/AdminSectionCard';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface AiSettingsProps {
     settings: AppSettings;
@@ -39,7 +39,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
         setGeminiApiKey(settings.gemini_api_key || '');
     }, [settings]);
 
-    const defaultPrompt = t('ai_default_prompt_content' as any);
+    const defaultPrompt = t('ai_default_prompt_content');
 
     const hasChanges = useMemo(() => {
         const initialPrompt = settings.ai_custom_prompt || '';

@@ -10,7 +10,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { parseFormattedText } from '../../utils/whatsappUtils';
 import { replaceSmartTags } from '../../utils/stringUtils';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface DashboardHeaderProps {
     settings: AppSettings;

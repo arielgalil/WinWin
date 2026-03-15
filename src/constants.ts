@@ -28,6 +28,24 @@ export const UI_CONSTANTS = {
   TRANSITION_DURATION_MS: 200,
 };
 
+export const TICKER_CONSTANTS = {
+  CARD_WIDTH_PX: 190,
+  CARD_MARGIN_RIGHT_PX: 12,
+  SPEED_PX_PER_SEC: 35,
+  MIN_CARDS_FOR_LOOP: 10,
+  MIN_DURATION_SEC: 20,
+};
+
+export const MISSION_METER_CONSTANTS = {
+  CELEBRATION_TIMEOUT_MS: 7000,
+  PROGRESS_ROUNDING_PRECISION: 100, // rounds to 1% increments for iris calibration
+};
+
+export const LUCKY_WHEEL_CONSTANTS = {
+  MAX_SEGMENTS: 40,
+  PRIZE_EMOJIS: ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'],
+};
+
 export const VALIDATION_CONSTANTS = {
   MIN_PASSWORD_LENGTH: 6,
   MAX_NAME_LENGTH: 100,

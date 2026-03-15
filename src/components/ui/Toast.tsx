@@ -11,7 +11,7 @@ interface ToastProps {
     onClose: () => void;
 }
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 export const Toast: React.FC<ToastProps> = ({ message, type = 'info', onClose }) => {
     const getIcon = () => {

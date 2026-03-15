@@ -9,7 +9,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
 import { useStore } from '../../services/store';
 
-const MotionDiv = motion.div as any;
+const MotionDiv = motion.div;
 
 interface PodiumProps {
   top3Classes: ClassRoom[];
@@ -23,7 +23,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
   const instantTransition = { duration: 0.1 };
 
   return (
-    <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[280px] [isolation:isolate]">
+    <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[280px] [isolation:isolate]" role="region" aria-label={t('podium_title')}>
       <DashboardCardHeader 
         title={t('podium_title')}
         icon={<CrownIcon className="w-3.5 h-3.5 text-yellow-400" />}
@@ -36,7 +36,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
         {podiumOrder.map((cls, idx) => {
           if (!cls) return null;
 
-          const rank = (cls as any).rank || (idx === 1 ? 1 : idx === 0 ? 2 : 3);
+          const rank = (cls).rank || (idx === 1 ? 1 : idx === 0 ? 2 : 3);
 
           let height = 'h-[30%]';
           let barStyle = 'bg-gradient-to-b from-orange-600/40 to-transparent border-t-2 border-x border-orange-400/50 border-x-orange-400/20';
