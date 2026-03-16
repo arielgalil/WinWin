@@ -186,6 +186,8 @@ export interface BurstNotificationData {
   subTitle?: string;
   value?: string | number;
   icon?: React.ReactNode;
+  /** Emoji to show in the icon circle instead of the default SVG icon */
+  emoji?: string;
 }
 
 // ── Lucky Wheel ──────────────────────────────────────────────────
@@ -243,6 +245,8 @@ export interface LuckyWheelControlState {
   duration_ms?: number;
   /** Filter criteria snapshot — shown in the info card when wheel opens */
   filter_criteria?: WheelFilterCriteria;
+  /** Prize emoji — synchronized from admin so all screens show the same one */
+  prize_emoji?: string;
   /** Resolved class names for the selected class_ids */
   class_names?: string[];
 }

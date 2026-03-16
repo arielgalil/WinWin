@@ -287,7 +287,11 @@ export const LuckyWheelManager: React.FC = () => {
         // 2. Set synchronized start time (300ms buffer for network)
         const startAtMs = Date.now() + 300;
 
-        // 3. Broadcast the synchronized spin event
+        // 3. Pick prize emoji on admin side so all screens show the same one
+        const prizeEmojiPool = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
+        const prizeEmoji = prizeEmojiPool[Math.floor(Math.random() * prizeEmojiPool.length)];
+
+        // 4. Broadcast the synchronized spin event
         await wheelAdmin.spinWheel(
             idx,
             winnerName,
@@ -298,6 +302,7 @@ export const LuckyWheelManager: React.FC = () => {
             winnerClassName,
             placeNumber,
             totalRounds > 0 ? totalRounds : undefined,
+            prizeEmoji,
         );
 
         // 3b. Mark spinning state locally (remote admins get it via remoteCommand effect)

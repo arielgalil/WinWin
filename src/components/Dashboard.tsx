@@ -40,7 +40,7 @@ import { usePersistedBoolean } from "../hooks/usePersistedBoolean";
 import { useKioskRotation } from "../hooks/useKioskRotation";
 import { useToast } from "../hooks/useToast";
 import { logger } from "../utils/logger";
-import { AppSettings, ClassRoom, CompetitionGoal, LuckyWheelWinner } from "../types";
+import { AppSettings, ClassRoom, CompetitionGoal, LuckyWheelWinner, WheelFilterCriteria } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { useLuckyWheelListener } from "../hooks/useLuckyWheelControl";
 import { LuckyWheelOverlay } from "./dashboard/LuckyWheelOverlay";
@@ -97,9 +97,10 @@ export const Dashboard: React.FC = () => {
     const [wheelPlaceNumber, setWheelPlaceNumber] = useState<number | null | undefined>(undefined);
     const [wheelTotalRounds, setWheelTotalRounds] = useState<number | undefined>(undefined);
     const [wheelStartAtMs, setWheelStartAtMs] = useState<number | undefined>();
-    const [wheelDurationMs, setWheelDurationMs] = useState<
-        number | undefined
-    >();
+    const [wheelDurationMs, setWheelDurationMs] = useState<number | undefined>();
+    const [wheelFilterCriteria, setWheelFilterCriteria] = useState<WheelFilterCriteria | undefined>();
+    const [wheelClassNames, setWheelClassNames] = useState<string[] | undefined>();
+    const [wheelPrizeEmoji, setWheelPrizeEmoji] = useState<string | undefined>();
     const wheelCloseTimerRef = useRef<number | undefined>(undefined);
 
     // Single source of truth for "is the wheel open?"
@@ -319,6 +320,9 @@ export const Dashboard: React.FC = () => {
                 setWheelRound(wheelState.round_number || 1);
                 setWheelStartAtMs(undefined);
                 setWheelDurationMs(undefined);
+                if (wheelState.filter_criteria) setWheelFilterCriteria(wheelState.filter_criteria);
+                if (wheelState.class_names !== undefined) setWheelClassNames(wheelState.class_names);
+                if (wheelState.total_rounds != null) setWheelTotalRounds(wheelState.total_rounds);
                 break;
             case "SPIN":
                 if (wheelCloseTimerRef.current) {
@@ -337,6 +341,7 @@ export const Dashboard: React.FC = () => {
                 if (wheelState.total_rounds != null) setWheelTotalRounds(wheelState.total_rounds);
                 setWheelStartAtMs(wheelState.start_at_ms);
                 setWheelDurationMs(wheelState.duration_ms);
+                if (wheelState.prize_emoji) setWheelPrizeEmoji(wheelState.prize_emoji);
                 break;
             case "RESET":
                 setWheelWinnerIndex(null);
@@ -426,6 +431,9 @@ export const Dashboard: React.FC = () => {
                 totalRounds={wheelTotalRounds}
                 startAtMs={wheelStartAtMs}
                 durationMs={wheelDurationMs}
+                filterCriteria={wheelFilterCriteria}
+                classNames={wheelClassNames}
+                prizeEmoji={wheelPrizeEmoji}
                 onSpinComplete={handleWheelSpinComplete}
             />
 

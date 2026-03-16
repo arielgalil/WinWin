@@ -134,6 +134,7 @@ interface LuckyWheelOverlayProps {
     durationMs?: number;
     filterCriteria?: WheelFilterCriteria;
     classNames?: string[];
+    prizeEmoji?: string;
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
 }
 
@@ -156,6 +157,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     durationMs,
     filterCriteria,
     classNames,
+    prizeEmoji,
     onSpinComplete,
 }) => {
     const { t, isRTL } = useLanguage();
@@ -175,6 +177,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     const [frozenWinnerName, setFrozenWinnerName] = useState<string | undefined>();
     const [frozenStartAtMs, setFrozenStartAtMs] = useState<number | undefined>();
     const [frozenDurationMs, setFrozenDurationMs] = useState<number | undefined>();
+    const [frozenPrizeEmoji, setFrozenPrizeEmoji] = useState<string | undefined>();
     const [localActive, setLocalActive] = useState(false);
     const isBusyRef = useRef(false);
     const frozenRoundRef = useRef<number>(0);
@@ -210,6 +213,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
             setFrozenWinnerName(winnerName);
             setFrozenStartAtMs(startAtMs);
             setFrozenDurationMs(durationMs);
+            if (prizeEmoji) setFrozenPrizeEmoji(prizeEmoji);
 
             if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
             lockTimerRef.current = setTimeout(() => {
@@ -278,6 +282,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                             totalRounds={totalRounds}
                             startAtMs={frozenStartAtMs}
                             durationMs={frozenDurationMs}
+                            prizeEmoji={frozenPrizeEmoji}
                             onSpinComplete={onSpinComplete}
                             onPhaseChange={(phase: WheelPhase) => {
                                 if (phase === "accelerating") vibrate(30);

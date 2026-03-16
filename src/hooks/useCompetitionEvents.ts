@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
     AppSettings,
     BurstNotificationData,
+    Campaign,
     ClassRoom,
     CompetitionGoal,
 } from "../types";
@@ -17,6 +18,7 @@ export const useCompetitionEvents = (
     settings: AppSettings,
     isFrozen: boolean,
     onUpdateCommentary?: (text: string) => void,
+    campaign?: Campaign,
 ) => {
     const { t, language } = useLanguage();
     const [burstQueue, setBurstQueue] = useState<BurstNotificationData[]>([]);
@@ -52,7 +54,7 @@ export const useCompetitionEvents = (
     // Debounced AI Commentary Trigger logic
     const triggerAiCommentary = useCallback(
         async (eventDesc: string, note?: string, contributors?: string[]) => {
-            if (!onUpdateCommentary || isGeneratingAi.current) return;
+            if (!onUpdateCommentary || isGeneratingAi.current || campaign?.ai_enabled === false) return;
             isGeneratingAi.current = true;
             try {
                 const commentary = await generateCompetitionCommentary(
@@ -162,6 +164,7 @@ export const useCompetitionEvents = (
                 type: "GOAL_REACHED",
                 title: t("shared_goal_reached"),
                 subTitle: currentGoal.name,
+                emoji: currentGoal.image_type === "emoji" ? currentGoal.image_value : undefined,
                 value: `${
                     t("total_label")
                 } ${totalInstitutionScore.toLocaleString()}`,

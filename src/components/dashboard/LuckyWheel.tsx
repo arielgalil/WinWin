@@ -40,6 +40,8 @@ interface LuckyWheelProps {
     startAtMs?: number;
     /** Expected duration of the animation (ms) */
     durationMs?: number;
+    /** Synchronized prize emoji from admin — same on all screens */
+    prizeEmoji?: string;
 }
 
 // ── Component ────────────────────────────────────────────────────
@@ -58,6 +60,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     placeNumber,
     totalRounds,
     startAtMs,
+    prizeEmoji: prizeEmojiProp,
 }) => {
     const { isRTL } = useLanguage();
 
@@ -198,7 +201,14 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             if (!canvas || count === 0) return;
 
             const dpr = window.devicePixelRatio || 1;
-            const { w, h } = canvasDimsRef.current;
+            let { w, h } = canvasDimsRef.current;
+            // Fallback: ResizeObserver may not have fired yet on initial mount
+            if (w === 0 || h === 0) {
+                const rect = canvas.getBoundingClientRect();
+                w = rect.width;
+                h = rect.height;
+                if (w > 0 && h > 0) canvasDimsRef.current = { w, h };
+            }
             if (w === 0 || h === 0) return;
 
             // Only resize (expensive GPU realloc) when dimensions actually changed
@@ -320,16 +330,17 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
         updateNamesDOM(initialAngleRef.current);
     }, [drawWheel, updateNamesDOM]);
 
-    // ── Prize emoji (changes per winner, no consecutive repeats) ──
+    // ── Prize emoji — use synchronized prop from admin, fallback to local random ──
     const lastPrizeEmojiRef = useRef<string | null>(null);
     const prizeEmoji = React.useMemo(() => {
+        if (prizeEmojiProp) return prizeEmojiProp;
         const emojis = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
         const pool = lastPrizeEmojiRef.current ? emojis.filter(e => e !== lastPrizeEmojiRef.current) : emojis;
         const picked = pool[Math.floor(Math.random() * pool.length)];
         lastPrizeEmojiRef.current = picked;
         return picked;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [winnerIndex]);
+    }, [winnerIndex, prizeEmojiProp]);
 
     const winnerRoundLabel = formatRoundLabel(roundNumber, placeNumber, totalRounds, isRTL);
 

@@ -120,6 +120,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             winnerClass?: string,
             placeNumber?: number | null,
             totalRounds?: number,
+            prizeEmoji?: string,
         ) => {
             await broadcast({
                 action: "SPIN",
@@ -132,6 +133,7 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                 start_at_ms: startAtMs,
                 duration_ms: durationMs,
                 participant_names: participantNames,
+                prize_emoji: prizeEmoji,
             });
 
             // Persist spin for late joiners (cleared automatically after spin ends)
