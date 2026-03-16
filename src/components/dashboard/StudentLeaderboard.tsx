@@ -8,6 +8,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { AppSettings, LuckyWheelWinner } from '../../types';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { getRankBadgeClasses } from '../../utils/rankingUtils';
 
 const MotionDiv = motion.div as any;
 
@@ -202,7 +203,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
         return movers.slice(0, momentumCount);
     }, [topStudents, arenaStudents, momentumCount]);
 
-    // Group winners by wheel_name
+    // Group winners by wheel_name (pre-compute prize emojis per group)
     const wheelGroups = useMemo(() => {
         const groups = new Map<string, LuckyWheelWinner[]>();
         for (const w of luckyWheelWinners) {
@@ -210,7 +211,11 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
             if (!groups.has(key)) groups.set(key, []);
             groups.get(key)!.push(w);
         }
-        return Array.from(groups.entries());
+        return Array.from(groups.entries()).map(([name, winners]) => ({
+            name,
+            winners,
+            prizeEmojis: buildPrizeEmojiList(winners),
+        }));
     }, [luckyWheelWinners, t]);
 
     const tabs: ActiveTab[] = useMemo(() => ['momentum', 'top', 'wheel'], []);
@@ -360,8 +365,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             {t('wheel_waiting' as any)}
                                         </div>
                                     ) : (
-                                        wheelGroups.map(([wheelName, winners]) => {
-                                            const prizeEmojis = buildPrizeEmojiList(winners);
+                                        wheelGroups.map(({ name: wheelName, winners, prizeEmojis }) => {
                                             return (
                                             <div key={wheelName} className="space-y-1.5">
                                                 {/* Wheel name pill */}
@@ -404,16 +408,12 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                 </MotionDiv>
                             ) : (
                                 <MotionDiv key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="space-y-1.5 pb-2">
-                                    {scrollList.map((student, idx) => (
+                                    {scrollList.map((student) => (
                                         <StudentRow
                                             key={student.id}
                                             student={student}
                                             badge={isMomentumMode ? <TrendUpIcon className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> : student.rank}
-                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-green-600' :
-                                                student.rank === 1 ? 'bg-yellow-500 text-slate-950' :
-                                                student.rank === 2 ? 'bg-slate-300 text-slate-900' :
-                                                student.rank === 3 ? 'bg-orange-500 text-white' :
-                                                'bg-slate-700 text-slate-300'}
+                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-green-600' : getRankBadgeClasses(student.rank)}
                                             rowBg={
                                                 isMomentumMode
                                                     ? 'bg-white/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'

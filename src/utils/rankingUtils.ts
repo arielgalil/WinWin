@@ -1,5 +1,13 @@
 import { ClassRoom } from '../types';
 
+/** Returns Tailwind classes for a rank badge (bg + text + border). */
+export const getRankBadgeClasses = (rank: number): string => {
+    if (rank === 1) return 'bg-yellow-500 text-white border-yellow-300';
+    if (rank === 2) return 'bg-slate-400 text-white border-slate-300';
+    if (rank === 3) return 'bg-orange-500 text-white border-orange-300';
+    return 'bg-slate-700 text-white border-slate-600';
+};
+
 // Helper: Calculate Standard Competition Ranking (1224)
 export const getRankMap = (items: { id: string, val: number }[]) => {
   const sorted = [...items].sort((a, b) => b.val - a.val);
@@ -8,7 +16,7 @@ export const getRankMap = (items: { id: string, val: number }[]) => {
   let currentRank = 1;
   for (let i = 0; i < sorted.length; i++) {
       if (i > 0 && sorted[i].val < sorted[i-1].val) {
-          currentRank = i + 1;
+          currentRank++;
       }
       map.set(sorted[i].id, currentRank);
   }

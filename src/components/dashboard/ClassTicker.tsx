@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DashboardCardHeader } from './DashboardCardHeader';
+import { getRankBadgeClasses } from '../../utils/rankingUtils';
 
 const MotionDiv = motion.div as any;
 
@@ -77,19 +78,13 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
         const StatusIcon = getGroupIcon(cls);
     
         let statusColor = 'text-cyan-400';
-        let statusBg = 'bg-cyan-500/10';
-        let statusBorder = 'border-cyan-500/30';
         let progressBg = 'bg-cyan-500';
-    
+
         if (isGoalReached) {
           statusColor = 'text-emerald-400';
-          statusBg = 'bg-emerald-500/20';
-          statusBorder = 'border-emerald-500/40';
           progressBg = 'bg-emerald-500';
         } else if (progress > 75) {
           statusColor = 'text-yellow-400';
-          statusBg = 'bg-yellow-500/10';
-          statusBorder = 'border-yellow-500/30';
           progressBg = 'bg-yellow-500';
         }
     
@@ -156,15 +151,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
                                 <div className="flex items-center justify-between shrink-0">
     
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-black shrink-0 shadow-lg
-
-                                        ${displayRank === 1 ? 'bg-yellow-500 text-white border-yellow-300' :
-
-                                    displayRank === 2 ? 'bg-slate-400 text-white border-slate-300' :
-
-                                        displayRank === 3 ? 'bg-orange-500 text-white border-orange-300' :
-
-                                        'bg-slate-700 text-white border-slate-600'}`}>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-black shrink-0 shadow-lg ${getRankBadgeClasses(displayRank as number)}`}>
     
                                     {displayRank}
     
