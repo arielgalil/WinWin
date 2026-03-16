@@ -1,4 +1,3 @@
-import React from "react";
 
 interface IconProps {
   className?: string;
@@ -232,7 +231,12 @@ export const DollarSignIcon = ({ className }: IconProps) => (
   <MaterialIcon name="attach_money" className={className} />
 );
 export const SproutIcon = ({ className }: IconProps) => (
-  <MaterialIcon name="eco" className={className} />
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 20h10" />
+    <path d="M10 20c5.5-2.5.8-6.4 3-9" />
+    <path d="M9.5 9.4c1.1.8 1.8 2.1 2.3 3.5a9 9 0 003.3-6.8 4.3 4.3 0 00-5.6 3.3z" />
+    <path d="M14.1 6a9 9 0 00-8.4.8 4.3 4.3 0 005.4 3.7c-.5-1.4-1.2-2.7-2.3-3.7-.8-.7.9.2 1.7.6.8.3 2.6 1.3 3.6-.4z" />
+  </svg>
 );
 export const KeyIcon = ({ className }: IconProps) => (
   <MaterialIcon name="key" className={className} />
