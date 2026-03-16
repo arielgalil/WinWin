@@ -61,12 +61,14 @@ const StudentRow = ({
     badge,
     badgeBg,
     rowBg,
+    nameColorClass = 'text-white',
     onClick,
 }: {
     student: EnrichedStudent;
     badge: React.ReactNode;
     badgeBg: string;
     rowBg: string;
+    nameColorClass?: string;
     onClick?: () => void;
 }) => (
     <div
@@ -78,7 +80,7 @@ const StudentRow = ({
         </div>
         <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
-                <span className="font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] text-white truncate leading-none">{student.name}</span>
+                <span className={`font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] truncate leading-none ${nameColorClass}`}>{student.name}</span>
                 <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 overflow-hidden">
                     <div
                         data-testid="group-tag-bg"
@@ -420,6 +422,12 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                                     : student.rank === 1
                                                         ? 'bg-white/20 border-yellow-500/40 shadow-lg shadow-yellow-500/10'
                                                         : 'bg-white/10 border-white/20 hover:bg-white/15'
+                                            }
+                                            nameColorClass={
+                                                isMomentumMode ? 'text-white' :
+                                                student.rank === 1 ? 'text-yellow-300' :
+                                                student.rank === 2 ? 'text-slate-300' :
+                                                'text-white'
                                             }
                                         />
                                     ))}
