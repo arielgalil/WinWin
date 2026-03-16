@@ -67,10 +67,22 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     const lastTimeRef = useRef<number>(0);
     const logoWrapperRef = useRef<HTMLDivElement>(null);
 
-    // ── Performance: cache canvas context + last known size to avoid
-    //    expensive GPU texture realloc every animation frame ──────────
+    // ── Performance: track canvas size via ResizeObserver (avoids
+    //    getBoundingClientRect layout reflow on every animation frame) ─
     const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
     const lastCanvasSizeRef = useRef({ w: 0, h: 0, dpr: 0 });
+    const canvasDimsRef = useRef({ w: 0, h: 0 });
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ro = new ResizeObserver(([entry]) => {
+            const { width, height } = entry.contentRect;
+            canvasDimsRef.current = { w: width, h: height };
+        });
+        ro.observe(canvas);
+        return () => ro.disconnect();
+    }, []);
 
     // ── Names strip — direct DOM refs to avoid React re-renders ────
     const leftNameRef = useRef<HTMLSpanElement>(null);
@@ -186,9 +198,8 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             if (!canvas || count === 0) return;
 
             const dpr = window.devicePixelRatio || 1;
-            const rect = canvas.getBoundingClientRect();
-            const w = rect.width;
-            const h = rect.height;
+            const { w, h } = canvasDimsRef.current;
+            if (w === 0 || h === 0) return;
 
             // Only resize (expensive GPU realloc) when dimensions actually changed
             if (w !== lastCanvasSizeRef.current.w || h !== lastCanvasSizeRef.current.h || dpr !== lastCanvasSizeRef.current.dpr) {

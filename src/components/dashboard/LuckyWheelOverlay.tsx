@@ -19,7 +19,7 @@ interface WheelInfoCardProps {
     classNames?: string[];
 }
 
-function WheelInfoCard({ participantCount, totalRounds, filterCriteria, classNames }: WheelInfoCardProps) {
+const WheelInfoCard = React.memo(function WheelInfoCard({ participantCount, totalRounds, filterCriteria, classNames }: WheelInfoCardProps) {
     const { isRTL } = useLanguage();
 
     const chips: { icon: string; label: string; value?: string }[] = [];
@@ -113,7 +113,7 @@ function WheelInfoCard({ participantCount, totalRounds, filterCriteria, classNam
             </div>
         </div>
     );
-}
+});
 
 // ── Props ─────────────────────────────────────────────────────────
 
