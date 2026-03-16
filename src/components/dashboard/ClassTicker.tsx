@@ -38,7 +38,10 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
       return;
     }
 
-    let baseList = [...otherClasses];
+    const classesWithScore = otherClasses.filter(c => (c.score || 0) > 0);
+    const sourceList = classesWithScore.length >= 3 ? classesWithScore : otherClasses;
+
+    let baseList = [...sourceList];
     if (baseList.length < 10) {
       let safetyCounter = 0;
       while (baseList.length < 10 && safetyCounter < 5) {
