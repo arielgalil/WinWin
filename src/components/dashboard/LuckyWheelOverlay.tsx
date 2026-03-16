@@ -3,37 +3,141 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "../../hooks/useLanguage";
 import { LuckyWheel } from "./LuckyWheel";
 import { WheelPhase } from "../../utils/wheelPhysics";
+import { WheelFilterCriteria } from "../../types";
+import { formatRoundLabel } from "../../utils/stringUtils";
 
 function vibrate(pattern: number | number[]) {
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(pattern);
 }
 
+// ── Info Card ────────────────────────────────────────────────────
+
+interface WheelInfoCardProps {
+    participantCount: number;
+    totalRounds?: number;
+    filterCriteria?: WheelFilterCriteria;
+    classNames?: string[];
+}
+
+function WheelInfoCard({ participantCount, totalRounds, filterCriteria, classNames }: WheelInfoCardProps) {
+    const { isRTL } = useLanguage();
+
+    const chips: { icon: string; label: string; value?: string }[] = [];
+
+    // Participants — always first
+    chips.push({
+        icon: "👥",
+        label: isRTL ? "משתתפים" : "Participants",
+        value: String(participantCount),
+    });
+
+    // Rounds
+    if (totalRounds && totalRounds > 0) {
+        chips.push({
+            icon: "🔄",
+            label: isRTL ? "סבבים" : "Rounds",
+            value: String(totalRounds),
+        });
+    }
+
+    if (filterCriteria) {
+        // Min score
+        if (filterCriteria.min_score != null) {
+            chips.push({
+                icon: "⭐",
+                label: isRTL ? "ניקוד מינימלי" : "Min score",
+                value: String(filterCriteria.min_score),
+            });
+        }
+
+        // Points per ticket
+        if (filterCriteria.points_per_ticket && filterCriteria.points_per_ticket > 0) {
+            chips.push({
+                icon: "🎟️",
+                label: isRTL ? "נק' לכרטיס" : "Pts/ticket",
+                value: String(filterCriteria.points_per_ticket),
+            });
+        }
+
+        // Exclude previous winners
+        if (filterCriteria.exclude_previous_winners) {
+            chips.push({
+                icon: "🚫",
+                label: isRTL ? "ללא זוכים קודמים" : "No prev. winners",
+            });
+        }
+
+        // Classes
+        const hasSpecificClasses = classNames && classNames.length > 0;
+        const classLabel = hasSpecificClasses
+            ? classNames!.join(", ")
+            : (isRTL ? "כל הכיתות" : "All classes");
+        chips.push({
+            icon: "🎓",
+            label: isRTL ? "כיתות" : "Classes",
+            value: classLabel,
+        });
+    }
+
+    return (
+        <div
+            className="w-full px-4 py-2.5"
+            dir={isRTL ? "rtl" : "ltr"}
+        >
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, auto)",
+                    justifyContent: "center",
+                    gap: "6px",
+                }}
+            >
+                {chips.map((chip, i) => (
+                    <div
+                        key={i}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/12 text-white"
+                        style={{ fontSize: "0.75rem" }}
+                    >
+                        <span style={{ fontSize: "0.8rem" }}>{chip.icon}</span>
+                        <span className="text-white/55 font-medium">{chip.label}</span>
+                        {chip.value !== undefined && (
+                            <>
+                                <span className="text-white/25 mx-0.5">·</span>
+                                <span className="font-bold text-white/90 max-w-[16ch] overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {chip.value}
+                                </span>
+                            </>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// ── Props ─────────────────────────────────────────────────────────
+
 interface LuckyWheelOverlayProps {
-    /** Whether the overlay is visible */
     isActive: boolean;
-    /** List of participant names */
     participants: string[];
-    /** Pre-determined winner index (null = waiting to spin) */
     winnerIndex: number | null;
-    /** Absolute truth winner name from admin */
     winnerName?: string;
-    /** Winner's class name */
     winnerClass?: string;
-    /** Campaign primary color */
     primaryColor?: string;
-    /** Campaign secondary color */
     secondaryColor?: string;
-    /** Wheel template name */
+    logoUrl?: string;
     wheelName?: string;
-    /** Current round */
     roundNumber?: number;
-    /** Synchronized start timestamp (UNIX ms) */
+    placeNumber?: number | null;
+    totalRounds?: number;
     startAtMs?: number;
-    /** Expected duration of the animation (ms) */
     durationMs?: number;
-    /** Called when spin finishes */
+    filterCriteria?: WheelFilterCriteria;
+    classNames?: string[];
     onSpinComplete?: (winnerIndex: number, winnerName: string) => void;
 }
+
+// ── Component ────────────────────────────────────────────────────
 
 export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     isActive,
@@ -43,38 +147,40 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
     winnerClass,
     primaryColor,
     secondaryColor,
+    logoUrl,
     wheelName,
     roundNumber = 1,
+    placeNumber,
+    totalRounds,
     startAtMs,
     durationMs,
+    filterCriteria,
+    classNames,
     onSpinComplete,
 }) => {
-    const { t } = useLanguage();
+    const { t, isRTL } = useLanguage();
 
-    // -- State Locking & Local Lifecycle --
+    // Compute place number (counts down: round 1 → highest place, then toward 1st)
+    const effectivePlaceNumber: number | null | undefined = placeNumber !== undefined
+        ? placeNumber
+        : (totalRounds && totalRounds > 0)
+            ? (roundNumber <= totalRounds ? totalRounds - roundNumber + 1 : null)
+            : undefined;
+
+    const roundLabel = formatRoundLabel(roundNumber, effectivePlaceNumber, totalRounds, isRTL);
+
+    // ── Frozen state (locks during spin) ─────────────────────────
     const [frozenParticipants, setFrozenParticipants] = useState<string[]>([]);
-    const [frozenWinnerIndex, setFrozenWinnerIndex] = useState<number | null>(
-        null,
-    );
-    const [frozenWinnerName, setFrozenWinnerName] = useState<
-        string | undefined
-    >();
-    const [frozenStartAtMs, setFrozenStartAtMs] = useState<
-        number | undefined
-    >();
-    const [frozenDurationMs, setFrozenDurationMs] = useState<
-        number | undefined
-    >();
+    const [frozenWinnerIndex, setFrozenWinnerIndex] = useState<number | null>(null);
+    const [frozenWinnerName, setFrozenWinnerName] = useState<string | undefined>();
+    const [frozenStartAtMs, setFrozenStartAtMs] = useState<number | undefined>();
+    const [frozenDurationMs, setFrozenDurationMs] = useState<number | undefined>();
     const [localActive, setLocalActive] = useState(false);
-    // Use a ref instead of state so the effect never re-runs due to isBusy changing,
-    // which previously caused the lockTimerRef to be cleared mid-spin → permanent lock.
     const isBusyRef = useRef(false);
     const frozenRoundRef = useRef<number>(0);
-
     const lockTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        // 1. Explicit Close: If the admin closes the wheel, we respect it immediately
         if (!isActive) {
             setLocalActive(false);
             isBusyRef.current = false;
@@ -82,12 +188,9 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
             return;
         }
 
-        // 2. Normal Sync: If we are not in the middle of a spin sequence, sync with props
         if (!isBusyRef.current) {
             setLocalActive(true);
             vibrate(40);
-
-            // Sync data only when not busy
             if (winnerIndex === null) {
                 setFrozenParticipants(participants);
                 setFrozenWinnerIndex(null);
@@ -97,8 +200,6 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
             }
         }
 
-        // 3. Spin Detection: If a spin starts and we aren't already busy
-        // Allow a new-round spin (different roundNumber) to bypass the busy lock
         const isNewRound = roundNumber !== frozenRoundRef.current;
         if (isActive && winnerIndex !== null && (!isBusyRef.current || isNewRound)) {
             frozenRoundRef.current = roundNumber ?? 0;
@@ -113,25 +214,15 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
             if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
             lockTimerRef.current = setTimeout(() => {
                 isBusyRef.current = false;
-                // When the lock expires, the next render will sync with the latest props
-                // (e.g., it will show the empty wheel for the next round if the admin already reset it)
             }, (durationMs || 10000) + 1000);
         }
 
         return () => {
             if (lockTimerRef.current) clearTimeout(lockTimerRef.current);
         };
-    }, [
-        isActive,
-        winnerIndex,
-        participants,
-        winnerName,
-        startAtMs,
-        durationMs,
-        roundNumber,
-        // isBusy intentionally omitted — using isBusyRef to prevent the cleanup
-        // from cancelling the spin timer and causing a permanent lock
-    ]);
+    }, [isActive, winnerIndex, participants, winnerName, startAtMs, durationMs, roundNumber]);
+
+    const isWaiting = frozenWinnerIndex == null;
 
     return (
         <AnimatePresence>
@@ -142,43 +233,49 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                     exit={{ opacity: 0, transition: { duration: 0.4 } }}
                     className="fixed inset-0 z-[9998] flex flex-col items-center bg-slate-950/95 backdrop-blur-lg overflow-hidden"
                 >
-                    {/* Header — fixed height, stays at top */}
+                    {/* ── HEADER: title + info chips (stable height) ── */}
                     <motion.div
                         initial={{ y: -30, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="w-full shrink-0 pt-4 pb-2 text-center z-10"
+                        className="w-full shrink-0 pt-4 pb-3 px-4 flex flex-col items-center gap-2 z-10"
                     >
-                        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight text-center">
                             🎡 {wheelName || t("tab_lucky_wheel")}
                         </h1>
-                        <p className="text-white/50 text-sm mt-1">
-                            {t("participants_count_label", {
-                                count: frozenParticipants.length,
-                            })} • {t("round_prefix")} #{roundNumber}
-                        </p>
+
+                        {/*
+                          Info card is ALWAYS in the DOM (never removed) so the header
+                          height stays constant → wheel position never shifts.
+                        */}
+                        <div className="w-full max-w-xl">
+                            <WheelInfoCard
+                                participantCount={frozenParticipants.length}
+                                totalRounds={totalRounds}
+                                filterCriteria={filterCriteria}
+                                classNames={classNames}
+                            />
+                        </div>
                     </motion.div>
 
-                    {/* Wheel — flex-1 so it fills remaining space, min-h-0 allows shrinking */}
+                    {/* ── WHEEL: flex-1, vertically centered, never moves ── */}
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 150,
-                            damping: 20,
-                            delay: 0.1,
-                        }}
+                        transition={{ type: "spring", stiffness: 150, damping: 20, delay: 0.1 }}
                         className="flex-1 min-h-0 w-full flex items-center justify-center px-4"
                     >
                         <LuckyWheel
                             participants={frozenParticipants}
                             primaryColor={primaryColor}
                             secondaryColor={secondaryColor}
+                            logoUrl={logoUrl}
                             winnerIndex={frozenWinnerIndex}
                             winnerName={frozenWinnerName}
                             winnerClass={winnerClass}
                             roundNumber={roundNumber}
+                            placeNumber={effectivePlaceNumber}
+                            totalRounds={totalRounds}
                             startAtMs={frozenStartAtMs}
                             durationMs={frozenDurationMs}
                             onSpinComplete={onSpinComplete}
@@ -190,21 +287,45 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                         />
                     </motion.div>
 
-                    {/* Bottom slot — waiting indicator or spacer to keep wheel centered */}
-                    <div className="w-full shrink-0 flex justify-center items-center py-5 min-h-[64px]">
-                        {frozenWinnerIndex == null && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                    {/*
+                      ── FOOTER: fixed min-height so the wheel never shifts ──
+                      Shows round label always + waiting pill only when idle.
+                    */}
+                    <div
+                        className="w-full shrink-0 flex flex-col items-center justify-center gap-2 pb-5 pt-1 px-4"
+                        style={{ minHeight: "80px" }}
+                    >
+                        {/* Round label */}
+                        {roundLabel && (
+                            <motion.span
+                                key={roundLabel}
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="text-sm md:text-base font-bold text-amber-400 tracking-wide"
                             >
-                                <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                                {roundLabel}
+                            </motion.span>
+                        )}
+
+                        {/* Waiting pill — AnimatePresence so it fades without shifting wheel */}
+                        <AnimatePresence mode="wait">
+                            {isWaiting && (
+                                <motion.div
+                                    key="waiting-pill"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="inline-flex items-center gap-2 px-5 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+                                >
                                     <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
                                     <span className="text-white/80 text-sm font-medium">
                                         {t("waiting_for_admin_label")}
                                     </span>
-                                </div>
-                            </motion.div>
-                        )}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </motion.div>
             )}

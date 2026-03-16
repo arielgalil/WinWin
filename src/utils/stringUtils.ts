@@ -56,7 +56,8 @@ export const replaceSmartTags = (
     totalScore: number,
     sortedClasses: (ClassRoom & { rank: number })[],
     topStudents: (Student & { rank: number })[],
-    randomSeed?: number
+    randomIndices?: { studentIdx: number; classIdx: number },
+    lastWheelWinner?: string
 ): string => {
     if (!text) return '';
 
@@ -69,7 +70,7 @@ export const replaceSmartTags = (
     // 2. Goals Info
     const goals = settings.goals_config || [];
     const nextGoal = goals.find(g => g.target_score > totalScore) || goals[goals.length - 1];
-    
+
     if (nextGoal) {
         const remaining = Math.max(0, nextGoal.target_score - totalScore);
         result = result
@@ -78,40 +79,68 @@ export const replaceSmartTags = (
             .replace(/\[מרחק מהיעד\]/g, formatNumberWithCommas(remaining));
     }
 
-    // 3. Group Rankings
-    const getClassName = (rank: number) => sortedClasses.find(c => c.rank === rank)?.name || '---';
+    // 3. Group Rankings — positional (index-based) so rank gaps never cause empty results
+    const getClassName = (pos: number) => sortedClasses[pos]?.name || '';
     result = result
-        .replace(/\[קבוצה ראשונה\]/g, getClassName(1))
-        .replace(/\[קבוצה שניה\]/g, getClassName(2))
-        .replace(/\[קבוצה שלישית\]/g, getClassName(3));
+        .replace(/\[קבוצה ראשונה\]/g, getClassName(0))
+        .replace(/\[קבוצה שניה\]/g, getClassName(1))
+        .replace(/\[קבוצה שלישית\]/g, getClassName(2));
 
-    // 4. Student Rankings
-    const getStudentName = (rank: number) => topStudents.find(s => s.rank === rank)?.name || '---';
+    // 4. Student Rankings — positional
+    const getStudentName = (pos: number) => topStudents[pos]?.name || '';
     result = result
-        .replace(/\[מקום ראשון\]/g, getStudentName(1))
-        .replace(/\[מקום שני\]/g, getStudentName(2))
-        .replace(/\[מקום שלישי\]/g, getStudentName(3));
+        .replace(/\[מקום ראשון\]/g, getStudentName(0))
+        .replace(/\[מקום שני\]/g, getStudentName(1))
+        .replace(/\[מקום שלישי\]/g, getStudentName(2));
 
     // 5. Random Content
-    const seed = randomSeed ?? Math.floor(Date.now() / 1000);
-    
     if (result.includes('[משתתף אקראי]')) {
         if (topStudents.length > 0) {
-            const randomIndex = seed % topStudents.length;
-            result = result.replace(/\[משתתף אקראי\]/g, topStudents[randomIndex].name);
+            const idx = randomIndices?.studentIdx ?? Math.floor(Math.random() * topStudents.length);
+            result = result.replace(/\[משתתף אקראי\]/g, topStudents[idx].name);
         } else {
-            result = result.replace(/\[משתתף אקראי\]/g, '---');
+            result = result.replace(/\[משתתף אקראי\]/g, '');
         }
     }
 
     if (result.includes('[קבוצה אקראית]')) {
         if (sortedClasses.length > 0) {
-            const randomIndex = (seed + 1) % sortedClasses.length; // Offset seed slightly
-            result = result.replace(/\[קבוצה אקראית\]/g, sortedClasses[randomIndex].name);
+            const idx = randomIndices?.classIdx ?? Math.floor(Math.random() * sortedClasses.length);
+            result = result.replace(/\[קבוצה אקראית\]/g, sortedClasses[idx].name);
         } else {
-            result = result.replace(/\[קבוצה אקראית\]/g, '---');
+            result = result.replace(/\[קבוצה אקראית\]/g, '');
         }
     }
 
+    // 6. Lucky wheel last winner
+    result = result.replace(/\[זוכה אחרון בגלגל\]/g, lastWheelWinner || '');
+
+    // Clean up multiple spaces left by empty tag replacements
+    result = result.replace(/ {2,}/g, ' ').trim();
+
     return result;
 };
+
+/**
+ * Formats the round label shown in the wheel overlay and winner card.
+ * e.g. "🏆 סבב 1 • הגרלת מקום 2 🏆" or "🎁 סבב 4 • הגרלת בונוס 1 🎁"
+ */
+export function formatRoundLabel(
+    roundNumber: number,
+    placeNumber: number | null | undefined,
+    totalRounds: number | undefined,
+    isRTL: boolean,
+): string {
+    const bonusNum = totalRounds != null ? roundNumber - totalRounds : roundNumber;
+    if (placeNumber != null && placeNumber > 0) {
+        return isRTL
+            ? `🏆 סבב ${roundNumber} • הגרלת מקום ${placeNumber} 🏆`
+            : `🏆 Round ${roundNumber} • Place ${placeNumber} 🏆`;
+    }
+    if (placeNumber === null) {
+        return isRTL
+            ? `🎁 סבב ${roundNumber} • הגרלת בונוס ${bonusNum} 🎁`
+            : `🎁 Round ${roundNumber} • Bonus Draw ${bonusNum} 🎁`;
+    }
+    return isRTL ? `🎡 סבב ${roundNumber}` : `🎡 Round ${roundNumber}`;
+}

@@ -14,9 +14,9 @@
  */
 
 // ── Phase fractions (must sum to 1.0) ────────────────────────────
-const ACCEL_FRAC = 0.15;                              // 15% — ramp up
-const DECEL_FRAC = 0.40;                              // 40% — slow down (viewers see it landing)
-const CRUISE_FRAC = 1 - ACCEL_FRAC - DECEL_FRAC;     // 45% — full speed
+const ACCEL_FRAC = 0.10;                              // 10% — quick ramp up
+const DECEL_FRAC = 0.65;                              // 65% — long slow-down builds suspense (~5s)
+const CRUISE_FRAC = 1 - ACCEL_FRAC - DECEL_FRAC;     // 25% — full speed
 
 // Normalized peak velocity (angle/time units) so ∫₀¹ v(u) du = 1.
 //   Accel contributes:  V_NORM × 2·ACCEL_FRAC/π
@@ -24,9 +24,8 @@ const CRUISE_FRAC = 1 - ACCEL_FRAC - DECEL_FRAC;     // 45% — full speed
 //   Decel contributes:  V_NORM × 2·DECEL_FRAC/π
 const V_NORM = 1 / (2 * (ACCEL_FRAC + DECEL_FRAC) / Math.PI + CRUISE_FRAC);
 
-// Target peak angular velocity in rad/s (≈ 2 rev/s — fast enough to be exciting,
-// slow enough that segments remain visible during cruise).
-const PEAK_OMEGA = 13; // rad/s
+// Target peak angular velocity in rad/s — calibrated so 9 rotations ≈ 8 s total.
+const PEAK_OMEGA = 10; // rad/s
 
 // ── Config ──────────────────────────────────────────────────────
 
@@ -46,7 +45,7 @@ export interface WheelPhysicsConfig {
 }
 
 const DEFAULTS = {
-    minFullRotations: 8, // enough rotations for an exciting spin (~4-5 s)
+    minFullRotations: 9, // enough rotations for an exciting spin (~8 s)
 };
 
 // ── Phase types ──────────────────────────────────────────────────
@@ -275,15 +274,21 @@ export function generateSegmentColors(
     primaryHex: string,
     secondaryHex: string,
 ): string[] {
-    const colors: string[] = [];
+    const p = primaryHex || "#6366f1";
+    const s = secondaryHex || "#818cf8";
+    // Alternating palette: primary / secondary / light-primary / light-secondary / dark-primary / dark-secondary
+    // Enough contrast between neighbours so no segment looks like a gradient of its neighbour.
     const palette = [
-        primaryHex || "#6366f1",
-        secondaryHex || "#818cf8",
-        lighten(primaryHex || "#6366f1", 20),
-        lighten(secondaryHex || "#818cf8", 15),
-        darken(primaryHex || "#6366f1", 10),
-        darken(secondaryHex || "#818cf8", 10),
+        p,
+        s,
+        lighten(p, 40),
+        lighten(s, 40),
+        darken(p, 25),
+        darken(s, 25),
+        lighten(p, 20),
+        lighten(s, 20),
     ];
+    const colors: string[] = [];
     for (let i = 0; i < count; i++) {
         colors.push(palette[i % palette.length]);
     }

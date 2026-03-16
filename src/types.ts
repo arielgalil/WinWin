@@ -202,6 +202,7 @@ export interface LuckyWheelTemplate {
   id: string;
   campaign_id: string;
   name: string;
+  total_rounds: number;
   filter_criteria: WheelFilterCriteria;
   participant_ids: string[];
   participant_names: string[];
@@ -220,6 +221,8 @@ export interface LuckyWheelWinner {
   class_name?: string;
   won_at: string;
   round_number: number;
+  /** Computed place in the countdown (1 = first, null = bonus round) */
+  place_number?: number | null;
   wheel_name?: string;
 }
 
@@ -233,6 +236,13 @@ export interface LuckyWheelControlState {
   winner_class?: string;
   wheel_name?: string;
   round_number?: number;
+  /** Computed place (1 = first, null = bonus) */
+  place_number?: number | null;
+  total_rounds?: number;
   start_at_ms?: number;
   duration_ms?: number;
+  /** Filter criteria snapshot — shown in the info card when wheel opens */
+  filter_criteria?: WheelFilterCriteria;
+  /** Resolved class names for the selected class_ids */
+  class_names?: string[];
 }

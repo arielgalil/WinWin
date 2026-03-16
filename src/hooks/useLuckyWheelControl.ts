@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { LuckyWheelControlState } from "../types";
+import { LuckyWheelControlState, WheelFilterCriteria } from "../types";
 import { logger } from "../utils/logger";
 
 /**
@@ -74,6 +74,8 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             participantNames: string[],
             wheelName?: string,
             roundNumber: number = 1,
+            filterCriteria?: WheelFilterCriteria,
+            classNames?: string[],
         ) => {
             // Send broadcast for immediate response
             await broadcast({
@@ -82,6 +84,8 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                 participant_names: participantNames,
                 wheel_name: wheelName,
                 round_number: roundNumber,
+                filter_criteria: filterCriteria,
+                class_names: classNames,
             });
 
             // Persist to DB for reliability/refresh
@@ -114,6 +118,8 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
             durationMs: number,
             participantNames: string[],
             winnerClass?: string,
+            placeNumber?: number | null,
+            totalRounds?: number,
         ) => {
             await broadcast({
                 action: "SPIN",
@@ -121,6 +127,8 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                 winner_name: winnerName,
                 winner_class: winnerClass,
                 round_number: roundNumber,
+                place_number: placeNumber,
+                total_rounds: totalRounds,
                 start_at_ms: startAtMs,
                 duration_ms: durationMs,
                 participant_names: participantNames,
@@ -135,6 +143,8 @@ export function useLuckyWheelAdmin(campaignId: string | undefined) {
                             winner_index: winnerIndex,
                             winner_name: winnerName,
                             round_number: roundNumber,
+                            place_number: placeNumber,
+                            total_rounds: totalRounds,
                             start_at_ms: startAtMs,
                             duration_ms: durationMs,
                             participant_names: participantNames,

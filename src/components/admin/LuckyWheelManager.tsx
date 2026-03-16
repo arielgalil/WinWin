@@ -23,7 +23,6 @@ import {
     FerrisWheel,
     Play,
     Plus,
-    Square,
     Trash2,
     Users,
     Zap,
@@ -81,6 +80,9 @@ export const LuckyWheelManager: React.FC = () => {
     const [liveRound, setLiveRound] = useState(1);
     const [isSpinning, setIsSpinning] = useState(false);
     const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const shrinkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Ref mirror so shrinkTimer can check if wheel was deactivated before firing
+    const liveTemplateRef = useRef<LuckyWheelTemplate | null>(null);
 
     const lastDeactivatedIdRef = useRef<string | null>(null);
 
@@ -100,12 +102,16 @@ export const LuckyWheelManager: React.FC = () => {
                 queryClient.invalidateQueries({ queryKey: ["wheel-winners", campaignId] });
             }, (cmd.duration_ms ?? 10000) + 1500);
         } else if (cmd.action === "DEACTIVATE") {
+            if (shrinkTimerRef.current) clearTimeout(shrinkTimerRef.current);
+            if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
             setLiveTemplate(null);
             setLiveRound(1);
             setIsSpinning(false);
-            if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
         }
     }, [wheelAdmin.remoteCommand, templates, campaignId, queryClient]);
+
+    // Keep ref in sync with state for use inside timeouts
+    React.useEffect(() => { liveTemplateRef.current = liveTemplate; }, [liveTemplate]);
 
     // Restore liveTemplate from settings
     React.useEffect(() => {
@@ -147,7 +153,7 @@ export const LuckyWheelManager: React.FC = () => {
 
     // ── Create / Edit form ──
     const handleSaveTemplate = useCallback(
-        async (name: string, criteria: WheelFilterCriteria) => {
+        async (name: string, totalRounds: number, criteria: WheelFilterCriteria) => {
             const { ids, names, weights } = await filterParticipants(
                 criteria,
                 allStudents,
@@ -161,6 +167,7 @@ export const LuckyWheelManager: React.FC = () => {
                 await updateTemplate({
                     id: editingTemplate.id,
                     name,
+                    total_rounds: totalRounds,
                     filter_criteria: criteria,
                     participant_ids: ids,
                     participant_names: names,
@@ -170,6 +177,7 @@ export const LuckyWheelManager: React.FC = () => {
             } else {
                 await createTemplate({
                     name,
+                    total_rounds: totalRounds,
                     filter_criteria: criteria,
                     participant_ids: ids,
                     participant_names: names,
@@ -220,11 +228,19 @@ export const LuckyWheelManager: React.FC = () => {
             setLiveTemplate(liveTmpl);
             setLiveRound(1);
 
+            // Resolve class names for the info card
+            const resolvedClassNames = template.filter_criteria.class_ids?.length
+                ? (classes ?? []).filter(c => template.filter_criteria.class_ids!.includes(c.id)).map(c => c.name)
+                : [];
+
             // This hook function performs BOTH the broadcast AND the DB update to app_settings
             await wheelAdmin.activateWheel(
                 liveTmpl.id,
                 liveNames,
                 template.name,
+                1,
+                template.filter_criteria,
+                resolvedClassNames,
             );
 
             await recordActivation(template.id);
@@ -238,6 +254,10 @@ export const LuckyWheelManager: React.FC = () => {
 
     const handleSpin = useCallback(async () => {
         if (!liveTemplate) return;
+        const totalRounds = liveTemplate.total_rounds ?? 0;
+        const placeNumber = totalRounds > 0 && liveRound <= totalRounds
+            ? totalRounds - liveRound + 1
+            : null;
         const weights = liveTemplate.ticket_weights;
         const idx = (weights && weights.length === liveTemplate.participant_names.length)
             ? (() => {
@@ -276,6 +296,8 @@ export const LuckyWheelManager: React.FC = () => {
             durationMs,
             liveTemplate.participant_names,
             winnerClassName,
+            placeNumber,
+            totalRounds > 0 ? totalRounds : undefined,
         );
 
         // 3b. Mark spinning state locally (remote admins get it via remoteCommand effect)
@@ -309,6 +331,7 @@ export const LuckyWheelManager: React.FC = () => {
                 student_name: winnerName,
                 class_name: winnerClassName,
                 round_number: liveRound,
+                place_number: placeNumber,
                 wheel_name: liveTemplate.name,
             });
         } catch (e) {
@@ -316,13 +339,21 @@ export const LuckyWheelManager: React.FC = () => {
         }
 
         // 6. After celebration, push updated list to dashboard so the wheel shrinks
-        setTimeout(async () => {
+        if (shrinkTimerRef.current) clearTimeout(shrinkTimerRef.current);
+        shrinkTimerRef.current = setTimeout(async () => {
+            // Abort if wheel was deactivated while waiting
+            if (!liveTemplateRef.current || liveTemplateRef.current.id !== updatedTemplate.id) return;
             try {
+                const shrinkClassNames = updatedTemplate.filter_criteria.class_ids?.length
+                    ? (classes ?? []).filter(c => updatedTemplate.filter_criteria.class_ids!.includes(c.id)).map(c => c.name)
+                    : [];
                 await wheelAdmin.activateWheel(
                     updatedTemplate.id,
                     updatedTemplate.participant_names,
                     updatedTemplate.name,
                     liveRound + 1,
+                    updatedTemplate.filter_criteria,
+                    shrinkClassNames,
                 );
             } catch (e) {
                 console.error("Failed to shrink wheel", e);
@@ -331,8 +362,15 @@ export const LuckyWheelManager: React.FC = () => {
     }, [liveTemplate, liveRound, wheelAdmin, saveWinner, allStudents, classes]);
 
     const handleDeactivate = useCallback(async () => {
+        // Cancel any pending post-spin re-activation
+        if (shrinkTimerRef.current) clearTimeout(shrinkTimerRef.current);
+        if (spinTimerRef.current) clearTimeout(spinTimerRef.current);
+        // Mark as deactivated BEFORE clearing, so the restore-effect won't
+        // re-activate while settings.active_lucky_wheel_id is still the old ID.
+        lastDeactivatedIdRef.current = liveTemplateRef.current?.id ?? null;
         setLiveTemplate(null);
         setLiveRound(1);
+        setIsSpinning(false);
         await wheelAdmin.deactivateWheel();
         showToast(t("wheel_deactivated_toast"), "success");
     }, [wheelAdmin, showToast, t]);
@@ -424,42 +462,62 @@ export const LuckyWheelManager: React.FC = () => {
                         exit={{ opacity: 0, y: -20 }}
                         className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-4 shadow-xl text-white"
                     >
-                        <div className="flex items-center justify-between flex-wrap gap-3">
-                            <div>
+                        <div className="flex items-center gap-4">
+                            {/* Close / Stop button — far left, always red, touch-friendly */}
+                            <button
+                                onClick={handleDeactivate}
+                                disabled={isSpinning}
+                                className="shrink-0 flex flex-col items-center gap-0.5 px-3 py-2 bg-red-600 text-white rounded-lg text-xs font-bold active:scale-95 transition-transform disabled:opacity-30 disabled:cursor-not-allowed"
+                                style={{ touchAction: "manipulation" }}
+                                title={t("close_wheel_btn")}
+                            >
+                                {/* Filled stop square */}
+                                <span className="block w-4 h-4 rounded-sm bg-white" />
+                                <span>{t("close_wheel_btn")}</span>
+                            </button>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
                                 <div className="text-xs uppercase tracking-wider opacity-70 font-bold">
                                     {t("live_control_title")}
                                 </div>
-                                <div className="font-bold text-lg">
+                                <div className="font-bold text-lg leading-tight truncate">
                                     {liveTemplate.name}
                                 </div>
                                 <div className="text-sm opacity-70">
-                                    {t("round_prefix")} #{liveRound} •{" "}
+                                    {(() => {
+                                        const totalRounds = liveTemplate.total_rounds ?? 0;
+                                        const placeNum = totalRounds > 0 && liveRound <= totalRounds
+                                            ? totalRounds - liveRound + 1 : null;
+                                        return placeNum !== null
+                                            ? t("place_label" as any, { place: placeNum, total: totalRounds })
+                                            : t("bonus_label" as any, { round: liveRound });
+                                    })()} •{" "}
                                     {t("participants_count_label", {
-                                        count: liveTemplate.participant_names
-                                            .length,
+                                        count: liveTemplate.participant_names.length,
                                     })}
                                 </div>
                             </div>
-                            <div className="flex gap-2 flex-wrap">
-                                <button
-                                    onClick={handleSpin}
-                                    disabled={isSpinning}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-slate-900 rounded-lg font-bold hover:bg-amber-300 active:scale-95 transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
-                                >
-                                    {isSpinning
-                                        ? <RefreshIcon className="w-4 h-4 animate-spin" />
-                                        : <Zap className="w-4 h-4" />}
-                                    {t("spin_btn")} #{liveRound}
-                                </button>
-                                <button
-                                    onClick={handleDeactivate}
-                                    disabled={isSpinning}
-                                    className="flex items-center gap-2 px-4 py-2.5 bg-red-500/30 text-white rounded-lg font-medium hover:bg-red-500/50 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                                >
-                                    <Square className="w-4 h-4" />
-                                    {t("close_wheel_btn")}
-                                </button>
-                            </div>
+
+                            {/* Spin button — far right */}
+                            <button
+                                onClick={handleSpin}
+                                disabled={isSpinning}
+                                className="shrink-0 flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-slate-900 rounded-lg font-bold active:scale-95 transition-transform shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+                                style={{ touchAction: "manipulation" }}
+                            >
+                                {isSpinning
+                                    ? <RefreshIcon className="w-4 h-4 animate-spin" />
+                                    : <Play className="w-4 h-4 fill-current" />}
+                                {(() => {
+                                    const totalRounds = liveTemplate.total_rounds ?? 0;
+                                    const placeNum = totalRounds > 0 && liveRound <= totalRounds
+                                        ? totalRounds - liveRound + 1 : null;
+                                    return placeNum !== null
+                                        ? t("spin_place_btn" as any, { place: placeNum, total: totalRounds })
+                                        : t("spin_bonus_btn" as any, { round: liveRound });
+                                })()}
+                            </button>
                         </div>
                     </motion.div>
                 )}
@@ -510,105 +568,91 @@ export const LuckyWheelManager: React.FC = () => {
                                 layout
                                 className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-xl p-4 shadow-[var(--card-shadow)] hover:border-[var(--primary-base)]/30 transition-colors"
                             >
-                                <div className="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h4 className="font-bold text-[var(--text-main)] flex items-center gap-2 flex-wrap">
+                                {/* Card header: name + status + go-live */}
+                                <div className="flex items-start justify-between gap-2 mb-3">
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="font-bold text-[var(--text-main)] flex items-center gap-2 flex-wrap leading-tight">
                                             {tmpl.name}
-                                            <div className="flex items-center gap-1.5 flex-wrap">
-                                                {liveTemplate?.id === tmpl.id &&
-                                                    (
-                                                        <span className="flex items-center gap-1.5 px-2 py-0.5 bg-red-500 text-[10px] font-black uppercase tracking-wider text-white rounded-full animate-pulse shadow-sm">
-                                                            <span className="w-1.5 h-1.5 bg-white rounded-full" />
-                                                            {t("live_status")}
+                                            {liveTemplate?.id === tmpl.id
+                                                ? (
+                                                    <span className="flex items-center gap-1 px-2 py-0.5 bg-red-500 text-[10px] font-black uppercase tracking-wider text-white rounded-full animate-pulse">
+                                                        <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                                                        {t("live_status")}
+                                                    </span>
+                                                )
+                                                : tmpl.last_activated_at
+                                                    ? (
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold flex items-center gap-1">
+                                                            <Zap className="w-2.5 h-2.5" />
+                                                            {t("activated_badge")}
+                                                        </span>
+                                                    )
+                                                    : (
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-[var(--bg-surface)] text-[var(--text-muted)] text-[10px] font-bold">
+                                                            {t("never_activated_badge")}
                                                         </span>
                                                     )}
-                                                {(!liveTemplate ||
-                                                    liveTemplate.id !==
-                                                        tmpl.id) && (
-                                                        tmpl.last_activated_at
-                                                            ? (
-                                                                <span className="px-1.5 py-0.5 rounded bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                                                                    <Zap className="w-2.5 h-2.5" />
-                                                                    {t("activated_badge")}
-                                                                </span>
-                                                            )
-                                                            : (
-                                                                <span className="px-1.5 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text-muted)] text-[10px] font-bold uppercase tracking-wider">
-                                                                    {t("never_activated_badge")}
-                                                                </span>
-                                                            )
-                                                    )}
-                                            </div>
                                         </h4>
-                                        <div className="flex items-center gap-1.5 mt-1">
-                                            <Users className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                                            <span className="text-sm text-[var(--text-muted)]">
-                                                {t("participants_count_label", {
-                                                    count: liveCounts[tmpl.id] ?? tmpl.participant_names.length,
-                                                })}
-                                            </span>
-                                        </div>
                                     </div>
                                     <button
                                         onClick={() => handleActivate(tmpl)}
                                         disabled={!!liveTemplate}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-sm font-bold hover:bg-emerald-500/20 active:scale-95 transition-all disabled:opacity-40"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-sm font-bold hover:bg-emerald-500/20 active:scale-95 transition-all disabled:opacity-40 shrink-0"
                                     >
                                         <Play className="w-3.5 h-3.5" />
                                         {t("go_live_btn")}
                                     </button>
                                 </div>
 
-                                {/* Filter summary */}
-                                {tmpl.filter_criteria && (
-                                    <div className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] rounded-lg px-3 py-2 mb-3">
-                                        {tmpl.filter_criteria.class_ids?.length
-                                            ? `${tmpl.filter_criteria.class_ids.length} ${
-                                                t("classes_plural" as any)
-                                            }`
-                                            : t("all_campaigns" as any)}
-                                        {tmpl.filter_criteria.min_score !=
-                                                null &&
-                                            ` • ${
-                                                t("min_score_filter_label")
-                                            }: ${
-                                                formatScore(
-                                                    tmpl.filter_criteria
-                                                        .min_score,
-                                                )
-                                            }`}
-                                        {tmpl.filter_criteria.max_score !=
-                                                null &&
-                                            ` • ${
-                                                t("max_score_filter_label")
-                                            }: ${
-                                                formatScore(
-                                                    tmpl.filter_criteria
-                                                        .max_score,
-                                                )
-                                            }`}
-                                        {tmpl.filter_criteria
-                                            .exclude_previous_winners &&
-                                            ` • ${
-                                                t("exclude_past_winners_label")
-                                            }`}
-                                    </div>
-                                )}
-
-                                {tmpl.last_activated_at && (
-                                    <div className="text-[11px] text-[var(--text-muted)] mt-1 flex items-center gap-1">
-                                        <RefreshIcon className="w-3 h-3 opacity-50" />
-                                        {t("last_activated_label")}:{" "}
-                                        {new Date(tmpl.last_activated_at)
-                                            .toLocaleString("he-IL", {
-                                                day: "2-digit",
-                                                month: "2-digit",
-                                                year: "numeric",
-                                                hour: "2-digit",
-                                                minute: "2-digit",
+                                {/* Stats pills row */}
+                                <div className="flex flex-wrap gap-1.5 mb-3">
+                                    {/* Participants */}
+                                    <span className="flex items-center gap-1 text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                        <Users className="w-3 h-3" />
+                                        {t("participants_count_label", {
+                                            count: liveCounts[tmpl.id] ?? tmpl.participant_names.length,
+                                        })}
+                                    </span>
+                                    {/* Total rounds */}
+                                    {(tmpl.total_rounds ?? 0) > 0 && (
+                                        <span className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                                            🏆 {t("n_rounds" as any, { count: tmpl.total_rounds })}
+                                        </span>
+                                    )}
+                                    {/* Class filter */}
+                                    {tmpl.filter_criteria && (
+                                        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                            {tmpl.filter_criteria.class_ids?.length
+                                                ? `${tmpl.filter_criteria.class_ids.length} ${t("classes_plural" as any)}`
+                                                : t("all_groups" as any)}
+                                        </span>
+                                    )}
+                                    {/* Score range */}
+                                    {tmpl.filter_criteria?.min_score != null && (
+                                        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                            {t("min_score_filter_label")}: {formatScore(tmpl.filter_criteria.min_score)}
+                                        </span>
+                                    )}
+                                    {tmpl.filter_criteria?.max_score != null && (
+                                        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                            {t("max_score_filter_label")}: {formatScore(tmpl.filter_criteria.max_score)}
+                                        </span>
+                                    )}
+                                    {tmpl.filter_criteria?.exclude_previous_winners && (
+                                        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                            {t("exclude_past_winners_label")}
+                                        </span>
+                                    )}
+                                    {/* Last activated */}
+                                    {tmpl.last_activated_at && (
+                                        <span className="text-[11px] text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full flex items-center gap-1">
+                                            <RefreshIcon className="w-2.5 h-2.5 opacity-50" />
+                                            {new Date(tmpl.last_activated_at).toLocaleString("he-IL", {
+                                                day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
                                             })}
-                                    </div>
-                                )}
+                                        </span>
+                                    )}
+                                </div>
 
                                 <div className="flex gap-1.5">
                                     <button
@@ -694,8 +738,12 @@ export const LuckyWheelManager: React.FC = () => {
                                             <td className="px-4 py-2.5 text-[var(--text-muted)]">
                                                 {w.wheel_name || "—"}
                                             </td>
-                                            <td className="px-4 py-2.5 text-[var(--text-muted)]">
-                                                #{w.round_number}
+                                            <td className="px-4 py-2.5 text-[var(--text-muted)] font-bold">
+                                                {w.place_number != null
+                                                    ? `מקום ${w.place_number}`
+                                                    : w.place_number === null
+                                                        ? t("bonus_label" as any, { round: w.round_number })
+                                                        : `#${w.round_number}`}
                                             </td>
                                             <td className="px-4 py-2.5 text-[var(--text-muted)] text-xs whitespace-nowrap">
                                                 {new Date(w.won_at)
@@ -760,7 +808,7 @@ interface TemplateFormDialogProps {
         criteria: WheelFilterCriteria,
         students: Student[],
     ) => Promise<{ ids: string[]; names: string[]; weights: number[] }>;
-    onSave: (name: string, criteria: WheelFilterCriteria) => void;
+    onSave: (name: string, totalRounds: number, criteria: WheelFilterCriteria) => void;
     onClose: () => void;
     isSaving: boolean;
 }
@@ -776,6 +824,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
 }) => {
     const { t } = useLanguage();
     const [name, setName] = useState(template?.name || "");
+    const [totalRounds, setTotalRounds] = useState<string>(
+        template?.total_rounds?.toString() || "",
+    );
     const [selectedClassIds, setSelectedClassIds] = useState<string[]>(
         template?.filter_criteria?.class_ids || [],
     );
@@ -815,9 +866,9 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
     }, [filterParticipants, buildCriteria, allStudents]);
 
     const handleSubmit = useCallback(() => {
-        if (!name.trim()) return;
-        onSave(name.trim(), buildCriteria());
-    }, [name, buildCriteria, onSave]);
+        if (!name.trim() || !totalRounds || Number(totalRounds) < 1) return;
+        onSave(name.trim(), Number(totalRounds), buildCriteria());
+    }, [name, totalRounds, buildCriteria, onSave]);
 
     const toggleClass = useCallback((classId: string) => {
         setSelectedClassIds((prev) =>
@@ -854,18 +905,33 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                             : t("new_wheel_template")}
                     </h2>
 
-                    {/* Name */}
-                    <div>
-                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                            {t("template_name_label")}
-                        </label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder={t("template_name_placeholder")}
-                            className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-[var(--primary-base)] focus:border-transparent outline-none text-start"
-                        />
+                    {/* Name + Total Rounds (side by side) */}
+                    <div className="grid grid-cols-[1fr_auto] gap-3 items-end">
+                        <div>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                {t("template_name_label")}
+                            </label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder={t("template_name_placeholder")}
+                                className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-[var(--primary-base)] focus:border-transparent outline-none text-start"
+                            />
+                        </div>
+                        <div className="w-28">
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                {t("total_rounds_label")} <span className="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                min={1}
+                                value={totalRounds}
+                                onChange={(e) => setTotalRounds(e.target.value)}
+                                placeholder={t("total_rounds_placeholder" as any)}
+                                className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-main)] rounded-lg text-[var(--text-main)] focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none text-center font-bold"
+                            />
+                        </div>
                     </div>
 
                     {/* Class filter */}
@@ -874,7 +940,7 @@ const TemplateFormDialog: React.FC<TemplateFormDialogProps> = ({
                             {t("filter_by_classes_label")}
                         </label>
                         <div className="flex flex-wrap gap-2">
-                            {classes.map((cls) => (
+                            {[...classes].sort((a, b) => a.name.localeCompare(b.name, "he", { numeric: true, sensitivity: "base" })).map((cls) => (
                                 <button
                                     key={cls.id}
                                     onClick={() => toggleClass(cls.id)}
