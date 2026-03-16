@@ -6,6 +6,7 @@ const CampaignSelector = React.lazy(() => import('./components/CampaignSelector'
 const SuperAdminPanel = React.lazy(() => import('./components/SuperAdminPanel').then(m => ({ default: m.SuperAdminPanel })));
 const LiteTeacherView = React.lazy(() => import('./components/lite/LiteTeacherView').then(m => ({ default: m.LiteTeacherView })));
 const LiteLogin = React.lazy(() => import('./components/lite/LiteLogin').then(m => ({ default: m.LiteLogin })));
+const AboutPage = React.lazy(() => import('./components/AboutPage').then(m => ({ default: m.AboutPage })));
 
 import { LoadingScreen } from './components/ui/LoadingScreen';
 import { PageSkeleton } from './components/ui/PageSkeleton';
@@ -18,12 +19,8 @@ import { useCampaign } from './hooks/useCampaign';
 import { useCampaignRole } from './hooks/useCampaignRole';
 import { useAuthPermissions } from './services/useAuthPermissions';
 import { useLanguage } from './hooks/useLanguage';
-import { useTheme } from './hooks/useTheme';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
-import { PwaReloadPrompt } from './components/ui/PwaReloadPrompt';
-import { useAutoUpdate } from './hooks/useAutoUpdate';
 import { prewarmKioskAssets } from './utils/pwaUtils';
-import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const LanguageSync: React.FC = () => {
     const { settings: campaignLanguage } = useCampaign({
@@ -40,7 +37,7 @@ const LanguageSync: React.FC = () => {
     return null;
 };
 
-const CampaignContext: React.FC<{ children: React.ReactNode; skeletonType?: 'dashboard' | 'admin' | 'vote' }> = ({ children, skeletonType = 'generic' }) => {
+const CampaignContext: React.FC<{ children: React.ReactNode; skeletonType?: 'dashboard' | 'admin' | 'vote' | 'generic' }> = ({ children, skeletonType = 'generic' }) => {
     const { t } = useLanguage();
     const { campaign, settings, isLoadingCampaign, isLoadingSettings, isCampaignError, campaignFetchError } = useCampaign();
 
@@ -79,7 +76,6 @@ const AdminRoute = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { slug } = useParams();
-    const location = useLocation();
 
     // ProtectedRoute handles !user check
     // However, we still need to derive campaign data for the title and props
@@ -90,13 +86,13 @@ const AdminRoute = () => {
     return (
         <CampaignContext skeletonType="admin">
             <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('manage')} />
-            {settings && (
+            {settings && user && (
                 <AdminPanel
                     user={user}
                     onLogout={async () => { await logout(); navigate('/'); }}
                     onViewDashboard={() => navigate(`/comp/${slug}`)}
                     isSuperAdmin={isSuper || isCampaignSuper}
-                    campaignRole={campaignRole || undefined}
+                    campaignRole={campaignRole as any}
                 />
             )}
         </CampaignContext>
@@ -108,7 +104,6 @@ const VoteRoute = () => {
     const { user, logout } = useAuth();
     const { slug } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
 
     // ProtectedRoute handles !user check
     const { campaign, settings } = useCampaign();
@@ -117,12 +112,14 @@ const VoteRoute = () => {
     return (
         <CampaignContext skeletonType="vote">
             <DynamicTitle settings={settings || undefined} campaign={campaign} pageName={t('enter_points')} />
-            <LiteTeacherView
-                user={user}
-                userRole={campaignRole || undefined}
-                onLogout={async () => { await logout(); navigate('/'); }}
-                onViewDashboard={() => navigate(`/comp/${slug}`)}
-            />
+            {user && (
+                <LiteTeacherView
+                    user={user}
+                    userRole={campaignRole as any}
+                    onLogout={async () => { await logout(); navigate('/'); }}
+                    onViewDashboard={() => navigate(`/comp/${slug}`)}
+                />
+            )}
         </CampaignContext>
     );
 };
@@ -139,10 +136,10 @@ const LoginRoute = () => {
     // NOTE: This hook is only meaningful if 'slug' is present.
     const { campaign, settings, isLoadingCampaign, isLoadingSettings, isFetchingCampaign, isFetchingSettings } = useCampaign({
         slugOverride: slug,
-        settingsSelector: (s) => s,
+        settingsSelector: (s: any) => s,
         initialData: location.state?.campaign ? {
-            campaign: location.state.campaign,
-            settings: location.state.campaign.app_settings?.[0]
+            campaign: location.state.campaign as any,
+            settings: location.state.campaign.app_settings?.[0] as any
         } : undefined
     });
 
@@ -150,7 +147,7 @@ const LoginRoute = () => {
     const isBranded = !!slug;
 
     // Fallback for settings if manual construction is needed (legacy support for state shape)
-    const activeSettings = settings || (campaign ? { campaign_id: campaign.id, competition_name: campaign.name, logo_url: campaign.logo_url } : undefined);
+    const activeSettings = settings || (campaign ? { campaign_id: (campaign as any).id, competition_name: (campaign as any).name, logo_url: (campaign as any).logo_url } : undefined) as any;
 
     const { campaignRole, isLoadingRole } = useCampaignRole(campaign?.id, user?.id);
     const { canAccessAdmin, isTeacher, isSuper } = useAuthPermissions();
@@ -189,7 +186,7 @@ const LoginRoute = () => {
                 }
             }
         }
-    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching, isRoleLoading]);
+    }, [user, authLoading, slug, navigate, campaignRole, canAccessAdmin, isTeacher, isSuper, isActuallyFetching, isRoleLoading, location.pathname]);
 
     if (isBranded && (isActuallyFetching || isRoleLoading) && !hasBrandingData) {
         return <LoadingScreen message={t('loading_campaign_data')} />;
@@ -228,7 +225,6 @@ import { useRealtimeUpdate } from './hooks/useRealtimeUpdate';
 const App: React.FC = () => {
     const { t, dir } = useLanguage();
     const { user, authLoading, authStatus, isSlowConnection } = useAuth();
-    const { theme } = useTheme();
     const [showSW, setShowSW] = React.useState(false);
 
     // Subscribe to system updates via Supabase Realtime
@@ -277,8 +273,13 @@ const App: React.FC = () => {
                 <div className="flex-1 flex flex-col min-h-0 relative">
                     <React.Suspense fallback={<PageSkeleton type="generic" message={t('loading_system')} />}>
                         <Routes>
-                            <Route path="/" element={<><DynamicTitle /><CampaignSelector user={null} /></>} />
-                            <Route path="/super" element={<><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel onLogout={() => { }} /></>} />
+                            <Route path="/" element={<><DynamicTitle /><CampaignSelector /></>} />
+                            <Route path="/about" element={<><DynamicTitle pageName="מהי תחרות מצמיחה?" /><AboutPage /></>} />
+                            <Route path="/super" element={
+                                <ProtectedRoute allowedRoles={['superuser']}>
+                                    <><DynamicTitle pageName={t('system_admin')} /><SuperAdminPanel /></>
+                                </ProtectedRoute>
+                            } />
                             <Route path="/login" element={<LoginRoute />} />
                             <Route path="/login/:slug" element={<LoginRoute />} />
                             <Route path="/comp/:slug" element={<DashboardRoute />} />

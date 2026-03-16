@@ -34,7 +34,7 @@ interface CampaignSelectorProps {
     user?: UserProfile | null;
 }
 
-export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
+export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
     const { t, dir } = useLanguage();
     const navigate = useNavigate();
     const { hardReset } = useAuth();
@@ -109,7 +109,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
 
             <main className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-8 md:px-8 md:pt-12 flex-1 pb-0 rtl:text-right ltr:text-left">
                 <div className="flex flex-row items-center justify-start gap-5 md:gap-8 mb-12">
-                    <MotionDiv initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-20 h-20 md:w-28 md:h-28 bg-[#f8fafc] rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center text-primary border-4 border-slate-200 shrink-0 overflow-hidden relative no-select no-drag">
+                    <MotionDiv initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-20 h-20 md:w-28 md:h-28 bg-[#f8fafc] rounded-full shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border-4 border-slate-200 shrink-0 overflow-hidden relative no-select no-drag text-emerald-600">
                         <div className="absolute inset-0 bg-primary/5" />
                         <SproutIcon className="w-12 h-12 md:w-16 md:h-16 relative z-10" />
                     </MotionDiv>
@@ -163,6 +163,30 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                         </MotionDiv>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
+                            {/* About card — always first */}
+                            <MotionDiv
+                                whileHover={{ y: -8, scale: 1.02 }}
+                                className="group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-none"
+                                onClick={() => navigate('/about')}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
+                                <div className="flex items-center gap-4 mb-4 relative z-10">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0">
+                                        <SproutIcon className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="rtl:text-right ltr:text-left min-w-0">
+                                        <h3 className="text-xl font-black leading-tight drop-shadow-sm">מהי תחרות מצמיחה?</h3>
+                                        <p className="text-white/70 text-[10px] font-black uppercase tracking-wider">מידע על הפלטפורמה</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-3 mt-auto relative z-10">
+                                    <button className="w-full py-3 rounded-[var(--radius-main)] bg-white text-gray-900 transition-all flex items-center justify-center gap-3 font-black shadow-xl group-hover:shadow-white/20">
+                                        קרא עוד <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
+                                    </button>
+                                    <div className="h-[32px]" />
+                                </div>
+                            </MotionDiv>
+
                             {campaigns.map((camp, idx) => {
                                 const vibrantColors = [
                                     'from-blue-600 to-indigo-700',
@@ -180,36 +204,36 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = ({ user }) => {
                                     <MotionDiv
                                         key={camp.id}
                                         whileHover={{ y: -8, scale: 1.02 }}
-                                        className={`group relative flex flex-col rounded-[var(--radius-container)] p-6 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br ${colorClass} text-white border-none`}
+                                        className={`group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br ${colorClass} text-white border-none`}
                                         onClick={() => navigate(`/comp/${camp.slug}`)}
                                     >
                                         {/* Decorative element */}
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
 
-                                        <div className="flex items-center justify-between mb-8 relative z-10">
+                                        <div className="flex items-center justify-between mb-4 relative z-10">
                                             <div className="flex items-center gap-4 min-w-0">
-                                                <Logo src={camp.logo_url} className="w-16 h-16 shadow-2xl border-white/20 group-hover:scale-110 transition-transform duration-500" fallbackIcon="school" />
+                                                <Logo src={camp.logo_url} className="w-12 h-12 shadow-2xl border-white/20 group-hover:scale-110 transition-transform duration-500" fallbackIcon="school" />
                                                 <div className="rtl:text-right ltr:text-left min-w-0">
                                                     <h3 className="text-xl font-black leading-tight truncate drop-shadow-sm uppercase">{camp.name}</h3>
                                                     <p className="text-white/70 text-[10px] font-black uppercase tracking-wider truncate">{camp.school_name}</p>
                                                 </div>
                                             </div>
                                             <div className="text-left flex flex-col items-end">
-                                                <div className="text-3xl font-black tracking-tighter tabular-nums drop-shadow-md">
+                                                <div className="text-2xl font-black tracking-tighter tabular-nums drop-shadow-md">
                                                     <FormattedNumber value={camp.total_score || 0} />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="space-y-4 mt-auto relative z-10">
-                                            <button className="w-full py-4 rounded-[var(--radius-main)] bg-white text-gray-900 transition-all flex items-center justify-center gap-3 font-black shadow-xl group-hover:shadow-white/20">
+                                        <div className="space-y-3 mt-auto relative z-10">
+                                            <button className="w-full py-3 rounded-[var(--radius-main)] bg-white text-gray-900 transition-all flex items-center justify-center gap-3 font-black shadow-xl group-hover:shadow-white/20">
                                                 {t('enter_board')} <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
                                             </button>
-                                            <div className="grid grid-cols-2 gap-3" onClick={e => e.stopPropagation()}>
-                                                <button onClick={() => navigate(`/vote/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
+                                            <div className="grid grid-cols-2 gap-2" onClick={e => e.stopPropagation()}>
+                                                <button onClick={() => navigate(`/vote/${camp.slug}`, { state: { campaign: camp } })} className="py-2 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
                                                     <AwardIcon className="w-4 h-4" /> {t('enter_points')}
                                                 </button>
-                                                <button onClick={() => navigate(`/admin/${camp.slug}`, { state: { campaign: camp } })} className="py-3 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
+                                                <button onClick={() => navigate(`/admin/${camp.slug}`, { state: { campaign: camp } })} className="py-2 rounded-[var(--radius-main)] bg-black/20 text-white hover:bg-black/30 font-bold text-[11px] flex items-center justify-center gap-2 transition-colors border border-white/10 backdrop-blur-sm">
                                                     <SettingsIcon className="w-4 h-4" /> {t('manage')}
                                                 </button>
                                             </div>
