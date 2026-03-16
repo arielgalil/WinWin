@@ -616,7 +616,7 @@ export const LuckyWheelManager: React.FC = () => {
                                     {/* Total rounds */}
                                     {(tmpl.total_rounds ?? 0) > 0 && (
                                         <span className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                                            🏆 {t("n_rounds" as any, { count: tmpl.total_rounds })}
+                                            🏆 {tmpl.total_rounds === 1 ? t("n_rounds_one" as any) : t("n_rounds" as any, { count: tmpl.total_rounds })}
                                         </span>
                                     )}
                                     {/* Class filter */}
@@ -636,6 +636,11 @@ export const LuckyWheelManager: React.FC = () => {
                                     {tmpl.filter_criteria?.max_score != null && (
                                         <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
                                             {t("max_score_filter_label")}: {formatScore(tmpl.filter_criteria.max_score)}
+                                        </span>
+                                    )}
+                                    {tmpl.filter_criteria?.points_per_ticket != null && tmpl.filter_criteria.points_per_ticket > 0 && (
+                                        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-surface)] px-2 py-0.5 rounded-full">
+                                            🎟️ {formatScore(tmpl.filter_criteria.points_per_ticket)} {t("pts_per_ticket_label" as any)}
                                         </span>
                                     )}
                                     {tmpl.filter_criteria?.exclude_previous_winners && (

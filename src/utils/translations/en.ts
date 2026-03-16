@@ -285,6 +285,7 @@ export const en = {
     tag_place_3: "[3rd Place]",
     tag_random_participant: "[Random Participant]",
     tag_random_group: "[Random Group]",
+    tag_last_wheel_winner: "[Last Wheel Winner]",
     ai_default_prompt_content:
         '\nYou are an enthusiastic educational mentor guiding a school competition.\n      \nReal-time data:\n1. Last action: [Action].\n2. Leaderboard leaders: [Leaders].\n3. Shared goal (Mission Control): [Goal]\n4. Class goals status: [Classes]\n\nGoal: Encourage "Inspirational Competition" (constructive competition) and refer to the shared or class goal status if relevant.\nWrite a short sentence (up to 15 words), energetic and appreciative in English.\n\nCritical guidelines:\n1. If we are close to the shared goal, mention it with excitement!\n2. If a class achieved a goal, appreciate them.\n3. Use language of "building", "climbing", "growth", "partnership", "together", "progress", "inspiration" and more.\n4. Avoid violent/aggressive language.\n5. Be witty and lighthearted.\n',
     full_backup_desc: "JSON + Media",
@@ -373,11 +374,17 @@ export const en = {
     // Dashboard
     total_institution_score: "Total Institution Score",
     points_ticker: "Points Ticker",
-    podium_title: "Top 3 Classes",
+    podium_title: "Top Groups",
     mission_meter_title: "Mission Meter",
     student_leaderboard_title: "Student Leaderboard",
     stars_momentum: "Stars in Momentum",
     student_stars: "%{instType} Stars",
+    lucky_wheel_winners_tab: "Lucky Wheel Winners",
+    wheel_waiting: "Stay tuned for the next draw ⭐",
+    leaderboard_display_settings: "Leaderboard Display Settings",
+    leaderboard_display_settings_desc: "Control how many players are shown",
+    momentum_stars_count: "Momentum stars count",
+    session_stars_count: "Session stars count",
     no_data_available: "No data available",
     arena_title: "The Arena",
     no_data: "No data to display",
@@ -395,7 +402,7 @@ export const en = {
     competition_label: "Competition",
 
     // Goals Manager
-    stage_label: "Stage %{index}",
+    stage_label: "Shared Goal %{index}",
     stage_progress: "Stage Progress",
     upload_error_label: "Upload Error",
     emoji_only_error: "Please enter only one emoji (e.g., 🏆)",
@@ -626,6 +633,7 @@ export const en = {
     placeholder_place_3: "3rd Place",
     placeholder_random_participant: "Random Participant",
     placeholder_random_group: "Random Group",
+    placeholder_last_wheel_winner: "Wheel Winner",
 
     // AI Settings
     ai_settings_title: "Artificial Intelligence Settings",
@@ -633,10 +641,9 @@ export const en = {
     ai_test_connection_desc:
         "The API key is configured on the server and used to generate smart real-time commentary.",
     ai_test_connection_button: "Check connection",
-    ai_api_key_title: "Unique API Key for Competition",
+    ai_api_key_title: "AI Key Security",
     ai_api_key_desc:
-        "You can set a specific API key for this competition. If left empty, the system will use the default server key.",
-    ai_api_key_placeholder: "Paste your API key here (AIza...)",
+        "The API key is now securely managed via Supabase Secrets. To change the key, use the Supabase Dashboard (Settings -> Edge Functions).",
     ai_prompt_title: "Commentator Prompt (Custom Prompt)",
     ai_prompt_desc:
         "Here you can change the AI instructions. Leave empty to use the system default.",
@@ -648,8 +655,11 @@ export const en = {
         "Add words the AI will try to incorporate into the commentary (e.g., school slogan, monthly value, key figures).",
     ai_keywords_placeholder: "Type a tag and press Enter...",
     ai_no_tags: "No tags defined",
-    ai_settings_saved: "AI settings saved successfully",
     ai_settings_save_error: "Error saving: %{error}",
+    ai_status_label: "AI Service Status",
+    ai_active_status: "Active and Connected",
+    ai_disabled_status: "Disabled (Contact system admin to enable)",
+    ai_disabled_warning: "AI usage is disabled for this competition.",
 
     // AI Service
     ai_server_connection_error:
@@ -660,6 +670,7 @@ export const en = {
     ai_connection_success_server: "Connection OK",
     ai_empty_response: "Empty response",
     ai_communication_error: "Communication Error",
+    ai_settings_saved: "AI settings saved successfully",
     ai_commentary_fallback: "Keep growing and climbing up! 🌱",
     ai_fallback_1: "Every small effort builds great success!",
     ai_fallback_2: "Inspirational competition - learning and growing together!",
@@ -667,9 +678,9 @@ export const en = {
     ai_fallback_4: "The class is one team on the way to the goal!",
     ai_fallback_5: "Notice the impressive leap! It's possible for everyone!",
     ai_prompt_generate_filler:
-        "Create 5 short motivational messages promoting 'Kinaat Sofrim' (inspirational competition) and growth for %{schoolName} in the %{competitionName} campaign. Return as a JSON array of strings.",
+        "Create 6 short motivational messages (one sentence each) for %{schoolName} in the %{competitionName} campaign. Each message should reflect a different angle: encouragement, humor, competition, unity, pride, inspiration. Write in the spirit of mutual growth and constructive competition – you don't need to use the term 'Kinaat Sofrim' itself, just capture its essence. Vary the phrasing, avoid repeating the same patterns. Return as a JSON array of strings.",
     ai_instruction_commentator:
-        "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language.",
+        "You are an educational mentor promoting 'Kinaat Sofrim' – constructive and growth-oriented competition. Your role is to turn the scoreboard into a source of inspiration. Focus on celebrating effort, personal/group progress, and contribution to the whole. Present others' success as proof that 'it is possible'. Use positive, empowering, and witty language. Never use technical identifiers.",
     ai_prompt_summarize:
         "Analyze the point activity: %{data}. Summarize in WhatsApp format (use * for bold) in the spirit of growth-oriented competition. Focus on: 1. Effort and persistence. 2. 'The Common Journey' – group progress toward the goal. 3. Inspiration – how individual excellence lifts the whole. Call for continued collective climbing. IMPORTANT: Do NOT use any IDs, internal codes, or UUIDs from the data. Use only the names and descriptions provided.",
     ai_instruction_admin:
@@ -742,6 +753,16 @@ export const en = {
     preview_participants_btn: "Preview Participants",
     go_live_btn: "Go Live",
     spin_btn: "Spin!",
+    spin_place_btn: "Spin Place %{place} of %{total}",
+    spin_bonus_btn: "Spin Place %{round} Bonus",
+    place_label: "Place %{place} of %{total}",
+    bonus_label: "Place %{round} Bonus",
+    total_rounds_label: "No. of Places",
+    total_rounds_placeholder: "e.g. 5",
+    n_rounds: "%{count} rounds",
+    n_rounds_one: "1 round",
+    pts_per_ticket_label: "pts/ticket",
+    all_groups: "All Groups",
     next_round_btn: "Next Round",
     close_wheel_btn: "Close",
     waiting_for_admin_label: "Waiting for admin to spin...",
