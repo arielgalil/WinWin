@@ -1,5 +1,5 @@
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useRef, useCallback } from 'react';
 import { ClassRoom } from '../../types';
 import { TrophyIcon, CompassIcon, FootprintsIcon, MapIcon, TargetIcon, ListIcon } from '../ui/Icons';
 import { motion } from 'framer-motion';
@@ -18,11 +18,64 @@ interface ClassTickerProps {
 export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, highlightClassId }) => {
   const { t } = useLanguage();
   const [tickerContent, setTickerContent] = useState<ClassRoom[]>([]);
-  const [duration, setDuration] = useState(40);
-  const [isHovered, setIsHovered] = useState(false);
 
   const CARD_WIDTH = 190;
   const MARGIN_RIGHT = 12;
+  const SPEED_PX_PER_SEC = 35;
+
+  // Scroll refs
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const singleCycleWidthRef = useRef(0);
+  const positionRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
+  const isPausedRef = useRef(false);
+  const hoverTimeoutRef = useRef<number | null>(null);
+
+  // Drag refs
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragBasePositionRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const animate = useCallback((timestamp: number) => {
+    if (lastTimeRef.current === null) lastTimeRef.current = timestamp;
+    const dt = (timestamp - lastTimeRef.current) / 1000;
+    lastTimeRef.current = timestamp;
+
+    if (!isPausedRef.current && !isDraggingRef.current) {
+      const cycleWidth = singleCycleWidthRef.current;
+      if (cycleWidth > 0) {
+        positionRef.current -= SPEED_PX_PER_SEC * dt;
+        if (positionRef.current <= -cycleWidth) {
+          positionRef.current += cycleWidth;
+        }
+      }
+    }
+
+    if (scrollRef.current) {
+      scrollRef.current.style.transform = `translateX(${positionRef.current}px) translateZ(0)`;
+    }
+
+    rafRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  const handlePointerEnter = () => {
+    isPausedRef.current = true;
+    if (hoverTimeoutRef.current) window.clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = window.setTimeout(() => {
+      isPausedRef.current = false;
+      hoverTimeoutRef.current = null;
+    }, 3000);
+  };
+
+  const handlePointerLeave = () => {
+    isPausedRef.current = false;
+    if (hoverTimeoutRef.current) {
+      window.clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  };
 
   // Generate consistent group icon for each class based on their ID
   const getGroupIcon = (cls: ClassRoom) => {
@@ -33,6 +86,13 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
   };
 
   useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) window.clearTimeout(hoverTimeoutRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!otherClasses || otherClasses.length === 0) {
       setTickerContent([]);
       return;
@@ -41,7 +101,8 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     const classesWithScore = otherClasses.filter(c => (c.score || 0) > 0);
     const sourceList = classesWithScore.length >= 3 ? classesWithScore : otherClasses;
 
-    let baseList = [...sourceList];
+    // Sort alphabetically (א"ב)
+    let baseList = [...sourceList].sort((a, b) => a.name.localeCompare(b.name, 'he'));
     if (baseList.length < 10) {
       let safetyCounter = 0;
       while (baseList.length < 10 && safetyCounter < 5) {
@@ -54,15 +115,40 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     setTickerContent(finalList);
 
     const totalWidthPx = finalList.length * (CARD_WIDTH + MARGIN_RIGHT);
-    const singleCycleWidth = totalWidthPx / 2;
-    const speedPxPerSec = 35;
-
-    const calculatedDuration = singleCycleWidth / speedPxPerSec;
-    setDuration(isFinite(calculatedDuration) && calculatedDuration > 0 ? calculatedDuration : 40);
+    singleCycleWidthRef.current = totalWidthPx / 2;
 
   }, [otherClasses]);
 
+  useEffect(() => {
+    if (tickerContent.length === 0) return;
+    lastTimeRef.current = null;
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [tickerContent, animate]);
+
   if (!otherClasses || otherClasses.length === 0) return null;
+
+  const startDrag = (clientX: number) => {
+    isDraggingRef.current = true;
+    dragStartXRef.current = clientX;
+    dragBasePositionRef.current = positionRef.current;
+    setIsDragging(true);
+  };
+
+  const moveDrag = (clientX: number) => {
+    if (!isDraggingRef.current) return;
+    const delta = clientX - dragStartXRef.current;
+    positionRef.current = dragBasePositionRef.current + delta;
+  };
+
+  const endDrag = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    lastTimeRef.current = null; // reset dt to avoid jump
+    setIsDragging(false);
+  };
 
   const renderCard = (cls: ClassRoom, index: number) => {
     if (!cls) return null;
@@ -243,8 +329,17 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     <div
       style={{ maskImage: 'none', WebkitMaskImage: 'none' }}
     className="h-full w-full glass-panel rounded-[var(--radius-container)] flex flex-col overflow-hidden relative shadow-2xl border-white/20 bg-slate-900/60"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onPointerMove={() => {
+        if (isPausedRef.current) {
+          if (hoverTimeoutRef.current) window.clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = window.setTimeout(() => {
+            isPausedRef.current = false;
+            hoverTimeoutRef.current = null;
+          }, 3000);
+        }
+      }}
       role="region"
       aria-label={t('tab_my_class')}
       aria-live="polite"
@@ -258,15 +353,21 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
         borderColorClass="border-blue-500/30"
       />
 
-      <div className="flex-1 flex items-center overflow-hidden relative w-full mask-gradient">
+      <div
+        className="flex-1 flex items-center overflow-hidden relative w-full mask-gradient"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'pan-y' }}
+        onPointerDown={(e) => {
+          (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+          startDrag(e.clientX);
+        }}
+        onPointerMove={(e) => moveDrag(e.clientX)}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
         <div
-          className="flex items-center absolute left-0 animate-scroll-horizontal-reverse will-change-transform h-full pl-4"
-          style={{
-            animationDuration: `${Math.max(20, duration)}s`,
-            width: 'max-content',
-            transform: 'translateZ(0)',
-            animationPlayState: isHovered ? 'paused' : 'running'
-          }}
+          ref={scrollRef}
+          className="flex items-center absolute left-0 will-change-transform h-full pl-4"
+          style={{ width: 'max-content' }}
         >
           {tickerContent.map((cls, idx) => renderCard(cls, idx))}
         </div>
