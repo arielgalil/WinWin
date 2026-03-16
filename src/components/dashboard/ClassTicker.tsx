@@ -157,14 +157,14 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
                                 <div className="flex items-center justify-between shrink-0">
     
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-black shrink-0 shadow-lg
-    
-                                        ${displayRank === 1 ? 'bg-yellow-500 text-slate-950 border-yellow-300' :
-    
-                                    displayRank === 2 ? 'bg-slate-300 text-slate-900 border-white/50' :
-    
+
+                                        ${displayRank === 1 ? 'bg-yellow-500 text-white border-yellow-300' :
+
+                                    displayRank === 2 ? 'bg-slate-400 text-white border-slate-300' :
+
                                         displayRank === 3 ? 'bg-orange-500 text-white border-orange-300' :
-    
-                                        'bg-white/10 text-white border-white/10'}`}>
+
+                                        'bg-slate-700 text-white border-slate-600'}`}>
     
                                     {displayRank}
     
@@ -176,7 +176,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                 </h3>
     
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${statusBg} ${statusBorder} ${statusColor} transition-all duration-500 shadow-lg`}>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border bg-amber-500 border-amber-300 ${statusColor} transition-all duration-500 shadow-lg`}>
     
                                     <StatusIcon className={`w-4 h-4 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
     

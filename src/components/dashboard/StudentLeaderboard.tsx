@@ -12,7 +12,19 @@ import { DashboardCardHeader } from './DashboardCardHeader';
 const MotionDiv = motion.div as any;
 
 const PRIZE_EMOJIS = ['🎁', '🎀', '🥇', '🏅', '💎', '👑', '🌟', '🎯', '🎊', '💝'];
-const getPrizeEmoji = (roundNumber: number) => PRIZE_EMOJIS[(roundNumber - 1) % PRIZE_EMOJIS.length];
+function buildPrizeEmojiList(winners: { round_number: number }[]): string[] {
+    const result: string[] = [];
+    for (let i = 0; i < winners.length; i++) {
+        let emoji = PRIZE_EMOJIS[(winners[i].round_number - 1) % PRIZE_EMOJIS.length];
+        let offset = 1;
+        while (emoji === result[i - 1] && offset < PRIZE_EMOJIS.length) {
+            emoji = PRIZE_EMOJIS[(winners[i].round_number - 1 + offset) % PRIZE_EMOJIS.length];
+            offset++;
+        }
+        result.push(emoji);
+    }
+    return result;
+}
 
 // ── Search icon SVG ────────────────────────────────────────────
 const SearchSvg = ({ size = 14 }: { size?: number }) => (
@@ -66,7 +78,7 @@ const StudentRow = ({
         <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                 <span className="font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] text-white truncate leading-none">{student.name}</span>
-                <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 backdrop-blur-sm overflow-hidden">
+                <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 overflow-hidden">
                     <div
                         data-testid="group-tag-bg"
                         className={`absolute inset-0 ${student.classColor && student.classColor.startsWith('bg-') ? student.classColor : ''}`}
@@ -134,12 +146,39 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
         allSearchable.filter(s => pinnedIds.has(s.id)),
     [allSearchable, pinnedIds]);
 
+    // Map student_id → classColor for wheel winners
+    const studentColorMap = useMemo(() => {
+        const map = new Map<string, string>();
+        allSearchable.forEach(s => map.set(s.id, s.classColor));
+        return map;
+    }, [allSearchable]);
+
     useEffect(() => {
         if (searchOpen) setTimeout(() => searchInputRef.current?.focus(), 50);
         else setQuery('');
     }, [searchOpen]);
 
     const listContainerRef = useRef<HTMLDivElement>(null!);
+
+    // ── FAB visibility — responds only to user touch/scroll ────
+    const [isUserActive, setIsUserActive] = useState(false);
+    const userActiveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const markUserActive = useCallback(() => {
+        setIsUserActive(true);
+        if (userActiveTimeoutRef.current) clearTimeout(userActiveTimeoutRef.current);
+        userActiveTimeoutRef.current = setTimeout(() => setIsUserActive(false), 2000);
+    }, []);
+    useEffect(() => {
+        window.addEventListener('touchstart', markUserActive, { passive: true });
+        window.addEventListener('touchmove', markUserActive, { passive: true });
+        window.addEventListener('wheel', markUserActive, { passive: true });
+        return () => {
+            window.removeEventListener('touchstart', markUserActive);
+            window.removeEventListener('touchmove', markUserActive);
+            window.removeEventListener('wheel', markUserActive);
+            if (userActiveTimeoutRef.current) clearTimeout(userActiveTimeoutRef.current);
+        };
+    }, [markUserActive]);
 
     useAutoScroll(listContainerRef, {
         isHovered,
@@ -310,7 +349,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                     {/* ── Scrollable list ────────────────────────────────── */}
                     <div
                         ref={listContainerRef}
-                        className="space-y-1.5 relative flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden"
+                        className="space-y-1.5 relative flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden max-h-[240px] lg:max-h-none"
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                         <AnimatePresence mode="wait">
@@ -321,36 +360,46 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             {t('wheel_waiting' as any)}
                                         </div>
                                     ) : (
-                                        wheelGroups.map(([wheelName, winners]) => (
+                                        wheelGroups.map(([wheelName, winners]) => {
+                                            const prizeEmojis = buildPrizeEmojiList(winners);
+                                            return (
                                             <div key={wheelName} className="space-y-1.5">
-                                                <div className="text-[10px] font-black text-purple-300/80 uppercase tracking-widest px-1 pt-1">
+                                                {/* Wheel name pill */}
+                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-black text-white/80 tracking-wide">
                                                     🎡 {wheelName}
                                                 </div>
-                                                {winners.map((winner) => (
+                                                {winners.map((winner, i) => {
+                                                    const classColor = (winner.student_id ? studentColorMap.get(winner.student_id) : undefined) ?? '';
+                                                    return (
                                                     <div
                                                         key={winner.id}
                                                         className="relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border bg-white/10 border-purple-500/20 shadow-lg shadow-purple-500/5"
                                                     >
-                                                        <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 ml-2.5 bg-purple-500 text-white">
-                                                            {getPrizeEmoji(winner.round_number)}
+                                                        <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 ml-2.5 bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_8px_rgba(251,191,36,0.5)]">
+                                                            {prizeEmojis[i]}
                                                         </div>
                                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                                             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                                                                 <span className="font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] text-white truncate leading-none">{winner.student_name}</span>
                                                                 {winner.class_name && (
-                                                                    <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 backdrop-blur-sm overflow-hidden bg-purple-700/50">
+                                                                    <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 overflow-hidden">
+                                                                        <div
+                                                                            className={`absolute inset-0 ${classColor.startsWith('bg-') ? classColor : ''}`}
+                                                                            style={{ opacity: 0.5, backgroundColor: classColor && !classColor.startsWith('bg-') ? classColor : undefined }}
+                                                                        />
                                                                         <span className="relative z-10">{winner.class_name}</span>
                                                                     </div>
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        <div className="text-right shrink-0 text-[10px] text-white/40 font-medium px-1">
-                                                            #{winner.round_number}
+                                                        <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 bg-slate-700 text-slate-300">
+                                                            {winner.round_number}
                                                         </div>
                                                     </div>
-                                                ))}
+                                                    );
+                                                })}
                                             </div>
-                                        ))
+                                        );})
                                     )}
                                 </MotionDiv>
                             ) : (
@@ -360,12 +409,16 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             key={student.id}
                                             student={student}
                                             badge={isMomentumMode ? <TrendUpIcon className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> : student.rank}
-                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-green-600' : idx === 0 ? 'bg-pink-500 text-white' : 'bg-slate-700 text-slate-300'}
+                                            badgeBg={isMomentumMode ? 'bg-yellow-500 text-green-600' :
+                                                student.rank === 1 ? 'bg-yellow-500 text-slate-950' :
+                                                student.rank === 2 ? 'bg-slate-300 text-slate-900' :
+                                                student.rank === 3 ? 'bg-orange-500 text-white' :
+                                                'bg-slate-700 text-slate-300'}
                                             rowBg={
                                                 isMomentumMode
                                                     ? 'bg-white/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'
-                                                    : idx === 0
-                                                        ? 'bg-white/20 border-pink-500/40 shadow-lg shadow-pink-500/10'
+                                                    : student.rank === 1
+                                                        ? 'bg-white/20 border-yellow-500/40 shadow-lg shadow-yellow-500/10'
                                                         : 'bg-white/10 border-white/20 hover:bg-white/15'
                                             }
                                         />
@@ -378,7 +431,16 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
             </div>
 
             {/* ── Mobile FAB (hidden on lg+) ─────────────────────────── */}
-            <div className="lg:hidden fixed bottom-5 end-4 z-30">
+            <div
+                className="lg:hidden fixed z-30 transition-opacity duration-700"
+                style={{
+                    bottom: '1.25rem',
+                    left: '1rem',
+                    transform: 'translateZ(0)',
+                    willChange: 'opacity',
+                    opacity: searchOpen || pinnedIds.size > 0 || isUserActive || showPulse ? 1 : 0.35,
+                }}
+            >
                 <div className="relative">
                     <button
                         onClick={() => setSearchOpen(o => !o)}
@@ -394,7 +456,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                         <SearchSvg size={20} />
                     </button>
                     {pinnedIds.size > 0 && (
-                        <span className="pointer-events-none absolute -top-1 -end-1 w-5 h-5 bg-white rounded-full text-[10px] font-black text-cyan-600 flex items-center justify-center leading-none shadow">
+                        <span className="pointer-events-none absolute -top-1 -start-1 w-5 h-5 bg-white rounded-full text-[10px] font-black text-cyan-600 flex items-center justify-center leading-none shadow">
                             {pinnedIds.size}
                         </span>
                     )}
