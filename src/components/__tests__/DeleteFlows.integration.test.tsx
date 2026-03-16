@@ -1,6 +1,5 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
 import { UsersManager } from '../admin/UsersManager';
 import { ClassesManager } from '../admin/ClassesManager';
 import { MessagesManager } from '../admin/MessagesManager';
@@ -66,11 +65,10 @@ describe('Delete Flows Integration', () => {
 
     render(
       <Wrapper>
-        <UsersManager 
-          classes={[]} 
+        <UsersManager
+          classes={[]}
           currentUser={{ id: 'admin-id', role: 'admin' } as any}
           currentCampaign={{ id: 'camp-1' } as any}
-          settings={{}}
         />
       </Wrapper>
     );
@@ -91,11 +89,10 @@ describe('Delete Flows Integration', () => {
 
     render(
       <Wrapper>
-        <ClassesManager 
-          classes={mockClasses as any} 
+        <ClassesManager
+          classes={mockClasses as any}
           settings={{ campaign_id: 'camp-1' }}
           onRefresh={vi.fn()}
-          user={{ role: 'admin' } as any}
         />
       </Wrapper>
     );

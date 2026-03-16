@@ -30,7 +30,7 @@ vi.mock('framer-motion', () => ({
             return () => {};
         },
         get: () => value,
-        set: (newValue: any) => {} 
+        set: (_newValue: any) => {}
     })
 }));
 

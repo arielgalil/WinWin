@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { Button } from '../button';
-import React from 'react';
 
 test('Button has minimum touch target size of 44px', () => {
   render(<Button>Touch Me</Button>);
   const button = screen.getByText('Touch Me');
-  const style = window.getComputedStyle(button);
+  window.getComputedStyle(button);
   
   // Note: JSDOM might not report height accurately for flex/inline-flex
   // but we can check the classes or min-height if applied via style

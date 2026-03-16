@@ -34,9 +34,9 @@ describe('AI Service Keyword Integration', () => {
     await generateCompetitionCommentary([], 'Action', mockSettings, 100);
 
     const callArgs = (supabase.functions.invoke as any).mock.calls[0][1].body;
-    expect(callArgs.prompt).toContain('השתמש במילות המפתח הבאות');
+    expect(callArgs.prompt).toContain('מילות המפתח הבאות מגדירות את רוח המבצע');
     expect(callArgs.prompt).toContain('Excellence, Innovation');
-    expect(callArgs.model).toBe('gemini-2.5-flash-lite-preview-09-2025');
+    expect(callArgs.model).toBe('gemini-3.1-flash-lite-preview');
   });
 
   it('generateFillerMessages should include keywords in prompt', async () => {
@@ -45,9 +45,9 @@ describe('AI Service Keyword Integration', () => {
     await generateFillerMessages('School', 'Comp', 'he', mockSettings.ai_keywords);
 
     const callArgs = (supabase.functions.invoke as any).mock.calls[0][1].body;
-    expect(callArgs.prompt).toContain('השתמש במילות המפתח הבאות');
+    expect(callArgs.prompt).toContain('מילות המפתח הבאות מגדירות את רוח המבצע');
     expect(callArgs.prompt).toContain('Excellence, Innovation');
-    expect(callArgs.model).toBe('gemini-2.5-flash-lite-preview-09-2025');
+    expect(callArgs.model).toBe('gemini-3.1-flash-lite-preview');
   });
 
   it('generateAdminSummary should include keywords in prompt', async () => {
@@ -56,8 +56,8 @@ describe('AI Service Keyword Integration', () => {
     await generateAdminSummary([], mockSettings, 'he', 'campaign-123');
 
     const callArgs = (supabase.functions.invoke as any).mock.calls[0][1].body;
-    expect(callArgs.prompt).toContain('השתמש במילות המפתח הבאות');
+    expect(callArgs.prompt).toContain('מילות המפתח הבאות מגדירות את רוח המבצע');
     expect(callArgs.prompt).toContain('Excellence, Innovation');
-    expect(callArgs.model).toBe('gemini-2.5-flash-lite-preview-09-2025');
+    expect(callArgs.model).toBe('gemini-3.1-flash-lite-preview');
   });
 });

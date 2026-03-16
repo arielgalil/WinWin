@@ -1,10 +1,8 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ClassesManager } from '../ClassesManager';
-import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 import { ToastProvider } from '../../../hooks/useToast';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ClassRoom } from '../../../types';
 
 // Mock useLanguage
@@ -45,8 +43,10 @@ const mockClasses: ClassRoom[] = [
   {
     id: 'class-1',
     name: 'Class 1',
-    students: [{ id: 'student-1', name: 'Student 1', class_id: 'class-1', total_points: 0 }],
-    campaign_id: 'camp-1'
+    color: 'bg-blue-500',
+    score: 0,
+    students: [{ id: 'student-1', name: 'Student 1', class_id: 'class-1', score: 0, prev_score: 0, trend: 'same' as const }],
+    campaign_id: 'camp-1',
   }
 ];
 
@@ -62,7 +62,7 @@ const renderWithContext = (ui: React.ReactNode) => {
 
 describe('ClassesManager Modal Editing', () => {
   it('opens edit modal when class edit button is clicked', async () => {
-    renderWithContext(<ClassesManager classes={mockClasses} onRefresh={async () => {}} settings={{campaign_id: 'camp-1'}} user={{} as any} />);
+    renderWithContext(<ClassesManager classes={mockClasses} onRefresh={async () => {}} settings={{campaign_id: 'camp-1'}} />);
     
     // Find the edit button for the class
     const editButtons = screen.getAllByTitle('edit');
@@ -79,7 +79,7 @@ describe('ClassesManager Modal Editing', () => {
   });
 
   it('opens edit modal when student edit button is clicked', async () => {
-    renderWithContext(<ClassesManager classes={mockClasses} onRefresh={async () => {}} settings={{campaign_id: 'camp-1'}} user={{} as any} />);
+    renderWithContext(<ClassesManager classes={mockClasses} onRefresh={async () => {}} settings={{campaign_id: 'camp-1'}} />);
     
     // Open manage students view
     const manageButtons = screen.getAllByTitle('manage_students_button');

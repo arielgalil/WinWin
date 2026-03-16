@@ -1,8 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { describe, it, expect, vi } from 'vitest';
-import React from 'react';
-import { TrashIcon } from '../Icons';
 
 // Mock dependencies
 vi.mock('../../../hooks/useLanguage', () => ({

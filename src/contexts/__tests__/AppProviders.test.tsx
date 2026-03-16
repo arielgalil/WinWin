@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { AppProviders } from '../AppProviders';
 import { describe, it, expect } from 'vitest';
-import React from 'react';
 
 describe('AppProviders', () => {
     it('renders children without crashing', () => {

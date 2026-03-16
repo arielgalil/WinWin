@@ -2,26 +2,11 @@ import { renderHook, act } from '@testing-library/react';
 import { useAutoUpdate } from '../useAutoUpdate';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-// Mock the virtual module
-vi.mock('virtual:pwa-register/react', () => ({
-  useRegisterSW: vi.fn(),
-}));
-
-// We need to import it AFTER vi.mock
-import { useRegisterSW } from 'virtual:pwa-register/react';
-
 describe('useAutoUpdate', () => {
-  let updateServiceWorkerMock: any;
-  let setNeedRefreshMock: any;
+  let updateServiceWorkerMock: (reloadPage?: boolean) => Promise<void>;
 
   beforeEach(() => {
-    updateServiceWorkerMock = vi.fn();
-    setNeedRefreshMock = vi.fn();
-    (useRegisterSW as any).mockReturnValue({
-      offlineReady: [false, vi.fn()],
-      needRefresh: [false, setNeedRefreshMock],
-      updateServiceWorker: updateServiceWorkerMock,
-    });
+    updateServiceWorkerMock = vi.fn().mockResolvedValue(undefined) as any;
     vi.useFakeTimers();
   });
 
@@ -31,26 +16,13 @@ describe('useAutoUpdate', () => {
   });
 
   it('should not refresh immediately when update is available', () => {
-    (useRegisterSW as any).mockReturnValue({
-      offlineReady: [false, vi.fn()],
-      needRefresh: [true, setNeedRefreshMock],
-      updateServiceWorker: updateServiceWorkerMock,
-    });
-
-    renderHook(() => useAutoUpdate());
-    
+    renderHook(() => useAutoUpdate({ needRefresh: true, updateServiceWorker: updateServiceWorkerMock }));
     expect(updateServiceWorkerMock).not.toHaveBeenCalled();
   });
 
   it('should refresh after 60 seconds of idle time', () => {
-    (useRegisterSW as any).mockReturnValue({
-      offlineReady: [false, vi.fn()],
-      needRefresh: [true, setNeedRefreshMock],
-      updateServiceWorker: updateServiceWorkerMock,
-    });
+    renderHook(() => useAutoUpdate({ needRefresh: true, updateServiceWorker: updateServiceWorkerMock }));
 
-    renderHook(() => useAutoUpdate());
-    
     act(() => {
       vi.advanceTimersByTime(60000);
     });
@@ -58,44 +30,19 @@ describe('useAutoUpdate', () => {
     expect(updateServiceWorkerMock).toHaveBeenCalledWith(true);
   });
 
-  it('should log registration success and error', () => {
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    let onRegisteredCallback: any;
-    let onRegisterErrorCallback: any;
+  it('should not start timer when needRefresh is false', () => {
+    renderHook(() => useAutoUpdate({ needRefresh: false, updateServiceWorker: updateServiceWorkerMock }));
 
-    (useRegisterSW as any).mockImplementation((options: any) => {
-      onRegisteredCallback = options.onRegistered;
-      onRegisterErrorCallback = options.onRegisterError;
-      return {
-        offlineReady: [false, vi.fn()],
-        needRefresh: [false, vi.fn()],
-        updateServiceWorker: vi.fn(),
-      };
+    act(() => {
+      vi.advanceTimersByTime(60000);
     });
 
-    renderHook(() => useAutoUpdate());
-    
-    onRegisteredCallback('mock-sw');
-    expect(consoleSpy).toHaveBeenCalledWith('[PWA] Service Worker registered: ', 'mock-sw');
-
-    onRegisterErrorCallback('mock-error');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('[PWA] Service Worker registration error: ', 'mock-error');
-
-    consoleSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
+    expect(updateServiceWorkerMock).not.toHaveBeenCalled();
   });
 
   it('should reset the timer when an interaction occurs', () => {
-    (useRegisterSW as any).mockReturnValue({
-      offlineReady: [false, vi.fn()],
-      needRefresh: [true, setNeedRefreshMock],
-      updateServiceWorker: updateServiceWorkerMock,
-    });
+    renderHook(() => useAutoUpdate({ needRefresh: true, updateServiceWorker: updateServiceWorkerMock }));
 
-    renderHook(() => useAutoUpdate());
-    
     act(() => {
       vi.advanceTimersByTime(30000); // 30s passed
     });
@@ -107,13 +54,13 @@ describe('useAutoUpdate', () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(40000); // Another 40s passed (Total 70s since start, but 40s since interaction)
+      vi.advanceTimersByTime(40000); // Another 40s (total 70s since start, 40s since interaction)
     });
 
     expect(updateServiceWorkerMock).not.toHaveBeenCalled();
 
     act(() => {
-      vi.advanceTimersByTime(20000); // Another 20s passed (Total 60s since interaction)
+      vi.advanceTimersByTime(20000); // Another 20s (60s since interaction)
     });
 
     expect(updateServiceWorkerMock).toHaveBeenCalledWith(true);

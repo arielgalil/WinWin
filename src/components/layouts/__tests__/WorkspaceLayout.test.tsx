@@ -1,8 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { expect, test, vi, beforeEach } from 'vitest';
 import { WorkspaceLayout } from '../WorkspaceLayout';
-import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useTheme } from '@/hooks/useTheme';
 import { Settings, Users, Target } from 'lucide-react';
 
@@ -20,7 +18,7 @@ vi.mock('@/hooks/useTheme', () => ({
 }));
 
 vi.mock('@/hooks/useLocalStorage', () => ({
-  useLocalStorage: vi.fn((key, initialValue) => [initialValue, vi.fn()]),
+  useLocalStorage: vi.fn((_key, initialValue) => [initialValue, vi.fn()]),
 }));
 
 vi.mock('../../ui/Logo', () => ({

@@ -2,7 +2,6 @@
 import { render, screen } from '@testing-library/react';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { describe, it, expect, vi } from 'vitest';
-import React from 'react';
 
 // Mock dependencies
 vi.mock('../../../hooks/useLanguage', () => ({

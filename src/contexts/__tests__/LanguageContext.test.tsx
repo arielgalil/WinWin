@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { LanguageProvider, LanguageContext } from '../LanguageContext';
 
 const TestComponent = () => {

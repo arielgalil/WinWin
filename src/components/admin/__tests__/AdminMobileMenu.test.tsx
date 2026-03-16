@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { AdminMobileMenu } from '../AdminMobileMenu';
 import { describe, it, expect, vi } from 'vitest';
-import React from 'react';
 
 // Mock requirements
 vi.mock('../../../hooks/useLanguage', () => ({
@@ -25,6 +24,7 @@ describe('AdminMobileMenu Theme Toggle', () => {
     onManualRefresh: vi.fn(),
     isRefreshing: false,
     onLogout: vi.fn(),
+    onShare: vi.fn(),
   };
 
   it('renders theme toggle and calls toggleTheme', () => {

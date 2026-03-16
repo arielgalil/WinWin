@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProtectedRoute } from '../ProtectedRoute';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthPermissions } from '../../services/useAuthPermissions';
 import { useCampaign } from '../../hooks/useCampaign';

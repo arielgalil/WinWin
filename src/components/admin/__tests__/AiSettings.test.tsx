@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { AiSettings } from '../AiSettings';
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 
@@ -9,7 +9,7 @@ describe('AiSettings', () => {
     render(
       <LanguageProvider>
         <SaveNotificationProvider>
-          <AiSettings settings={{} as any} onRefresh={() => {}} />
+          <AiSettings settings={{} as any} onRefresh={async () => {}} />
         </SaveNotificationProvider>
       </LanguageProvider>
     );

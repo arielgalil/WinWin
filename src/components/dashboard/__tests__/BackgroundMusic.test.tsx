@@ -2,13 +2,12 @@
 import { render } from '@testing-library/react';
 import { BackgroundMusic } from '../BackgroundMusic';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
 
 describe('BackgroundMusic', () => {
   beforeEach(() => {
     // Mock YouTube API
     window.YT = {
-      Player: vi.fn().mockImplementation(function(id, config) {
+      Player: vi.fn().mockImplementation(function(_id, _config) {
         return {
           destroy: vi.fn(),
           setVolume: vi.fn(),

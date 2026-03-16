@@ -22,7 +22,7 @@ describe('Icon System Verification', () => {
     const dashboardPath = path.resolve(srcPath, 'components/dashboard');
     const studentDashboardFile = path.resolve(srcPath, 'components/Dashboard.tsx');
     
-    let filesToCheck = [];
+    let filesToCheck: string[] = [];
     if (fs.existsSync(dashboardPath)) {
       filesToCheck = filesToCheck.concat(getFilesRecursive(dashboardPath));
     }

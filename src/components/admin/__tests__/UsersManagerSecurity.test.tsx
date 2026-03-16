@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { UsersManager } from '../UsersManager';
 import { describe, it, expect, vi } from 'vitest';
-import React from 'react';
 import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 
@@ -59,7 +58,7 @@ describe('UsersManager Security', () => {
     render(
       <LanguageProvider>
         <SaveNotificationProvider>
-          <UsersManager classes={[]} settings={{}} currentUser={managerUser as any} currentCampaign={{id: 'test-camp'} as any} />
+          <UsersManager classes={[]} currentUser={managerUser as any} currentCampaign={{id: 'test-camp'} as any} />
         </SaveNotificationProvider>
       </LanguageProvider>
     );
@@ -79,7 +78,7 @@ describe('UsersManager Security', () => {
     render(
       <LanguageProvider>
         <SaveNotificationProvider>
-          <UsersManager classes={[]} settings={{}} currentUser={superUser as any} currentCampaign={{id: 'test-camp'} as any} />
+          <UsersManager classes={[]} currentUser={superUser as any} currentCampaign={{id: 'test-camp'} as any} />
         </SaveNotificationProvider>
       </LanguageProvider>
     );

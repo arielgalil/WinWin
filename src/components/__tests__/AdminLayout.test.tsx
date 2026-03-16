@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { expect, test, vi, beforeEach } from 'vitest';
 import { AdminLayout } from '../AdminLayout';
-import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useTheme } from '@/hooks/useTheme';
-import { Settings, Users, Target, CalculatorIcon, ClockIcon } from 'lucide-react';
+import type { UserProfile, Campaign } from '@/types';
+import { Settings } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { VersionFooter } from '../ui/VersionFooter';
 import { SaveNotificationBadge } from '@/components/ui/SaveNotificationBadge';
@@ -61,24 +61,25 @@ vi.mock('@/contexts/SaveNotificationContext', () => ({
   useSaveNotification: vi.fn(() => ({ notifications: new Map(), dismiss: vi.fn() })),
 }));
 
-const mockUser = {
+const mockUser: UserProfile = {
   id: '1',
   full_name: 'Test User',
   email: 'test@example.com',
   role: 'admin',
-  campaign_id: '1',
-  created_at: '',
+  class_id: null,
 };
-const mockCampaign = {
+const mockCampaign: Campaign = {
   id: '1',
   name: 'Test Campaign',
   is_active: true,
-  institution: { logo_url: 'logo.png' },
+  institution: { id: 'inst-1', name: 'Test Institution', logo_url: 'logo.png', contacts: [] },
+  slug: 'test-slug',
 };
 const mockSettings = {
   id: '1',
   school_name: 'Test School',
   logo_url: 'school_logo.png',
+  competition_name: 'Test Competition',
 };
 const mockHeaderConfig = {
   icon: Settings,
@@ -113,9 +114,9 @@ beforeEach(() => {
   (useTheme as any).mockReturnValue({ theme: 'light', toggleTheme: vi.fn() });
   (useAuth as any).mockReturnValue({ user: mockUser, loading: false, isAuthenticated: true });
   (useSaveNotification as any).mockReturnValue({ notifications: new Map(), dismiss: vi.fn() });
-  Logo.mockClear();
-  VersionFooter.mockClear();
-  SaveNotificationBadge.mockClear();
+  vi.mocked(Logo).mockClear();
+  vi.mocked(VersionFooter).mockClear();
+  vi.mocked(SaveNotificationBadge).mockClear();
   (cn as any).mockClear();
 });
 

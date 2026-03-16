@@ -4,7 +4,7 @@ import {
     accelOmega,
     computeTargetAngle,
     createWheelSimulation,
-    decelAngle,
+
     decelOmega,
     decelTotalDistance,
     elasticAngle,

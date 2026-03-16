@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { KioskRotator } from '../KioskRotator';
 import { AppSettings } from '../../../types';
-import React from 'react';
 
 describe('KioskRotator', () => {
     const mockSettings: AppSettings = {
@@ -26,7 +25,7 @@ describe('KioskRotator', () => {
     it('should render children when rotation is disabled', () => {
         const settings = { ...mockSettings, rotation_enabled: false };
         render(
-            <KioskRotator settings={settings}>
+            <KioskRotator settings={settings} currentIndex={0}>
                 <div data-testid="board">Game Board</div>
             </KioskRotator>
         );

@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { LiteLogin } from '../LiteLogin';
@@ -51,7 +50,7 @@ describe('LiteLogin with Campaign Context', () => {
     });
 
     it('should display campaign name even if logo is missing', () => {
-        const settingsWithoutLogo = { ...mockSettings, logo_url: undefined };
+        const settingsWithoutLogo = { ...mockSettings, logo_url: null };
         renderWithProviders(<LiteLogin onLogin={vi.fn()} loading={false} settings={settingsWithoutLogo} />);
 
         expect(screen.getByText('Test Competition')).toBeInTheDocument();

@@ -63,7 +63,7 @@ describe('geminiService', () => {
     
     expect(supabase.functions.invoke).toHaveBeenCalledWith('ask-gemini', expect.objectContaining({
       body: expect.objectContaining({
-        model: 'gemini-2.5-flash-lite-preview-09-2025'
+        model: 'gemini-3.1-flash-lite-preview'
       })
     }));
     expect(result).toBe('AI Summary Result');

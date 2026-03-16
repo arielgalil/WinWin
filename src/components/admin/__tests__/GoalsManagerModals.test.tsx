@@ -1,7 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { GoalsManager } from '../settings/GoalsManager';
-import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 import { ToastProvider } from '../../../hooks/useToast';
 import { describe, it, expect, vi } from 'vitest';

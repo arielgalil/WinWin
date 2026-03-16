@@ -10,7 +10,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts', './src/test/setupTests.ts'],
     testTimeout: 10000,
-    include: ['**/*.{test,spec}.{ts,tsx}'],
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules/**', '.claude/**'],
     alias: {
       '@': path.resolve(__dirname, './src'),
     },

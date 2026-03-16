@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { FormattedNumber } from '../FormattedNumber';
 import { describe, it, expect } from 'vitest';
-import React from 'react';
 
 describe('FormattedNumber Component', () => {
   it('renders a positive number correctly', () => {

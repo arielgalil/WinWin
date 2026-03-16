@@ -1,5 +1,8 @@
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 // Mock IntersectionObserver
-const IntersectionObserverMock = vi.fn(function () { // Use a function to simulate a constructor
+const IntersectionObserverMock = vi.fn(function () {
   return {
     observe: vi.fn(),
     unobserve: vi.fn(),
@@ -7,9 +10,6 @@ const IntersectionObserverMock = vi.fn(function () { // Use a function to simula
   };
 });
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
-
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ActionLogPanel } from '../ActionLogPanel';
 import { AppSettings, ActionLog } from '../../../types';
 import * as geminiService from '../../../services/geminiService';
@@ -57,8 +57,8 @@ const mockSettings: AppSettings = {
 describe('ActionLogPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useLanguageHook.useLanguage as vi.Mock).mockReturnValue({ t: (key: string) => key, language: 'en', isRTL: false });
-    (geminiService.generateAdminSummary as vi.Mock).mockResolvedValue('Generated AI Summary');
+    (useLanguageHook.useLanguage as any).mockReturnValue({ t: (key: string) => key, language: 'en', isRTL: false });
+    (geminiService.generateAdminSummary as any).mockResolvedValue('Generated AI Summary');
   });
 
       const defaultProps = {
@@ -67,10 +67,9 @@ describe('ActionLogPanel', () => {
       onDelete: vi.fn(),
       onUpdate: vi.fn(),
       onUpdateSummary: vi.fn(),
-      currentUser: { id: 'user1', email: 'test@test.com', role: 'admin', class_id: null, full_name: 'Test User' },
+      currentUser: { id: 'user1', email: 'test@test.com', role: 'admin' as const, class_id: null, full_name: 'Test User' },
       settings: mockSettings,
       isAdmin: true,
-      campaignId: 'campaign-id-123',
     };
 
   it('should render correctly', () => {
@@ -101,7 +100,7 @@ describe('ActionLogPanel', () => {
 
   it('should generate a new AI summary if none exists in settings', async () => {
     let resolveSummary: (value: string) => void = () => {};
-    (geminiService.generateAdminSummary as vi.Mock).mockImplementation(() => new Promise(resolve => {
+    (geminiService.generateAdminSummary as any).mockImplementation(() => new Promise(resolve => {
         resolveSummary = resolve;
     }));
 
@@ -121,7 +120,7 @@ describe('ActionLogPanel', () => {
 
     await waitFor(() => {
       expect(geminiService.generateAdminSummary).toHaveBeenCalledWith(
-        mockLogs, mockSettings, 'en', defaultProps.campaignId
+        mockLogs, mockSettings, 'en', mockSettings.campaign_id
       );
       expect(screen.getByText('Generated AI Summary')).toBeInTheDocument();
     });
@@ -138,7 +137,7 @@ describe('ActionLogPanel', () => {
     };
 
     let resolveSummary: (value: string) => void = () => {};
-    (geminiService.generateAdminSummary as vi.Mock).mockImplementation(() => new Promise(resolve => {
+    (geminiService.generateAdminSummary as any).mockImplementation(() => new Promise(resolve => {
         resolveSummary = resolve;
     }));
 
@@ -166,14 +165,14 @@ describe('ActionLogPanel', () => {
 
     await waitFor(() => {
       expect(geminiService.generateAdminSummary).toHaveBeenCalledWith(
-        mockLogs, settingsWithOldSummary, 'en', defaultProps.campaignId
+        mockLogs, settingsWithOldSummary, 'en', mockSettings.campaign_id
       );
       expect(screen.getByText('Generated AI Summary')).toBeInTheDocument();
     });
   });
 
   it('should display loading state during AI summary generation', async () => {
-    (geminiService.generateAdminSummary as vi.Mock).mockReturnValue(new Promise(() => {})); // Never resolve
+    (geminiService.generateAdminSummary as any).mockReturnValue(new Promise(() => {})); // Never resolve
 
     act(() => {
       render(<ActionLogPanel {...defaultProps} />);

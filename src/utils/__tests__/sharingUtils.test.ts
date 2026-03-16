@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { generateRoleBasedShareMessage } from '../sharingUtils';
 
 describe('sharingUtils', () => {
@@ -18,9 +18,9 @@ describe('sharingUtils', () => {
 
     expect(message).toContain('תחרות חורף');
     expect(message).toContain('בית ספר דוגמה');
-    expect(message).toContain('לוח התוצאות 🏆 - https://winwin.app/#/comp/winter-2025');
-    expect(message).toContain('הזנת ניקוד 🧮 - https://winwin.app/#/vote/winter-2025');
-    expect(message).toContain('ניהול תחרות ⚙️ - https://winwin.app/#/admin/winter-2025');
+    expect(message).toContain('לוח התוצאות 🏆 - https://winwin.app/comp/winter-2025');
+    expect(message).toContain('הזנת ניקוד 🧮 - https://winwin.app/vote/winter-2025');
+    expect(message).toContain('ניהול תחרות ⚙️ - https://winwin.app/admin/winter-2025');
   });
 
   it('generates a Competition Admin message with all 3 links', () => {

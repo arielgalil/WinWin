@@ -1,7 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { UsersManager } from '../UsersManager';
-import { LanguageProvider } from '../../../contexts/LanguageContext';
 import { SaveNotificationProvider } from '../../../contexts/SaveNotificationContext';
 import { ToastProvider } from '../../../hooks/useToast';
 import { describe, it, expect, vi } from 'vitest';
@@ -52,9 +50,7 @@ const mockUsers: UserProfile[] = [
     full_name: 'User 1',
     email: 'user1@test.com',
     role: 'admin',
-    campaign_id: 'camp-1',
-    created_at: new Date().toISOString(),
-    class_id: null
+    class_id: null,
   }
 ];
 
@@ -62,8 +58,10 @@ const mockClasses: ClassRoom[] = [
   {
     id: 'class-1',
     name: 'Class 1',
+    color: 'bg-blue-500',
+    score: 0,
     students: [],
-    campaign_id: 'camp-1'
+    campaign_id: 'camp-1',
   }
 ];
 
@@ -80,11 +78,11 @@ const renderWithContext = (ui: React.ReactNode) => {
 describe('UsersManager Modal Editing', () => {
   it('opens edit modal when user edit button is clicked', async () => {
     renderWithContext(
-      <UsersManager 
-        users={mockUsers} 
-        classes={mockClasses} 
-        campaignId="camp-1" 
-        onRefresh={async () => {}} 
+      <UsersManager
+        users={mockUsers}
+        classes={mockClasses}
+        currentCampaign={{ id: 'camp-1', name: 'Test', slug: 'test-slug' }}
+        onRefresh={async () => {}}
       />
     );
     

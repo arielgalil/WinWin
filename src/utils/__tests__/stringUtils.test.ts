@@ -56,22 +56,24 @@ describe('replaceSmartTags', () => {
         expect(result).toBe('כל הכבוד לישראל ישראלי שמוביל את הטבלה, ואחריו דני דין ודינה ברזילי');
     });
 
-    it('replaces random participant and random group tags', () => {
+    it('replaces random participant and random group tags using pre-computed indices', () => {
         const text = 'פרגון ל[משתתף אקראי] מ[קבוצה אקראית]!';
-        const result1 = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents, 1);
-        const result2 = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents, 1);
-        
-        expect(result1).toBe(result2);
-        // Seed 1: 
-        // Students (3): 1 % 3 = 1 -> mockStudents[1] (דני דין)
-        // Classes (3): (1+1) % 3 = 2 -> mockClasses[2] (כיתה ג)
-        expect(result1).toContain('דני דין');
-        expect(result1).toContain('כיתה ג');
+        const result = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents, { studentIdx: 1, classIdx: 2 });
+        // studentIdx 1 -> mockStudents[1] (דני דין), classIdx 2 -> mockClasses[2] (כיתה ג)
+        expect(result).toContain('דני דין');
+        expect(result).toContain('כיתה ג');
+    });
+
+    it('replaces random tags with fallback random when no indices provided', () => {
+        const text = 'פרגון ל[משתתף אקראי] מ[קבוצה אקראית]!';
+        const result = replaceSmartTags(text, mockSettings, 2000, mockClasses, mockStudents);
+        expect(result).not.toContain('[משתתף אקראי]');
+        expect(result).not.toContain('[קבוצה אקראית]');
     });
 
     it('handles missing data gracefully', () => {
         const text = '[קבוצה שלישית] ו[מקום שלישי] ו[משתתף אקראי]';
         const result = replaceSmartTags(text, mockSettings, 2000, [], []);
-        expect(result).toBe('--- ו--- ו---');
+        expect(result).toBe('ו ו');
     });
 });
