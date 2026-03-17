@@ -43,13 +43,13 @@ export const AboutPage: React.FC = () => {
                         <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full shadow-xl flex items-center justify-center shrink-0 ring-4 ring-green-400/30">
                             <SproutIcon className="w-8 h-8 text-white" />
                         </div>
-                        <div className="text-xs font-black text-primary uppercase tracking-widest">תחרות מצמיחה</div>
+                        <div className="text-sm font-black text-primary uppercase tracking-widest">תחרות מצמיחה</div>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-foreground leading-tight mb-4">
+                    <h1 className="text-3xl md:text-4xl font-black text-foreground leading-tight mb-4">
                         מפסיקים לייצר<br />
                         <span className="text-primary">מפסידים</span>
                     </h1>
-                    <p className="text-muted-foreground text-base md:text-lg font-medium leading-relaxed max-w-xl">
+                    <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-xl">
                         כשהתחרות מודדת דירוג, המוטיבציה שייכת רק למי שנמצא בראש הטבלה. כשמעבירים את הפוקוס למדידת <strong className="text-foreground">שיפור</strong> - המוטיבציה הופכת לנחלת הכלל.
                     </p>
                 </MotionDiv>
@@ -61,16 +61,16 @@ export const AboutPage: React.FC = () => {
                     transition={{ delay: 0.1 }}
                     className="mb-10 border-r-4 border-primary pr-5 py-1"
                 >
-                    <p className="text-foreground text-base md:text-lg font-medium leading-relaxed italic">
+                    <p className="text-foreground text-base font-medium leading-relaxed italic">
                         "לראשונה ראיתי תלמיד שתמיד היה 'באמצע' רץ לספר לחבר שלו שהוא עלה שלושה מקומות. לא שהוא ראשון - שהוא עלה."
                     </p>
-                    <p className="mt-2 text-xs text-muted-foreground font-black uppercase tracking-wider">מנהלת בית ספר, חינוך עירוני</p>
+                    <p className="mt-2 text-sm text-muted-foreground font-black uppercase tracking-wider">מנהלת בית ספר, חינוך עירוני</p>
                 </MotionDiv>
 
                 {/* ── THE PROBLEM ── */}
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-10">
-                    <h2 className="text-xl md:text-2xl font-black text-foreground mb-3">למה תחרות מסורתית נכשלת?</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
+                    <h2 className="text-xl font-black text-foreground mb-3">למה תחרות מסורתית נכשלת?</h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                         תחרות של "סכום אפס" מייצרת מנצח אחד - ועשרים ותשעה תלמידים שמבינים מהר מאוד שהם לא הוא. עם הזמן, מי שלא בפסגה פשוט מפסיק לנסות. לא כי הוא חסר יכולת, אלא כי המערכת לימדה אותו שהסיכוי שלו לזכות בהכרה הוא אפסי.
                     </p>
                     <div className="grid grid-cols-2 gap-3">
@@ -94,8 +94,8 @@ export const AboutPage: React.FC = () => {
 
                 {/* ── PEDAGOGY ── */}
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-10">
-                    <h2 className="text-xl md:text-2xl font-black text-foreground mb-3">הגישה הפדגוגית: להפוך הצלחה אישית לכוח קהילתי</h2>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
+                    <h2 className="text-xl font-black text-foreground mb-3">הגישה הפדגוגית: להפוך הצלחה אישית לכוח קהילתי</h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                         הפלטפורמה נשענת על עקרונות גישת ה-PBIS (חיזוק התנהגות חיובית): כשמחזקים את הטוב במקום לקנוס על הרע, האקלים הבית-ספרי משתנה מהקצה אל הקצה. המערכת מפעילה שתי שכבות פסיכולוגיות מקבילות:
                     </p>
                     <div className="space-y-3">
@@ -103,7 +103,7 @@ export const AboutPage: React.FC = () => {
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-xl">🏅</div>
                             <div>
                                 <div className="font-black text-foreground text-sm mb-1">ניצחון מול עצמך</div>
-                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                <p className="text-sm text-muted-foreground leading-relaxed">
                                     הניקוד האישי של התלמיד עולה כשהוא מתאמץ ומשתפר. הגאווה היא על הדרך ועל העבודה הקשה, לא על הדירוג ביחס לאחרים.
                                 </p>
                             </div>
@@ -112,7 +112,7 @@ export const AboutPage: React.FC = () => {
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-xl">🌍</div>
                             <div>
                                 <div className="font-black text-foreground text-sm mb-1">תרומה למשהו גדול יותר</div>
-                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                <p className="text-sm text-muted-foreground leading-relaxed">
                                     כל נקודה אישית דוחפת את הכיתה כולה, ואת בית-הספר כולו, לעבר יעד משותף. ההישג של היחיד מפסיק להיות אנוכי והופך לחלק מהצלחה של קהילה שלמה.
                                 </p>
                             </div>
@@ -122,14 +122,14 @@ export const AboutPage: React.FC = () => {
 
                 {/* ── HOW IT COMES TO LIFE ── */}
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mb-10">
-                    <h2 className="text-xl md:text-2xl font-black text-foreground mb-1">איך זה עובד בשטח?</h2>
+                    <h2 className="text-xl font-black text-foreground mb-1">איך זה עובד בשטח?</h2>
                     <p className="text-muted-foreground text-sm mb-4">שלושה כלים טכנולוגיים שהופכים את התיאוריה למציאות יומיומית - בלי להוסיף עומס על הצוות.</p>
                     <div className="space-y-3">
                         {[
                             {
                                 emoji: '📺',
                                 title: 'מסך קיוסק - בית-הספר מדבר',
-                                text: 'לוח דירוג חי על מסכי הטלוויזיה במסדרונות. כל עלייה בניקוד מלווה באנימציה, צליל, ואפשרות לקריין AI*. התלמידים רואים את המאמץ שלהם מקבל הכרה פומבית.',
+                                text: 'לוח דירוג חי על מסכי הטלוויזיה במסדרונות. כל עלייה בניקוד מלווה באנימציה, צליל, ואפשרות לפרשן AI בזמן אמת*. התלמידים רואים את המאמץ שלהם מקבל הכרה פומבית.',
                             },
                             {
                                 emoji: '🎯',
@@ -146,19 +146,19 @@ export const AboutPage: React.FC = () => {
                                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0 text-xl">{tool.emoji}</div>
                                 <div>
                                     <div className="font-black text-foreground text-sm mb-1">{tool.title}</div>
-                                    <p className="text-xs text-muted-foreground leading-relaxed">{tool.text}</p>
+                                    <p className="text-sm text-muted-foreground leading-relaxed">{tool.text}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <p className="text-[10px] text-muted-foreground/50 mt-2 px-1">* קריין AI זמין בתוספת תשלום.</p>
+                    <p className="text-sm text-muted-foreground/50 mt-2 px-1">* פרשן AI בזמן אמת זמין בתוספת תשלום.</p>
                 </MotionDiv>
 
                 {/* ── FOR THE PRINCIPAL ── */}
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-10 bg-muted/50 border border-border rounded-2xl p-6">
                     <div className="flex items-center gap-3 mb-3">
                         <AwardIcon className="w-5 h-5 text-primary shrink-0" />
-                        <h2 className="text-base font-black text-foreground">בשורה התחתונה למנהלים</h2>
+                        <h2 className="text-xl font-black text-foreground">בשורה התחתונה למנהלים</h2>
                     </div>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                         פחות התעסקות במשמעת, יותר תחושת שייכות. תלמידים שפותחים את הבוקר בשאלה "כמה נקודות חסרות לכיתה שלנו?" הם תלמידים שאכפת להם. המערכת גמישה לחלוטין (לתחרות שבועית, חודשית או שנתית) ומותאמת למידות של כל מוסד חינוכי.
@@ -191,7 +191,7 @@ export const AboutPage: React.FC = () => {
                             ראה דוגמה חיה
                         </button>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-white/15 flex items-center gap-3 text-white/60 text-xs">
+                    <div className="mt-4 pt-4 border-t border-white/15 flex items-center gap-3 text-white/60 text-sm">
                         <a href="tel:0544572858" className="hover:text-white transition-colors font-bold" dir="ltr">054-457-2858</a>
                         <span>·</span>
                         <a href="mailto:ariel.galil.work@gmail.com" className="hover:text-white transition-colors font-bold" dir="ltr">ariel.galil.work@gmail.com</a>

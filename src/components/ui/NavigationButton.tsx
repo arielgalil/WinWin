@@ -1,5 +1,5 @@
 import React from 'react';
-import { SproutIcon, HomeIcon, TrophyIcon, CalculatorIcon, SettingsIcon, Volume2Icon, VolumeXIcon, ZapIcon, CrownIcon, ShieldAlertIcon, LockIcon } from './Icons';
+import { SproutIcon, TrophyIcon, CalculatorIcon, SettingsIcon, Volume2Icon, VolumeXIcon, ZapIcon, CrownIcon, ShieldAlertIcon, LockIcon } from './Icons';
 
 interface NavigationButtonProps {
     onClick: () => void;
@@ -60,7 +60,14 @@ export const NavigationButton: React.FC<NavigationButtonProps> = ({
 
 // Icon-specific components for cleaner usage
 export const HomeButton = (props: Omit<NavigationButtonProps, 'icon'>) => (
-    <NavigationButton {...props} icon={<SproutIcon />} />
+    <NavigationButton {...props} icon={
+        <img
+            src="/logo.png"
+            alt="Win2Grow"
+            className="w-full h-full object-contain"
+            style={{ filter: 'brightness(0) invert(1)' }}
+        />
+    } />
 );
 
 export const TrophyButton = (props: Omit<NavigationButtonProps, 'icon'>) => (
