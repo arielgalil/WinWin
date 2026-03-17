@@ -176,7 +176,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             title={t("nav_home")}
                             style={getNavButtonStyle()}
                         >
-                            <SproutIcon className="w-4 h-4 drop-shadow-[0_0_8px_var(--primary-base)]" />
+                            <img src="/logo.png" alt="Win2Grow" className="w-4 h-4 object-contain drop-shadow-[0_0_8px_var(--primary-base)]" style={{ filter: 'brightness(0) invert(1)' }} />
                             <span className="hidden sm:inline font-black text-[10px] tracking-tight uppercase whitespace-nowrap transition-colors leading-none translate-y-[0.5px] text-zinc-100">
                                 {t("app_name")}
                             </span>
@@ -396,7 +396,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                             navigate("/")}
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
-                                                        <SproutIcon className="w-4 h-4" />
+                                                        <img src="/logo.png" alt="Win2Grow" className="w-4 h-4 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
                                                         {t("all_campaigns")}
                                                     </button>
 
