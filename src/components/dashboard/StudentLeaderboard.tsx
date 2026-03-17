@@ -41,6 +41,7 @@ interface EnrichedStudent {
     className: string;
     classColor: string;
     rankDiff?: number;
+    scoreDiff?: number;
     rank: number;
     trend?: 'up' | 'down' | 'same';
 }
@@ -89,6 +90,15 @@ const StudentRow = ({
                     />
                     <span className="relative z-10">{student.className}</span>
                 </div>
+                {student.rankDiff != null && student.rankDiff > 0 ? (
+                    <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
+                        ▲{student.rankDiff} מקומות
+                    </span>
+                ) : student.scoreDiff != null && student.scoreDiff > 0 ? (
+                    <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
+                        {student.scoreDiff}+ נקו'
+                    </span>
+                ) : null}
             </div>
         </div>
         <div className="text-right shrink-0">
@@ -282,31 +292,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                     borderColorClass={borderColorClass}
                     rightContent={
                         <div className="flex items-center gap-2">
-                            {/* Search button (desktop-visible; on mobile the FAB handles it) */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setSearchOpen(o => !o)}
-                                    className={`relative p-1.5 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400
-                                        ${searchOpen
-                                            ? 'bg-cyan-500/30 text-cyan-300'
-                                            : pinnedIds.size > 0
-                                                ? 'bg-cyan-500/20 text-cyan-400'
-                                                : 'text-white/50 hover:text-white hover:bg-white/10'
-                                        }
-                                        ${showPulse ? 'animate-pulse' : ''}
-                                    `}
-                                    aria-label="חיפוש תלמיד"
-                                    style={{ minWidth: 30, minHeight: 30 }}
-                                >
-                                    <SearchSvg size={15} />
-                                </button>
-                                {pinnedIds.size > 0 && (
-                                    <span className="pointer-events-none absolute -top-1 -end-1 w-4 h-4 bg-cyan-500 rounded-full text-[9px] font-black text-white flex items-center justify-center leading-none">
-                                        {pinnedIds.size}
-                                    </span>
-                                )}
-                            </div>
-                            {/* Tab dots */}
+                            {/* Tab dots — right side in RTL */}
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => handleTabClick('momentum')}
@@ -329,6 +315,29 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                     aria-selected={activeTab === 'wheel'}
                                     aria-label={t('lucky_wheel_winners_tab' as any)}
                                 />
+                            </div>
+                            {/* Search button — left side in RTL */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setSearchOpen(o => !o)}
+                                    className={`relative flex items-center justify-center w-8 h-8 rounded-full border transition-all focus:outline-none focus:ring-2 focus:ring-cyan-400
+                                        ${searchOpen
+                                            ? 'bg-cyan-500/40 border-cyan-400/50 text-cyan-300'
+                                            : pinnedIds.size > 0
+                                                ? 'bg-cyan-500/20 border-cyan-400/30 text-cyan-400'
+                                                : 'bg-white/10 border-white/20 text-white/70 hover:bg-white/15 hover:text-white'
+                                        }
+                                        ${showPulse ? 'animate-pulse' : ''}
+                                    `}
+                                    aria-label="חיפוש תלמיד"
+                                >
+                                    <SearchSvg size={16} />
+                                </button>
+                                {pinnedIds.size > 0 && (
+                                    <span className="pointer-events-none absolute -top-1 -end-1 w-4 h-4 bg-cyan-500 rounded-full text-[9px] font-black text-white flex items-center justify-center leading-none">
+                                        {pinnedIds.size}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     }

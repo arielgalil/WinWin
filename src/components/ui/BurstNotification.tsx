@@ -4,7 +4,6 @@ import { BurstNotificationData } from "../../types";
 import {
     CheckIcon,
     CrownIcon,
-    SparklesIcon,
     StarIcon,
     TrendUpIcon,
     TrophyIcon,
@@ -187,21 +186,6 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
                                     }}
                                     className="absolute inset-4 rounded-full border-2 border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.1)]"
                                 />
-
-                                {/* Sparkles on Ring */}
-                                <MotionDiv
-                                    animate={{
-                                        scale: [1, 1.2, 1],
-                                        opacity: [0.3, 0.6, 0.3],
-                                    }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                    }}
-                                    className="absolute -top-1 text-white/40"
-                                >
-                                    <SparklesIcon className="w-6 h-6 sm:w-8 sm:h-8" />
-                                </MotionDiv>
 
                                 {/* Core Icon Circle */}
                                 <MotionDiv

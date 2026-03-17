@@ -66,10 +66,13 @@ export const calculateStudentStats = (classes: ClassRoom[]) => {
       const prevRank = prevRankMap.get(s.id) || 999;
       const rankDiff = prevRank - currentRank;
 
+      const scoreDiff = (s.score || 0) - (s.prev_score || 0);
+
       return {
         ...s,
-        rank: currentRank, 
-        rankDiff 
+        rank: currentRank,
+        rankDiff,
+        scoreDiff,
       };
     });
 
