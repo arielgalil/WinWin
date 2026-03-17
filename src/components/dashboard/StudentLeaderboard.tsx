@@ -79,7 +79,7 @@ const StudentRow = ({
         <div className={`w-6 h-6 lg:w-7 lg:h-7 rounded-full flex items-center justify-center font-black text-sm lg:text-base shrink-0 ml-2.5 ${badgeBg}`}>
             {badge}
         </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
             <div className="flex items-center gap-1.5 lg:gap-2 flex-wrap">
                 <span className={`font-bold text-sm md:text-sm lg:text-[clamp(0.9rem,1.2vw,1rem)] truncate leading-none ${nameColorClass}`}>{student.name}</span>
                 <div className="relative flex items-center text-[10px] text-white px-2 py-0.5 rounded-[var(--radius-main)] font-bold whitespace-nowrap shadow-sm border border-white/20 overflow-hidden">
@@ -90,16 +90,16 @@ const StudentRow = ({
                     />
                     <span className="relative z-10">{student.className}</span>
                 </div>
-                {student.rankDiff != null && student.rankDiff > 0 ? (
-                    <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
-                        ▲{student.rankDiff} מקומות
-                    </span>
-                ) : student.scoreDiff != null && student.scoreDiff > 0 ? (
-                    <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
-                        {student.scoreDiff}+ נקו'
-                    </span>
-                ) : null}
             </div>
+            {student.rankDiff != null && student.rankDiff > 0 ? (
+                <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
+                    ▲{student.rankDiff} מקומות
+                </span>
+            ) : student.scoreDiff != null && student.scoreDiff > 0 ? (
+                <span className="text-[11px] lg:text-xs font-bold text-emerald-400 leading-none whitespace-nowrap" dir="rtl">
+                    {student.scoreDiff}+ נקו'
+                </span>
+            ) : null}
         </div>
         <div className="text-right shrink-0">
             <div className="font-black text-sm lg:text-[clamp(1rem,1.3vw,1.1rem)] text-white tracking-tighter bg-black/40 rounded-[var(--radius-main)] px-2.5 py-1 lg:py-1 shadow-inner">
