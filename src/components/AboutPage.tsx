@@ -184,7 +184,7 @@ export const AboutPage: React.FC = () => {
                         </a>
                         {/* Demo */}
                         <button
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/demo')}
                             className="flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white rounded-xl px-5 py-3 font-black text-sm transition-colors flex-1"
                         >
                             <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />

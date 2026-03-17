@@ -7,7 +7,11 @@ const SuperAdminPanel = React.lazy(() => import('./components/SuperAdminPanel').
 const LiteTeacherView = React.lazy(() => import('./components/lite/LiteTeacherView').then(m => ({ default: m.LiteTeacherView })));
 const LiteLogin = React.lazy(() => import('./components/lite/LiteLogin').then(m => ({ default: m.LiteLogin })));
 const AboutPage = React.lazy(() => import('./components/AboutPage').then(m => ({ default: m.AboutPage })));
+const DemoDashboardPage = React.lazy(() => import('./demo/DemoDashboardPage').then(m => ({ default: m.DemoDashboardPage })));
+const DemoAdminPage = React.lazy(() => import('./demo/DemoAdminPage').then(m => ({ default: m.DemoAdminPage })));
 
+import { Outlet } from 'react-router-dom';
+import { DemoProvider } from './demo/DemoContext';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 import { PageSkeleton } from './components/ui/PageSkeleton';
 import { ErrorScreen } from './components/ui/ErrorScreen';
@@ -222,6 +226,12 @@ import { RouteErrorBoundary } from './components/ui/RouteErrorBoundary';
 import { ServiceWorkerManager } from './components/ui/ServiceWorkerManager';
 import { useRealtimeUpdate } from './hooks/useRealtimeUpdate';
 
+const DemoLayout: React.FC = () => (
+    <DemoProvider>
+        <Outlet />
+    </DemoProvider>
+);
+
 const App: React.FC = () => {
     const { t, dir } = useLanguage();
     const { user, authLoading, authStatus, isSlowConnection } = useAuth();
@@ -307,6 +317,10 @@ const App: React.FC = () => {
                                     </ProtectedRoute>
                                 }
                             />
+                            <Route path="/demo" element={<DemoLayout />}>
+                                <Route index element={<DemoDashboardPage />} />
+                                <Route path="admin" element={<DemoAdminPage />} />
+                            </Route>
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </React.Suspense>
