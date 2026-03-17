@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { AppSettings } from '../../types';
+import { AppSettings, Campaign } from '../../types';
 import { SparklesIcon, SaveIcon, RefreshIcon, XIcon, PlusIcon, KeyIcon, CheckIcon, AlertIcon, ListIcon } from '../ui/Icons';
 import { supabase } from '../../supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,18 +15,18 @@ const MotionDiv = motion.div as any;
 
 interface AiSettingsProps {
     settings: AppSettings;
+    campaign?: Campaign;
     onRefresh?: () => Promise<void>;
 }
 
-export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) => {
+export const AiSettings: React.FC<AiSettingsProps> = ({ settings, campaign, onRefresh }) => {
     const { t, language, isRTL } = useLanguage();
     const { triggerSave } = useSaveNotification();
-    const { modalConfig, openConfirmation, closeConfirmation } = useConfirmation();
+    const { modalConfig, openConfirmation } = useConfirmation();
 
     const [customPrompt, setCustomPrompt] = useState('');
     const [keywords, setKeywords] = useState<string[]>([]);
     const [newKeyword, setNewKeyword] = useState('');
-    const [geminiApiKey, setGeminiApiKey] = useState('');
 
     const [isSaving, setIsSaving] = useState(false);
     const [isTesting, setIsTesting] = useState(false);
@@ -36,7 +36,6 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     useEffect(() => {
         setCustomPrompt(settings.ai_custom_prompt || '');
         setKeywords(settings.ai_keywords || []);
-        setGeminiApiKey(settings.gemini_api_key || '');
     }, [settings]);
 
     const defaultPrompt = t('ai_default_prompt_content' as any);
@@ -44,14 +43,12 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     const hasChanges = useMemo(() => {
         const initialPrompt = settings.ai_custom_prompt || '';
         const initialKeywords = settings.ai_keywords || [];
-        const initialApiKey = settings.gemini_api_key || '';
 
         const promptChanged = customPrompt !== initialPrompt;
-        const apiKeyChanged = geminiApiKey !== initialApiKey;
         const keywordsChanged = JSON.stringify([...keywords].sort()) !== JSON.stringify([...initialKeywords].sort());
 
-        return promptChanged || keywordsChanged || apiKeyChanged;
-    }, [customPrompt, keywords, geminiApiKey, settings]);
+        return promptChanged || keywordsChanged;
+    }, [customPrompt, keywords, settings]);
 
     const handleAddKeyword = (e: React.FormEvent) => {
         e.preventDefault();
@@ -75,7 +72,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
     const handleTestConnection = async () => {
         setIsTesting(true);
         setTestResult(null);
-        const result = await testGeminiConnection(geminiApiKey, language);
+        const result = await testGeminiConnection(undefined, language);
         setTestResult(result);
         setIsTesting(false);
         setTimeout(() => setTestResult(null), 5000);
@@ -90,25 +87,63 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 .update({
                     ai_custom_prompt: customPrompt || null,
                     ai_keywords: keywords,
-                    gemini_api_key: geminiApiKey || null,
                     settings_updated_at: new Date().toISOString()
                 })
                 .eq('campaign_id', settings.campaign_id);
 
             if (error) throw error;
             triggerSave('settings'); // AI is part of settings
-            setMessage({ type: 'success', text: t('ai_settings_saved') });
+            setMessage({ type: 'success', text: t('ai_settings_saved' as any) });
             if (onRefresh) await onRefresh();
             setTimeout(() => setMessage(null), 3000);
         } catch (err: any) {
-            setMessage({ type: 'error', text: t('ai_settings_save_error', { error: err.message }) });
+            setMessage({ type: 'error', text: t('ai_settings_save_error' as any, { error: err.message }) });
         } finally {
             setIsSaving(false);
         }
     };
 
+    const isAiEnabled = campaign?.ai_enabled !== false;
+
     return (
         <div className="space-y-[var(--admin-section-gap)] w-full" dir={isRTL ? 'rtl' : 'ltr'}>
+            {/* AI Global Status Indicator */}
+            <div className={`p-4 rounded-[var(--radius-container)] border shadow-sm flex items-center justify-between mb-4 ${
+                isAiEnabled
+                    ? 'bg-green-500/5 border-green-500/20'
+                    : 'bg-red-500/5 border-red-500/20 opacity-80'
+            }`}>
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <div className={`w-3 h-3 rounded-full ${
+                            isAiEnabled ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'
+                        }`} />
+                        {isAiEnabled && (
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-ping opacity-40" />
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-main)] uppercase tracking-wider">
+                            {t('ai_status_label')}
+                        </p>
+                        <p className={`text-[var(--fs-base)] font-[var(--fw-black)] ${
+                            isAiEnabled ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                        }`}>
+                            {isAiEnabled ? t('ai_active_status') : t('ai_disabled_status')}
+                        </p>
+                    </div>
+                </div>
+
+                {!isAiEnabled && (
+                    <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-red-500/10 rounded-full border border-red-500/20">
+                        <AlertIcon className="w-3.5 h-3.5 text-red-500" />
+                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-tighter">
+                            {t('ai_disabled_warning')}
+                        </span>
+                    </div>
+                )}
+            </div>
+
             {/* API Configuration Card */}
             <AdminSectionCard
                 title={t('ai_api_key_title')}
@@ -156,19 +191,16 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                 }
             >
                 <div className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">{t('ai_api_key_placeholder')}</label>
-                        <div className="relative max-w-2xl">
-                            <input
-                                type="password"
-                                value={geminiApiKey}
-                                onChange={e => setGeminiApiKey(e.target.value)}
-                                placeholder={t('ai_api_key_placeholder')}
-                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-sm)] font-mono ps-12 shadow-sm"
-                            />
-                            <KeyIcon className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] opacity-50 pointer-events-none" />
+                    <div className="p-4 rounded-[var(--radius-main)] bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 flex gap-4 items-start">
+                        <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                            <CheckIcon className="w-5 h-5" />
                         </div>
-                        <p className="text-[var(--fs-sm)] text-[var(--text-muted)] italic mt-2 opacity-70">{t('ai_test_connection_desc')}</p>
+                        <div className="space-y-1">
+                            <p className="text-[var(--fs-sm)] text-[var(--text-main)] font-[var(--fw-bold)]">{t('ai_api_key_title')}</p>
+                            <p className="text-[var(--fs-sm)] text-[var(--text-muted)] leading-relaxed">
+                                {t('ai_api_key_desc')}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </AdminSectionCard>
@@ -226,7 +258,7 @@ export const AiSettings: React.FC<AiSettingsProps> = ({ settings, onRefresh }) =
                             keywords.map((kw, idx) => (
                                 <div key={idx} className="bg-[var(--bg-card)] text-[var(--text-main)] px-4 py-1.5 rounded-full flex items-center gap-3 text-[var(--fs-sm)] font-[var(--fw-bold)] border border-[var(--border-main)] shadow-sm animate-in zoom-in-95">
                                     <span>{kw}</span>
-                                    <button onClick={() => removeKeyword(kw)} className="text-[var(--text-muted)] hover:text-red-600 transition-colors">
+                                    <button onClick={() => removeKeyword(kw)} className="text-[var(--text-secondary)] hover:text-red-600 transition-colors">
                                         <XIcon className="w-3.5 h-3.5" />
                                     </button>
                                 </div>

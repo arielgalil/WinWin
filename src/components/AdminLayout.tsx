@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { UserProfile } from '@/types';
@@ -189,9 +189,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, user, campai
               className="w-full sm:w-80 p-0 flex flex-col bg-card border-border shadow-2xl"
             >
               <SheetHeader className={cn(
-                "p-4 border-b border-border h-16 flex-row items-center gap-3 ps-12"
+                "p-4 border-b border-border h-16 flex-row items-center gap-3"
               )}>
-                <SheetTitle className="text-xl font-bold text-foreground truncate">{t('admin_panel' as any)}</SheetTitle>
+                <div className="w-8 shrink-0" />
+                <SheetTitle className="text-xl font-bold text-foreground truncate flex-1">{t('admin_panel' as any)}</SheetTitle>
               </SheetHeader>
               <nav className="flex-1 flex flex-col gap-2 p-4">
                 {visibleNavItems.map((item, index) =>

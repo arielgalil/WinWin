@@ -306,7 +306,7 @@ export const ActionLogPanel: React.FC<ActionLogPanelProps> = ({
                                                 </td>
                                                 {isAdmin && (
                                                     <td className="p-4">
-                                                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="flex items-center justify-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                                             {isEditing ? (
                                                                 <>
                                                                     <AdminButton onClick={() => handleUpdate(log.id)} isLoading={isProcessing} variant="success" size="sm" className="w-10 h-10 px-0" icon={<SaveIcon className="w-4 h-4" />} />
