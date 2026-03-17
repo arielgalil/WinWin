@@ -52,12 +52,6 @@ export const AdminMobileMenu: React.FC<AdminMobileMenuProps> = ({
   const isAnySuperUser = isSuperUser(user.role) || isSuperUser(campaignRole);
   const isRTL = dir === 'rtl';
 
-  const getRoleLabel = () => {
-    if (isAnySuperUser) return t('role_super_user');
-    if (campaignRole === 'admin' || user.role === 'admin') return t('role_admin');
-    return t('role_teacher');
-  };
-
   // Lock body scroll and prevent pull-to-refresh when menu is open
   useEffect(() => {
     if (isOpen) {

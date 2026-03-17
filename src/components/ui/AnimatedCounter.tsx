@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSpring } from 'framer-motion';
 
 export const AnimatedCounter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {

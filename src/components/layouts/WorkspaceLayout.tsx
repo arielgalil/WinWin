@@ -264,7 +264,7 @@ export const WorkspaceLayout: React.FC<WorkspaceLayoutProps> = ({
                 padding="p-1"
               />
               <div className="hidden sm:block">
-                <h2 className="text-sm lg:text-base font-bold leading-none truncate max-w-[150px] lg:max-w-[200px]">
+                <h2 className="text-sm lg:text-base font-bold leading-snug max-w-[260px] lg:max-w-[340px]">
                   {institution.name}
                 </h2>
               </div>

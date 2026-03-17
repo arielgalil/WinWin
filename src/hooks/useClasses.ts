@@ -7,7 +7,7 @@ interface UseClassesOptions<T = ClassRoom[]> {
 }
 
 export const useClasses = <T = ClassRoom[]>(
-  campaignId: string | undefined, 
+  campaignId: string | undefined,
   options: UseClassesOptions<T> = {}
 ) => {
   const { select } = options;
@@ -17,38 +17,26 @@ export const useClasses = <T = ClassRoom[]>(
     queryFn: async () => {
       if (!campaignId) return [];
 
-      const { data: clsData, error: clsError } = await supabase
+      // Single query with nested select — eliminates O(n×m) client-side join
+      const { data, error } = await supabase
         .from('classes')
-        .select('*')
+        .select('*, students(*)')
         .eq('campaign_id', campaignId);
-      
-      if (clsError) {
-        console.error("Classes fetch error:", clsError);
-        throw clsError;
-      }
-      
-      const { data: stuData, error: stuError } = await supabase
-        .from('students')
-        .select('*')
-        .eq('campaign_id', campaignId);
-      
-      if (stuError) {
-        console.error("Students fetch error:", stuError);
-        throw stuError;
+
+      if (error) {
+        console.error("Classes fetch error:", error);
+        throw error;
       }
 
-      return (clsData || []).map(cls => ({ 
-        ...cls, 
-        students: (stuData || []).filter(s => s.class_id === cls.id) 
-      })) as ClassRoom[];
+      return (data || []) as ClassRoom[];
     },
     enabled: !!campaignId,
-    refetchInterval: 1000 * 15,
+    // No refetchInterval — realtime subscriptions in useRealtimeSubscriptions handle live updates
     staleTime: 1000 * 10,
     select: select as any,
   });
 
-  return { 
+  return {
     classes: classes as T,
     isLoading,
     isError,

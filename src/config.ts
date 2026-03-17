@@ -1,7 +1,12 @@
 // Central configuration file
 
 interface ImportMetaEnv {
-  [key: string]: string | undefined;
+  [key: string]: string | boolean | undefined;
+  BASE_URL: string;
+  MODE: string;
+  DEV: boolean;
+  PROD: boolean;
+  SSR: boolean;
 }
 
 interface CustomImportMeta extends ImportMeta {
@@ -12,7 +17,9 @@ const getEnvVar = (key: string, fallback: string = ""): string => {
   // Try Vite environment variables first (client-side)
   const meta = import.meta as unknown as CustomImportMeta;
   if (meta.env) {
-    return meta.env[`VITE_${key}`] || meta.env[key] || fallback;
+    const val = meta.env[`VITE_${key}`] ?? meta.env[key];
+    if (typeof val === "boolean") return String(val);
+    return val || fallback;
   }
   // Fallback to process.env (server-side)
   if (typeof process !== "undefined" && process.env) {

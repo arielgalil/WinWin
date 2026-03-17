@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PauseIcon, LockIcon } from './Icons';
+import { PauseIcon } from './Icons';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
 

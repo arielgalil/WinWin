@@ -197,8 +197,20 @@ export const MissionMeter: React.FC<MissionMeterProps> = React.memo(({
 
 
     const headerText = sortedGoals.length > 0
-        ? `${t('stage')} ${displayIndex + 1}: ${displayGoal.name}`
+        ? `${t('stage_label', { index: displayIndex + 1 })}: ${displayGoal.name}`
         : competitionName;
+
+    // Rotating goal-progress message suffixes
+    const goalSuffixKeys = useMemo(
+        () => ['to_label', 'to_label_goal', 'to_label_stage', 'to_label_together'] as const,
+        []
+    );
+    const [suffixIdx, setSuffixIdx] = useState(0);
+    useEffect(() => {
+        if (isCompleted) return;
+        const id = setInterval(() => setSuffixIdx(i => (i + 1) % goalSuffixKeys.length), 4500);
+        return () => clearInterval(id);
+    }, [isCompleted, goalSuffixKeys.length]);
 
     const celebrationEmoji = useMemo(() => {
         const emojis = ['🏆', '🥇', '👑', '⭐', '✨'];
@@ -376,8 +388,8 @@ const shoutoutMessage = useMemo(() => {
                                 {t('reached_peak', { emoji: celebrationEmoji })}
                             </div>
                         ) : (
-                            <div className="text-xs sm:text-sm font-black text-white/90 brightness-125">
-                                {t('more_points')} <span className="text-sm sm:text-base">{missingPoints.toLocaleString()}</span> {t('points_short')} {t('to_label')}!
+                            <div className="text-xs sm:text-sm font-black text-white/90 brightness-125 transition-all duration-500">
+                                {t('more_points')} <span className="text-sm sm:text-base">{missingPoints.toLocaleString()}</span> {t('points_short')} {t(goalSuffixKeys[suffixIdx] as any)}!
                             </div>
                         )}
 

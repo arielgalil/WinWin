@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { UploadIcon, XIcon, AlertIcon } from '../ui/Icons';
+import { UploadIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
+import { AdminModal } from '../ui/AdminModal';
+import { Button } from '../ui/button';
 import { parseExcelFile } from '../../utils/excelUtils';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useToast } from '../../hooks/useToast';
@@ -30,10 +32,9 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport, isOpen, onCl
       const classes = await parseExcelFile(file);
       if (classes.length === 0) {
         openConfirmation({
-          type: 'alert',
           title: t('no_data_found'),
           message: t('excel_empty_error'),
-          confirmLabel: t('ok'),
+          confirmText: t('ok'),
           onConfirm: closeConfirmation
         });
         return;
@@ -44,10 +45,9 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport, isOpen, onCl
     } catch (error) {
       console.error("Excel import error:", error);
       openConfirmation({
-        type: 'alert',
         title: t('import_error'),
         message: getErrorMessage(error),
-        confirmLabel: t('ok'),
+        confirmText: t('ok'),
         onConfirm: closeConfirmation
       });
     } finally {
@@ -62,45 +62,68 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImport, isOpen, onCl
 
   return (
     <>
-      <ConfirmationModal
-        isOpen={true}
+      <AdminModal
+        isOpen={isOpen}
+        onClose={onClose}
         title={t('bulk_import_excel')}
-        message=""
-        confirmLabel={isProcessing ? t('processing') : t('import')}
-        cancelLabel={t('cancel')}
-        onConfirm={() => fileInputRef.current?.click()}
-        onCancel={onClose}
-        isDisabled={isProcessing}
+        description={t('excel_format_info')}
+        size="md"
+        icon={<UploadIcon className="w-8 h-8" />}
       >
-        <div className="mt-4 p-6 border-2 border-dashed border-gray-300 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-black/20">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls,.csv"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          <div className="flex flex-col items-center gap-3">
-            <UploadIcon className="w-8 h-8 text-gray-400" />
-            <div className="text-center text-gray-700 dark:text-gray-200">
-              <p className="font-medium">{t('drag_or_click_excel')}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('excel_format_info')}</p>
+        <div className="space-y-6">
+          <div 
+            onClick={() => !isProcessing && fileInputRef.current?.click()}
+            className={`mt-4 p-8 border-2 border-dashed rounded-2xl transition-all cursor-pointer flex flex-col items-center gap-4 ${
+              isProcessing 
+                ? 'bg-[var(--bg-surface)] border-[var(--border-main)] opacity-50 cursor-not-allowed' 
+                : 'bg-[var(--bg-input)] border-indigo-500/30 hover:border-indigo-500 hover:bg-indigo-500/5'
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onChange={handleFileSelect}
+              className="hidden"
+              disabled={isProcessing}
+            />
+            <div className="p-4 rounded-full bg-indigo-500/10 text-indigo-500">
+              <UploadIcon className="w-10 h-10" />
+            </div>
+            <div className="text-center">
+              <p className="font-bold text-[var(--text-main)] text-lg">{t('drag_or_click_excel')}</p>
+              <p className="text-sm text-[var(--text-muted)] mt-1">{t('excel_format_info')}</p>
             </div>
           </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border-main)]">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              disabled={isProcessing}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isProcessing}
+            >
+              {t('import')}
+            </Button>
+          </div>
         </div>
-      </ConfirmationModal>
-      
-      {modalConfig && (
+      </AdminModal>
+
+      {modalConfig.isOpen && (
         <ConfirmationModal
           isOpen={modalConfig.isOpen}
           title={modalConfig.title}
           message={modalConfig.message}
-          confirmLabel={modalConfig.confirmLabel}
-          cancelLabel={modalConfig.cancelLabel}
+          confirmText={modalConfig.confirmText}
+          cancelText={modalConfig.cancelText}
           onConfirm={modalConfig.onConfirm}
           onCancel={modalConfig.onCancel}
-          isDisabled={modalConfig.isDisabled}
-          type={modalConfig.type}
+          isDanger={modalConfig.isDanger}
         />
       )}
     </>

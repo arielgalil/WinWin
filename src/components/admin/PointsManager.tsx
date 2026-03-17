@@ -1,7 +1,6 @@
 import React from 'react';
 import { UserProfile } from '../../types';
-import { SearchIcon, AlertIcon, CheckIcon, XIcon } from '../ui/Icons';
-import { AdminActionButton } from '../ui/AdminActionButton';
+import { SearchIcon, AlertIcon, CheckIcon } from '../ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LiteStudentCard } from '../lite/LiteStudentCard';
 import { LiteActionDock } from '../lite/LiteActionDock';
@@ -50,7 +49,7 @@ export const PointsManager: React.FC<PointsManagerProps> = ({ user, campaignRole
   const isGlobalSearch = searchTerm.length >= 2;
   const globalSearchStudents = isGlobalSearch
     ? teacherClasses
-        .flatMap(c => c.students.map(s => ({ ...s, className: c.name, classId: c.id })))
+        .flatMap(c => (c.students ?? []).map(s => ({ ...s, className: c.name, classId: c.id })))
         .filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => a.name.localeCompare(b.name, 'he'))
     : [];

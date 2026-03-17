@@ -198,9 +198,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 {/* 3. Global Score (Left) */}
                 <div className="order-2 lg:order-3 flex items-center justify-end gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[50px] lg:min-h-[56px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
-                        <div className="flex items-center gap-2 text-[12px] font-bold tracking-tight mb-0.5">
-                            <span className="text-white uppercase">{t('cumulative_score')}</span>
-                            <span className="text-emerald-400">{t('together')}</span>
+                        <div className="flex items-center gap-1 font-bold tracking-tight mb-0.5">
+                            <span className="text-white uppercase text-[11px]">{t('cumulative_score')}</span>
+                            <span className="text-emerald-400 text-[15px] leading-none">{t('together')}</span>
                         </div>
                         <span className="text-lg lg:text-[clamp(1.2rem,1.7vw,1.6rem)] font-black font-mono text-white tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
                             <FormattedNumber value={totalInstitutionScore} />

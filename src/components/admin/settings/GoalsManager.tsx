@@ -235,7 +235,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
         updated.sort((a, b) => a.target_score - b.target_score);
         setGoals(updated);
         onUpdateSettings(updated, gridSize);
-        resetForm(updated);
+        resetForm();
     };
 
     const resetForm = () => {
@@ -461,7 +461,7 @@ export const GoalsManager: React.FC<GoalsManagerProps> = ({ settings, onUpdateSe
                     <div className="flex flex-col gap-2 w-full md:mt-0 mt-4">
                         <AdminButton
                             onClick={handleSaveGoal}
-                            disabled={editingId || !formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
+                            disabled={!!editingId || !formState.name || !formState.target_score || formState.target_score <= minScoreAllowed}
                             variant="primary"
                             size="md"
                             className="w-full py-2.5"

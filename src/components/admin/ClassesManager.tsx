@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ClassRoom, UserProfile } from '../../types';
+import { ClassRoom } from '../../types';
 import { PlusIcon, UsersIcon, XIcon, RefreshIcon, SearchIcon, UploadIcon } from '../ui/Icons';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
 import { AdminTable } from '../ui/AdminTable';

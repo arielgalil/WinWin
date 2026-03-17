@@ -16,7 +16,7 @@ export const formatForWhatsApp = (text: string): string => {
     // This regex looks for a Hebrew prefix letter followed by **
     // It handles the prefix correctly by moving it inside the WhatsApp bold marks.
     const prefixRegex = /(^|[^א-תa-zA-Z0-9])([לב וכמש ה])\*\*(.*?)\*\*/g;
-    let formatted = text.replace(prefixRegex, (match, before, prefix, content) => {
+    let formatted = text.replace(prefixRegex, (_match, before, prefix, content) => {
         return `${before}*${prefix}${content}*`;
     });
 

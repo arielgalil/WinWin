@@ -1,38 +1,30 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactRouterDOM from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { Campaign, Institution, UserProfile } from "../types";
+import { Campaign, Institution } from "../types";
 import {
     AlertIcon,
     CalculatorIcon,
     CopyIcon,
     DollarSignIcon,
     EditIcon,
-    LogoutIcon,
-    MoonIcon,
     PauseIcon,
     PlayIcon,
     PlusIcon,
     RefreshIcon,
     SchoolIcon,
-    SearchIcon,
     SettingsIcon,
     SproutIcon,
-    SunIcon,
     TrashIcon,
     TrophyIcon,
 } from "./ui/Icons";
 import { ConfirmationModal } from "./ui/ConfirmationModal";
-import { Logo } from "./ui/Logo";
 import { useLanguage } from "../hooks/useLanguage";
 import { useToast } from "../hooks/useToast";
 import { useConfirmation } from "../hooks/useConfirmation";
-import { VersionFooter } from "./ui/VersionFooter";
 import { Button } from "./ui/button";
-import { AdminCard } from "./ui/AdminCard";
 import { StatCard } from "./ui/StatCard";
 import { AdminModal } from "./ui/AdminModal";
-import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../hooks/useAuth";
 import { NavItem, WorkspaceLayout } from "./layouts/WorkspaceLayout";
 import { Plus, Search, Shield } from "lucide-react";
@@ -40,7 +32,6 @@ import { Plus, Search, Shield } from "lucide-react";
 const { useNavigate } = ReactRouterDOM as any;
 
 interface SuperAdminPanelProps {
-    onLogout: () => void;
 }
 
 interface InstitutionStats extends Institution {
@@ -50,10 +41,8 @@ interface InstitutionStats extends Institution {
 
 // CompactStat replaced with StatCard component
 
-export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
-    { onLogout },
-) => {
-    const { t, dir } = useLanguage();
+export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = () => {
+    const { t } = useLanguage();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const { user, logout } = useAuth();
@@ -61,7 +50,6 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [fetchError, setFetchError] = useState<string | null>(null);
-    const { theme, toggleTheme } = useTheme();
 
     const { modalConfig, openConfirmation } = useConfirmation();
     const [instForm, setInstForm] = useState<any>({
@@ -232,6 +220,7 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
                 slug: campForm.slug,
                 institution_id: campForm.institution_id,
                 is_active: campForm.is_active ?? true,
+                ai_enabled: campForm.ai_enabled ?? true,
             };
 
             if (campForm.id) {
@@ -287,14 +276,14 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
                 roleLabel: t("role_super_user"),
             }}
             institution={{
-                name: "WinWin System",
+                name: "🌱 מערכת תחרויות מצמיחה - פאנל משתמש על",
             }}
             navItems={navItems}
             activeTab="institutions"
             onTabChange={() => {}}
             onLogout={handleLogout}
             onViewDashboard={() => navigate("/")}
-            headerTitle={t("super_admin_title")}
+            headerTitle="ניהול מוסדות ותחרויות"
             headerIcon={Shield}
             headerColorVar="var(--acc-settings)"
             onRefresh={fetchInstitutions}
@@ -396,75 +385,58 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
                                     key={inst.id}
                                     className={`bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[var(--radius-container)] overflow-hidden shadow-xl transition-all`}
                                 >
-                                    <div className="p-5 flex justify-between items-center border-b border-[var(--divide-main)] bg-[var(--bg-surface)]/30">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] flex items-center justify-center shadow-lg border border-[var(--border-main)] shrink-0 overflow-hidden">
-                                                {inst.logo_url
-                                                    ? (
-                                                        <img
-                                                            src={inst.logo_url}
-                                                            className="w-full h-full object-contain p-1 no-select no-drag"
-                                                            alt={inst.name}
-                                                        />
-                                                    )
-                                                    : (
-                                                        <SchoolIcon className="w-6 h-6 text-blue-500" />
-                                                    )}
-                                            </div>
-                                            <div>
-                                                <h3 className="font-black text-xl text-[var(--text-main)]">
+                                    <div className="px-4 pt-3 pb-2.5 border-b border-[var(--divide-main)] bg-[var(--bg-surface)]/40 space-y-2">
+                                        {/* Row 1: logo + name + edit | delete */}
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="flex items-start gap-2.5 min-w-0">
+                                                <div className="w-10 h-10 rounded-full bg-[var(--bg-input)] flex items-center justify-center shadow-sm border-2 border-[var(--border-main)] shrink-0 overflow-hidden mt-0.5">
+                                                    {inst.logo_url
+                                                        ? (
+                                                            <img
+                                                                src={inst.logo_url}
+                                                                className="w-full h-full object-contain p-1 no-select no-drag"
+                                                                alt={inst.name}
+                                                            />
+                                                        )
+                                                        : (
+                                                            <SchoolIcon className="w-5 h-5 text-blue-500" />
+                                                        )}
+                                                </div>
+                                                <h3 className="font-bold text-base text-[var(--text-main)] leading-snug pt-1.5 min-w-0">
                                                     {inst.name}
                                                 </h3>
-                                                <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">
-                                                    {inst.type ||
-                                                        t("educational_institution")}
-                                                    {" "}
-                                                    • {t("campaigns_count", {
-                                                        count: inst.campaigns
-                                                            .length,
-                                                    })}
-                                                </p>
+                                                <Button
+                                                    onClick={() => { setInstForm(inst); setShowInstModal(true); }}
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="w-7 h-7 shrink-0 mt-1 text-muted-foreground/50 hover:text-muted-foreground"
+                                                    title={t("edit")}
+                                                >
+                                                    <EditIcon className="w-3.5 h-3.5" />
+                                                </Button>
                                             </div>
+                                            <Button
+                                                onClick={() => handleDeleteInstitution(inst.id)}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="w-7 h-7 shrink-0 mt-1 text-muted-foreground/30 hover:text-red-500"
+                                                title={t("delete")}
+                                            >
+                                                <TrashIcon className="w-3.5 h-3.5" />
+                                            </Button>
                                         </div>
-                                        <div className="flex gap-4 items-center">
+                                        {/* Row 2: meta + add button */}
+                                        <div className="flex items-center justify-between gap-2">
+                                            <p className="text-[10px] text-[var(--text-muted)] tracking-wide">
+                                                {inst.type || t("educational_institution")} · {inst.campaigns.length} {t("campaigns_label")}
+                                            </p>
                                             <Button
-                                                onClick={() => {
-                                                    setCampForm({
-                                                        institution_id: inst.id,
-                                                        is_active: true,
-                                                    });
-                                                    setShowCampModal(true);
-                                                }}
-                                                variant="outline"
+                                                onClick={() => { setCampForm({ institution_id: inst.id, is_active: true }); setShowCampModal(true); }}
                                                 size="sm"
-                                                className="bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-primary/20"
+                                                className="h-7 gap-1 text-xs shrink-0"
                                             >
-                                                <PlusIcon className="w-3.5 h-3.5" />
-                                                <span>
-                                                    {t("add_competition")}
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                onClick={() =>
-                                                    handleDeleteInstitution(
-                                                        inst.id,
-                                                    )}
-                                                variant="ghost"
-                                                size="icon"
-                                                className="min-w-[44px] min-h-[44px] text-muted-foreground/20 hover:text-muted-foreground"
-                                            >
-                                                <TrashIcon className="w-5 h-5 opacity-60" />
-                                            </Button>
-                                            <Button
-                                                onClick={() => {
-                                                    setInstForm(inst);
-                                                    setShowInstModal(true);
-                                                }}
-                                                variant="ghost"
-                                                size="icon"
-                                                className="min-w-[44px] min-h-[44px] text-muted-foreground"
-                                            >
-                                                <EditIcon className="w-5 h-5 opacity-60" />
+                                                <PlusIcon className="w-3 h-3" />
+                                                {t("add_competition")}
                                             </Button>
                                         </div>
                                     </div>
@@ -483,216 +455,143 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
                                                                 key={camp.id}
                                                                 className="p-4 rounded-[var(--radius-main)] bg-[var(--bg-input)] border border-[var(--border-main)] space-y-4 transition-all hover:border-[var(--accent-blue)]/30 group"
                                                             >
-                                                                {/* Header: Logo, Name, Toggle, Edit/Trash */}
-                                                                <div className="flex items-center justify-between gap-3">
-                                                                    <div className="flex items-center gap-3 min-w-0">
-                                                                        <div className="w-10 h-10 rounded-full bg-[var(--bg-input)] flex items-center justify-center shadow-md border border-[var(--border-main)] shrink-0 overflow-hidden">
-                                                                            {camp
-                                                                                    .logo_url
+                                                                {/* Header: [toggle][logo][name+edit] | [delete] — single row */}
+                                                                <div className="flex items-start justify-between gap-2">
+                                                                    {/* Right side: toggle + logo + name + edit */}
+                                                                    <div className="flex items-start gap-2 min-w-0">
+                                                                        <Button
+                                                                            onClick={() => handleToggleActive(camp)}
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            className={`w-8 h-8 shrink-0 mt-0.5 ${
+                                                                                camp.is_active
+                                                                                    ? "text-green-500 hover:bg-green-500/10"
+                                                                                    : "text-muted-foreground/40 hover:bg-green-500/10 hover:text-green-500"
+                                                                            }`}
+                                                                            title={camp.is_active ? t("active_status") : t("inactive_status")}
+                                                                        >
+                                                                            {camp.is_active
+                                                                                ? <PauseIcon className="w-4 h-4" />
+                                                                                : <PlayIcon className="w-4 h-4" />}
+                                                                        </Button>
+                                                                        <div className="w-9 h-9 rounded-full bg-[var(--bg-input)] flex items-center justify-center shadow-md border-2 border-[var(--border-main)] shrink-0 overflow-hidden mt-0.5">
+                                                                            {camp.logo_url
                                                                                 ? (
                                                                                     <img
-                                                                                        src={camp
-                                                                                            .logo_url}
+                                                                                        src={camp.logo_url}
                                                                                         className="w-full h-full object-contain p-1 no-select no-drag"
-                                                                                        alt={camp
-                                                                                            .name}
+                                                                                        alt={camp.name}
                                                                                     />
                                                                                 )
                                                                                 : (
-                                                                                    <SproutIcon className="w-6 h-6 text-green-600" />
+                                                                                    <SproutIcon className="w-5 h-5 text-green-600" />
                                                                                 )}
                                                                         </div>
-                                                                        <div className="min-w-0">
-                                                                            <h4 className="font-black text-lg truncate text-[var(--text-main)] leading-none mb-1">
-                                                                                {camp
-                                                                                    .name}
+                                                                        <div className="min-w-0 pt-1">
+                                                                            <h4 className="font-black text-sm text-[var(--text-main)] leading-snug">
+                                                                                {camp.name}
                                                                             </h4>
                                                                             <p
                                                                                 className="text-[10px] text-[var(--text-muted)] font-mono truncate"
                                                                                 dir="ltr"
                                                                             >
-                                                                                {camp
-                                                                                    .slug}
+                                                                                {camp.slug}
                                                                             </p>
                                                                         </div>
-                                                                    </div>
-                                                                    <div className="flex items-center gap-3">
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                handleToggleActive(
-                                                                                    camp,
-                                                                                )}
+                                                                            onClick={() => {
+                                                                                setCampForm(camp);
+                                                                                setShowCampModal(true);
+                                                                            }}
                                                                             variant="ghost"
                                                                             size="icon"
-                                                                            className={`min-w-[44px] min-h-[44px] ${
-                                                                                camp.is_active
-                                                                                    ? "text-green-500 hover:bg-green-500/10"
-                                                                                    : "text-red-500 hover:bg-red-500/10"
-                                                                            }`}
-                                                                            title={camp
-                                                                                    .is_active
-                                                                                ? t("active_status")
-                                                                                : t("inactive_status")}
+                                                                            title={t("edit")}
+                                                                            className="w-7 h-7 shrink-0 mt-1 text-muted-foreground/50 hover:text-muted-foreground"
                                                                         >
-                                                                            {camp
-                                                                                    .is_active
-                                                                                ? (
-                                                                                    <PauseIcon className="w-5 h-5" />
-                                                                                )
-                                                                                : (
-                                                                                    <PlayIcon className="w-5 h-5" />
-                                                                                )}
+                                                                            <EditIcon className="w-3.5 h-3.5" />
                                                                         </Button>
-                                                                        <div className="flex gap-3">
-                                                                            <Button
-                                                                                onClick={() =>
-                                                                                    handleDeleteCampaign(
-                                                                                        camp.id,
-                                                                                    )}
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                title={t(
-                                                                                    "delete",
-                                                                                )}
-                                                                                className="min-w-[44px] min-h-[44px] text-muted-foreground/20 hover:text-muted-foreground"
-                                                                            >
-                                                                                <TrashIcon className="w-5 h-5" />
-                                                                            </Button>
-                                                                            <Button
-                                                                                onClick={() => {
-                                                                                    setCampForm(
-                                                                                        camp,
-                                                                                    );
-                                                                                    setShowCampModal(
-                                                                                        true,
-                                                                                    );
-                                                                                }}
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                title={t(
-                                                                                    "edit",
-                                                                                )}
-                                                                                className="min-w-[44px] min-h-[44px] text-muted-foreground"
-                                                                            >
-                                                                                <EditIcon className="w-5 h-5" />
-                                                                            </Button>
-                                                                        </div>
                                                                     </div>
+                                                                    {/* Left side: delete */}
+                                                                    <Button
+                                                                        onClick={() => handleDeleteCampaign(camp.id)}
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        title={t("delete")}
+                                                                        className="w-7 h-7 shrink-0 mt-1 text-muted-foreground/25 hover:text-red-500"
+                                                                    >
+                                                                        <TrashIcon className="w-3.5 h-3.5" />
+                                                                    </Button>
                                                                 </div>
 
-                                                                {/* Action Buttons List */}
-                                                                <div className="flex flex-col gap-2 pt-2 border-t border-[var(--border-main)]">
-                                                                    <div className="flex gap-2 items-center">
+                                                                {/* Action Buttons — compact 3-col grid */}
+                                                                <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--border-main)]">
+                                                                    {/* לוח */}
+                                                                    <div className="flex flex-col gap-1">
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                navigate(
-                                                                                    `/comp/${camp.slug}`,
-                                                                                )}
+                                                                            onClick={() => navigate(`/comp/${camp.slug}`)}
                                                                             variant="outline"
                                                                             size="sm"
-                                                                            title={t(
-                                                                                "open_board",
-                                                                            )}
-                                                                            className="flex-1 justify-start h-10 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border-yellow-500/20 hover:bg-yellow-500/20"
+                                                                            title={t("open_board")}
+                                                                            className="h-9 flex flex-col gap-0.5 items-center justify-center bg-amber-500/8 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/15 hover:border-amber-500/30 px-1"
                                                                         >
-                                                                            <TrophyIcon className="w-4 h-4 rtl:ml-2 ltr:mr-2" />
-                                                                            <span className="truncate">
-                                                                                {t("open_board")}
-                                                                            </span>
+                                                                            <TrophyIcon className="w-3.5 h-3.5" />
+                                                                            <span className="text-[10px] font-semibold leading-none">{t("open_board")}</span>
                                                                         </Button>
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                handleCopy(
-                                                                                    window
-                                                                                        .location
-                                                                                        .origin +
-                                                                                        "/comp/" +
-                                                                                        camp.slug,
-                                                                                )}
+                                                                            onClick={() => handleCopy(window.location.origin + "/comp/" + camp.slug)}
                                                                             variant="ghost"
-                                                                            size="icon"
-                                                                            title={t(
-                                                                                "copy_link",
-                                                                            )}
-                                                                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-foreground bg-[var(--bg-surface)] border border-[var(--border-main)] hover:bg-[var(--bg-hover)]"
+                                                                            size="sm"
+                                                                            title={t("copy_link")}
+                                                                            className="h-6 text-muted-foreground/50 hover:text-muted-foreground gap-1 px-1"
                                                                         >
-                                                                            <CopyIcon className="w-4 h-4" />
+                                                                            <CopyIcon className="w-3 h-3" />
+                                                                            <span className="text-[9px]">{t("copy_link")}</span>
                                                                         </Button>
                                                                     </div>
-
-                                                                    <div className="flex gap-2 items-center">
+                                                                    {/* ניקוד */}
+                                                                    <div className="flex flex-col gap-1">
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                navigate(
-                                                                                    `/vote/${camp.slug}`,
-                                                                                )}
+                                                                            onClick={() => navigate(`/vote/${camp.slug}`)}
                                                                             variant="outline"
                                                                             size="sm"
-                                                                            title={t(
-                                                                                "points_interface",
-                                                                            )}
-                                                                            className="flex-1 justify-start h-10 bg-pink-500/10 text-pink-600 dark:text-pink-500 border-pink-500/20 hover:bg-pink-500/20"
+                                                                            title={t("points_interface")}
+                                                                            className="h-9 flex flex-col gap-0.5 items-center justify-center bg-pink-500/8 text-pink-600 dark:text-pink-400 border-pink-500/20 hover:bg-pink-500/15 hover:border-pink-500/30 px-1"
                                                                         >
-                                                                            <CalculatorIcon className="w-4 h-4 rtl:ml-2 ltr:mr-2" />
-                                                                            <span className="truncate">
-                                                                                {t("points_interface")}
-                                                                            </span>
+                                                                            <CalculatorIcon className="w-3.5 h-3.5" />
+                                                                            <span className="text-[10px] font-semibold leading-none">{t("points_interface")}</span>
                                                                         </Button>
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                handleCopy(
-                                                                                    window
-                                                                                        .location
-                                                                                        .origin +
-                                                                                        "/vote/" +
-                                                                                        camp.slug,
-                                                                                )}
+                                                                            onClick={() => handleCopy(window.location.origin + "/vote/" + camp.slug)}
                                                                             variant="ghost"
-                                                                            size="icon"
-                                                                            title={t(
-                                                                                "copy_link",
-                                                                            )}
-                                                                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-foreground bg-[var(--bg-surface)] border border-[var(--border-main)] hover:bg-[var(--bg-hover)]"
+                                                                            size="sm"
+                                                                            title={t("copy_link")}
+                                                                            className="h-6 text-muted-foreground/50 hover:text-muted-foreground gap-1 px-1"
                                                                         >
-                                                                            <CopyIcon className="w-4 h-4" />
+                                                                            <CopyIcon className="w-3 h-3" />
+                                                                            <span className="text-[9px]">{t("copy_link")}</span>
                                                                         </Button>
                                                                     </div>
-
-                                                                    <div className="flex gap-2 items-center">
+                                                                    {/* הגדרות */}
+                                                                    <div className="flex flex-col gap-1">
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                navigate(
-                                                                                    `/admin/${camp.slug}`,
-                                                                                )}
+                                                                            onClick={() => navigate(`/admin/${camp.slug}`)}
                                                                             variant="outline"
                                                                             size="sm"
-                                                                            title={t(
-                                                                                "competition_settings",
-                                                                            )}
-                                                                            className="flex-1 justify-start h-10 bg-blue-500/10 text-blue-600 dark:text-blue-500 border-blue-500/20 hover:bg-blue-500/20"
+                                                                            title={t("competition_settings")}
+                                                                            className="h-9 flex flex-col gap-0.5 items-center justify-center bg-blue-500/8 text-blue-600 dark:text-blue-400 border-blue-500/20 hover:bg-blue-500/15 hover:border-blue-500/30 px-1"
                                                                         >
-                                                                            <SettingsIcon className="w-4 h-4 rtl:ml-2 ltr:mr-2" />
-                                                                            <span className="truncate">
-                                                                                {t("competition_settings")}
-                                                                            </span>
+                                                                            <SettingsIcon className="w-3.5 h-3.5" />
+                                                                            <span className="text-[10px] font-semibold leading-none">{t("competition_settings")}</span>
                                                                         </Button>
                                                                         <Button
-                                                                            onClick={() =>
-                                                                                handleCopy(
-                                                                                    window
-                                                                                        .location
-                                                                                        .origin +
-                                                                                        "/admin/" +
-                                                                                        camp.slug,
-                                                                                )}
+                                                                            onClick={() => handleCopy(window.location.origin + "/admin/" + camp.slug)}
                                                                             variant="ghost"
-                                                                            size="icon"
-                                                                            title={t(
-                                                                                "copy_link",
-                                                                            )}
-                                                                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-foreground bg-[var(--bg-surface)] border border-[var(--border-main)] hover:bg-[var(--bg-hover)]"
+                                                                            size="sm"
+                                                                            title={t("copy_link")}
+                                                                            className="h-6 text-muted-foreground/50 hover:text-muted-foreground gap-1 px-1"
                                                                         >
-                                                                            <CopyIcon className="w-4 h-4" />
+                                                                            <CopyIcon className="w-3 h-3" />
+                                                                            <span className="text-[9px]">{t("copy_link")}</span>
                                                                         </Button>
                                                                     </div>
                                                                 </div>
@@ -815,6 +714,34 @@ export const SuperAdminPanel: React.FC<SuperAdminPanelProps> = (
                                     })}
                                 className="w-full bg-[var(--bg-input)] border border-[var(--border-main)] rounded-[var(--radius-main)] px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20"
                             />
+                        </div>
+
+                        {/* AI Feature Toggle */}
+                        <div className="flex items-center justify-between p-4 bg-[var(--bg-input)] rounded-[var(--radius-main)] border border-[var(--border-main)]">
+                            <div className="flex items-center gap-3">
+                                <Shield className="w-5 h-5 text-indigo-500" />
+                                <div>
+                                    <h4 className="font-bold text-[var(--text-main)] leading-none mb-1">
+                                        {t("ai_settings_title")}
+                                    </h4>
+                                    <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest">
+                                        {campForm.ai_enabled !== false ? t("ai_active_status") : t("ai_disabled_status")}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setCampForm({
+                                    ...campForm,
+                                    ai_enabled: campForm.ai_enabled === false
+                                })}
+                                className={`w-12 h-6 rounded-full transition-colors relative ${
+                                    campForm.ai_enabled !== false ? 'bg-indigo-600' : 'bg-muted-foreground/30'
+                                }`}
+                            >
+                                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-sm ${
+                                    campForm.ai_enabled !== false ? 'ltr:right-1 rtl:left-1' : 'ltr:left-1 rtl:right-1'
+                                }`} />
+                            </button>
                         </div>
                     </div>
                 </AdminModal>

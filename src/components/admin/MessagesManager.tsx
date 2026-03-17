@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { TickerMessage } from '../../types';
-import { PlusIcon, LayersIcon, XIcon } from '../ui/Icons';
+import { PlusIcon, LayersIcon } from '../ui/Icons';
 import { AdminRowActions } from '../ui/AdminRowActions';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,11 +59,13 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({ messages, onAd
         { label: t('placeholder_place_3'), value: t('tag_place_3') },
         { label: t('placeholder_random_participant'), value: t('tag_random_participant') },
         { label: t('placeholder_random_group'), value: t('tag_random_group') },
+        { label: t('placeholder_last_wheel_winner' as any), value: t('tag_last_wheel_winner' as any) },
     ];
 
     const insertPlaceholder = (ph: string) => {
-        if (editingId) setEditText(prev => prev + ' ' + ph);
-        else setNewMessage(prev => prev + ' ' + ph);
+        const append = (prev: string) => (prev.length > 0 && !prev.endsWith(' ') ? prev + ' ' + ph : prev + ph);
+        if (editingId) setEditText(append);
+        else setNewMessage(append);
     };
 
     const handleAdd = async (e: React.FormEvent) => {

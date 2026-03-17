@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useToast } from "../../hooks/useToast";
 import { useConfirmation } from "../../hooks/useConfirmation";
-import { AppSettings, ScorePreset } from "../../types";
+import { AppSettings, ClassRoom, ScorePreset, TickerMessage } from "../../types";
 import {
-    MoonIcon,
     MusicIcon,
     PauseIcon,
     PlayIcon,
     PlusIcon,
     SaveIcon,
-    SparklesIcon,
     StarIcon,
-    SunIcon,
     UploadIcon,
     Volume2Icon,
     XIcon,
@@ -29,7 +26,6 @@ import { ConfirmationModal } from "../ui/ConfirmationModal";
 import { AdminSectionCard } from "../ui/AdminSectionCard";
 import { AdminButton } from "../ui/AdminButton";
 import { BackgroundMusic } from "../dashboard/BackgroundMusic";
-import { BrandingPreview } from "./settings/BrandingPreview";
 import { VisualDesignSection } from "./settings/VisualDesignSection";
 import { KioskRotationSection } from "./settings/KioskRotationSection";
 import { BurstSettingsSection } from "./settings/BurstSettingsSection";
@@ -56,7 +52,7 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
     const { t } = useLanguage();
     const { showToast } = useToast();
     const { triggerSave } = useSaveNotification();
-    const { modalConfig, openConfirmation, closeConfirmation } =
+    const { modalConfig, openConfirmation } =
         useConfirmation();
 
     const [formData, setFormData] = useState<Partial<AppSettings>>({
@@ -168,6 +164,8 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
                         "CLASS_BOOST",
                         "SHOUTOUT",
                     ],
+                leaderboard_top_count: formData.leaderboard_top_count ?? 10,
+                leaderboard_momentum_count: formData.leaderboard_momentum_count ?? 10,
                 settings_updated_at: new Date().toISOString(),
             };
 
@@ -195,11 +193,12 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
             setTimeout(() => setMessage(null), 3000);
         } catch (err: any) {
             console.error("Critical Save Error:", err);
+            const isSchemaError = err.message?.includes("schema cache") || err.message?.includes("Could not find");
             setMessage({
                 type: "error",
-                text: t("save_error", {
-                    message: err.message || t("run_sql_code_check"),
-                }),
+                text: isSchemaError
+                    ? t("run_sql_code_check")
+                    : t("save_error", { message: err.message || t("run_sql_code_check") }),
             });
         } finally {
             setIsSaving(false);
@@ -750,6 +749,49 @@ export const SchoolSettings: React.FC<SchoolSettingsProps> = (
                                     {t("add")}
                                 </AdminButton>
                             </div>
+                        </div>
+                    </div>
+                </AdminSectionCard>
+
+                <AdminSectionCard
+                    title={t("leaderboard_display_settings" as any)}
+                    description={t("leaderboard_display_settings_desc" as any)}
+                    icon={<StarIcon className="w-6 h-6" />}
+                >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="space-y-1">
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">
+                                {t("session_stars_count" as any)}
+                            </label>
+                            <input
+                                type="number"
+                                dir="ltr"
+                                min={1}
+                                max={50}
+                                value={formData.leaderboard_top_count ?? 10}
+                                onChange={(e) =>
+                                    updateForm({
+                                        leaderboard_top_count: Math.max(1, Math.min(50, parseInt(e.target.value) || 10)),
+                                    })}
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-small font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2 text-center">
+                                {t("momentum_stars_count" as any)}
+                            </label>
+                            <input
+                                type="number"
+                                dir="ltr"
+                                min={1}
+                                max={50}
+                                value={formData.leaderboard_momentum_count ?? 10}
+                                onChange={(e) =>
+                                    updateForm({
+                                        leaderboard_momentum_count: Math.max(1, Math.min(50, parseInt(e.target.value) || 10)),
+                                    })}
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] font-[var(--fw-bold)] text-center shadow-sm"
+                            />
                         </div>
                     </div>
                 </AdminSectionCard>

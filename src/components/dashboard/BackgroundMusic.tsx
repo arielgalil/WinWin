@@ -121,7 +121,6 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
 
     let fadeInterval: any;
     const targetVolume = isPlaying ? volume : 0;
-    let currentVolume = isPlaying ? 0 : volume; // Start from 0 if playing, or current if stopping
 
     // If starting, play immediately, we'll fade the volume
     if (isPlaying) {

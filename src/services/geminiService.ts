@@ -12,7 +12,7 @@ const callGeminiFunction = async (payload: {
     systemInstruction?: string;
     model?: string;
     jsonSchema?: any;
-}, lang: Language = "he"): Promise<string> => {
+}, _lang: Language = "he"): Promise<string> => {
     if (isAiKeyExpired) return ""; // Fail fast and silent
 
     const controller = new AbortController();
@@ -25,7 +25,7 @@ const callGeminiFunction = async (payload: {
         const { data, error } = await supabase.functions.invoke("ask-gemini", {
             body: {
                 ...payload,
-                model: payload.model || "gemini-2.5-flash-lite-preview-09-2025", // Default to 2.5 Flash Lite
+                model: payload.model || "gemini-3.1-flash-lite-preview", // Default to 3.1 Flash Lite
             },
             signal: controller.signal,
         });
@@ -67,7 +67,7 @@ export const testGeminiConnection = async (
             const { GoogleGenAI } = await import("@google/genai");
             const ai = new GoogleGenAI({ apiKey: overrideKey }) as any;
             const model = ai.getGenerativeModel({
-                model: "gemini-2.5-flash-lite-preview-09-2025",
+                model: "gemini-3.1-flash-lite-preview",
             });
             await model.generateContent("ping");
             return {
@@ -136,7 +136,7 @@ export const generateCompetitionCommentary = async (
             prompt,
             systemInstruction: settings.ai_custom_prompt ||
                 t("ai_instruction_commentator", lang),
-            model: "gemini-2.5-flash-lite-preview-09-2025",
+            model: "gemini-3.1-flash-lite-preview",
         }, lang);
     } catch (err) {
         return t("ai_commentary_fallback", lang);
@@ -148,6 +148,7 @@ export const generateFillerMessages = async (
     competitionName: string,
     lang: Language = "he",
     keywords?: string[],
+    settings?: AppSettings,
 ): Promise<string[]> => {
     const fallbacks = [
         t("ai_fallback_1", lang),
@@ -169,11 +170,14 @@ export const generateFillerMessages = async (
                 schoolName,
                 competitionName,
             }) + keywordInstruction,
+            systemInstruction: settings?.ai_custom_prompt || t("ai_instruction_commentator", lang),
             jsonSchema: {
                 type: "array",
                 items: { type: "string" },
+                minItems: 5,
+                maxItems: 8,
             },
-            model: "gemini-2.5-flash-lite-preview-09-2025",
+            model: "gemini-3.1-flash-lite-preview",
         }, lang);
 
         if (!text) return fallbacks;
@@ -220,8 +224,8 @@ export const generateAdminSummary = async (
 
     const summary = await callGeminiFunction({
         prompt,
-        systemInstruction: t("ai_instruction_admin", lang),
-        model: "gemini-2.5-flash-lite-preview-09-2025",
+        systemInstruction: settings.ai_custom_prompt || t("ai_instruction_admin", lang),
+        model: "gemini-3.1-flash-lite-preview",
     }, lang);
 
     if (summary && campaignId) {

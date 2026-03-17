@@ -76,7 +76,8 @@ export const useRealtimeSubscriptions = (
         table: "campaigns",
         handler: (payload: any) => {
           logger.info("Realtime: Campaign update received", payload);
-          queryClient.invalidateQueries({ queryKey: ["campaign", campaignId] });
+          // Invalidate all campaign queries (keyed by slug, not campaignId)
+          queryClient.invalidateQueries({ queryKey: ["campaign"] });
           triggerUpdate();
         },
       },

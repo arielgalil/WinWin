@@ -25,9 +25,9 @@ export const generateRoleBasedShareMessage = ({
   const normalizedRole = role?.toLowerCase().trim();
   const isAdmin = normalizedRole === 'admin' || normalizedRole === 'superuser' || normalizedRole === 'super_user' || normalizedRole === 'competition_admin';
   
-  const dashboardLink = `${origin}/#/comp/${campaign.slug}`;
-  const scoringLink = `${origin}/#/vote/${campaign.slug}`;
-  const adminLink = `${origin}/#/admin/${campaign.slug}`;
+  const dashboardLink = `${origin}/comp/${campaign.slug}`;
+  const scoringLink = `${origin}/vote/${campaign.slug}`;
+  const adminLink = `${origin}/admin/${campaign.slug}`;
 
   const adjs = [
     t('share_adj_1', language),

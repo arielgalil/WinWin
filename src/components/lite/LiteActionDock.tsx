@@ -19,7 +19,7 @@ interface LiteActionDockProps {
     isProcessing: boolean;
 }
 
-export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, selectionLabel, presets, onAction, onClear, isProcessing }) => {
+export const LiteActionDock: React.FC<LiteActionDockProps> = ({ selectedCount, selectionLabel, presets, onAction, onClear: _onClear, isProcessing }) => {
     const { t, dir } = useLanguage();
     const [mode, setMode] = useState<'presets' | 'custom'>('presets');
     const [customValue, setCustomValue] = useState('');

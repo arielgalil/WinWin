@@ -29,7 +29,7 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
             <LanguageProvider>
                 <AuthProvider>
                     <ToastProvider>
-                        <HashRouter>
+                        <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                             {children}
                         </HashRouter>
                     </ToastProvider>

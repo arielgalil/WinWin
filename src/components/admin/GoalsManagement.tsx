@@ -123,7 +123,6 @@ export const GoalsManagement: React.FC<GoalsManagementProps> = ({
 };
 
 const ClassTargetInput = React.memo(({ cls, onSave }: { cls: ClassRoom, onSave: (id: string, val: number) => Promise<void> }) => {
-    const { t } = useLanguage();
     const [target, setTarget] = useState<string>(cls.target_score ? String(cls.target_score) : '');
     const [isSaving, setIsSaving] = useState(false);
     const [isSaved, setIsSaved] = useState(false);

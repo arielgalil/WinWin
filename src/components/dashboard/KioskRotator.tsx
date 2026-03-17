@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { AppSettings } from '../../types';
 import { KIOSK_CONSTANTS } from '../../constants';
 import { KioskMediaItem } from './KioskMediaItem';
@@ -44,7 +44,6 @@ export const KioskRotator: React.FC<KioskRotatorProps> = ({
 
                 const isActive = currentIndex === idx;
                 const wasActive = previousIndex === idx;
-                const isVisible = isActive || wasActive;
                 // Dormant = not visible but still mounted for state preservation
                 const isDormant = !isActive && !wasActive;
 

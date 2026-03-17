@@ -95,6 +95,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
     const createTemplate = useMutation({
         mutationFn: async (input: {
             name: string;
+            total_rounds: number;
             filter_criteria: WheelFilterCriteria;
             participant_ids: string[];
             participant_names: string[];
@@ -105,6 +106,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
                 .insert({
                     campaign_id: campaignId,
                     name: input.name,
+                    total_rounds: input.total_rounds,
                     filter_criteria: input.filter_criteria,
                     participant_ids: input.participant_ids,
                     participant_names: input.participant_names,
@@ -166,6 +168,7 @@ export function useLuckyWheelTemplates(campaignId?: string) {
                 .insert({
                     campaign_id: campaignId,
                     name: `${template.name} (copy)`,
+                    total_rounds: template.total_rounds,
                     filter_criteria: template.filter_criteria,
                     participant_ids: template.participant_ids,
                     participant_names: template.participant_names,
@@ -193,9 +196,8 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             if (error) throw error;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["wheel-winners", campaignId],
-            });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners", campaignId] });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners-dashboard", campaignId] });
         },
         onError: (err) => logger.error("Failed to delete wheel winner", err),
     });
@@ -211,9 +213,8 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             if (error) throw error;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["wheel-winners", campaignId],
-            });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners", campaignId] });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners-dashboard", campaignId] });
         },
         onError: (err) => logger.error("Failed to delete all wheel winners", err),
     });
@@ -234,9 +235,8 @@ export function useLuckyWheelTemplates(campaignId?: string) {
             if (error) throw error;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["wheel-winners", campaignId],
-            });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners", campaignId] });
+            queryClient.invalidateQueries({ queryKey: ["wheel-winners-dashboard", campaignId] });
         },
         onError: (err) => logger.error("Failed to save wheel winner", err),
     });

@@ -6,7 +6,6 @@ import { isSuperUser as checkSuperUser } from '../../config';
 import { useLanguage } from '../../hooks/useLanguage';
 import { DebugConsole } from './DebugConsole';
 import { 
-    NavigationButton,
     HomeButton,
     TrophyButton,
     CalculatorButton,
@@ -134,7 +133,6 @@ export const RefactoredVersionFooter: React.FC<VersionFooterProps> = ({
                             title={t('nav_home')}
                             size="sm"
                             className="ml-3 h-5 border-l border-white/10 pl-3 flex items-center gap-1.5 sm:gap-2"
-                            renderAs="div" // Custom prop for branding layout
                         />
 
                         {/* Main Navigation */}
@@ -167,8 +165,9 @@ export const RefactoredVersionFooter: React.FC<VersionFooterProps> = ({
 
                             {/* Utility Icons */}
                             {musicState && (
-                                <MusicButton 
+                                <MusicButton
                                     {...musicState}
+                                    onClick={musicState.onToggle}
                                     title={t('music')}
                                     isActive={musicState.isPlaying}
                                 />

@@ -98,8 +98,8 @@ export const useCampaign = <T = AppSettings>(
     },
     enabled: !!slug, 
     initialData: effectiveInitialData?.campaign,
-    staleTime: 1000 * 60 * 5, // 5 mins stale (down from 30)
-    refetchOnWindowFocus: false,
+    staleTime: 1000 * 30, // 30s — ai_enabled and other flags must propagate quickly
+    refetchOnWindowFocus: true,
   });
 
   const campaignId = campaign?.id;
@@ -161,7 +161,7 @@ export const useCampaign = <T = AppSettings>(
     initialData: effectiveInitialData?.settings,
     staleTime: 1000 * 5, // 5 seconds stale (down from 15 mins) - critical for real-time
     refetchOnWindowFocus: false,
-    select: settingsSelector,
+    select: settingsSelector as any,
   });
 
   // Background Cache Update

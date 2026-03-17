@@ -19,18 +19,18 @@ export const StatCard: React.FC<StatCardProps> = ({
     return (
         <div
             className={cn(
-                'flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 px-2 md:px-4 py-2 rounded-[var(--radius-main)] border flex-1 border-border bg-card transition-colors hover:shadow-md',
+                'flex items-center gap-4 px-5 py-4 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-card)] transition-all hover:shadow-lg hover:border-[var(--accent-blue)]/30',
                 className
             )}
         >
-            <div className={cn('p-1.5 md:p-2 rounded-[calc(var(--radius-main)*0.5)]', colorClass)}>
+            <div className={cn('w-11 h-11 rounded-full flex items-center justify-center shrink-0', colorClass)}>
                 {icon}
             </div>
-            <div className="flex flex-col leading-none text-center md:text-right">
-                <span className="text-[10px] font-bold uppercase opacity-60 text-muted-foreground">
+            <div className="flex flex-col min-w-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] leading-none mb-1.5">
                     {label}
                 </span>
-                <span className="text-sm md:text-lg font-black text-foreground">
+                <span className="text-2xl font-black text-[var(--text-main)] leading-none tabular-nums">
                     {value}
                 </span>
             </div>

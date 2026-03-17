@@ -57,7 +57,7 @@ export const useCampaignRole = <T = string | null | undefined>(
     },
     enabled: !!campaignId && !!userId,
     initialData: initialRole,
-    staleTime: 1000 * 60 * 30, // 30 mins
+    staleTime: 1000 * 60 * 5, // 5 mins — revoked access clears within 5 min (was 30)
     retry: 1,
     select: select as any,
   });

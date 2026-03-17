@@ -142,7 +142,7 @@ exports.ogMeta = onRequest(
 
     const userAgent = req.headers["user-agent"] || "";
 
-    // Regular browser — serve the SPA
+    // Regular browser — serve the SPA (index.html has a script that redirects to /#/path)
     if (!isCrawler(userAgent)) {
       serveSpa(res);
       return;

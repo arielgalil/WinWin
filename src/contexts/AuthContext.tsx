@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext, useCallback, useRef } from '
 import { supabase } from '../supabaseClient';
 import { UserProfile } from '../types';
 import { t } from '../utils/i18n';
-import { TIMEOUTS } from '../config';
 import { logger } from '../utils/logger';
 import { withTimeout, promiseTimeout } from '../utils/supabaseUtils';
 
@@ -108,7 +107,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             // Cache for next boot
-            localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(finalProfile));
+            try {
+                localStorage.setItem(CACHED_PROFILE_KEY, JSON.stringify(finalProfile));
+            } catch (_e) {
+                // QuotaExceededError or similar — non-fatal, cached profile just won't persist
+            }
             setUser(finalProfile);
             userRef.current = finalProfile;
 

@@ -1,12 +1,9 @@
-
-import { PostgrestBuilder } from '@supabase/postgrest-js';
-
 /**
  * Executes a Supabase query with a timeout.
  * Returns a tuple [data, error] similar to the old Supabase syntax.
  */
 export async function withTimeout<T>(
-    promise: Promise<{ data: T | null; error: any }>,
+    promise: PromiseLike<{ data: T | null; error: any }>,
     timeoutMs: number = 10000
 ): Promise<{ data: T | null; error: any }> {
     const timeoutPromise = new Promise<{ data: null; error: any }>((_, reject) =>

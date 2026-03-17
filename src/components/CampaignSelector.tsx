@@ -166,7 +166,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
                             {/* About card — always first */}
                             <MotionDiv
                                 whileHover={{ y: -8, scale: 1.02 }}
-                                className="group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-none"
+                                className="group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br from-green-500 to-emerald-700 text-white border-none"
                                 onClick={() => navigate('/about')}
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />

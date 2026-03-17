@@ -46,18 +46,14 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
         p_note: payload.note || null,
       };
 
-      console.log("Calling add_score_transaction with params:", rpcParams);
-
       const { error } = await supabase.rpc("add_score_transaction", rpcParams);
       if (error) {
         console.error("RPC Point Transaction Error:", error);
         throw error;
       }
 
-      await queryClient.invalidateQueries({
-        queryKey: ["classes", campaignId],
-      });
-      await queryClient.refetchQueries({ queryKey: ["classes", campaignId] });
+      // Single invalidation — realtime subscription delivers the update;
+      // invalidate() marks all relevant keys stale for background refetch
       invalidate();
     },
     [campaignId, queryClient, invalidate],
@@ -196,9 +192,6 @@ export const useCompetitionMutations = (campaignId: string | undefined) => {
     updateIrisPattern,
     refreshData: async () => {
       if (!campaignId) return;
-      await queryClient.invalidateQueries({
-        queryKey: ["classes", campaignId],
-      });
       await queryClient.refetchQueries({ queryKey: ["classes", campaignId] });
       invalidate();
     },
