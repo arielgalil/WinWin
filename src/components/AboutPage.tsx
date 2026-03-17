@@ -74,18 +74,15 @@ export const AboutPage: React.FC = () => {
                     {/* Philosophy */}
                     <Section
                         icon={<SproutIcon className="w-5 h-5" />}
-                        title="המהפכה הפדגוגית - תחרות שכולם מנצחים בה"
+                        title="תחרות שכולם מנצחים בה"
                         delay={0.1}
                     >
                         <p>
-                            במערכת החינוך המסורתית, תחרות היא משחק סכום אפס: יש מנצח אחד, וכל השאר מרגישים מאחור.
-                            Win2Grow נולדה כדי לשנות את המשוואה.{' '}
-                            <strong className="text-foreground">אנחנו לא יוצרים תחרות של "מי הכי טוב" - אלא "תחרות מצמיחה"</strong>:
-                            זירה שבה כל תלמיד וכל קבוצה נמדדים מול עצמם, וההצלחה של היחיד מזינה את ההצלחה של הכלל.
+                            בתחרות רגילה יש מנצח אחד - והשאר מרגישים מאחור.
+                            כאן כל תלמיד <strong className="text-foreground">נמדד מול עצמו</strong>: כל שיפור, קטן כגדול, מקבל חגיגה בזמן אמת.
                         </p>
                         <p>
-                            מחקרים בפסיכולוגיה חינוכית (Dweck, SDT) מראים שתחרות המבוססת על{' '}
-                            <strong className="text-foreground">שיפור אישי ולא על השוואה לאחרים</strong> מייצרת מוטיבציה פנימית, מפחיתה חרדת ביצוע ומגבירה מעורבות לאורך זמן.
+                            שיטת PBIS מבוססת-מחקר (Dweck, SDT) מראה שחיזוקים חיוביים מפחיתים אירועי משמעת, מורידים חרדת ביצוע ומגבירים מעורבות לאורך זמן.
                         </p>
                     </Section>
 
@@ -96,39 +93,49 @@ export const AboutPage: React.FC = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         }
-                        title="שלושת עמודי התווך של החזון"
+                        title="שלושה כלים ייחודיים"
                         delay={0.15}
                     >
-                        <div className="space-y-4 mt-1">
-                            {/* PBIS */}
+                        <div className="space-y-3 mt-1">
+                            {/* PBIS / Kiosk */}
                             <div className="bg-muted/40 rounded-xl p-4 border border-border/50">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-xl">🌟</span>
-                                    <div className="font-black text-foreground text-sm">שיפור אקלים בית-הספר דרך חיזוקים חיוביים (PBIS)</div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-xl">📺</span>
+                                    <div className="font-black text-foreground text-sm">מסך קיוסק חי</div>
                                 </div>
                                 <p className="text-xs leading-relaxed">
-                                    המערכת הופכת את הערכים הפדגוגיים שלכם למציאות ויזואלית. במקום לעסוק בכיבוי שריפות, Win2Grow מאירה בזרקור את ההתנהגויות החיוביות, ההתמדה והשיפור. כשתלמידים רואים את הניקוד שלהם עולה בזמן אמת על מסכי הקיוסק במסדרונות - נוצרת שפה משותפת של גאווה ופרגון.
+                                    הניקוד עולה בזמן אמת על מסכי הטלוויזיה בבית הספר - עם אנימציות, קריין AI ולוחות דירוג. המסדרונות הופכים לזירה אקטיבית.
                                 </p>
                             </div>
                             {/* Mission Meter */}
                             <div className="bg-muted/40 rounded-xl p-4 border border-border/50">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-2 mb-1">
                                     <span className="text-xl">🎯</span>
-                                    <div className="font-black text-foreground text-sm">מד היעד - כוחה של חשיפה משותפת</div>
+                                    <div className="font-black text-foreground text-sm">מד היעד - חשיפה משותפת</div>
                                 </div>
                                 <p className="text-xs leading-relaxed">
-                                    אחד הכלים הייחודיים שלנו הוא ה-<strong className="text-foreground">Mission Meter</strong>: מנגנון ויזואלי שבו יעד מוסדי גדול מיוצג על ידי תמונה מוסתרת. <strong className="text-foreground">כל נקודה שנוספת -חושפת עוד חלק מהתמונה.</strong> התלמידים מבינים שרק שיתוף פעולה של כולם יחשוף את ה"פרס הגדול". ההישג האישי הופך לתרומה קהילתית.
+                                    יעד מוסדי מיוצג כתמונה מוסתרת. <strong className="text-foreground">כל נקודה שנוספת - חושפת עוד חלק.</strong> רק שיתוף פעולה של כולם יגלה את הפרס המשותף.
                                 </p>
                             </div>
                             {/* Lucky Wheel */}
                             <div className="bg-muted/40 rounded-xl p-4 border border-border/50">
-                                <div className="flex items-center gap-2 mb-2">
+                                <div className="flex items-center gap-2 mb-1">
                                     <span className="text-xl">🎡</span>
-                                    <div className="font-black text-foreground text-sm">הוגנות והכלה - גלגל המזל המשוקלל</div>
+                                    <div className="font-black text-foreground text-sm">גלגל המזל - ריגוש וכולם במשחק</div>
                                 </div>
-                                <p className="text-xs leading-relaxed">
-                                    בWin2Grow, הדירוג בטבלה אינו סוף פסוק. גלגל המזל שלנו מחשב הסתברויות כך שכל נקודה שנצברת מעלה את "משקל" הכרטיס של התלמיד בהגרלה. <strong className="text-foreground">גם תלמיד שנמצא במקום ה-20 נשאר מעורב ובעל מוטיבציה</strong> - כי הוא יודע שהמאמץ שלו קיים ושהוא עדיין "במשחק".
+                                <p className="text-xs leading-relaxed mb-2">
+                                    גלגל מסתובב, מוזיקה עולה, הכיתה עוצרת נשימה - ואחר-כך פיצוץ. אפשר להגריל בשתי שיטות:
                                 </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div className="bg-background/60 rounded-lg p-3 border border-border/40">
+                                        <div className="font-black text-foreground text-xs mb-1">🎟️ הגרלת כרטיסים</div>
+                                        <div className="text-xs leading-relaxed">כל נקודה = כרטיס נוסף. מי שהשקיע יותר - סיכוי גדול יותר, אבל <strong className="text-foreground">גם מקום ה-20 עדיין בפנים.</strong></div>
+                                    </div>
+                                    <div className="bg-background/60 rounded-lg p-3 border border-border/40">
+                                        <div className="font-black text-foreground text-xs mb-1">🎲 הגרלה שיוויונית</div>
+                                        <div className="text-xs leading-relaxed">כל תלמיד - כרטיס אחד. מזל טהור. מי שביום אחד עשה מאמץ - יכול לזכות.</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </Section>
@@ -145,21 +152,9 @@ export const AboutPage: React.FC = () => {
                     >
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
                             {[
-                                {
-                                    emoji: '🧑',
-                                    title: 'אישי',
-                                    desc: 'כל תלמיד צובר נקודות ורואה את הדירוג האישי שלו - מהטלפון, מהמחשב, מהמסך בכיתה.'
-                                },
-                                {
-                                    emoji: '🏫',
-                                    title: 'כיתתי',
-                                    desc: 'הכיתה מתחרה כצוות. מחנכים מוסיפים נקודות ומגדירים יעד כיתתי שכולם עובדים יחד להשיגו.'
-                                },
-                                {
-                                    emoji: '🌱',
-                                    title: 'מוסדי',
-                                    desc: 'כל בית הספר מתקדם יחד לעבר יעדים מוסדיים עם מערכת שלבים ופרסים מוגדרים מראש.'
-                                }
+                                { emoji: '🧑', title: 'אישי', desc: 'כל תלמיד צובר נקודות ורואה את הדירוג שלו - מהטלפון או מהמסך בכיתה.' },
+                                { emoji: '🏫', title: 'כיתתי', desc: 'הכיתה מתחרה כצוות לקראת יעד משותף שהמחנך הגדיר.' },
+                                { emoji: '🌱', title: 'מוסדי', desc: 'כל בית הספר מתקדם יחד לשלבים עם פרסים מוגדרים מראש.' },
                             ].map(l => (
                                 <div key={l.title} className="bg-muted/40 rounded-xl p-4 flex flex-col gap-2">
                                     <span className="text-2xl">{l.emoji}</span>
@@ -173,16 +168,15 @@ export const AboutPage: React.FC = () => {
                     {/* How it works */}
                     <Section
                         icon={<AwardIcon className="w-5 h-5" />}
-                        title="איך זה עובד בפועל?"
+                        title="איך זה עובד?"
                         delay={0.3}
                     >
                         <ul className="space-y-2 list-none">
                             {[
-                                { num: '1', text: 'המחנך מוסיף נקודות לתלמיד או לכיתה דרך ממשק פשוט - מהטלפון, תוך שניות.' },
-                                { num: '2', text: 'הלוח מתעדכן בזמן אמת על המסכים בבית הספר. תלמידים יכולים לעקוב גם מהטלפון החכם שלהם.' },
-                                { num: '3', text: 'כל עלייה בדירוג מלווה בחגיגה - אנימציה, צליל, ופרשן AI שמדבר על הרגע.' },
-                                { num: '4', text: 'הכיתה והמוסד מתקדמים לשלבים - כל שלב שמושג מציג חגיגה על כל המסכים.' },
-                                { num: '5', text: 'גלגל מזל להגרלת תלמידים מצטיינים ממחיש שכל נקודה שווה - גם ממקום האמצע.' },
+                                { num: '1', text: 'המחנך מוסיף נקודות לתלמיד או לכיתה - מהטלפון, תוך שניות.' },
+                                { num: '2', text: 'הלוח מתעדכן בזמן אמת על המסכים. כל עלייה מלווה באנימציה, צליל ופרשן AI.' },
+                                { num: '3', text: 'הכיתה והמוסד מתקדמים לשלבים - כל השגה מציגה חגיגה על כל המסכים.' },
+                                { num: '4', text: 'גלגל המזל מגריל תלמידים מצטיינים - כרטיסים או שיוויוני - ומעלה את האווירה.' },
                             ].map(item => (
                                 <li key={item.num} className="flex items-start gap-3">
                                     <span className="w-6 h-6 rounded-full bg-primary/15 text-primary text-xs font-black flex items-center justify-center shrink-0 mt-0.5">{item.num}</span>
@@ -192,58 +186,6 @@ export const AboutPage: React.FC = () => {
                         </ul>
                     </Section>
 
-                    {/* Kiosk / Live presence */}
-                    <Section
-                        icon={
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                        }
-                        title="נוכחות דיגיטלית חיה - מסך הקיוסק"
-                        delay={0.35}
-                    >
-                        <p>
-                            Win2Grow לא "כלואה" בתוך המחשב של המורה. היא <strong className="text-foreground">חיה על מסכי הטלוויזיה בבית הספר</strong>.
-                            מצב הקיוסק הדינמי מציג את קריין ה-AI שמפרש את האירועים, את הטבלאות המשתנות ואת התקדמות היעד המשותף —
-                            והופך את מסדרונות בית הספר לזירה אקטיבית של צמיחה.
-                        </p>
-                        <p>
-                            התצוגה מתחלפת אוטומטית בין לוח הדירוג, מד היעד המשותף ואירועי השיא, ללא צורך בהתערבות מורה.
-                        </p>
-                    </Section>
-
-                    {/* Features */}
-                    <Section
-                        icon={
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        }
-                        title="תכונות מרכזיות"
-                        delay={0.4}
-                    >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
-                            {[
-                                { emoji: '📱', label: 'נגיש מהטלפון', desc: 'תלמידים רואים את הדירוג האישי, הכיתתי והמוסדי בכל מקום' },
-                                { emoji: '🎉', label: 'חוגגים כל עלייה', desc: 'אנימציות וצלילים על כל שינוי חיובי - לא רק לראשונים' },
-                                { emoji: '🤖', label: 'פרשן AI', desc: 'פרשנות חכמה בזמן אמת על אירועי ניקוד מרגשים' },
-                                { emoji: '🎯', label: 'שלבים ויעדים', desc: 'מטרות מוסדיות וכיתתיות עם חגיגות מובנות לכל השגה' },
-                                { emoji: '🎡', label: 'גלגל מזל', desc: 'הגרלת תלמידים - גם ממקום האמצע יש סיכוי לזכות' },
-                                { emoji: '📺', label: 'מסך קיוסק', desc: 'תצוגה אוטומטית מרהיבה לטלוויזיה של בית הספר' },
-                                { emoji: '📊', label: 'לוח ניהול', desc: 'מנהל, מחנך וסגל - כל אחד עם ממשק מותאם לתפקידו' },
-                                { emoji: '🏆', label: 'היסטוריית זכיות', desc: 'תיעוד כל הזוכים, הכיתות המובילות ואירועי השיא' },
-                            ].map(f => (
-                                <div key={f.label} className="flex items-start gap-3 bg-muted/40 rounded-xl p-3">
-                                    <span className="text-xl">{f.emoji}</span>
-                                    <div>
-                                        <div className="font-black text-foreground text-sm">{f.label}</div>
-                                        <div className="text-xs text-muted-foreground">{f.desc}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </Section>
-
                     {/* For the principal */}
                     <Section
                         icon={
@@ -251,18 +193,11 @@ export const AboutPage: React.FC = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         }
-                        title="השורה התחתונה למנהל/ת"
-                        delay={0.45}
+                        title="למנהל/ת - השורה התחתונה"
+                        delay={0.35}
                     >
                         <p>
-                            Win2Grow היא לא רק כלי לניהול ניקוד.{' '}
-                            <strong className="text-foreground">היא מנוע לשינוי תרבותי.</strong>{' '}
-                            היא רותמת את הכלים הטכנולוגיים המתקדמים ביותר - מחישובי הסתברות לכיול ויזואלי ועד בינה מלאכותית - כדי לשרת מטרה אחת: לגרום לכל ילד להרגיש שהוא יכול לצמוח, לתרום ולהצליח.
-                        </p>
-                        <p>
-                            מחקרים מראים ששיטת ה-PBIS (חיזוק התנהגות חיובית) מפחיתה אירועי משמעת ומשפרת את הישגי התלמידים —
-                            ותחרות מצמיחה בנויה על אותם עקרונות, עם אריזה שתלמידים אוהבים.
-                            המערכת גמישה לתחרויות שבועיות, חודשיות ושנתיות, ומותאמת לכל גודל מוסד.
+                            תחרות מצמיחה היא לא כלי ניהול ניקוד - <strong className="text-foreground">היא מנוע לשינוי תרבותי.</strong> גמישה לתחרויות שבועיות, חודשיות ושנתיות, ומותאמת לכל גודל מוסד.
                         </p>
                         <div className="mt-3 pt-3 border-t border-border/50">
                             <p className="text-base font-black text-foreground">בואו נצמיח יחד את דור המחר. 🌱</p>
@@ -273,7 +208,7 @@ export const AboutPage: React.FC = () => {
                     <MotionDiv
                         initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.55, duration: 0.4 }}
+                        transition={{ delay: 0.45, duration: 0.4 }}
                         className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[var(--radius-container)] p-6 md:p-8 shadow-xl text-white"
                     >
                         <div className="flex items-center gap-3 mb-5">
@@ -343,7 +278,7 @@ export const AboutPage: React.FC = () => {
                 </div>
 
                 {/* CTA */}
-                <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mt-8 text-center">
+                <MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }} className="mt-8 text-center">
                     <button
                         onClick={() => navigate('/')}
                         className="inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-[var(--radius-main)] font-black shadow-lg hover:shadow-xl hover:brightness-110 transition-all active:scale-95"
