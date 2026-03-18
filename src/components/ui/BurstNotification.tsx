@@ -201,7 +201,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
                                 >
                                     <div className="relative z-10 filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 flex items-center justify-center w-full h-full">
                                         {data.emoji ? (
-                                            <span className="text-[1.25rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] leading-none select-none">
+                                            <span className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] leading-none select-none">
                                                 {data.emoji}
                                             </span>
                                         ) : theme.icon}

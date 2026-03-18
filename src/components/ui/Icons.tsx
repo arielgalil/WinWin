@@ -14,36 +14,26 @@ const MaterialIcon = (
   // This ensures the font-icon scales similarly to an SVG
   let fontSize = "24px"; // Default for icons
 
-  if (className.includes("w-2") || className.includes("h-2")) fontSize = "8px";
-  if (className.includes("w-2.5") || className.includes("h-2.5")) {
-    fontSize = "10px";
-  }
-  if (className.includes("w-3") || className.includes("h-3")) fontSize = "12px";
-  if (className.includes("w-3.5") || className.includes("h-3.5")) {
-    fontSize = "14px";
-  }
-  if (className.includes("w-4") || className.includes("h-4")) fontSize = "16px";
-  if (className.includes("w-5") || className.includes("h-5")) fontSize = "20px";
-  if (className.includes("w-6") || className.includes("h-6")) fontSize = "24px";
-  if (className.includes("w-8") || className.includes("h-8")) fontSize = "32px";
-  if (className.includes("w-10") || className.includes("h-10")) {
-    fontSize = "40px";
-  }
-  if (className.includes("w-12") || className.includes("h-12")) {
-    fontSize = "48px";
-  }
-  if (className.includes("w-14") || className.includes("h-14")) {
-    fontSize = "56px";
-  }
-  if (className.includes("w-16") || className.includes("h-16")) {
-    fontSize = "64px";
-  }
-  if (className.includes("w-20") || className.includes("h-20")) {
-    fontSize = "80px";
-  }
-  if (className.includes("w-24") || className.includes("h-24")) {
-    fontSize = "96px";
-  }
+  // Only match BASE (non-prefixed) Tailwind classes to avoid reading responsive
+  // variants like sm:w-16 as the icon size. Responsive prefixes are ignored because
+  // MaterialIcon renders via inline font-size (a single value, not responsive CSS).
+  const hasBase = (cls: string) =>
+    new RegExp(`(?:^|\\s)${cls.replace(".", "\\.")}(?:\\s|$)`).test(className);
+
+  if (hasBase("w-2") || hasBase("h-2")) fontSize = "8px";
+  if (hasBase("w-2.5") || hasBase("h-2.5")) fontSize = "10px";
+  if (hasBase("w-3") || hasBase("h-3")) fontSize = "12px";
+  if (hasBase("w-3.5") || hasBase("h-3.5")) fontSize = "14px";
+  if (hasBase("w-4") || hasBase("h-4")) fontSize = "16px";
+  if (hasBase("w-5") || hasBase("h-5")) fontSize = "20px";
+  if (hasBase("w-6") || hasBase("h-6")) fontSize = "24px";
+  if (hasBase("w-8") || hasBase("h-8")) fontSize = "32px";
+  if (hasBase("w-10") || hasBase("h-10")) fontSize = "40px";
+  if (hasBase("w-12") || hasBase("h-12")) fontSize = "48px";
+  if (hasBase("w-14") || hasBase("h-14")) fontSize = "56px";
+  if (hasBase("w-16") || hasBase("h-16")) fontSize = "64px";
+  if (hasBase("w-20") || hasBase("h-20")) fontSize = "80px";
+  if (hasBase("w-24") || hasBase("h-24")) fontSize = "96px";
 
   // Manual override if text- size class is present (rare for icons but possible)
   if (className.includes("text-xs")) fontSize = "12px";
