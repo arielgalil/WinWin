@@ -150,7 +150,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
     // --- Unified Navigation Button Style ---
     const NAV_BASE = "shrink-0 outline-none focus:outline-none focus:ring-0 transition-all duration-300";
     const NAV_IDLE = "text-zinc-400 hover:text-zinc-100 hover:scale-105";
-    const NAV_ACTIVE = "text-amber-400 scale-110 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]";
+    const NAV_ACTIVE = "text-amber-400 scale-110 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] hover:scale-125 hover:drop-shadow-[0_0_14px_rgba(251,191,36,1)]";
 
     const navCls = (active: boolean) => `${NAV_BASE} ${active ? NAV_ACTIVE : NAV_IDLE}`;
 
@@ -167,22 +167,22 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                     {/* Left: empty spacer */}
                     <div />
 
-                    <nav className="h-6 flex items-center gap-4 px-4 transition-all">
+                    <nav className="h-6 flex items-center gap-1.5 px-4 transition-all">
                         {/* 1. Branding */}
                         <button
                             onClick={() => navigate("/")}
-                            className={`flex items-center gap-1.5 sm:gap-2 ${NAV_BASE} ${NAV_IDLE}`}
+                            className={`group flex items-center gap-1.5 sm:gap-2 ${NAV_BASE} ${NAV_IDLE}`}
                             title={t("nav_home")}
                             style={getNavButtonStyle()}
                         >
-                            <img src="/logo-footer.png" alt="Win2Grow" className="w-4 h-4 object-contain opacity-60 group-hover:opacity-100" />
+                            <img src="/logo-footer2.png" alt="Win2Grow" className="w-4 h-4 object-contain opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
                             <span className="hidden sm:inline font-black text-[10px] tracking-tight uppercase whitespace-nowrap leading-none translate-y-[0.5px]">
                                 {t("app_name")}
                             </span>
                         </button>
 
                         {/* 2. Main Navigation Icons */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1 ms-3">
                             {fallbackSlug && (
                                 <button
                                     onClick={() => navigate(`/comp/${fallbackSlug}`)}
@@ -250,7 +250,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                         </div>
 
                         {/* 4. Auth Section (Left Side) */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
                             {!user
                                 ? (
                                     <button
@@ -356,7 +356,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                             navigate("/")}
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
-                                                        <img src="/logo-footer.png" alt="Win2Grow" className="w-4 h-4 object-contain" />
+                                                        <img src="/logo-footer2.png" alt="Win2Grow" className="w-4 h-4 object-contain" />
                                                         {t("all_campaigns")}
                                                     </button>
 
