@@ -132,45 +132,43 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
             className="w-full max-w-2xl h-[80vh] bg-slate-950 border border-white/10 rounded-3xl shadow-2xl flex flex-col pointer-events-auto overflow-hidden relative"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-slate-900/50 gap-3">
-              {/* Title + version */}
-              <div className="flex items-center gap-2.5 min-w-0">
-                <BugIcon className="w-5 h-5 text-red-500 shrink-0" />
-                <div className="flex flex-col leading-tight min-w-0">
-                  <span className="font-black text-sm text-red-400 uppercase tracking-tight leading-none">
-                    {t('debug_console_title')}
-                  </span>
-                  <span className="text-[10px] text-zinc-500 font-mono leading-none mt-0.5">
-                    v{APP_VERSION}
-                  </span>
+            <div className="flex flex-col border-b border-white/5 bg-slate-900/50">
+              <div className="flex items-center justify-between px-5 py-3 gap-3">
+                {/* Title + version */}
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <BugIcon className="w-5 h-5 text-red-500 shrink-0" />
+                  <div className="flex flex-col leading-tight min-w-0">
+                    <span className="font-black text-sm text-red-400 uppercase tracking-tight leading-none">
+                      {t('debug_console_title')}
+                    </span>
+                    <span className="text-[10px] text-zinc-500 font-mono leading-none mt-0.5">
+                      v{APP_VERSION}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Update controls */}
-              <div className="flex items-center gap-2 flex-1 justify-center">
-                <button
-                  onClick={checkAndForceUpdate}
-                  disabled={updateStatus === 'checking' || updateStatus === 'update_found'}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 rounded-xl text-blue-300 text-[11px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={t('debug_check_update')}
-                >
-                  <RefreshIcon className={`w-3.5 h-3.5 ${updateStatus === 'checking' ? 'animate-spin' : ''}`} />
-                  {t('debug_check_update')}
-                </button>
-                <button
-                  onClick={forceHardReload}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/40 border border-orange-500/30 rounded-xl text-orange-300 text-[11px] font-bold transition-all"
-                  title={t('debug_force_update')}
-                >
-                  <RefreshIcon className="w-3.5 h-3.5" />
-                  {t('debug_force_update')}
-                </button>
-                {updateStatus !== 'idle' && (
-                  <span className={`text-[10px] font-bold ${statusColor()}`}>
-                    {updateStatusLabel()}
-                  </span>
-                )}
-              </div>
+                {/* Update controls - fixed layout, no shifting */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={checkAndForceUpdate}
+                    disabled={updateStatus === 'checking' || updateStatus === 'update_found'}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 rounded-xl text-blue-300 text-[11px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={t('debug_check_update')}
+                  >
+                    <RefreshIcon className={`w-3.5 h-3.5 ${updateStatus === 'checking' ? 'animate-spin' : ''}`} />
+                    {t('debug_check_update')}
+                  </button>
+                  <button
+                    onClick={forceHardReload}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/40 border border-orange-500/30 rounded-xl text-orange-300 text-[11px] font-bold transition-all"
+                    title={t('debug_force_update')}
+                  >
+                    <RefreshIcon className="w-3.5 h-3.5" />
+                    {t('debug_force_update')}
+                  </button>
+                </div>
+
+                {/* Action buttons */}
 
               {/* Action buttons */}
               <div className="flex items-center gap-1 shrink-0">
@@ -183,6 +181,15 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-xl text-white transition-colors">
                   <XIcon className="w-5 h-5" />
                 </button>
+              </div>
+              </div>
+              {/* Status bar - fixed height so buttons never shift */}
+              <div className="h-5 flex items-center px-5">
+                {updateStatus !== 'idle' && (
+                  <span className={`text-[10px] font-bold ${statusColor()}`}>
+                    {updateStatusLabel()}
+                  </span>
+                )}
               </div>
             </div>
 
