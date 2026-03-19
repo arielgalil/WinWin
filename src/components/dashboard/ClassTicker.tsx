@@ -1,14 +1,21 @@
 
-import React, { memo, useEffect, useState, useRef, useCallback } from 'react';
+import React, { memo, useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { ClassRoom } from '../../types';
 import { TrophyIcon, CompassIcon, FootprintsIcon, MapIcon, TargetIcon, ListIcon } from '../ui/Icons';
 import { motion } from 'framer-motion';
 import { FormattedNumber } from '../ui/FormattedNumber';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useAnimatedScore } from '../../hooks/useAnimatedScore';
 import { DashboardCardHeader } from './DashboardCardHeader';
 import { getRankBadgeClasses } from '../../utils/rankingUtils';
 
 const MotionDiv = motion.div as any;
+
+/** Wraps FormattedNumber with smooth count-up animation when score changes. */
+const AnimatedScore: React.FC<{ value: number }> = ({ value }) => {
+    const animated = useAnimatedScore(value);
+    return <FormattedNumber value={animated} />;
+};
 
 interface ClassTickerProps {
   otherClasses: ClassRoom[];
@@ -19,9 +26,10 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
   const { t } = useLanguage();
   const [tickerContent, setTickerContent] = useState<ClassRoom[]>([]);
 
-  const CARD_WIDTH = 190;
-  const MARGIN_RIGHT = 12;
-  const SPEED_PX_PER_SEC = 35;
+  // Computed once on mount — kiosk screens don't resize mid-session
+  const CARD_WIDTH = useMemo(() => Math.max(190, Math.min(300, Math.round(window.innerWidth * 0.145))), []);
+  const MARGIN_RIGHT = useMemo(() => Math.max(12, Math.min(20, Math.round(window.innerWidth * 0.008))), []);
+  const SPEED_PX_PER_SEC = useMemo(() => Math.max(35, Math.min(80, Math.round(window.innerWidth * 0.04))), []);
 
   // Scroll refs
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -240,7 +248,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
                                 <div className="flex items-center justify-between shrink-0">
     
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border text-xs font-black shrink-0 shadow-lg ${getRankBadgeClasses(displayRank as number)}`}>
+                                <div className={`w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] rounded-full flex items-center justify-center border text-[clamp(0.65rem,1vw,1rem)] font-black shrink-0 shadow-lg ${getRankBadgeClasses(displayRank as number)}`}>
     
                                     {displayRank}
     
@@ -252,9 +260,9 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                 </h3>
     
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border bg-amber-500 border-amber-300 ${statusColor} transition-all duration-500 shadow-lg`}>
-    
-                                    <StatusIcon className={`w-4 h-4 drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
+                                <div className={`w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] rounded-full flex items-center justify-center border bg-amber-500 border-amber-300 ${statusColor} transition-all duration-500 shadow-lg`}>
+
+                                    <StatusIcon className={`w-[clamp(1rem,1.5vw,1.5rem)] h-[clamp(1rem,1.5vw,1.5rem)] drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
     
                                 </div>
     
@@ -266,9 +274,9 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
                                 <div className="flex items-center justify-center">
 
-                                <div className="text-2xl font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
+                                <div className="text-[clamp(1.1rem,2vw,2.5rem)] font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
 
-                                    <FormattedNumber value={currentScore} />
+                                    <AnimatedScore value={currentScore} />
 
                                 </div>
 

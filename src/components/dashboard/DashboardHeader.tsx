@@ -9,6 +9,7 @@ import { Logo } from '../ui/Logo';
 import { useLanguage } from '../../hooks/useLanguage';
 import { parseFormattedText } from '../../utils/whatsappUtils';
 import { replaceSmartTags } from '../../utils/stringUtils';
+import { useAnimatedScore } from '../../hooks/useAnimatedScore';
 
 const MotionDiv = motion.div as any;
 
@@ -28,6 +29,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
     settings, commentary, customMessages, totalInstitutionScore, sortedClasses = [], topStudents = [], lastWheelWinner, aiEnabled = true
 }) => {
     const { t } = useLanguage();
+    const animatedScore = useAnimatedScore(totalInstitutionScore);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [maxChars, setMaxChars] = useState(60);
     const [aiFillers, setAiFillers] = useState<string[]>([]);
@@ -140,7 +142,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                     <div className="flex items-center gap-3 min-w-0 rtl:flex-row ltr:flex-row">
                         <Logo
                             src={settings.logo_url}
-                            className="w-9 h-9 md:w-10 md:h-10 shadow-lg border border-white/10"
+                            className="w-[clamp(2.25rem,3vw,3.5rem)] h-[clamp(2.25rem,3vw,3.5rem)] shadow-lg border border-white/10"
                             fallbackIcon="trophy"
                             padding="p-1"
                         />
@@ -199,16 +201,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = React.memo(({
                 <div className="order-2 lg:order-3 flex items-center justify-end gap-4 px-4 lg:px-6 py-2 rounded-[var(--radius-container)] border border-white/10 bg-black/60 backdrop-blur-xl shadow-xl min-h-[50px] lg:min-h-[56px] flex-initial w-fit lg:w-fit min-w-fit">
                     <div className="flex flex-col items-end justify-center leading-none">
                         <div className="flex items-center gap-1 font-bold tracking-tight mb-0.5">
-                            <span className="text-white uppercase text-[11px]">{t('cumulative_score')}</span>
-                            <span className="text-emerald-400 text-[15px] leading-none">{t('together')}</span>
+                            <span className="text-white uppercase text-[clamp(11px,0.9vw,18px)]">{t('cumulative_score')}</span>
+                            <span className="text-emerald-400 text-[clamp(15px,1.2vw,24px)] leading-none">{t('together')}</span>
                         </div>
                         <span className="text-lg lg:text-[clamp(1.2rem,1.7vw,1.6rem)] font-black font-mono text-white tracking-tighter tabular-nums drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-                            <FormattedNumber value={totalInstitutionScore} />
+                            <FormattedNumber value={animatedScore} />
                         </span>
                     </div>
 
-                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center shrink-0 border-2 border-white/80 text-emerald-500">
-                        <SproutIcon className="w-5 h-5 md:w-6 md:h-6" />
+                    <div className="w-[clamp(2.25rem,3vw,3.5rem)] h-[clamp(2.25rem,3vw,3.5rem)] rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center shrink-0 border-2 border-white/80 text-emerald-500">
+                        <SproutIcon className="w-[clamp(1.25rem,2vw,2rem)] h-[clamp(1.25rem,2vw,2rem)]" />
                     </div>
                 </div>
 

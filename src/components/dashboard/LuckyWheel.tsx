@@ -347,7 +347,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     return (
         <div className="relative flex flex-col items-center gap-3 select-none w-full">
             {/* Wheel container */}
-            <div className="relative w-[min(80vw,450px,calc(100svh-220px))] aspect-square">
+            <div className="relative w-[min(80vw,max(450px,40vw),calc(100svh-220px))] aspect-square">
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full rounded-full"
@@ -360,13 +360,15 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     className="absolute rounded-full pointer-events-none flex items-center justify-center overflow-hidden bg-white"
                     style={{ width: "22%", height: "22%", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 2 }}
                 >
-                    {logoUrl && (
+                    {logoUrl ? (
                         <img
                             src={logoUrl}
                             alt=""
                             className="w-full h-full object-contain"
                             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                         />
+                    ) : (
+                        <span style={{ fontSize: "40%", lineHeight: 1, userSelect: "none" }}>🏆</span>
                     )}
                 </div>
 
@@ -375,9 +377,9 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     <div
                         className="w-0 h-0"
                         style={{
-                            borderLeft: "16px solid transparent",
-                            borderRight: "16px solid transparent",
-                            borderBottom: "24px solid #facc15",
+                            borderLeft: "clamp(12px,1.5vw,28px) solid transparent",
+                            borderRight: "clamp(12px,1.5vw,28px) solid transparent",
+                            borderBottom: "clamp(18px,2.5vw,42px) solid #facc15",
                             filter: "drop-shadow(0 -4px 6px rgba(0,0,0,0.5))",
                         }}
                     />
@@ -385,12 +387,12 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             </div>
 
             {/* NAMES STRIP — updated via direct DOM refs, zero React re-renders */}
-            <div className="w-full max-w-[min(80vw,450px,calc(100svh-220px))] flex items-center pointer-events-none py-1">
+            <div className="w-full max-w-[min(80vw,max(450px,40vw),calc(100svh-220px))] flex items-center pointer-events-none py-1">
                 <div className="flex-[0.75] flex justify-end overflow-hidden pr-2">
                     <span
                         ref={leftNameRef}
                         style={{
-                            fontSize: "0.82rem", fontWeight: 700,
+                            fontSize: "clamp(0.75rem,1.2vw,1.5rem)", fontWeight: 700,
                             color: "white", opacity: 0.45,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",
@@ -402,7 +404,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     <span
                         ref={centerNameRef}
                         style={{
-                            fontSize: "1.35rem", fontWeight: 900,
+                            fontSize: "clamp(1.1rem,2vw,2.5rem)", fontWeight: 900,
                             color: "white", opacity: 1,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",
@@ -415,7 +417,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     <span
                         ref={rightNameRef}
                         style={{
-                            fontSize: "0.82rem", fontWeight: 700,
+                            fontSize: "clamp(0.75rem,1.2vw,1.5rem)", fontWeight: 700,
                             color: "white", opacity: 0.45,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",
@@ -445,7 +447,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                             className="relative z-10 text-center px-8 py-10 rounded-3xl"
                             style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)" }}
                         >
-                            <div className="text-6xl mb-5 animate-pulse">
+                            <div className="text-[clamp(3rem,6vw,8rem)] mb-5 animate-pulse">
                                 {prizeEmoji}
                             </div>
 
@@ -453,7 +455,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.15 }}
-                                className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight"
+                                className="text-[clamp(2rem,4vw,6rem)] font-black text-white mb-2 tracking-tight"
                                 style={{ textShadow: "0 0 40px rgba(250,204,21,0.5)" }}
                             >
                                 {winnerName}
@@ -464,7 +466,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                                     initial={{ y: 12, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.25 }}
-                                    className="text-white/70 text-xl font-semibold mb-3"
+                                    className="text-white/70 text-[clamp(1rem,2vw,2.5rem)] font-semibold mb-3"
                                 >
                                     {winnerClass}
                                 </motion.p>

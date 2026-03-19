@@ -23,7 +23,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
   const instantTransition = { duration: 0.1 };
 
   return (
-    <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[280px] [isolation:isolate]">
+    <div className="flex-1 glass-panel rounded-[var(--radius-container)] p-0 relative flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.7)] border-white/30 bg-black/60 overflow-hidden h-full min-h-[clamp(280px,25vh,500px)] [isolation:isolate]">
       <DashboardCardHeader 
         title={t('podium_title')}
         icon={<CrownIcon className="w-3.5 h-3.5 text-yellow-400" />}
@@ -32,7 +32,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
         borderColorClass="border-yellow-500/20"
       />
 
-      <div className="flex-1 flex items-end justify-center gap-2.5 md:gap-5 px-3 h-full relative z-10 pb-0 min-h-0 mb-[-2px]">
+      <div className="flex-1 flex items-end justify-center gap-[clamp(0.625rem,2vw,2.5rem)] px-3 h-full relative z-10 pb-0 min-h-0 mb-[-2px]">
         {podiumOrder.map((cls, idx) => {
           if (!cls) return null;
 
@@ -41,7 +41,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
           let height = 'h-[30%]';
           let barStyle = 'bg-gradient-to-b from-orange-600/40 to-transparent border-t-2 border-x border-orange-400/50 border-x-orange-400/20';
           let badge = (
-            <div className="w-8 h-8 rounded-full bg-orange-950/40 border border-orange-400/40 flex items-center justify-center font-bold text-base text-orange-200 backdrop-blur-md">
+            <div className="w-[clamp(2rem,3vw,3.5rem)] h-[clamp(2rem,3vw,3.5rem)] rounded-full bg-orange-950/40 border border-orange-400/40 flex items-center justify-center font-bold text-[clamp(1rem,1.5vw,1.5rem)] text-orange-200 backdrop-blur-md">
               3
             </div>
           );
@@ -58,7 +58,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
             height = 'h-[50%]';
             barStyle = 'bg-gradient-to-b from-slate-400/40 to-transparent border-t-2 border-x border-slate-300/50 border-x-slate-300/20';
             badge = (
-<div className="w-8 h-8 rounded-full bg-slate-800/40 border border-slate-300/40 flex items-center justify-center font-bold text-base text-slate-200 backdrop-blur-md">
+<div className="w-[clamp(2rem,3vw,3.5rem)] h-[clamp(2rem,3vw,3.5rem)] rounded-full bg-slate-800/40 border border-slate-300/40 flex items-center justify-center font-bold text-[clamp(1rem,1.5vw,1.5rem)] text-slate-200 backdrop-blur-md">
               2
             </div>
             );
@@ -72,16 +72,16 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
                 className="mb-2 text-center z-20 w-full px-1"
               >
                 <div className={`font-bold leading-tight mb-0.5 drop-shadow-md text-outline-md line-clamp-2 ${
-                  rank === 1 ? 'text-base md:text-[clamp(1rem,1.5vw,1.25rem)] text-yellow-300' :
-                  rank === 2 ? 'text-xs md:text-sm text-slate-300' :
-                              'text-xs md:text-sm text-orange-300'
+                  rank === 1 ? 'text-[clamp(0.9rem,1.5vw,1.5rem)] text-yellow-300' :
+                  rank === 2 ? 'text-[clamp(0.7rem,1.1vw,1.1rem)] text-slate-300' :
+                              'text-[clamp(0.7rem,1.1vw,1.1rem)] text-orange-300'
                 }`}>
                   {cls.name}
                 </div>
                 <div className={`font-mono font-black tabular-nums text-outline-sm ${
-                  rank === 1 ? 'text-lg md:text-xl text-yellow-400' :
-                  rank === 2 ? 'text-sm md:text-base text-slate-300' :
-                              'text-sm md:text-base text-orange-300'
+                  rank === 1 ? 'text-[clamp(1rem,1.8vw,2.5rem)] text-yellow-400' :
+                  rank === 2 ? 'text-[clamp(0.8rem,1.3vw,1.5rem)] text-slate-300' :
+                              'text-[clamp(0.8rem,1.3vw,1.5rem)] text-orange-300'
                 }`}>
                   <AnimatedCounter value={cls.score || 0} />
                 </div>

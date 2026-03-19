@@ -248,7 +248,7 @@ const shoutoutMessage = useMemo(() => {
 
     return (
         <div ref={containerRef} className={`
-        glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
+        glass-panel p-0 relative flex flex-col shadow-2xl border-white/10 h-full min-h-[clamp(280px,35vh,600px)] transition-all duration-700 !rounded-[var(--radius-container)] z-20 overflow-hidden
         ${isCelebrationMode
                 ? 'bg-gradient-to-br from-yellow-900/40 to-purple-900/40 border-yellow-400/30'
                 : 'bg-slate-900/50'
@@ -275,7 +275,7 @@ const shoutoutMessage = useMemo(() => {
 
 {/* 1. Centered Image (Top) - 65% Height */}
                 <div className="flex flex-col items-center justify-center h-[65%]">
-                    <div className="relative w-full max-w-[240px] aspect-square group rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20" style={{ clipPath: 'inset(0 round 1rem)', transform: 'translateZ(0)' }}>
+                    <div className="relative w-full max-w-[clamp(160px,20vw,380px)] aspect-square group rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20" style={{ clipPath: 'inset(0 round 1rem)', transform: 'translateZ(0)' }}>
                         {/* Background Blurred Layer - More vibrant and visible */}
                         <div className="absolute inset-0 rounded-[var(--radius-container)] overflow-hidden">
                         <div className="absolute inset-0 blur-xl opacity-70 scale-110">
@@ -345,8 +345,8 @@ const shoutoutMessage = useMemo(() => {
                         {/* Percentage — first in RTL = rightmost visually */}
                         <div className="shrink-0 flex flex-col items-center gap-0.5">
                             <div className="flex items-baseline gap-0.5">
-                                <span className="text-sm sm:text-base font-black text-white/90">%</span>
-                                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-none tracking-tighter drop-shadow-2xl">
+                                <span className="text-[clamp(0.9rem,2vw,3rem)] font-black text-white/90">%</span>
+                                <h3 className="text-[clamp(1.5rem,3.5vw,5rem)] font-black text-white leading-none tracking-tighter drop-shadow-2xl">
                                     <AnimatedCounter value={percentDisplay} />
                                 </h3>
                             </div>
@@ -356,8 +356,8 @@ const shoutoutMessage = useMemo(() => {
                         </div>
 
                         {/* SVG graph — second in RTL = leftmost visually */}
-                        <div className="w-28 sm:w-32 shrink-0">
-                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-14 drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
+                        <div className="w-[clamp(7rem,9vw,14rem)] shrink-0">
+                            <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" className="w-full h-[clamp(3rem,5vw,7rem)] drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
                                 <defs>
                                     <linearGradient id="progress-gradient" x1="100%" y1="0%" x2="0%" y2="0%">
                                         <stop offset="0%" stopColor="#4ade80" />
