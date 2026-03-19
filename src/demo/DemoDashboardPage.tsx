@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { Podium } from '@/components/dashboard/Podium';
@@ -8,6 +8,7 @@ import { MissionMeter } from '@/components/dashboard/MissionMeter';
 import { BurstNotification } from '@/components/ui/BurstNotification';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { VersionFooter } from '@/components/ui/VersionFooter';
+import { LuckyWheelOverlay } from '@/components/dashboard/LuckyWheelOverlay';
 import { useCompetitionEvents } from '@/hooks/useCompetitionEvents';
 import { calculateClassStats, calculateStudentStats } from '@/utils/rankingUtils';
 import { useDemoContext } from './DemoContext';
@@ -18,9 +19,14 @@ const EMPTY_GOALS: AppSettings['goals_config'] = [];
 export const DemoDashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const demo = useDemoContext();
-    const { campaign, settings, classes, updateCommentary } = demo;
+    const {
+        campaign, settings, classes, updateCommentary,
+        forcedBursts, consumeForcedBurst,
+        wheel, deactivateWheel,
+    } = demo;
 
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+    const spinCompleteTimerRef = useRef<number | undefined>(undefined);
 
     const { sortedClasses, top3Classes, totalInstitutionScore } = useMemo(
         () => calculateClassStats(classes),
@@ -48,9 +54,28 @@ export const DemoDashboardPage: React.FC = () => {
         campaign,
     );
 
+    // Drain forced bursts into the active burst slot when it's free.
+    // Same 3s delay as useCompetitionEvents so the viewer sees the context first.
+    useEffect(() => {
+        if (forcedBursts.length > 0 && !activeBurst) {
+            const timer = setTimeout(() => {
+                setActiveBurst(forcedBursts[0]);
+                consumeForcedBurst();
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [forcedBursts, activeBurst, setActiveBurst, consumeForcedBurst]);
+
     const handleDismissBurst = useCallback(() => setActiveBurst(null), [setActiveBurst]);
     const handleAdminClick = useCallback(() => navigate('/demo/admin'), [navigate]);
     const handleMusicToggle = useCallback(() => setIsMusicPlaying(p => !p), []);
+
+    // Auto-deactivate wheel 8s after spin completes (winner celebration)
+    const handleSpinComplete = useCallback(() => {
+        if (spinCompleteTimerRef.current !== undefined) window.clearTimeout(spinCompleteTimerRef.current);
+        spinCompleteTimerRef.current = window.setTimeout(() => deactivateWheel(), 8000);
+    }, [deactivateWheel]);
+    useEffect(() => () => { if (spinCompleteTimerRef.current !== undefined) window.clearTimeout(spinCompleteTimerRef.current); }, []);
 
     return (
         <div className="dashboard-view flex flex-col h-screen w-full overflow-hidden bg-black relative">
@@ -79,6 +104,21 @@ export const DemoDashboardPage: React.FC = () => {
                             onDismiss={handleDismissBurst}
                             volume={settings.burst_volume}
                             soundsEnabled={settings.burst_sounds_enabled}
+                        />
+
+                        {/* Lucky Wheel Overlay */}
+                        <LuckyWheelOverlay
+                            isActive={wheel.isActive}
+                            participants={wheel.participants}
+                            winnerIndex={wheel.winnerIndex}
+                            winnerName={wheel.winnerName}
+                            primaryColor={settings.primary_color}
+                            secondaryColor={settings.secondary_color}
+                            logoUrl={settings.logo_url ?? undefined}
+                            wheelName="גלגל המזל"
+                            startAtMs={wheel.startAtMs}
+                            durationMs={wheel.durationMs}
+                            onSpinComplete={handleSpinComplete}
                         />
 
                         <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col gap-3 max-w-[1920px] mx-auto w-full custom-scrollbar">

@@ -1,7 +1,7 @@
 import React, { Suspense, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CalculatorIcon, ClockIcon, RefreshIcon, SettingsIcon, TargetIcon, UsersIcon } from '@/components/ui/Icons';
+import { CalculatorIcon, ClockIcon, RefreshIcon, SettingsIcon, TargetIcon, UsersIcon, WheelIcon } from '@/components/ui/Icons';
 import { AlertIcon, CheckIcon, SearchIcon } from '@/components/ui/Icons';
 import { WorkspaceLayout } from '@/components/layouts/WorkspaceLayout';
 import { LiteStudentCard } from '@/components/lite/LiteStudentCard';
@@ -216,6 +216,128 @@ const DemoLogsTab: React.FC = () => {
     );
 };
 
+// ── Lucky Wheel tab ───────────────────────────────────────────────────────────
+
+const DemoWheelTab: React.FC = () => {
+    const { classes, wheel, activateWheel, spinWheel, deactivateWheel } = useDemoContext();
+    const navigate = useNavigate();
+    const [selectedPool, setSelectedPool] = useState<'all' | string>('all');
+
+    const participants = useMemo(() => {
+        if (selectedPool === 'all') {
+            return classes.flatMap(c => c.students).map(s => s.name);
+        }
+        const cls = classes.find(c => c.id === selectedPool);
+        return cls?.students.map(s => s.name) ?? [];
+    }, [classes, selectedPool]);
+
+    const handleActivate = () => activateWheel(participants);
+
+    return (
+        <div className="space-y-[var(--admin-section-gap)] w-full pb-12">
+            {!wheel.isActive ? (
+                <AdminSectionCard
+                    title="הפעלת גלגל המזל"
+                    icon={<span className="text-2xl">🎡</span>}
+                >
+                    <p className="text-[var(--text-muted)] text-sm mb-4">
+                        בחר קבוצת משתתפים, לחץ "הפעל" - הגלגל יופיע מיד על מסך הלוח. עבור ללוח הפעיל כדי לראות אותו.
+                    </p>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                                משתתפים
+                            </label>
+                            <select
+                                value={selectedPool}
+                                onChange={e => setSelectedPool(e.target.value)}
+                                className="w-full px-4 py-3 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-[var(--text-main)] focus:ring-2 focus:ring-indigo-500 transition-all outline-none text-[var(--fs-base)] appearance-none"
+                            >
+                                <option value="all">כל התלמידים ({participants.length})</option>
+                                {classes.map(c => (
+                                    <option key={c.id} value={c.id}>{c.name} ({c.students.length} תלמידים)</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                            <span className="text-[var(--text-muted)] text-sm">👥 {participants.length} משתתפים נבחרו</span>
+                        </div>
+
+                        <div className="flex gap-3 flex-wrap">
+                            <button
+                                onClick={handleActivate}
+                                disabled={participants.length < 2}
+                                className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-lg"
+                            >
+                                🎡 הפעל גלגל
+                            </button>
+                            <button
+                                onClick={() => navigate('/demo')}
+                                className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow"
+                            >
+                                עבור ללוח →
+                            </button>
+                        </div>
+                    </div>
+                </AdminSectionCard>
+            ) : (
+                <AdminSectionCard
+                    title="גלגל המזל פעיל"
+                    icon={<span className="text-2xl">🎡</span>}
+                >
+                    <p className="text-[var(--text-muted)] text-sm mb-4">
+                        הגלגל מוצג כעת על מסך הלוח עם <strong>{wheel.participants.length}</strong> משתתפים.
+                    </p>
+
+                    <div className="flex flex-wrap gap-3 mb-6">
+                        {wheel.winnerIndex === null ? (
+                            <>
+                                <button
+                                    onClick={spinWheel}
+                                    className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-lg animate-pulse"
+                                >
+                                    🎲 סובב!
+                                </button>
+                                <button
+                                    onClick={() => navigate('/demo')}
+                                    className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-white text-slate-900 hover:bg-slate-100 transition-colors shadow"
+                                >
+                                    עבור ללוח →
+                                </button>
+                            </>
+                        ) : (
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                                <span className="text-2xl">🏆</span>
+                                <div>
+                                    <p className="font-bold text-amber-300 text-sm">הזוכה:</p>
+                                    <p className="font-black text-white text-lg">{wheel.winnerName}</p>
+                                </div>
+                            </div>
+                        )}
+                        <button
+                            onClick={deactivateWheel}
+                            className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-slate-600/30 text-slate-300 hover:bg-slate-600/50 border border-slate-500/40 transition-colors"
+                        >
+                            סגור גלגל
+                        </button>
+                    </div>
+
+                    {wheel.winnerIndex !== null && (
+                        <button
+                            onClick={spinWheel}
+                            className="px-6 py-3 rounded-[var(--radius-main)] font-[var(--fw-bold)] text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow"
+                        >
+                            🔄 סיבוב נוסף
+                        </button>
+                    )}
+                </AdminSectionCard>
+            )}
+        </div>
+    );
+};
+
 // ── Simulation controls ───────────────────────────────────────────────────────
 
 const SimulationBar: React.FC = () => {
@@ -248,13 +370,14 @@ const SimulationBar: React.FC = () => {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-type TabId = 'settings' | 'points' | 'goals' | 'data-management' | 'logs';
+type TabId = 'settings' | 'points' | 'goals' | 'data-management' | 'logs' | 'lucky-wheel';
 
 const NAV_ITEMS: NavItem[] = [
     { id: 'settings', label: 'הגדרות', icon: Settings },
     { id: 'data-management', label: 'כיתות ותלמידים', icon: Users },
     { id: 'goals', label: 'יעדים', icon: Target },
     { id: 'points', label: 'הוספת נקודות', icon: CalculatorIcon },
+    { id: 'lucky-wheel', label: 'גלגל מזל', icon: WheelIcon },
     { id: 'logs', label: 'יומן פעילות', icon: ClockIcon },
 ];
 
@@ -263,6 +386,7 @@ const HEADER_CONFIG: Record<TabId, { icon: any; title: string; desc: string }> =
     'data-management': { icon: UsersIcon, title: 'כיתות ותלמידים', desc: 'הוסף, ערוך ומחק כיתות ותלמידים' },
     goals: { icon: TargetIcon, title: 'יעדים', desc: 'הגדר יעדים ומדדי הצלחה' },
     points: { icon: CalculatorIcon, title: 'הוספת נקודות', desc: 'הוסף נקודות לתלמידים וכיתות' },
+    'lucky-wheel': { icon: WheelIcon, title: 'גלגל המזל', desc: 'הפעל גלגל ובחר זוכה אקראי' },
     logs: { icon: ClockIcon, title: 'יומן פעילות', desc: 'היסטוריית הנקודות שנוספו' },
 };
 
@@ -309,6 +433,7 @@ const DemoAdminInner: React.FC = () => {
                         {activeTab === 'data-management' && <DemoClassesTab />}
                         {activeTab === 'goals' && <DemoGoalsTab />}
                         {activeTab === 'points' && <DemoPointsEntry />}
+                        {activeTab === 'lucky-wheel' && <DemoWheelTab />}
                         {activeTab === 'logs' && <DemoLogsTab />}
                     </MotionDiv>
                 </AnimatePresence>

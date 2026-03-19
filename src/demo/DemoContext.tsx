@@ -6,9 +6,26 @@ import React, {
     useReducer,
     useRef,
 } from 'react';
-import { ActionLog, AppSettings, Campaign, ClassRoom, Student, TickerMessage } from '@/types';
-import { DEMO_CAMPAIGN, DEMO_SETTINGS, INITIAL_CLASSES } from './mockData';
+import { ActionLog, AppSettings, BurstNotificationData, Campaign, ClassRoom, Student, TickerMessage } from '@/types';
+import { DEMO_CAMPAIGN, DEMO_SETTINGS, createInitialClasses } from './mockData';
 import { getRandomCommentary } from './cannedCommentary';
+
+// ── Wheel State ───────────────────────────────────────────────────────────────
+
+export interface DemoWheelState {
+    isActive: boolean;
+    participants: string[];
+    winnerIndex: number | null;
+    winnerName?: string;
+    startAtMs?: number;
+    durationMs?: number;
+}
+
+const INITIAL_WHEEL: DemoWheelState = {
+    isActive: false,
+    participants: [],
+    winnerIndex: null,
+};
 
 // ── State ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +36,8 @@ interface DemoState {
     settings: AppSettings;
     tickerMessages: TickerMessage[];
     logs: ActionLog[];
+    forcedBursts: BurstNotificationData[];
+    wheel: DemoWheelState;
 }
 
 type DemoAction =
@@ -26,7 +45,14 @@ type DemoAction =
     | { type: 'ADD_CLASS_POINTS'; classId: string; points: number }
     | { type: 'SET_COMMENTARY'; text: string }
     | { type: 'TOGGLE_SIMULATION' }
-    | { type: 'RESET' }
+    | { type: 'RESET'; classes: ClassRoom[] }
+    // Forced bursts (for intro showcase + variety)
+    | { type: 'ADD_FORCED_BURST'; burst: BurstNotificationData }
+    | { type: 'CONSUME_FORCED_BURST' }
+    // Wheel
+    | { type: 'WHEEL_ACTIVATE'; participants: string[] }
+    | { type: 'WHEEL_SPIN'; winnerIndex: number; winnerName: string; startAtMs: number; durationMs: number }
+    | { type: 'WHEEL_DEACTIVATE' }
     // Settings
     | { type: 'UPDATE_SETTINGS'; partial: Partial<AppSettings> }
     // Classes
@@ -57,14 +83,18 @@ const INITIAL_TICKER: TickerMessage[] = [
     { id: 'tick-3', text: 'המאמץ משתלם - המשיכו לעשות טוב! ⭐' },
 ];
 
-const initialState: DemoState = {
-    classes: cloneClasses(INITIAL_CLASSES),
-    commentary: 'ברוכים הבאים לדגמה של מצמיחה!',
-    isSimulationRunning: true,
-    settings: { ...DEMO_SETTINGS },
-    tickerMessages: INITIAL_TICKER,
-    logs: [],
-};
+function makeInitialState(classes: ClassRoom[]): DemoState {
+    return {
+        classes: cloneClasses(classes),
+        commentary: 'ברוכים הבאים לדגמה של מצמיחה!',
+        isSimulationRunning: true,
+        settings: { ...DEMO_SETTINGS },
+        tickerMessages: INITIAL_TICKER,
+        logs: [],
+        forcedBursts: [],
+        wheel: INITIAL_WHEEL,
+    };
+}
 
 // ── Reducer ───────────────────────────────────────────────────────────────────
 
@@ -93,13 +123,27 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
         case 'TOGGLE_SIMULATION':
             return { ...state, isSimulationRunning: !state.isSimulationRunning };
         case 'RESET':
+            return makeInitialState(action.classes);
+
+        case 'ADD_FORCED_BURST':
+            return { ...state, forcedBursts: [...state.forcedBursts, action.burst] };
+        case 'CONSUME_FORCED_BURST':
+            return { ...state, forcedBursts: state.forcedBursts.slice(1) };
+
+        case 'WHEEL_ACTIVATE':
+            return { ...state, wheel: { isActive: true, participants: action.participants, winnerIndex: null } };
+        case 'WHEEL_SPIN':
             return {
-                ...initialState,
-                classes: cloneClasses(INITIAL_CLASSES),
-                settings: { ...DEMO_SETTINGS },
-                tickerMessages: INITIAL_TICKER,
-                logs: [],
+                ...state, wheel: {
+                    ...state.wheel,
+                    winnerIndex: action.winnerIndex,
+                    winnerName: action.winnerName,
+                    startAtMs: action.startAtMs,
+                    durationMs: action.durationMs,
+                },
             };
+        case 'WHEEL_DEACTIVATE':
+            return { ...state, wheel: INITIAL_WHEEL };
 
         case 'UPDATE_SETTINGS':
             return { ...state, settings: { ...state.settings, ...action.partial } };
@@ -177,6 +221,15 @@ const rand = (min: number, max: number) =>
 
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
+const shuffle = <T,>(arr: T[]): T[] => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+};
+
 const makeLogEntry = (
     description: string,
     points: number,
@@ -193,6 +246,41 @@ const makeLogEntry = (
     campaign_id: DEMO_CAMPAIGN.id,
 });
 
+// ── Intro burst templates ─────────────────────────────────────────────────────
+
+const makeBurst = (
+    type: BurstNotificationData['type'],
+    title: string,
+    subTitle?: string,
+    value?: string | number,
+    emoji?: string,
+): BurstNotificationData => ({
+    id: `intro-${type}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    type,
+    title,
+    subTitle,
+    value,
+    emoji,
+});
+
+// 4 burst types for the intro showcase (SHOUTOUT omitted - feature not yet live)
+const INTRO_BURST_FACTORIES: Array<() => BurstNotificationData> = [
+    () => makeBurst('STAR_STUDENT', 'כוכב עולה ✨', 'נועה כהן', 28),
+    () => makeBurst('CLASS_BOOST', 'כיתה מזנקת! 🚀', 'ה1', 65),
+    () => makeBurst('LEADER_CHANGE', 'שינוי מוביל! 👑', 'ד2', 'עולה לראשונה'),
+    () => makeBurst('GOAL_REACHED', 'יעד הושג! 🎉', 'יעד ראשון', 'סה"כ: 200', '🌱'),
+];
+
+// Pool of periodic variety bursts (fires ~every 50s after intro)
+const VARIETY_BURST_FACTORIES: Array<() => BurstNotificationData> = [
+    () => makeBurst('STAR_STUDENT', 'ביצוע יוצא דופן! ⭐', pick(['לירון חסן', 'עמית פרידמן', 'יעל מזרחי', 'חן בן-דוד']), rand(22, 35)),
+    () => makeBurst('CLASS_BOOST', 'הכיתה בעלייה! 📈', pick(['ד1', 'ד2', 'ה1', 'ה2']), rand(52, 70)),
+    () => makeBurst('LEADER_CHANGE', 'שינוי מוביל! 👑', pick(['ד1', 'ד2', 'ה1', 'ה2']), 'עולה לראשונה'),
+    () => makeBurst('GOAL_REACHED', 'יעד הושג! 🎉', pick(['יעד ראשון', 'יעד שני']), 'הצוות הצליח!', '🌿'),
+    () => makeBurst('STAR_STUDENT', 'כוכב עולה ✨', pick(['דניאל גולן', 'שירה פרץ', 'נדב שטיין', 'מור אלון']), rand(25, 32)),
+    () => makeBurst('CLASS_BOOST', 'כיתה מזנקת! 🚀', pick(['ד1', 'ד2', 'ה1', 'ה2']), rand(55, 75)),
+];
+
 // ── Context ───────────────────────────────────────────────────────────────────
 
 interface DemoContextValue {
@@ -203,6 +291,14 @@ interface DemoContextValue {
     isSimulationRunning: boolean;
     tickerMessages: TickerMessage[];
     logs: ActionLog[];
+    // Forced bursts (for intro + variety - consumed by Dashboard)
+    forcedBursts: BurstNotificationData[];
+    consumeForcedBurst: () => void;
+    // Lucky Wheel
+    wheel: DemoWheelState;
+    activateWheel: (participants: string[]) => void;
+    spinWheel: () => void;
+    deactivateWheel: () => void;
     // Score mutations
     addPoints: (classId: string, points: number, studentId?: string) => void;
     // Simulation controls
@@ -219,7 +315,7 @@ interface DemoContextValue {
     addStudent: (classId: string, name: string) => void;
     removeStudent: (classId: string, studentId: string) => void;
     renameStudent: (classId: string, studentId: string, name: string) => void;
-    // Ticker mutations (async interface to match real MessagesManager callbacks)
+    // Ticker mutations
     addTickerMessage: (text: string) => Promise<void>;
     deleteTickerMessage: (id: string) => Promise<void>;
     updateTickerMessage: (id: string, updates: Partial<TickerMessage>) => Promise<void>;
@@ -241,7 +337,10 @@ export const useDemoContext = () => {
 const BURST_COOLDOWN_MS = 15000;
 
 export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(demoReducer, initialState);
+    // Randomize initial state on each mount
+    const [state, dispatch] = useReducer(demoReducer, undefined, () =>
+        makeInitialState(createInitialClasses()),
+    );
 
     const isRunningRef = useRef(state.isSimulationRunning);
     const classesRef = useRef(state.classes);
@@ -251,6 +350,8 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => { settingsRef.current = state.settings; }, [state.settings]);
 
     const lastBurstTime = useRef(0);
+
+    // ── Simulation tick ───────────────────────────────────────────────────────
 
     useEffect(() => {
         let timerId: number;
@@ -268,33 +369,38 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const roll = Math.random();
 
                 if (!burstReady || roll < 0.45) {
+                    // Small regular student update
                     const cls = pick(classes);
                     const student = pick(cls.students);
                     const pts = rand(6, 16);
                     dispatch({ type: 'ADD_STUDENT_POINTS', studentId: student.id, classId: cls.id, points: pts });
                     dispatch({ type: 'ADD_LOG', entry: makeLogEntry(`${student.name}: +${pts} נקודות`, pts, cls.id, student.id) });
                 } else if (roll < 0.65) {
+                    // Large student jump → triggers STAR_STUDENT in useCompetitionEvents
                     lastBurstTime.current = now;
                     const cls = pick(classes);
                     const student = pick(cls.students);
-                    const pts = rand(22, 35);
+                    const pts = rand(24, 38);
                     dispatch({ type: 'ADD_STUDENT_POINTS', studentId: student.id, classId: cls.id, points: pts });
                     dispatch({ type: 'ADD_LOG', entry: makeLogEntry(`${student.name}: +${pts} נקודות`, pts, cls.id, student.id) });
                 } else if (roll < 0.80) {
+                    // Class boost → triggers CLASS_BOOST in useCompetitionEvents
                     lastBurstTime.current = now;
                     const cls = pick(classes);
-                    const pts = rand(55, 75);
+                    const pts = rand(55, 78);
                     dispatch({ type: 'ADD_CLASS_POINTS', classId: cls.id, points: pts });
                     dispatch({ type: 'ADD_LOG', entry: makeLogEntry(`כיתה ${cls.name}: +${pts} נקודות`, pts, cls.id) });
                 } else if (roll < 0.90) {
+                    // Catch-up overtake → triggers LEADER_CHANGE in useCompetitionEvents
                     lastBurstTime.current = now;
                     const sorted = [...classes].sort((a, b) => b.score - a.score);
                     if (sorted.length >= 2) {
-                        const needed = sorted[0].score - sorted[1].score + rand(5, 15);
+                        const needed = sorted[0].score - sorted[1].score + rand(8, 20);
                         dispatch({ type: 'ADD_CLASS_POINTS', classId: sorted[1].id, points: needed });
                         dispatch({ type: 'ADD_LOG', entry: makeLogEntry(`כיתה ${sorted[1].name}: +${needed} נקודות`, needed, sorted[1].id) });
                     }
                 } else {
+                    // Push past a goal → triggers GOAL_REACHED in useCompetitionEvents
                     lastBurstTime.current = now;
                     const totalScore = classes.reduce((sum, c) => sum + c.score, 0);
                     const goals = (settings.goals_config || []);
@@ -322,6 +428,84 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => window.clearTimeout(timerId);
     }, []);
 
+    // ── Intro showcase sequence ───────────────────────────────────────────────
+    // Fires once on mount: shuffled burst types + wheel demo.
+    // BurstNotification auto-dismisses after 5s, so we space bursts 10s apart
+    // (5s display + 5s breathing room) to avoid overwhelming the viewer.
+
+    useEffect(() => {
+        const timers: number[] = [];
+
+        // Shuffle the 4 burst types for variety on each visit
+        const introFactories = shuffle(INTRO_BURST_FACTORIES);
+
+        // Each burst displays for DURATION=5s, then we leave 8s breathing room.
+        // Effective interval = 5 + 8 = 13s between dispatch times.
+        // t=4s, 17s, 30s, 43s
+        const BURST_INTERVAL = 13000; // 5s display + 8s breathing
+        introFactories.forEach((factory, i) => {
+            timers.push(window.setTimeout(() => {
+                dispatch({ type: 'ADD_FORCED_BURST', burst: factory() });
+            }, 4000 + i * BURST_INTERVAL));
+        });
+
+        // Last burst dismisses at t=43+5=48s. Wheel appears 7s later at t=55s.
+        // Capture participants here so the t=61s spin timer uses the same list.
+        let introParticipants: string[] = [];
+        timers.push(window.setTimeout(() => {
+            introParticipants = classesRef.current.flatMap(c => c.students).map(s => s.name);
+            dispatch({ type: 'WHEEL_ACTIVATE', participants: introParticipants });
+        }, 55000));
+
+        // Auto-spin at t=61s (6s to show the waiting state)
+        timers.push(window.setTimeout(() => {
+            if (introParticipants.length === 0) return;
+            const winnerIdx = Math.floor(Math.random() * introParticipants.length);
+            dispatch({
+                type: 'WHEEL_SPIN',
+                winnerIndex: winnerIdx,
+                winnerName: introParticipants[winnerIdx],
+                startAtMs: Date.now() + 400,
+                durationMs: 8000,
+            });
+        }, 61000));
+
+        // Auto-close wheel at t=77s (61 + 8s spin + 8s celebration)
+        timers.push(window.setTimeout(() => {
+            dispatch({ type: 'WHEEL_DEACTIVATE' });
+        }, 77000));
+
+        return () => timers.forEach(t => window.clearTimeout(t));
+    }, []); // runs once on mount
+
+    // ── Periodic variety bursts (after intro ends, ~every 50s) ───────────────
+    // Ensures ongoing diversity regardless of useCompetitionEvents throttles.
+
+    useEffect(() => {
+        let timerId: number;
+
+        const scheduleVariety = () => {
+            const delay = rand(45000, 60000);
+            timerId = window.setTimeout(() => {
+                if (isRunningRef.current) {
+                    const factory = pick(VARIETY_BURST_FACTORIES);
+                    dispatch({ type: 'ADD_FORCED_BURST', burst: factory() });
+                }
+                scheduleVariety();
+            }, delay);
+        };
+
+        // Start after the intro finishes (~80s)
+        const startTimer = window.setTimeout(scheduleVariety, 80000);
+
+        return () => {
+            window.clearTimeout(startTimer);
+            window.clearTimeout(timerId);
+        };
+    }, []);
+
+    // ── Mutations ─────────────────────────────────────────────────────────────
+
     const addPoints = useCallback((classId: string, points: number, studentId?: string) => {
         const currentClasses = classesRef.current;
         if (studentId) {
@@ -338,9 +522,29 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const toggleSimulation = useCallback(() => dispatch({ type: 'TOGGLE_SIMULATION' }), []);
-    const reset = useCallback(() => dispatch({ type: 'RESET' }), []);
+    const reset = useCallback(() => dispatch({ type: 'RESET', classes: createInitialClasses() }), []);
     const updateCommentary = useCallback((text: string) => dispatch({ type: 'SET_COMMENTARY', text }), []);
     const updateSettings = useCallback((partial: Partial<AppSettings>) => dispatch({ type: 'UPDATE_SETTINGS', partial }), []);
+
+    const consumeForcedBurst = useCallback(() => dispatch({ type: 'CONSUME_FORCED_BURST' }), []);
+
+    const activateWheel = useCallback((participants: string[]) =>
+        dispatch({ type: 'WHEEL_ACTIVATE', participants }), []);
+
+    const spinWheel = useCallback(() => {
+        const participants = wheelRef.current.participants;
+        if (!participants.length) return;
+        const winnerIdx = Math.floor(Math.random() * participants.length);
+        dispatch({
+            type: 'WHEEL_SPIN',
+            winnerIndex: winnerIdx,
+            winnerName: participants[winnerIdx],
+            startAtMs: Date.now() + 400,
+            durationMs: 8000,
+        });
+    }, []);
+
+    const deactivateWheel = useCallback(() => dispatch({ type: 'WHEEL_DEACTIVATE' }), []);
 
     const addClass = useCallback((name: string, color: string) => {
         const id = `class-${Date.now()}`;
@@ -390,6 +594,12 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isSimulationRunning: state.isSimulationRunning,
             tickerMessages: state.tickerMessages,
             logs: state.logs,
+            forcedBursts: state.forcedBursts,
+            consumeForcedBurst,
+            wheel: state.wheel,
+            activateWheel,
+            spinWheel,
+            deactivateWheel,
             addPoints,
             toggleSimulation,
             reset,

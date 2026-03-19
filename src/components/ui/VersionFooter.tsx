@@ -8,7 +8,6 @@ import {
     LogoutIcon,
     MoonIcon,
     SettingsIcon,
-    SproutIcon,
     SunIcon,
     TrophyIcon,
     Volume2Icon,

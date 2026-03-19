@@ -171,8 +171,8 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
                                 <div className="flex items-center gap-4 mb-4 relative z-10">
-                                    <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500 shrink-0">
-                                        <SproutIcon className="w-7 h-7 text-white" />
+                                    <div className="w-12 h-12 rounded-full bg-[#f8fafc] shadow-md flex items-center justify-center overflow-hidden border border-slate-200 shrink-0 group-hover:scale-110 transition-transform duration-500">
+                                        <SproutIcon className="w-7 h-7 text-emerald-500" />
                                     </div>
                                     <div className="rtl:text-right ltr:text-left min-w-0">
                                         <h3 className="text-xl font-black leading-tight drop-shadow-sm">מהי תחרות מצמיחה?</h3>

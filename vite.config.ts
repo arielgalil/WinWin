@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
         tailwindcss(),
         VitePWA({
           registerType: 'prompt',
-          includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'favicon-96x96.png'],
+          includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg', 'favicon-96x96.png', 'pwa-512x512-maskable.png'],
           workbox: {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
             cleanupOutdatedCaches: true,
@@ -121,7 +121,7 @@ export default defineConfig(({ mode }) => {
                 type: 'image/png'
               },
               {
-                src: 'pwa-512x512.png',
+                src: 'pwa-512x512-maskable.png',
                 sizes: '512x512',
                 type: 'image/png',
                 purpose: 'maskable'

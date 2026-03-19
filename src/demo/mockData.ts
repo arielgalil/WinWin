@@ -56,61 +56,41 @@ export const DEMO_SETTINGS: AppSettings = {
     leaderboard_momentum_count: 10,
 };
 
-export const INITIAL_CLASSES: ClassRoom[] = [
-    {
-        id: 'class-d1',
-        name: 'ד1',
-        color: '#7c3aed',
-        score: 85,
-        students: [
-            { id: 'std-d1-1', name: 'נועה כהן', score: 22, prev_score: 22, trend: 'same', class_id: 'class-d1' },
-            { id: 'std-d1-2', name: 'יוסף לוי', score: 18, prev_score: 18, trend: 'same', class_id: 'class-d1' },
-            { id: 'std-d1-3', name: 'מיכל אברהם', score: 15, prev_score: 15, trend: 'same', class_id: 'class-d1' },
-            { id: 'std-d1-4', name: 'דניאל גולן', score: 12, prev_score: 12, trend: 'same', class_id: 'class-d1' },
-            { id: 'std-d1-5', name: 'שירה פרץ', score: 10, prev_score: 10, trend: 'same', class_id: 'class-d1' },
-            { id: 'std-d1-6', name: 'אורי שפירא', score: 8, prev_score: 8, trend: 'same', class_id: 'class-d1' },
-        ],
-    },
-    {
-        id: 'class-d2',
-        name: 'ד2',
-        color: '#0891b2',
-        score: 78,
-        students: [
-            { id: 'std-d2-1', name: 'יעל מזרחי', score: 20, prev_score: 20, trend: 'same', class_id: 'class-d2' },
-            { id: 'std-d2-2', name: 'עידו כץ', score: 17, prev_score: 17, trend: 'same', class_id: 'class-d2' },
-            { id: 'std-d2-3', name: 'רותם שמש', score: 14, prev_score: 14, trend: 'same', class_id: 'class-d2' },
-            { id: 'std-d2-4', name: 'אבי ברק', score: 11, prev_score: 11, trend: 'same', class_id: 'class-d2' },
-            { id: 'std-d2-5', name: 'טל רוזן', score: 9, prev_score: 9, trend: 'same', class_id: 'class-d2' },
-            { id: 'std-d2-6', name: 'ספיר דוד', score: 7, prev_score: 7, trend: 'same', class_id: 'class-d2' },
-        ],
-    },
-    {
-        id: 'class-h1',
-        name: 'ה1',
-        color: '#059669',
-        score: 92,
-        students: [
-            { id: 'std-h1-1', name: 'לירון חסן', score: 24, prev_score: 24, trend: 'same', class_id: 'class-h1' },
-            { id: 'std-h1-2', name: 'עמית פרידמן', score: 21, prev_score: 21, trend: 'same', class_id: 'class-h1' },
-            { id: 'std-h1-3', name: 'גל ישראלי', score: 16, prev_score: 16, trend: 'same', class_id: 'class-h1' },
-            { id: 'std-h1-4', name: 'נדב שטיין', score: 13, prev_score: 13, trend: 'same', class_id: 'class-h1' },
-            { id: 'std-h1-5', name: 'מור אלון', score: 11, prev_score: 11, trend: 'same', class_id: 'class-h1' },
-            { id: 'std-h1-6', name: 'ראם גרוס', score: 7, prev_score: 7, trend: 'same', class_id: 'class-h1' },
-        ],
-    },
-    {
-        id: 'class-h2',
-        name: 'ה2',
-        color: '#dc2626',
-        score: 71,
-        students: [
-            { id: 'std-h2-1', name: 'חן בן-דוד', score: 19, prev_score: 19, trend: 'same', class_id: 'class-h2' },
-            { id: 'std-h2-2', name: 'רון אוחיון', score: 16, prev_score: 16, trend: 'same', class_id: 'class-h2' },
-            { id: 'std-h2-3', name: 'אלה נחמני', score: 13, prev_score: 13, trend: 'same', class_id: 'class-h2' },
-            { id: 'std-h2-4', name: 'איתי חיון', score: 10, prev_score: 10, trend: 'same', class_id: 'class-h2' },
-            { id: 'std-h2-5', name: 'שני בוגוסלבסקי', score: 8, prev_score: 8, trend: 'same', class_id: 'class-h2' },
-            { id: 'std-h2-6', name: 'בן שלום', score: 5, prev_score: 5, trend: 'same', class_id: 'class-h2' },
-        ],
-    },
+const CLASS_CONFIGS = [
+    { id: 'class-d1', name: 'ד1', color: '#7c3aed' },
+    { id: 'class-d2', name: 'ד2', color: '#0891b2' },
+    { id: 'class-h1', name: 'ה1', color: '#059669' },
+    { id: 'class-h2', name: 'ה2', color: '#dc2626' },
+] as const;
+
+const STUDENT_NAMES = [
+    ['נועה כהן', 'יוסף לוי', 'מיכל אברהם', 'דניאל גולן', 'שירה פרץ', 'אורי שפירא'],
+    ['יעל מזרחי', 'עידו כץ', 'רותם שמש', 'אבי ברק', 'טל רוזן', 'ספיר דוד'],
+    ['לירון חסן', 'עמית פרידמן', 'גל ישראלי', 'נדב שטיין', 'מור אלון', 'ראם גרוס'],
+    ['חן בן-דוד', 'רון אוחיון', 'אלה נחמני', 'איתי חיון', 'שני בוגוסלבסקי', 'בן שלום'],
 ];
+
+/** Creates initial classes with slightly randomized scores so each demo session feels different. */
+export function createInitialClasses(): ClassRoom[] {
+    return CLASS_CONFIGS.map((cfg, classIdx) => {
+        // Random base score per student: 10-22 pts, varies by class
+        const basePerStudent = 10 + Math.floor(Math.random() * 12);
+        const students = STUDENT_NAMES[classIdx].map((name, j) => {
+            const variance = Math.floor(Math.random() * 10) - 4;
+            const score = Math.max(3, basePerStudent + variance);
+            return {
+                id: `std-${cfg.id.replace('class-', '')}-${j + 1}`,
+                name,
+                score,
+                prev_score: score,
+                trend: 'same' as const,
+                class_id: cfg.id,
+            };
+        });
+        const classScore = students.reduce((sum, s) => sum + s.score, 0);
+        return { ...cfg, score: classScore, students };
+    });
+}
+
+// Keep INITIAL_CLASSES export for backward compat (will be replaced by createInitialClasses in provider)
+export const INITIAL_CLASSES: ClassRoom[] = createInitialClasses();
