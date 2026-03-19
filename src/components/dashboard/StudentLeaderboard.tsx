@@ -72,7 +72,10 @@ const StudentRow = ({
     nameColorClass?: string;
     onClick?: () => void;
 }) => (
-    <div
+    <motion.div
+        layoutId={`student-row-${student.id}`}
+        layout="position"
+        transition={{ type: 'spring', stiffness: 120, damping: 25, mass: 1 }}
         className={`relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border transition-all duration-300 ${rowBg} ${onClick ? 'cursor-pointer' : ''}`}
         onClick={onClick}
     >
@@ -106,7 +109,7 @@ const StudentRow = ({
                 <AnimatedCounter value={student.score} />
             </div>
         </div>
-    </div>
+    </motion.div>
 );
 
 export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ topStudents, arenaStudents, settings, luckyWheelWinners = [], momentumCount = 10 }) => {
@@ -173,6 +176,29 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
 
     const listContainerRef = useRef<HTMLDivElement>(null!);
 
+    // ── Pause scroll during rank-change animations ─────────────
+    const [isRankAnimating, setIsRankAnimating] = useState(false);
+    const rankAnimatingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const prevTopStudentsRef = useRef<EnrichedStudent[]>([]);
+    useEffect(() => {
+        const prev = prevTopStudentsRef.current;
+        if (prev.length > 0) {
+            const hasRankChange = topStudents.some(s => {
+                const prevS = prev.find(p => p.id === s.id);
+                return prevS !== undefined && prevS.rank !== s.rank;
+            });
+            if (hasRankChange) {
+                setIsRankAnimating(true);
+                if (rankAnimatingTimeoutRef.current) clearTimeout(rankAnimatingTimeoutRef.current);
+                rankAnimatingTimeoutRef.current = setTimeout(() => setIsRankAnimating(false), 2500);
+            }
+        }
+        prevTopStudentsRef.current = topStudents;
+    }, [topStudents]);
+    useEffect(() => () => {
+        if (rankAnimatingTimeoutRef.current) clearTimeout(rankAnimatingTimeoutRef.current);
+    }, []);
+
     // ── FAB visibility — responds only to user touch/scroll ────
     const [isUserActive, setIsUserActive] = useState(false);
     const userActiveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -194,7 +220,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
     }, [markUserActive]);
 
     useAutoScroll(listContainerRef, {
-        isHovered,
+        isHovered: isHovered || isRankAnimating,
         activeTab,
         speed: 0.5,
         pauseFrames: 90
@@ -418,7 +444,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                     )}
                                 </MotionDiv>
                             ) : (
-                                <MotionDiv key={activeTab} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="space-y-1.5 pb-2">
+                                <MotionDiv key={activeTab} layout initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }} className="space-y-1.5 pb-2">
                                     {scrollList.map((student) => (
                                         <StudentRow
                                             key={student.id}
