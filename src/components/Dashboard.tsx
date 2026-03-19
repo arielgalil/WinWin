@@ -527,7 +527,7 @@ export const Dashboard: React.FC = () => {
                                         </div>
 
                                         {/* Bottom row: ClassTicker — fixed height, never grows/shrinks */}
-                                        <div className="shrink-0 h-[144px]">
+                                        <div className="shrink-0 h-[clamp(144px,16vh,240px)]">
                                             <ClassTicker
                                                 otherClasses={sortedClasses}
                                                 highlightClassId={highlightClassId}

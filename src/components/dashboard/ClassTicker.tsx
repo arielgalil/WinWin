@@ -248,7 +248,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
                                 <div className="flex items-center justify-between shrink-0">
     
-                                <div className={`w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] rounded-full flex items-center justify-center border text-[clamp(0.65rem,1vw,1rem)] font-black shrink-0 shadow-lg ${getRankBadgeClasses(displayRank as number)}`}>
+                                <div className={`w-[clamp(1.75rem,3vh,2.75rem)] h-[clamp(1.75rem,3vh,2.75rem)] rounded-full flex items-center justify-center border text-[clamp(0.65rem,1vw,1rem)] font-black shrink-0 shadow-lg ${getRankBadgeClasses(displayRank as number)}`}>
     
                                     {displayRank}
     
@@ -260,9 +260,9 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                 </h3>
     
-                                <div className={`w-[clamp(2rem,3vw,3rem)] h-[clamp(2rem,3vw,3rem)] rounded-full flex items-center justify-center border bg-amber-500 border-amber-300 ${statusColor} transition-all duration-500 shadow-lg`}>
+                                <div className={`w-[clamp(1.75rem,3vh,2.75rem)] h-[clamp(1.75rem,3vh,2.75rem)] rounded-full flex items-center justify-center border bg-amber-500 border-amber-300 ${statusColor} transition-all duration-500 shadow-lg`}>
 
-                                    <StatusIcon className={`w-[clamp(1rem,1.5vw,1.5rem)] h-[clamp(1rem,1.5vw,1.5rem)] drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
+                                    <StatusIcon className={`w-[clamp(0.9rem,1.3vh,1.3rem)] h-[clamp(0.9rem,1.3vh,1.3rem)] drop-shadow-md ${!isGoalReached ? 'animate-pulse-soft' : ''}`} />
     
                                 </div>
     
@@ -274,7 +274,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
 
                                 <div className="flex items-center justify-center">
 
-                                <div className="text-[clamp(1.1rem,2vw,2.5rem)] font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
+                                <div className="text-[clamp(1.1rem,2.2vh,2.2rem)] font-black text-white tracking-tighter tabular-nums drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] leading-none">
 
                                     <AnimatedScore value={currentScore} />
 

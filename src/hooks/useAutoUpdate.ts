@@ -7,6 +7,15 @@ interface AutoUpdateProps {
 
 export const useAutoUpdate = ({ needRefresh, updateServiceWorker }: AutoUpdateProps) => {
     useEffect(() => {
+        const POLL_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+        const swCheckInterval = setInterval(() => {
+            navigator.serviceWorker?.ready.then(reg => reg.update());
+        }, POLL_INTERVAL_MS);
+
+        return () => clearInterval(swCheckInterval);
+    }, []);
+
+    useEffect(() => {
         if (needRefresh) {
             console.log('[Kiosk-Update] New version detected. Preparing automatic refresh...');
             console.log('[Kiosk-Update] The application will refresh after 60 seconds of idle time.');

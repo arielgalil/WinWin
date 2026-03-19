@@ -45,6 +45,38 @@ export const useRealtimeUpdate = () => {
         const currentVersion = import.meta.env.VITE_APP_VERSION;
         let reloadTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
+        const POLL_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+
+        const checkVersionViaHttp = async () => {
+            try {
+                const { data } = await supabase
+                    .from('system_config')
+                    .select('value')
+                    .eq('key', 'app_version')
+                    .single();
+
+                if (!data) return;
+                const remoteVersion = (data.value as any).version;
+                if (remoteVersion && remoteVersion !== currentVersion) {
+                    console.log(`[VERSION-POLL] Mismatch detected: ${currentVersion} → ${remoteVersion}`);
+                    const lastReload = sessionStorage.getItem('last_version_reload');
+                    const now = Date.now();
+                    if (lastReload && now - parseInt(lastReload) < 30000) return;
+
+                    const isKiosk = window.location.pathname.includes('/comp/');
+                    if (isKiosk) {
+                        sessionStorage.setItem('last_version_reload', now.toString());
+                        showKioskUpdateOverlay();
+                        setTimeout(() => window.location.reload(), 2500);
+                    }
+                }
+            } catch (e) {
+                // Fail silently — polling is a fallback
+            }
+        };
+
+        const pollInterval = setInterval(checkVersionViaHttp, POLL_INTERVAL_MS);
+
         const channel = supabase
             .channel('system_updates')
             .on(
@@ -101,6 +133,7 @@ export const useRealtimeUpdate = () => {
         return () => {
             supabase.removeChannel(channel);
             if (reloadTimeoutId) clearTimeout(reloadTimeoutId);
+            clearInterval(pollInterval);
         };
     }, []); // Empty deps — channel created once on mount, cleaned up on unmount
 };

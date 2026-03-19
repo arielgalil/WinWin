@@ -275,7 +275,7 @@ const shoutoutMessage = useMemo(() => {
 
 {/* 1. Centered Image (Top) - 65% Height */}
                 <div className="flex flex-col items-center justify-center h-[65%]">
-                    <div className="relative w-full max-w-[clamp(160px,20vw,380px)] aspect-square group rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20" style={{ clipPath: 'inset(0 round 1rem)', transform: 'translateZ(0)' }}>
+                    <div className="relative w-full max-w-[clamp(160px,20vw,380px)] max-h-full aspect-square group rounded-[var(--radius-container)] overflow-hidden border-2 border-white/20" style={{ clipPath: 'inset(0 round 1rem)', transform: 'translateZ(0)' }}>
                         {/* Background Blurred Layer - More vibrant and visible */}
                         <div className="absolute inset-0 rounded-[var(--radius-container)] overflow-hidden">
                         <div className="absolute inset-0 blur-xl opacity-70 scale-110">
