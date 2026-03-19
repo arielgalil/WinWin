@@ -32,7 +32,7 @@ export const Podium: React.FC<PodiumProps> = memo(({ top3Classes }) => {
         borderColorClass="border-yellow-500/20"
       />
 
-      <div className="flex-1 flex items-end justify-center gap-[clamp(0.625rem,2vw,2.5rem)] px-3 h-full relative z-10 pb-0 min-h-0 mb-[-2px]">
+      <div className="flex-1 flex items-end justify-center gap-[clamp(0.625rem,2vw,2.5rem)] px-6 h-full relative z-10 pb-0 min-h-0 mb-[-2px]">
         {podiumOrder.map((cls, idx) => {
           if (!cls) return null;
 

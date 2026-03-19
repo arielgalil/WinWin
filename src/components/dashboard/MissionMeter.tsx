@@ -263,9 +263,9 @@ const shoutoutMessage = useMemo(() => {
                     : 'bg-orange-500/10 shadow-[0_0_15px_rgba(249,115,22,0.3)]'}
                 borderColorClass={isCelebrationMode ? 'border-yellow-300' : 'border-orange-500/30'}
                 rightContent={sortedGoals.length > 1 && (
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1">
                         {sortedGoals.map((_, idx) => (
-                            <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${idx < activeIndex || (idx === activeIndex && isCompleted) ? 'bg-green-500' : idx === activeIndex ? 'bg-yellow-400 scale-125 shadow-[0_0_8px_#facc15]' : 'bg-slate-600'}`} />
+                            <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${idx < activeIndex || (idx === activeIndex && isCompleted) ? 'bg-green-500' : idx === activeIndex ? 'bg-yellow-400 scale-125 shadow-[0_0_8px_#facc15]' : 'bg-orange-500'}`} />
                         ))}
                     </div>
                 )}
@@ -350,7 +350,7 @@ const shoutoutMessage = useMemo(() => {
                                     <AnimatedCounter value={percentDisplay} />
                                 </h3>
                             </div>
-                            <span className="text-[10px] sm:text-xs font-bold text-white/90 text-center leading-tight">
+                            <span className="text-sm sm:text-base font-bold text-white text-center leading-tight">
                                 {t('from_stage', { stage: displayIndex + 1 })}
                             </span>
                         </div>

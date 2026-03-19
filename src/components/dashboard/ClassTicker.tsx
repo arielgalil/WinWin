@@ -254,7 +254,7 @@ export const ClassTicker: React.FC<ClassTickerProps> = memo(({ otherClasses, hig
     
                                 </div>
     
-                                <h3 className="flex-1 px-1.5 font-black text-white text-sm truncate text-center drop-shadow-md text-outline-md leading-none">
+                                <h3 className="flex-1 px-1.5 font-black text-white text-base truncate text-center drop-shadow-md text-outline-md leading-none">
     
                                     {cls.name}
     

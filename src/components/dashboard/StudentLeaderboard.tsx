@@ -333,21 +333,21 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => handleTabClick('momentum')}
-                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'momentum' ? 'bg-cyan-400 scale-125 shadow-[0_0_8px_rgba(34,211,238,0.9)]' : 'bg-white/10'}`}
                                     role="tab"
                                     aria-selected={activeTab === 'momentum'}
                                     aria-label={t('stars_momentum')}
                                 />
                                 <button
                                     onClick={() => handleTabClick('top')}
-                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'top' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'top' ? 'bg-cyan-400 scale-125 shadow-[0_0_8px_rgba(34,211,238,0.9)]' : 'bg-white/10'}`}
                                     role="tab"
                                     aria-selected={activeTab === 'top'}
                                     aria-label={t('student_stars', { instType })}
                                 />
                                 <button
                                     onClick={() => handleTabClick('wheel')}
-                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'wheel' ? 'bg-cyan-400 scale-125' : 'bg-white/10'}`}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all focus:ring-2 focus:ring-cyan-400 focus:outline-none ${activeTab === 'wheel' ? 'bg-cyan-400 scale-125 shadow-[0_0_8px_rgba(34,211,238,0.9)]' : 'bg-white/10'}`}
                                     role="tab"
                                     aria-selected={activeTab === 'wheel'}
                                     aria-label={t('lucky_wheel_winners_tab' as any)}
@@ -418,7 +418,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                             return (
                                             <div key={wheelName} className="space-y-1.5">
                                                 {/* Wheel name pill */}
-                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[11px] font-black text-white/80 tracking-wide">
+                                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm font-black text-white/80 tracking-wide">
                                                     🎡 {wheelName}
                                                 </div>
                                                 {winners.map((winner, i) => {
@@ -474,6 +474,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                                 isMomentumMode ? 'text-white' :
                                                 student.rank === 1 ? 'text-yellow-300' :
                                                 student.rank === 2 ? 'text-slate-300' :
+                                                student.rank === 3 ? 'text-orange-400' :
                                                 'text-white'
                                             }
                                             layoutReady={isLayoutReady}
