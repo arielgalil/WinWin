@@ -64,6 +64,7 @@ const StudentRow = ({
     rowBg,
     nameColorClass = 'text-white',
     onClick,
+    layoutReady = false,
 }: {
     student: EnrichedStudent;
     badge: React.ReactNode;
@@ -71,10 +72,11 @@ const StudentRow = ({
     rowBg: string;
     nameColorClass?: string;
     onClick?: () => void;
+    layoutReady?: boolean;
 }) => (
     <motion.div
-        layoutId={`student-row-${student.id}`}
-        layout="position"
+        layoutId={layoutReady ? `student-row-${student.id}` : undefined}
+        layout={layoutReady ? 'position' : false}
         transition={{ type: 'spring', stiffness: 120, damping: 25, mass: 1 }}
         className={`relative flex items-center py-1.5 lg:py-2 px-2.5 lg:px-3.5 rounded-[var(--radius-main)] border transition-all duration-300 ${rowBg} ${onClick ? 'cursor-pointer' : ''}`}
         onClick={onClick}
@@ -175,6 +177,15 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
     }, [searchOpen]);
 
     const listContainerRef = useRef<HTMLDivElement>(null!);
+
+    // ── Enable layout animations only after the list has settled ──
+    // Prevents animation on initial mount and after tab/screen switches
+    const [isLayoutReady, setIsLayoutReady] = useState(false);
+    useEffect(() => {
+        setIsLayoutReady(false);
+        const timer = setTimeout(() => setIsLayoutReady(true), 600);
+        return () => clearTimeout(timer);
+    }, [activeTab]);
 
     // ── Pause scroll during rank-change animations ─────────────
     const [isRankAnimating, setIsRankAnimating] = useState(false);
@@ -381,6 +392,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                     badgeBg="bg-cyan-500 text-white"
                                     rowBg="bg-cyan-500/10 border-cyan-500/30 shadow-lg shadow-cyan-500/5"
                                     onClick={openSearch}
+                                    layoutReady={isLayoutReady}
                                 />
                             ))}
                             {/* Divider */}
@@ -464,6 +476,7 @@ export const StudentLeaderboard: React.FC<StudentLeaderboardProps> = memo(({ top
                                                 student.rank === 2 ? 'text-slate-300' :
                                                 'text-white'
                                             }
+                                            layoutReady={isLayoutReady}
                                         />
                                     ))}
                                 </MotionDiv>

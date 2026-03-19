@@ -1,13 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BurstNotificationData } from "../../types";
-import {
-    CheckIcon,
-    CrownIcon,
-    StarIcon,
-    TrendUpIcon,
-    TrophyIcon,
-} from "./Icons";
 import { Confetti } from "./Confetti";
 import { FormattedNumber } from "./FormattedNumber";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -85,41 +78,44 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
     }, [data, volume, soundsEnabled]);
 
     const getTheme = (type: string) => {
+        // Icon sizes are designed to fill (or slightly overflow) the circle container
+        // (w-20 sm:w-28 md:w-36 lg:w-44). overflow-hidden on the circle clips any excess.
+        const iconClass = "text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] leading-none select-none";
         switch (type) {
             case "GOAL_REACHED":
                 return {
                     bg: "bg-gradient-to-b from-yellow-500/95 to-orange-600/95",
                     iconBg: "bg-white text-yellow-600",
                     accentColor: "text-yellow-200",
-                    icon: <TrophyIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />,
+                    icon: <span className={iconClass}>🏆</span>,
                 };
             case "LEADER_CHANGE":
                 return {
                     bg: "bg-gradient-to-b from-purple-600/95 to-indigo-700/95",
                     iconBg: "bg-white text-purple-600",
                     accentColor: "text-purple-200",
-                    icon: <CrownIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />,
+                    icon: <span className={iconClass}>👑</span>,
                 };
             case "STAR_STUDENT":
                 return {
                     bg: "bg-gradient-to-b from-pink-500/95 to-rose-600/95",
                     iconBg: "bg-white text-pink-600",
                     accentColor: "text-pink-200",
-                    icon: <StarIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />,
+                    icon: <span className={iconClass}>⭐</span>,
                 };
             case "CLASS_BOOST":
                 return {
                     bg: "bg-gradient-to-b from-green-500/95 to-emerald-700/95",
                     iconBg: "bg-white text-green-600",
                     accentColor: "text-emerald-200",
-                    icon: <TrendUpIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />,
+                    icon: <span className={iconClass}>📈</span>,
                 };
             default:
                 return {
                     bg: "bg-slate-700/95",
                     iconBg: "bg-white",
                     accentColor: "text-slate-200",
-                    icon: <CheckIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />,
+                    icon: <span className={iconClass}>✅</span>,
                 };
         }
     };
@@ -201,7 +197,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
                                 >
                                     <div className="relative z-10 filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 flex items-center justify-center w-full h-full">
                                         {data.emoji ? (
-                                            <span className="text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] leading-none select-none">
+                                            <span className="text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] leading-none select-none">
                                                 {data.emoji}
                                             </span>
                                         ) : theme.icon}

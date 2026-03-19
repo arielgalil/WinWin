@@ -103,9 +103,13 @@ export const useCompetitionEvents = (
 
     useEffect(() => {
         if (!activeBurst && burstQueue.length > 0) {
-            const next = burstQueue[0];
-            setActiveBurst(next);
-            setBurstQueue((prev) => prev.slice(1));
+            // Delay 3s so the viewer sees the score/rank change on screen first
+            const timer = setTimeout(() => {
+                const next = burstQueue[0];
+                setActiveBurst(next);
+                setBurstQueue((prev) => prev.slice(1));
+            }, 3000);
+            return () => clearTimeout(timer);
         }
     }, [activeBurst, burstQueue]);
 
@@ -151,6 +155,13 @@ export const useCompetitionEvents = (
 
         // Skip if total score hasn't increased or check if we crossed a goal
         if (totalInstitutionScore <= prevTotalScoreRef.current) {
+            return;
+        }
+
+        // Guard: if prev was 0, this is the initial data load (0 → real score),
+        // not a real score increase — record the current score and skip.
+        if (prevTotalScoreRef.current === 0) {
+            prevTotalScoreRef.current = totalInstitutionScore;
             return;
         }
 
