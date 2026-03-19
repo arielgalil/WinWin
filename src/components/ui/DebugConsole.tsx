@@ -43,8 +43,9 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
   };
 
   const copyToClipboard = () => {
+    const header = `Win2Grow v${APP_VERSION} | ${new Date().toLocaleString()}\n${'─'.repeat(40)}\n`;
     const text = logs.map(l => `[${l.time}] [${l.type.toUpperCase()}] ${l.msg}`).join('\n');
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(header + text);
     alert(t('logs_copied'));
   };
 
@@ -101,16 +102,6 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
     window.location.reload();
   };
 
-  const updateStatusLabel = () => {
-    switch (updateStatus) {
-      case 'checking': return t('debug_checking');
-      case 'up_to_date': return t('debug_up_to_date');
-      case 'update_found': return t('debug_update_found');
-      case 'no_sw': return t('debug_no_sw');
-      default: return null;
-    }
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -137,34 +128,31 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                 </div>
               </div>
 
-              {/* Update controls */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={checkAndForceUpdate}
-                  disabled={updateStatus === 'checking' || updateStatus === 'update_found'}
-                  title={updateStatus !== 'idle' ? (updateStatusLabel() ?? '') : t('debug_check_update')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-xl text-[11px] font-bold transition-all disabled:cursor-not-allowed
-                    ${updateStatus === 'up_to_date' ? 'bg-emerald-600/20 border-emerald-500/30 text-emerald-300' :
-                      updateStatus === 'no_sw' ? 'bg-yellow-600/20 border-yellow-500/30 text-yellow-300' :
-                      'bg-blue-600/20 hover:bg-blue-600/40 border-blue-500/30 text-blue-300 disabled:opacity-50'}`}
-                >
-                  <RefreshIcon className={`w-3.5 h-3.5 shrink-0 ${updateStatus === 'checking' ? 'animate-spin' : ''}`} />
-                  <span className="whitespace-nowrap">
-                    {updateStatus === 'up_to_date' ? t('debug_up_to_date') :
-                     updateStatus === 'no_sw' ? t('debug_no_sw') :
-                     updateStatus === 'update_found' ? t('debug_update_found') :
-                     t('debug_check_update')}
-                  </span>
-                </button>
-                <button
-                  onClick={forceHardReload}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600/40 border border-orange-500/30 rounded-xl text-orange-300 text-[11px] font-bold transition-all"
-                  title={t('debug_force_update')}
-                >
-                  <RefreshIcon className="w-3.5 h-3.5 shrink-0" />
-                  <span className="whitespace-nowrap">{t('debug_force_update')}</span>
-                </button>
-              </div>
+              {/* Single update button - fixed width, changes color/action by state */}
+              {(() => {
+                const isUpdateFound = updateStatus === 'update_found';
+                const isUpToDate   = updateStatus === 'up_to_date';
+                const isChecking   = updateStatus === 'checking';
+                const label = isChecking   ? t('debug_checking') :
+                              isUpToDate   ? t('debug_up_to_date') :
+                              isUpdateFound ? t('debug_force_update') :
+                              t('debug_check_update');
+                const cls = isUpToDate
+                  ? 'bg-emerald-600/30 border-emerald-500/40 text-emerald-300 cursor-default'
+                  : isUpdateFound
+                  ? 'bg-red-600/30 hover:bg-red-600/50 border-red-500/40 text-red-300'
+                  : 'bg-blue-600/20 hover:bg-blue-600/40 border-blue-500/30 text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed';
+                return (
+                  <button
+                    onClick={isUpdateFound ? forceHardReload : isUpToDate ? undefined : checkAndForceUpdate}
+                    disabled={isChecking}
+                    className={`w-32 flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-xl text-[11px] font-bold transition-colors ${cls}`}
+                  >
+                    <RefreshIcon className={`w-3.5 h-3.5 shrink-0 ${isChecking ? 'animate-spin' : ''}`} />
+                    <span className="truncate">{label}</span>
+                  </button>
+                );
+              })()}
 
               {/* Action buttons */}
               <div className="flex items-center gap-1 shrink-0">
