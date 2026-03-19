@@ -31,6 +31,13 @@ export const he = {
     clear_action: "נקה הכל",
     copy_all: "העתק הכל",
     logs_copied: "הלוגים הועתקו ללוח!",
+    debug_console_title: "מסוף דיבאג",
+    debug_check_update: "בדוק עדכון",
+    debug_force_update: "עדכן עכשיו",
+    debug_checking: "בודק...",
+    debug_up_to_date: "הגרסה עדכנית",
+    debug_update_found: "נמצא עדכון - מרענן...",
+    debug_no_sw: "Service Worker לא פעיל",
     debug_tip:
         "טיפ: אם יש שגיאה אדומה בעדכון ניקוד, העתק את הלוגיקה ושלח אותה לתיקון.",
     copied_to_clipboard: "הועתק ללוח! 📋",

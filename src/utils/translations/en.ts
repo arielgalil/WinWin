@@ -27,6 +27,13 @@ export const en = {
     confirm_deletion: "Confirm Deletion",
     click_again_to_confirm: "Click again to confirm",
     logs_copied: "Logs copied to clipboard!",
+    debug_console_title: "Debug Console",
+    debug_check_update: "Check Update",
+    debug_force_update: "Update Now",
+    debug_checking: "Checking...",
+    debug_up_to_date: "Up to date",
+    debug_update_found: "Update found - reloading...",
+    debug_no_sw: "Service Worker not active",
     debug_tip:
         "Tip: If there's a red error when updating points, copy the logs and send them for fixing.",
     copied_to_clipboard: "Copied to clipboard! 📋",
