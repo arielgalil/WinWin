@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, TrashIcon, CopyIcon, BugIcon, RefreshIcon } from './Icons';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useToast } from '../../hooks/useToast';
 
 const MotionDiv = motion.div as any;
 
@@ -19,6 +20,7 @@ type UpdateStatus = 'idle' | 'checking' | 'up_to_date' | 'update_found' | 'no_sw
 
 export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { t, dir } = useLanguage();
+  const { showToast } = useToast();
   const [logs, setLogs] = useState<LogEntry[]>((window as any).__LOGS__ || []);
   const [updateStatus, setUpdateStatus] = useState<UpdateStatus>('idle');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,7 +48,7 @@ export const DebugConsole: React.FC<{ isOpen: boolean; onClose: () => void }> = 
     const header = `Win2Grow v${APP_VERSION} | ${new Date().toLocaleString()}\n${'─'.repeat(40)}\n`;
     const text = logs.map(l => `[${l.time}] [${l.type.toUpperCase()}] ${l.msg}`).join('\n');
     navigator.clipboard.writeText(header + text);
-    alert(t('logs_copied'));
+    showToast(t('logs_copied'), 'success');
   };
 
   const checkAndForceUpdate = async () => {

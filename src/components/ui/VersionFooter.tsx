@@ -175,7 +175,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                             title={t("nav_home")}
                             style={getNavButtonStyle()}
                         >
-                            <img src="/logo-footer.png" alt="Win2Grow" className="w-4 h-4 object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
+                            <img src="/logo-footer.png" alt="Win2Grow" className="w-4 h-4 object-contain" />
                             <span className="hidden sm:inline font-black text-[10px] tracking-tight uppercase whitespace-nowrap transition-colors leading-none translate-y-[0.5px] text-zinc-100">
                                 {t("app_name")}
                             </span>
@@ -395,7 +395,7 @@ export const VersionFooter: React.FC<VersionFooterProps> = ({
                                                             navigate("/")}
                                                         className="w-full flex items-center gap-2 px-2 py-1.5 text-[var(--text-secondary)] hover:text-zinc-100 hover:bg-[var(--bg-hover)] rounded text-xs transition-colors text-start"
                                                     >
-                                                        <img src="/logo.png" alt="Win2Grow" className="w-4 h-4 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+                                                        <img src="/logo-footer.png" alt="Win2Grow" className="w-4 h-4 object-contain" />
                                                         {t("all_campaigns")}
                                                     </button>
 
