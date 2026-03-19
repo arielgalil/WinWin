@@ -173,7 +173,7 @@ export const Dashboard: React.FC = () => {
                     });
                     const dataUrl = canvas.toDataURL("image/png");
                     const link = document.createElement("a");
-                    link.download = `winwin-leaderboard-${
+                    link.download = `win2grow-leaderboard-${
                         new Date().toISOString().split("T")[0]
                     }.png`;
                     link.href = dataUrl;

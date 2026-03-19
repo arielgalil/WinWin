@@ -349,7 +349,7 @@ const AdminPanelInner: React.FC<AdminPanelProps> = ({
         roleLabel: userRoleLabel,
       }}
       institution={{
-        name: settings.school_name || "WinWin",
+        name: settings.school_name || "Win2Grow",
         logoUrl: settings.logo_url,
       }}
       navItems={navItems}

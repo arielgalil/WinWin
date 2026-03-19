@@ -110,7 +110,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </button>
 
         <div className="mt-4 flex items-center justify-between px-2 pt-2 border-t border-[var(--border-subtle)] opacity-60">
-          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-widest">WinWin v2.0</span>
+          <span className="text-[var(--fs-sm)] font-[var(--fw-bold)] text-[var(--text-muted)] uppercase tracking-widest">Win2Grow</span>
           <div className="flex items-center gap-2">
             {onToggleFreeze && (
               <button

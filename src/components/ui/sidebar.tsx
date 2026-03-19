@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ direction = 'ltr' }) => {
         className={cn("w-64 p-0", direction === 'rtl' ? "!inset-y-0 !left-auto !right-0" : "")}
       >
         <SheetHeader className="p-4 border-b">
-          <SheetTitle className="text-xl">WinWin Admin</SheetTitle>
+          <SheetTitle className="text-xl">Win2Grow Admin</SheetTitle>
           <SheetDescription>Manage your platform</SheetDescription>
         </SheetHeader>
         {sidebarContent}

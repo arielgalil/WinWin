@@ -183,7 +183,7 @@ test('AdminLayout mobile header opens and closes sidebar', async () => {
   fireEvent.click(closeButton);
 
   await waitFor(() => {
-    expect(screen.queryByRole('heading', { name: 'WinWin Admin', level: 2 })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Win2Grow Admin', level: 2 })).not.toBeInTheDocument();
   });
 });
 

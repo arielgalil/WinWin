@@ -1,5 +1,5 @@
 /**
- * Centralized constants for the WinWin application.
+ * Centralized constants for the Win2Grow application.
  * All hardcoded timeouts, thresholds, and configuration values should be moved here.
  */
 

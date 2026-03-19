@@ -97,8 +97,8 @@ export default defineConfig(({ mode }) => {
             ]
           },
           manifest: {
-            name: 'WinWin - תחרות מצמיחה',
-            short_name: 'WinWin',
+            name: 'Win2Grow - תחרות מצמיחה',
+            short_name: 'Win2Grow',
             description: 'פלטפורמה חינוכית לצמיחה משותפת',
             theme_color: '#4c1d95',
             background_color: '#f8fafc',
