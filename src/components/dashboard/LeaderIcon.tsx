@@ -25,8 +25,8 @@ export const LeaderIcon: React.FC<LeaderIconProps> = memo(({
       break;
     case 'md':
     default:
-      containerClass = 'w-[clamp(4.5rem,7vw,9rem)] h-[clamp(4.5rem,7vw,9rem)]';
-      iconSizeClass = 'text-[clamp(2.5rem,4.5vw,6rem)]';
+      containerClass = 'w-[clamp(3rem,5vw,6rem)] h-[clamp(3rem,5vw,6rem)]';
+      iconSizeClass = 'text-[clamp(2rem,3.8vw,5rem)]';
       break;
   }
 
