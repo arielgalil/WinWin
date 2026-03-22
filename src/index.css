@@ -7,6 +7,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  /* Default lg=1024px misses Google TV (device-width ~960px due to 2x DPR on 1080p screens).
+     Lowering to 900px ensures TV browsers get the desktop layout. */
+  --breakpoint-lg: 900px;
+
   --font-sans:
     "Noto Sans Hebrew", "Heebo", ui-sans-serif, system-ui, sans-serif;
   --color-background: hsl(var(--background));
