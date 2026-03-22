@@ -347,7 +347,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     return (
         <div className="relative flex flex-col items-center gap-3 select-none w-full">
             {/* Wheel container */}
-            <div className="relative w-[min(80vw,max(450px,40vw),calc(100svh-220px))] aspect-square">
+            <div className="relative w-[min(80svw,calc(100svh-clamp(200px,28svh,340px)),780px)] aspect-square">
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full rounded-full"
@@ -387,12 +387,12 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
             </div>
 
             {/* NAMES STRIP — updated via direct DOM refs, zero React re-renders */}
-            <div className="w-full max-w-[min(80vw,max(450px,40vw),calc(100svh-220px))] flex items-center pointer-events-none py-1">
+            <div className="w-full max-w-[min(80svw,calc(100svh-clamp(200px,28svh,340px)),780px)] flex items-center pointer-events-none py-1">
                 <div className="flex-[0.75] flex justify-end overflow-hidden pr-2">
                     <span
                         ref={leftNameRef}
                         style={{
-                            fontSize: "clamp(0.75rem,1.2vw,1.5rem)", fontWeight: 700,
+                            fontSize: "clamp(0.7rem,1.5svh,1.5rem)", fontWeight: 700,
                             color: "white", opacity: 0.45,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",
@@ -404,7 +404,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     <span
                         ref={centerNameRef}
                         style={{
-                            fontSize: "clamp(1.1rem,2vw,2.5rem)", fontWeight: 900,
+                            fontSize: "clamp(1rem,2.5svh,2.5rem)", fontWeight: 900,
                             color: "white", opacity: 1,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",
@@ -417,7 +417,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                     <span
                         ref={rightNameRef}
                         style={{
-                            fontSize: "clamp(0.75rem,1.2vw,1.5rem)", fontWeight: 700,
+                            fontSize: "clamp(0.7rem,1.5svh,1.5rem)", fontWeight: 700,
                             color: "white", opacity: 0.45,
                             whiteSpace: "nowrap", overflow: "hidden",
                             textOverflow: "ellipsis", maxWidth: "100%",

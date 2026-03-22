@@ -96,7 +96,7 @@ const WheelInfoCard = React.memo(function WheelInfoCard({ participantCount, tota
                     <div
                         key={i}
                         className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/12 text-white"
-                        style={{ fontSize: "0.75rem" }}
+                        style={{ fontSize: "clamp(0.6rem, 1.4svh, 0.8rem)" }}
                     >
                         <span style={{ fontSize: "0.8rem" }}>{chip.icon}</span>
                         <span className="text-white/55 font-medium">{chip.label}</span>
@@ -242,9 +242,9 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                         initial={{ y: -30, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="w-full shrink-0 pt-4 pb-3 px-4 flex flex-col items-center gap-2 z-10"
+                        className="w-full shrink-0 pt-[clamp(6px,1.2svh,16px)] pb-[clamp(4px,1svh,12px)] px-4 flex flex-col items-center gap-[clamp(4px,0.8svh,8px)] z-10"
                     >
-                        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight text-center">
+                        <h1 className="text-[clamp(1.1rem,2.8svh,2.2rem)] font-black text-white tracking-tight text-center">
                             🎡 {wheelName || t("tab_lucky_wheel")}
                         </h1>
 
@@ -298,7 +298,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                     */}
                     <div
                         className="w-full shrink-0 flex flex-col items-center justify-center gap-2 pb-5 pt-1 px-4"
-                        style={{ minHeight: "80px" }}
+                        style={{ minHeight: "clamp(50px, 9svh, 80px)" }}
                     >
                         {/* Round label */}
                         {roundLabel && (
@@ -307,7 +307,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                                 initial={{ opacity: 0, y: 6 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="text-sm md:text-base font-bold text-amber-400 tracking-wide"
+                                className="text-[clamp(0.75rem,1.6svh,1rem)] font-bold text-amber-400 tracking-wide"
                             >
                                 {roundLabel}
                             </motion.span>
@@ -325,7 +325,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                                     className="inline-flex items-center gap-2 px-5 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
                                 >
                                     <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-                                    <span className="text-white/80 text-sm font-medium">
+                                    <span className="text-white/80 text-[clamp(0.7rem,1.4svh,0.875rem)] font-medium">
                                         {t("waiting_for_admin_label")}
                                     </span>
                                 </motion.div>
