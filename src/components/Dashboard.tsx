@@ -101,7 +101,6 @@ export const Dashboard: React.FC = () => {
     const [wheelFilterCriteria, setWheelFilterCriteria] = useState<WheelFilterCriteria | undefined>();
     const [wheelClassNames, setWheelClassNames] = useState<string[] | undefined>();
     const [wheelPrizeEmoji, setWheelPrizeEmoji] = useState<string | undefined>();
-    const wheelCloseTimerRef = useRef<number | undefined>(undefined);
 
     // Single source of truth for "is the wheel open?"
     const wheelActive = !!settings?.active_lucky_wheel_id;
@@ -280,19 +279,7 @@ export const Dashboard: React.FC = () => {
                     : `Congratulations to ${name}! 🎉`,
                 "success",
             );
-
-            // Auto-hide the winner celebration after 10 seconds of inactivity to return to the idle wheel
-            if (wheelCloseTimerRef.current) {
-                window.clearTimeout(wheelCloseTimerRef.current);
-            }
-            wheelCloseTimerRef.current = window.setTimeout(() => {
-                logger.info(
-                    "[WheelSync] Resetting winner view to idle",
-                );
-                setWheelWinnerIndex(null);
-                isWinnerAnnouncedRef.current = false;
-                wheelCloseTimerRef.current = undefined;
-            }, 10000);
+            // Winner screen stays open until the next spin or admin deactivates the wheel
         },
         [showToast, settings?.language],
     );
@@ -325,10 +312,6 @@ export const Dashboard: React.FC = () => {
                 if (wheelState.total_rounds != null) setWheelTotalRounds(wheelState.total_rounds);
                 break;
             case "SPIN":
-                if (wheelCloseTimerRef.current) {
-                    window.clearTimeout(wheelCloseTimerRef.current);
-                    wheelCloseTimerRef.current = undefined;
-                }
                 isWinnerAnnouncedRef.current = false;
                 if (wheelState.participant_names?.length) {
                     setWheelParticipants(wheelState.participant_names);

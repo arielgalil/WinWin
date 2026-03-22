@@ -101,6 +101,13 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     const [showWinner, setShowWinner] = useState(false);
     const [winnerName, setWinnerName] = useState("");
 
+    // Close winner card when winner is cleared (RESET / DEACTIVATE / new idle state)
+    useEffect(() => {
+        if (winnerIndex === null) {
+            setShowWinner(false);
+        }
+    }, [winnerIndex]);
+
     const startAtMsRef = useRef<number | undefined>(startAtMs);
     useEffect(() => { startAtMsRef.current = startAtMs; }, [startAtMs]);
 
