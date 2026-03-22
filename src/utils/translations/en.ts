@@ -793,6 +793,7 @@ export const en = {
     confirm_delete_all_winners: "Delete All Winners",
     confirm_delete_all_winners_desc: "Are you sure you want to delete the entire winners history? This will permanently delete all records.",
     delete_all: "Delete All",
+    export_excel: "Export to Excel",
     live_control_title: "Live Control",
     template_name_placeholder: "e.g., Weekly Excellence Raffle",
     phase_accelerating: "Spinning...",

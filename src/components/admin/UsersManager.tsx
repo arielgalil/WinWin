@@ -325,10 +325,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('email_label')}</label>
+                            <label htmlFor="new-user-email" className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('email_label')}</label>
                             <input
+                                id="new-user-email"
+                                name="new-user-email"
                                 required
                                 type="email"
+                                autoComplete="off"
                                 value={newUserEmail}
                                 onChange={e => setNewUserEmail(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-[var(--text-muted)] opacity-80 shadow-sm"
@@ -336,10 +339,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({ users, classes, curr
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('password_label')}</label>
+                            <label htmlFor="new-user-password" className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{t('password_label')}</label>
                             <input
+                                id="new-user-password"
+                                name="new-user-password"
                                 required
                                 type="password"
+                                autoComplete="new-password"
                                 value={newUserPassword}
                                 onChange={e => setNewUserPassword(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-[var(--radius-main)] border border-[var(--border-main)] bg-[var(--bg-input)] text-sm text-[var(--text-main)] outline-none focus:ring-2 focus:ring-indigo-500 transition-all font-medium placeholder:text-[var(--text-muted)] opacity-80 shadow-sm"

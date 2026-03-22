@@ -283,6 +283,7 @@ export const LuckyWheelOverlay: React.FC<LuckyWheelOverlayProps> = ({
                             startAtMs={frozenStartAtMs}
                             durationMs={frozenDurationMs}
                             prizeEmoji={frozenPrizeEmoji}
+                            wheelName={wheelName}
                             onSpinComplete={onSpinComplete}
                             onPhaseChange={(phase: WheelPhase) => {
                                 if (phase === "accelerating") vibrate(30);

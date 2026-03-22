@@ -14,11 +14,12 @@ import { useClasses } from "../../hooks/useClasses";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useToast } from "../../hooks/useToast";
 import { useConfirmation } from "../../hooks/useConfirmation";
-import { LuckyWheelTemplate, Student, WheelFilterCriteria } from "../../types";
+import { LuckyWheelTemplate, LuckyWheelWinner, Student, WheelFilterCriteria } from "../../types";
 import { RefreshIcon } from "../ui/Icons";
 import { ConfirmationModal } from "../ui/ConfirmationModal";
 import {
     Copy,
+    Download,
     Edit,
     FerrisWheel,
     Play,
@@ -39,6 +40,47 @@ const formatScore = (val: number | string | undefined | null): string => {
 };
 
 const parseScoreInput = (val: string): string => val.replace(/[^\d]/g, "");
+
+const escapeCell = (val: string): string => {
+    const s = String(val);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+        ? `"${s.replace(/"/g, '""')}"`
+        : s;
+};
+
+const exportWinnersToExcel = (winners: LuckyWheelWinner[], campaignName?: string) => {
+    const headers = ["שם מלא", "כיתה / קבוצה", "שם ההגרלה", "מקום / סיבוב", "תאריך ושעה"];
+    const rows = winners.map((w) => {
+        const placeLabel =
+            w.place_number != null
+                ? `מקום ${w.place_number}`
+                : `#${w.round_number}`;
+        const date = new Date(w.won_at).toLocaleString("he-IL", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return [w.student_name, w.class_name || "", w.wheel_name || "", placeLabel, date];
+    });
+
+    const csvLines = [headers, ...rows].map((row) => row.map(escapeCell).join(","));
+    const csv = "\uFEFF" + csvLines.join("\r\n"); // BOM required for Excel to decode Hebrew as UTF-8
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const fileName = `זוכי-גלגל-מזל${campaignName ? `-${campaignName}` : ""}-${new Date().toLocaleDateString("he-IL").replace(/\//g, "-")}.csv`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+};
 
 // ── Main Component ──────────────────────────────────────────────
 
@@ -702,13 +744,22 @@ export const LuckyWheelManager: React.FC = () => {
                         <h3 className="text-lg font-bold text-[var(--text-main)]">
                             {t("winner_history_title")}
                         </h3>
-                        <button
-                            onClick={handleDeleteAllWinners}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg text-sm font-bold transition-colors"
-                        >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            {t("delete_all" as any) || "מחק את כולם"}
-                        </button>
+                        <div className="flex items-center gap-8">
+                            <button
+                                onClick={handleDeleteAllWinners}
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-lg text-sm font-bold transition-colors"
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                {t("delete_all" as any)}
+                            </button>
+                            <button
+                                onClick={() => exportWinnersToExcel(winners, campaign?.name)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 rounded-lg text-sm font-bold transition-colors"
+                            >
+                                <Download className="w-3.5 h-3.5" />
+                                {t("export_excel" as any)}
+                            </button>
+                        </div>
                     </div>
                     <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-[var(--card-shadow)]">
                         <div className="max-h-[300px] overflow-y-auto custom-scrollbar">

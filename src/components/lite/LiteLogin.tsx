@@ -84,9 +84,12 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
 
             <form onSubmit={handleSubmit} className="space-y-4 w-full">
               <div className="space-y-1">
-                <label className="block text-white text-[10px] font-black uppercase tracking-widest mx-2 opacity-70">{t('email_label')}</label>
+                <label htmlFor="login-email" className="block text-white text-[10px] font-black uppercase tracking-widest mx-2 opacity-70">{t('email_label')}</label>
                 <input
+                  id="login-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="teacher@school.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -96,9 +99,12 @@ export const LiteLogin: React.FC<LiteLoginProps> = ({ onLogin, loading, error, s
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-white text-[10px] font-black uppercase tracking-widest mx-2 opacity-70">{t('password_label')}</label>
+                <label htmlFor="login-password" className="block text-white text-[10px] font-black uppercase tracking-widest mx-2 opacity-70">{t('password_label')}</label>
                 <input
+                  id="login-password"
+                  name="password"
                   type="password"
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

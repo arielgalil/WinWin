@@ -73,9 +73,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0, silent = false) => {
+    const fetchUserProfile = useCallback(async (userId: string, userEmail: string, retryCount = 0, silent = false, skipStatusUpdate = false) => {
         // silent=true: background refresh when cached user already displayed — no loading state changes, no retries
-        if (!silent) setAuthStatus('fetching-profile');
+        // skipStatusUpdate=true: used during login() to prevent triggering the App-level skeleton
+        if (!silent && !skipStatusUpdate) setAuthStatus('fetching-profile');
         try {
             logger.debug(`[AUTH] Fetching profile for ID: ${userId} (Attempt: ${retryCount + 1}, silent: ${silent})`);
 
@@ -128,7 +129,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const delay = 1000 * (retryCount + 1);
                 console.warn(`[AUTH] Profile fetch failed (${err instanceof Error ? err.message : 'Unknown error'}), retrying in ${delay}ms... (Attempt ${retryCount + 1})`);
                 await new Promise(resolve => setTimeout(resolve, delay));
-                return fetchUserProfile(userId, userEmail, retryCount + 1, false);
+                return fetchUserProfile(userId, userEmail, retryCount + 1, false, skipStatusUpdate);
             }
 
             console.error("[AUTH] Profile load failed after retries, applying safety fallback:", err);
@@ -288,7 +289,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (data.user) {
                 if (remember) localStorage.setItem(SAVED_EMAIL_KEY, email.toLowerCase().trim());
                 else localStorage.removeItem(SAVED_EMAIL_KEY);
-                await fetchUserProfile(data.user.id, data.user.email || '');
+                // skipStatusUpdate=true: prevents 'fetching-profile' from triggering the App-level
+                // skeleton, which would unmount the login form mid-flight and cause a flash
+                await fetchUserProfile(data.user.id, data.user.email || '', 0, false, true);
                 return true;
             }
             return false;

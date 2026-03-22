@@ -782,6 +782,7 @@ export const he = {
     confirm_delete_all_winners: "מחיקת כל הזוכים",
     confirm_delete_all_winners_desc: "האם את/ה בטוח/ה שברצונך למחוק את כל היסטוריית הזכיות? פעולה זו תימחק לצמיתות את כל הרשומות.",
     delete_all: "מחק את כולם",
+    export_excel: "ייצוא לאקסל",
     live_control_title: "שליטה בלייב",
     template_name_placeholder: "למשל: הגרלת מצטייני השבוע",
     phase_accelerating: "מסתובב...",

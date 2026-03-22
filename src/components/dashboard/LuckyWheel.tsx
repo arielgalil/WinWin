@@ -42,6 +42,8 @@ interface LuckyWheelProps {
     durationMs?: number;
     /** Synchronized prize emoji from admin — same on all screens */
     prizeEmoji?: string;
+    /** Raffle/wheel name shown on the winner screen */
+    wheelName?: string;
 }
 
 // ── Component ────────────────────────────────────────────────────
@@ -61,6 +63,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
     totalRounds,
     startAtMs,
     prizeEmoji: prizeEmojiProp,
+    wheelName,
 }) => {
     const { isRTL } = useLanguage();
 
@@ -457,6 +460,18 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                             <div className="text-[clamp(3rem,6vw,8rem)] mb-5 animate-pulse">
                                 {prizeEmoji}
                             </div>
+
+                            {wheelName && (
+                                <motion.p
+                                    initial={{ y: -10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.05 }}
+                                    className="text-amber-300 text-[clamp(1.2rem,2.5vw,3.5rem)] font-black tracking-wide mb-3"
+                                    style={{ textShadow: "0 0 24px rgba(250,204,21,0.6)" }}
+                                >
+                                    🎡 {wheelName}
+                                </motion.p>
+                            )}
 
                             <motion.h2
                                 initial={{ y: 20, opacity: 0 }}
