@@ -584,16 +584,16 @@ textarea:focus-visible,
 @keyframes float {
   0%,
   100% {
-    transform: translateY(-4px);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(0);
+    transform: translateY(-8px);
   }
 }
 
 .animate-float-smooth {
-  animation: float 3s ease-in-out infinite;
+  animation: float 2.8s ease-in-out infinite;
 }
 
 /* Text outline — legibility on dynamic/colorful backgrounds (dashboard kiosk) */
