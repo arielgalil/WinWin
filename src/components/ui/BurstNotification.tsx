@@ -78,9 +78,9 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
     }, [data, volume, soundsEnabled]);
 
     const getTheme = (type: string) => {
-        // Icon sizes are designed to fill (or slightly overflow) the circle container
-        // (w-20 sm:w-28 md:w-36 lg:w-44). overflow-hidden on the circle clips any excess.
-        const iconClass = "text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] leading-none select-none";
+        // Emoji sized at ~60% of the circle diameter (w-20/w-28/w-36/w-44 = 80/112/144/176px)
+        // so every emoji fits visually inside the circle regardless of glyph rendering differences.
+        const iconClass = "text-[3rem] sm:text-[4.2rem] md:text-[5.4rem] lg:text-[6.6rem] leading-none select-none";
         switch (type) {
             case "GOAL_REACHED":
                 return {
@@ -197,7 +197,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
                                 >
                                     <div className="relative z-10 filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 flex items-center justify-center w-full h-full">
                                         {data.emoji ? (
-                                            <span className="text-[5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11rem] leading-none select-none">
+                                            <span className="text-[3rem] sm:text-[4.2rem] md:text-[5.4rem] lg:text-[6.6rem] leading-none select-none">
                                                 {data.emoji}
                                             </span>
                                         ) : theme.icon}

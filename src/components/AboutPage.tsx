@@ -190,7 +190,7 @@ export const AboutPage: React.FC = () => {
                         {/* Demo */}
                         <button
                             onClick={() => navigate('/demo')}
-                            className="flex items-center justify-center gap-2.5 bg-white/20 hover:bg-white/30 border border-white/40 text-white rounded-xl px-5 py-3 font-black text-sm transition-colors flex-1 shadow-lg shadow-black/20"
+                            className="flex items-center justify-center gap-2.5 bg-yellow-400 hover:bg-yellow-300 border border-yellow-200 text-green-900 rounded-xl px-5 py-3 font-black text-sm transition-colors flex-1 shadow-lg shadow-yellow-500/30"
                             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.25)' }}
                         >
                             <span className="relative flex h-2.5 w-2.5 shrink-0">

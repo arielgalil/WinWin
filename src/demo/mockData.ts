@@ -11,7 +11,7 @@ export const DEMO_CAMPAIGN: Campaign = {
 export const DEMO_SETTINGS: AppSettings = {
     school_name: 'בית ספר לדוגמה',
     competition_name: 'תחרות מצמיחה',
-    logo_url: null,
+    logo_url: '/logo.png',
     primary_color: '#7c3aed',
     secondary_color: '#0f172a',
     background_brightness: 60,
