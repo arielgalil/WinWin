@@ -95,7 +95,10 @@ export const AboutPage: React.FC = () => {
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-10">
                     <h2 className="text-xl font-black text-foreground mb-3">הגישה הפדגוגית: להפוך הצלחה אישית לכוח קהילתי</h2>
                     <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        הפלטפורמה נשענת על עקרונות גישת ה-PBIS (חיזוק התנהגות חיובית): כאשר נותנים חיזוקים חיובי ומפנים זרקור אל הטוב בנוסף, או לצד קנס או ענישה על הדרוש תיקון, האקלים הבית-ספרי משתנה מהקצה אל הקצה. המערכת מפעילה שתי שכבות פסיכולוגיות מקבילות:
+                        הפלטפורמה נשענת על עקרונות גישת ה-PBIS (חיזוק התנהגות חיובית). כאשר מתמקדים בחיזוקים חיובים ומפנים זרקור אל הטוב - האקלים הבית-ספרי משתנה מהקצה אל הקצה.
+                    </p>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                        המערכת מפעילה שתי שכבות פסיכולוגיות מקבילות:
                     </p>
                     <div className="space-y-3">
                         <div className="bg-card border border-border rounded-2xl p-4 flex gap-4 items-start">
