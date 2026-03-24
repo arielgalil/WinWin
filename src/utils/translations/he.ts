@@ -212,7 +212,7 @@ export const he = {
     // Login
     login_platform_title: "מערכת תחרויות %{app_name}",
     login_platform_desc:
-        "פלטרפורמת ניהול והצגת הישגים משותפים, קבוצתיים ואישיים בזמן אמת.",
+        "פלטרפורמת לניהול והצגת תחרויות, יעדים והישגים משותפים, קבוצתיים ואישיים בזמן אמת.",
     login_platform_slogan: "מנצחים וצומחים ביחד.",
     email_label: "אימייל",
     password_label: "סיסמה",
