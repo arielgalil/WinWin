@@ -157,7 +157,7 @@ export const AboutPage: React.FC = () => {
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-10 bg-muted/50 border border-border rounded-2xl p-6">
                     <div className="flex items-center gap-3 mb-3">
                         <AwardIcon className="w-5 h-5 text-primary shrink-0" />
-                        <h2 className="text-xl font-black text-foreground">בשורה התחתונה למנהלים</h2>
+                        <h2 className="text-xl font-black text-foreground">השורה האחרונה למנהלים/ות</h2>
                     </div>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                         פחות התעסקות במשמעת, יותר תחושת שייכות. תלמידים שפותחים את הבוקר בשאלה "כמה נקודות חסרות לכיתה שלנו?" הם תלמידים שאכפת להם. המערכת גמישה לחלוטין (לתחרות שבועית, חודשית או שנתית) ומותאמת למידות של כל מוסד חינוכי.
