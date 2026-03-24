@@ -1,7 +1,7 @@
 import React from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { SproutIcon, AwardIcon, ArrowRightIcon } from './ui/Icons';
+import { SproutIcon, AwardIcon, ArrowRightIcon, GlobeIcon } from './ui/Icons';
 import { useLanguage } from '../hooks/useLanguage';
 import { VersionFooter } from './ui/VersionFooter';
 
@@ -203,7 +203,7 @@ export const AboutPage: React.FC = () => {
                     <div className="mt-4 pt-4 border-t border-white/15 flex items-center justify-start gap-4 text-white text-sm">
                         <img src="/profile.jpeg" alt="אריאל גליל" className="w-12 h-12 rounded-full object-cover border-2 border-white/40 shrink-0" />
                         <div className="flex flex-col gap-1 min-w-0">
-                            <span className="font-black text-white">אריאל גליל · מנהל מוצר ו<a href="https://galilbio.wordpress.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white/70 transition-colors">מורה</a></span>
+                            <span className="font-black text-white">אריאל גליל · מנהל מוצר ו<a href="https://galilbio.wordpress.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white/70 transition-colors inline-flex items-center gap-1">מורה<GlobeIcon className="w-3.5 h-3.5 opacity-75" /></a></span>
                             <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 font-black leading-snug">
                                 <a href="tel:0544572858" className="hover:text-white/70 transition-colors" dir="ltr">054-457-2858</a>
                                 <span className="hidden sm:inline">·</span>
