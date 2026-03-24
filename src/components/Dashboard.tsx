@@ -214,8 +214,8 @@ export const Dashboard: React.FC = () => {
     const isCampaignActive = campaign?.is_active ?? false;
 
     // "Frozen" logically means: Data stops updating OR we are hidden by Kiosk
-    const isFrozen = (!isCampaignActive || !!settings?.is_frozen) &&
-        !isSuperUser;
+    // Inactive campaign (paused) freezes everyone; is_frozen (temporary) exempts superusers
+    const isFrozen = !isCampaignActive || (!!settings?.is_frozen && !isSuperUser);
     const effectiveIsFrozen = isFrozen || isHiddenByKiosk;
 
     // Use merged settings with defaults to avoid `as any`

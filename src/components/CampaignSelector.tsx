@@ -100,7 +100,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
     }, [isLoading]);
 
     return (
-        <div className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden selection:bg-primary/30 relative" dir={dir}>
+        <div className="min-h-full flex flex-col bg-background text-foreground overflow-hidden selection:bg-primary/30 relative" dir={dir}>
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute inset-0 bg-gradient-to-tr from-background via-primary/5 to-accent/5"></div>
                 <div className="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full" />
@@ -176,12 +176,12 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
                                     </div>
                                     <div className="rtl:text-right ltr:text-left min-w-0">
                                         <h3 className="text-xl font-black leading-tight drop-shadow-sm">מהי תחרות מצמיחה?</h3>
-                                        <p className="text-white/70 text-[10px] font-black uppercase tracking-wider">מידע על הפלטפורמה</p>
+                                        <p className="text-white/70 text-[10px] font-black uppercase tracking-wider">רוצים לדעת עוד ומה שונה בגישה אצלנו?</p>
                                     </div>
                                 </div>
                                 <div className="space-y-3 mt-auto relative z-10">
                                     <button className="w-full py-3 rounded-[var(--radius-main)] bg-white text-gray-900 transition-all flex items-center justify-center gap-3 font-black shadow-xl group-hover:shadow-white/20">
-                                        קרא עוד <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
+                                        לפרטים והדגמה חיה <ArrowRightIcon className="w-4 h-4 rtl:rotate-180 ltr:rotate-0" />
                                     </button>
                                     <div className="h-[32px]" />
                                 </div>
