@@ -68,7 +68,7 @@ export const AboutPage: React.FC = () => {
 
                 {/* ── THE PROBLEM ── */}
                 <MotionDiv initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-10">
-                    <h2 className="text-xl font-black text-foreground mb-3">מה הנזק של תחרות רגילה?</h2>
+                    <h2 className="text-xl font-black text-foreground mb-3">מה המחיר של תחרות רגילה?</h2>
                     <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                         תחרות של "סכום אפס" מייצרת מנצח אחד - ועשרים ותשעה תלמידים שמבינים מהר מאוד שהם לא הוא. עם הזמן, מי שלא בפסגה פשוט מפסיק לנסות. לא כי הוא חסר יכולת, אלא כי המערכת לימדה אותו שהסיכוי שלו לזכות בהכרה הוא אפסי.
                     </p>

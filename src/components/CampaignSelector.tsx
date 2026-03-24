@@ -101,7 +101,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
 
     return (
         <div className="min-h-full flex flex-col bg-background text-foreground overflow-hidden selection:bg-primary/30 relative" dir={dir}>
-            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" style={{ clipPath: 'inset(0)' }}>
                 <div className="absolute inset-0 bg-gradient-to-tr from-background via-primary/5 to-accent/5"></div>
                 <div className="absolute top-[-10%] right-[-5%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full" />
                 <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] bg-accent/10 blur-[120px] rounded-full" />
@@ -245,7 +245,7 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
                 </AnimatePresence>
             </main>
 
-            <div className="mt-auto">
+            <div className="mt-auto relative z-10">
                 <VersionFooter />
             </div>
         </div>
