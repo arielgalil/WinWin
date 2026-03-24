@@ -187,24 +187,16 @@ export const CampaignSelector: React.FC<CampaignSelectorProps> = () => {
                                 </div>
                             </MotionDiv>
 
-                            {campaigns.map((camp, idx) => {
-                                const vibrantColors = [
-                                    'from-blue-600 to-indigo-700',
-                                    'from-purple-600 to-pink-700',
-                                    'from-emerald-600 to-teal-700',
-                                    'from-orange-500 to-red-600',
-                                    'from-cyan-500 to-blue-600',
-                                    'from-indigo-600 to-purple-700',
-                                    'from-rose-500 to-pink-600',
-                                    'from-amber-500 to-orange-600'
-                                ];
-                                const colorClass = vibrantColors[idx % vibrantColors.length];
+                            {campaigns.map((camp) => {
+                                const primary = camp.app_settings?.primary_color || camp.theme_color || '#3b82f6';
+                                const secondary = camp.app_settings?.secondary_color || camp.secondary_color || '#1d4ed8';
 
                                 return (
                                     <MotionDiv
                                         key={camp.id}
                                         whileHover={{ y: -8, scale: 1.02 }}
-                                        className={`group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer bg-gradient-to-br ${colorClass} text-white border-none`}
+                                        className="group relative flex flex-col rounded-[var(--radius-container)] p-5 transition-all shadow-xl overflow-hidden cursor-pointer text-white border-none"
+                                        style={{ background: `linear-gradient(135deg, ${primary}, ${secondary})` }}
                                         onClick={() => navigate(`/comp/${camp.slug}`)}
                                     >
                                         {/* Decorative element */}
