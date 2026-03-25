@@ -9,6 +9,10 @@ const MotionDiv = motion.div as any;
 const MotionH2 = motion.h2 as any;
 const MotionH3 = motion.h3 as any;
 
+// Emoji sized at ~60% of the circle diameter (w-20/w-28/w-36/w-44 = 80/112/144/176px)
+// so every emoji fits visually inside the circle regardless of glyph rendering differences.
+const EMOJI_SIZE_CLASS = "text-[3rem] sm:text-[4.2rem] md:text-[5.4rem] lg:text-[6.6rem] leading-none select-none";
+
 interface BurstNotificationProps {
     data: BurstNotificationData | null;
     onDismiss: () => void;
@@ -78,9 +82,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
     }, [data, volume, soundsEnabled]);
 
     const getTheme = (type: string) => {
-        // Emoji sized at ~60% of the circle diameter (w-20/w-28/w-36/w-44 = 80/112/144/176px)
-        // so every emoji fits visually inside the circle regardless of glyph rendering differences.
-        const iconClass = "text-[3rem] sm:text-[4.2rem] md:text-[5.4rem] lg:text-[6.6rem] leading-none select-none";
+        const iconClass = EMOJI_SIZE_CLASS;
         switch (type) {
             case "GOAL_REACHED":
                 return {
@@ -197,7 +199,7 @@ export const BurstNotification: React.FC<BurstNotificationProps> = ({
                                 >
                                     <div className="relative z-10 filter drop-shadow-xl group-hover:scale-110 transition-transform duration-500 flex items-center justify-center w-full h-full">
                                         {data.emoji ? (
-                                            <span className="text-[3rem] sm:text-[4.2rem] md:text-[5.4rem] lg:text-[6.6rem] leading-none select-none">
+                                            <span className={EMOJI_SIZE_CLASS}>
                                                 {data.emoji}
                                             </span>
                                         ) : theme.icon}
