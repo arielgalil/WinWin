@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SproutIcon, AwardIcon, ArrowRightIcon, GlobeIcon } from './ui/Icons';
 import { useLanguage } from '../hooks/useLanguage';
 import { VersionFooter } from './ui/VersionFooter';
+import { useAuth } from '../hooks/useAuth';
+import { isSuperUser } from '../config';
 
 const { useNavigate } = ReactRouterDOM as any;
 const MotionDiv = motion.div as any;
+
+declare const gtag: (...args: unknown[]) => void;
 
 const WHATSAPP_NUMBER = '972544572858';
 const WHATSAPP_MSG = encodeURIComponent('ראיתי את עמוד האודות של תחרות מצמיחה 🌱 ואשמח לשמוע עוד');
@@ -14,6 +18,17 @@ const WHATSAPP_MSG = encodeURIComponent('ראיתי את עמוד האודות �
 export const AboutPage: React.FC = () => {
     const { dir } = useLanguage();
     const navigate = useNavigate();
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (typeof gtag === 'undefined') return;
+        const isOwner = isSuperUser(user?.role);
+        gtag('set', 'user_properties', { is_owner: isOwner ? 'true' : 'false' });
+        gtag('event', 'page_view', {
+            page_title: 'About',
+            page_location: window.location.href,
+        });
+    }, [user]);
 
     return (
         <div className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden" dir={dir}>
