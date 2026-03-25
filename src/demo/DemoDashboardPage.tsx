@@ -93,7 +93,7 @@ export const DemoDashboardPage: React.FC = () => {
                             </span>
                             <button
                                 onClick={handleAdminClick}
-                                className="px-4 py-1.5 rounded-full text-xs font-black text-yellow-900 bg-yellow-400 hover:bg-yellow-300 shadow-[0_0_16px_rgba(250,204,21,0.5)] hover:shadow-[0_0_24px_rgba(250,204,21,0.8)] transition-all duration-300 animate-[pulse_3s_ease-in-out_infinite] [text-shadow:none]"
+                                className="px-4 py-1.5 rounded-full text-xs font-black text-yellow-950 bg-yellow-400 hover:bg-yellow-300 ring-2 ring-yellow-300/60 transition-colors"
                             >
                                 ניהול הדמו ↗
                             </button>

@@ -368,7 +368,7 @@ export const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 <div
                     ref={logoWrapperRef}
                     className="absolute rounded-full pointer-events-none flex items-center justify-center overflow-hidden bg-white"
-                    style={{ width: "22%", height: "22%", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 2 }}
+                    style={{ width: "14%", height: "14%", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 2 }}
                 >
                     {logoUrl ? (
                         <img
